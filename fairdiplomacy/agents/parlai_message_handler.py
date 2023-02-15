@@ -624,7 +624,7 @@ class ParlaiMessageHandler:
             logging.info(f"Pseudo orders for {power}: {pseudo_orders}")
             meta_annotations.add_pseudo_orders_next_msg(pseudo_orders)
             # if self.deception:
-            if power == 'RUSSIA' and game.current_short_phase[-1]=='M':
+            if game.current_short_phase[-1]=='M':
                 self.update_deceive_orders(game, power, pseudo_orders)
                 deceive_orders = self.get_deceive_orders()
                 self.model_dialogue.update_pseudo_orders(
