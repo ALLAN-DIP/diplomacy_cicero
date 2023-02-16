@@ -916,7 +916,6 @@ class ParlaiMessageHandler:
         unit_order = dict() 
         for order in possible_orders:
             l_order = order.split()
-            logging.info(f"order split for {order}: {l_order}")
             unit = l_order[0] + ' ' + l_order[1]
             if unit not in unit_order:
                 unit_order[unit] = []
