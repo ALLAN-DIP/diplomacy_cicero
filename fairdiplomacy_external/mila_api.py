@@ -94,6 +94,7 @@ import json as json
 import random
 import sys
 import time
+import math
 from pathlib import Path
 from typing import Optional
 
@@ -102,119 +103,190 @@ from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 
 
-def play_mila(
-    hostname: str,
-    port: int,
-    game_id: str,
-    power_name: str,
-    bot_type: str,
-    discount_factor: float,
-    gamedir: Path,
-) -> None:
 
+class milaWrapper:
 
-    logging.info(f"CICERO joining game: {game_id} as {power_name}")
-    connection = await connect(hostname, port)
-    channel = await connection.authenticate(
-        f"CICERO_{power_name}", "password"
-    )
-    game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
+    def __init__(
+        self, 
+        cicero_path: Path
+    ):
+        self.game: NetworkGame = None
+        self.dipcc_game: Game = None
+        self.prev_state = 0                                         # number of number received messages in the current phase
+        self.dialogue_state = {}                                    # {phase: number of all (= received + new) messages for agent}
+        self.last_sent_message_time = 0                             # {phase: timestamp} 
+        self.last_received_message_time = 0                         # {phase: time_sent (from Mila json)}
+        self.agent = build_agent_from_cfg(cicero_path)              # build cicero from config 
+        self.dipcc_current_phase = None
 
-    # Wait while game is still being formed
-    logging.info(f"Waiting for game to start")
-    while game.is_game_forming:
-        await asyncio.sleep(2)
-    #     print("", end=".")
-    # print()
+    async def play_mila(
+        hostname: str,
+        port: int,
+        game_id: str,
+        power_name: str,
+        bot_type: str,
+        discount_factor: float,
+        gamedir: Path,
+    ) -> None:
 
-    # Playing game
-    logging.info(f"Started playing")
+        logging.info(f"CICERO joining game: {game_id} as {power_name}")
+        connection = connect(hostname, port)
+        channel = connection.authenticate(
+            f"CICERO_{power_name}", "password"
+        )
+        self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
 
-    dipcc_game = start_dipcc_game()
-    
-    # {phase: number of incoming messages for agent}
-    dialogue_state = {}
-    # {phase: timestamp}
-    last_sent_message_time = {}
-    # {phase: time_sent (from Mila json)}
-    last_received_message_time = {}
+        # Wait while game is still being formed
+        logging.info(f"Waiting for game to start")
+        while self.game.is_game_forming:
+            await asyncio.sleep(2)
 
-    while not game.is_game_done:
-        # extract game state from Mila to dipcc game
-        if not game.powers[power_name].is_eliminated():
-            # see the code flow in _play_webdip_without_retries
-            # message phase - see run_message_approval_flow from webdip_api
-            # gen message - see generate_message_for_approval
-            while not get_should_stop():
-                msg = generate_message(agent, dipcc_game, game)
-            
-            # order phase 
-            agent_orders = agent.get_orders(dipcc_game)
-            game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
+        # Playing game
+        logging.info(f"Started playing")
 
-            while not has_phase_changed():
-                await asyncio.sleep(2)
-            if has_phase_changed(game, power_name):
-                update_and_process_dipcc_game(game, dipcc_game)
-                init_phase()
+        self.dipcc_game = self.start_dipcc_game(game.deadline)
 
-def init_phase():
-    """     
-    update new phase to the following Dict:
-    - dialogue_state
-    - last_sent_message_time
-    - last_received_message_time
-    """
+        while not self.game.is_game_done:
+            self.phase_start_time = time.time()
+            self.dipcc_current_phase = self.game.get_current_phase()
+            # extract game state from Mila to dipcc game
+            if not self.game.powers[power_name].is_eliminated():
+                # press 
+                # see the code flow in _play_webdip_without_retries
+                # message phase - see run_message_approval_flow from webdip_api
+                # gen message - see generate_message_for_approval
+                while not self.get_should_stop():
+                    # if there is new message 
+                    if self.has_state_changed():
+                        self.update_press_dipcc_game()
 
-def has_phase_changed():
-    """ 
-    check for game phase 
-    """
+                    # reply/gen new message
+                    msg = self.generate_message(self.agent, self.dipcc_game, self.game)
+                
+                # order  
+                agent_orders = self.agent.get_orders(self.dipcc_game)
+                self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
 
-def has_state_changed():
-    """ 
-    check from dialogue_state 
-    """
+                while not self.has_phase_changed():
+                    await asyncio.sleep(2)
+                if self.has_phase_changed(dipcc_current_phase):
+                    self.phase_end_time = time.time()
+                    self.update_and_process_dipcc_game(game, dipcc_game)
+                    self.init_phase()
 
-def get_should_stop():
-    """ 
-    check for state change 1. new message 
-    stop if 1. close to deadline! (time to submit order)
-    call update_press_dipcc_game() 
-    """
+    def init_phase():
+        """     
+        update new phase to the following Dict:
+        """
+        self.dipcc_current_phase = self.game.get_current_phase()
+        self.prev_state = 0
 
-def update_press_dipcc_game():
-    """ 
-    check new messages in current phase from Mila 
-    receiver == power_name and message timesent > last_received_message_time[current phase]
-    update message in dipcc game 
-    update last_received_message_time 
-    """
+    def has_phase_changed()->bool:
+        """ 
+        check for game phase 
+        """
+        return current_phase == game.get_current_phase()
 
-def update_order_and_process_dipcc_game():
-    """     
-    check orders in current phase (of dipcc) from Mila
-    get orders for power != power_name 
-    submit orders and process game 
-    """
+    def has_state_changed()->bool:
+        """ 
+        check from dialogue_state 
+        """
+        mila_phase = self.game.get_current_phase()
 
-def generate_message():
-    """     
-    handle with sleep time (if we want to send start new message)
-    reply back to recipient for new message 
-    gen message to dipcc and Mila 
-    """
+        phase_messages = self.get_messages(
+            messages=self.game.messages, power=power_name
+        )
 
-def start_dipcc_game() -> Game:
-        # with open(gamedir / f"{power_name}_output.json", mode="w") as file:
-        #     json.dump(
-        #         to_saved_game_format(game), file, ensure_ascii=False, indent=2
-        #     )
-        #     file.write("\n")
-        # game = Game.from_json(gamedir+f"/{power_name}_output.json")
-        game = Game()
-        game.set_scoring_system(Game.SCORING_SOS)
-        game.set_metadata("phase_minutes", str(1))
+        phase_num_messages = len(phase_messages.values())
+        self.dialogue_state[mila_phase] = phase_num_messages
+
+        has_state_changed = self.prev_state == self.dialogue_state[mila_phase]
+        self.prev_state = self.dialogue_state[mila_phase]
+
+        return has_state_changed
+
+    def get_should_stop(deadline: int)->bool:
+        """ 
+        stop if 
+        1. it is close to deadline! (time to submit order)
+        2. stale pseudo orders
+        """
+        close_to_deadline = deadline - 15
+        current_time = time.time()
+
+        # TODO: add stale pseudo order similar to get_should_stop_condition
+        if  current_time - self.phase_start_time >= close_to_deadline:
+            return True   
+        else:
+            return False
+
+    def update_press_dipcc_game(power_name: POWERS):
+        """ 
+        1. check new messages in current phase from Mila 
+        2. update message in dipcc game 
+        3. update last_received_message_time 
+        """
+        mila_phase = self.game.get_current_phase()
+
+        phase_messages = self.get_messages(
+            messages=self.game.messages, power=power_name
+        )
+        most_recent = self.last_received_message_time
+
+        for timesent, dict_message in phase_messages:
+            if timesent > self.last_received_message_time:
+                if timesent > most_recent:
+                    most_recent = timesent
+
+                self.dipcc_game.add_message(
+                    dict_message['sender'],
+                    power_name,
+                    dict_message['message'],
+                    time_sent=Timestamp.from_seconds(int(timesent * 1e-6)),
+                    increment_on_collision=True,
+                )
+
+        self.last_received_message_time = most_recent
+
+    def update_order_and_process_dipcc_game():
+        """     
+        1. check orders in current phase (of dipcc) from Mila
+        2. get orders for power != power_name 
+        3. submit orders and process game 
+        """
+
+    def generate_message():
+        """     
+        1. handle with sleep time (if we want to send start new message)
+        2. reply back to recipient for new message 
+        3. gen message to dipcc and Mila 
+        """
+    def get_messages(
+        self, 
+        messages: SortedDict,
+        power: str,
+        ):
+
+        return {message.time_sent: {'message': message, 'sender': message.sender}
+                for message in messages
+                if message.recipient in [power]}
+
+    def start_dipcc_game(
+        deadline: int
+        ) -> Game:
+            # with open(gamedir / f"{power_name}_output.json", mode="w") as file:
+            #     json.dump(
+            #         to_saved_game_format(game), file, ensure_ascii=False, indent=2
+            #     )
+            #     file.write("\n")
+            # game = Game.from_json(gamedir+f"/{power_name}_output.json")
+            if deadline ==0:
+                deadline = 1
+            else:
+                deadline = int(ceil(deadline/60))
+            game = Game()
+            game.set_scoring_system(Game.SCORING_SOS)
+            game.set_metadata("phase_minutes", str(deadline))
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -241,6 +313,13 @@ def main() -> None:
         choices=POWERS,
         required=True,
         help="power name",
+    )
+    parser.add_argument(
+        "--agent",
+        type=Path,
+        required=True,
+        default ="agents/cicero.prototxt",
+        help="path to prototxt with agent's configurations (default: %(default)s)",
     )
     parser.add_argument(
         "--outdir", type=Path, help="output directory for game json to be stored"
