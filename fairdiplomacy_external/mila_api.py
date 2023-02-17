@@ -162,6 +162,7 @@ class milaWrapper:
 
                     # reply/gen new message
                     msg = self.generate_message(self.agent, self.dipcc_game, self.game)
+                    # update message in both game
                 
                 # order  
                 agent_orders = self.agent.get_orders(self.dipcc_game)
@@ -171,7 +172,7 @@ class milaWrapper:
                     await asyncio.sleep(2)
                 if self.has_phase_changed(dipcc_current_phase):
                     self.phase_end_time = time.time()
-                    self.update_and_process_dipcc_game(game, dipcc_game)
+                    self.update_order_and_process_dipcc_game()
                     self.init_phase()
 
     def init_phase():
@@ -371,6 +372,7 @@ async def test_mila_function():
                     if possible_orders[loc]]
         await game.set_orders(power_name='ENGLAND', orders=ENG_orders, wait=False)
         while curr_phase == game.get_current_phase():
+            print(f" message in current phase {game.messages}")
             await asyncio.sleep(1)
         curr_phase = game.get_current_phase()
 
