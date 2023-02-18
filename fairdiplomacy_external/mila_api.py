@@ -171,7 +171,7 @@ class milaWrapper:
                     await asyncio.sleep(2)
                 if self.has_phase_changed(dipcc_current_phase):
                     self.phase_end_time = time.time()
-                    self.update_and_process_dipcc_game(game, dipcc_game)
+                    self.update_and_process_dipcc_game(power_name)
                     self.init_phase()
 
     def init_phase():
@@ -248,12 +248,22 @@ class milaWrapper:
 
         self.last_received_message_time = most_recent
 
-    def update_order_and_process_dipcc_game():
+    def update_and_process_dipcc_game(self, power_name):
         """     
-        1. check orders in current phase (of dipcc) from Mila
-        2. get orders for power != power_name 
-        3. submit orders and process game 
+        Inputs orders from the bygone phase into the dipcc game and process the dipcc game.
         """
+
+        dipcc_game = self.dipcc_game
+        mila_game = self.game
+        dipcc_phase = dipcc_game.get_state()['name'] # short name for phase
+        orders_from_prev_phase = mila_game.order_history[dipcc_phase] 
+        
+        # gathering orders from other powers from the phase that just ended
+        for power, orders in orders_from_prev_phase:
+            if power != power_name: 
+                dipcc_game.set_orders(power, orders)
+
+        dipcc_game.process() # processing the orders set and moving on to the next phase of the dipcc game
 
     def generate_message():
         """     
