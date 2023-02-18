@@ -249,12 +249,22 @@ class milaWrapper:
 
         self.last_received_message_time = most_recent
 
-    def update_order_and_process_dipcc_game():
+    def update_and_process_dipcc_game(self, power_name):
         """     
-        1. check orders in current phase (of dipcc) from Mila
-        2. get orders for power != power_name 
-        3. submit orders and process game 
+        Inputs orders from the bygone phase into the dipcc game and process the dipcc game.
         """
+
+        dipcc_game = self.dipcc_game
+        mila_game = self.game
+        dipcc_phase = dipcc_game.get_state()['name'] # short name for phase
+        orders_from_prev_phase = mila_game.order_history[dipcc_phase] 
+        
+        # gathering orders from other powers from the phase that just ended
+        for power, orders in orders_from_prev_phase:
+            if power != power_name: 
+                dipcc_game.set_orders(power, orders)
+
+        dipcc_game.process() # processing the orders set and moving on to the next phase of the dipcc game
 
     def generate_message():
         """     
@@ -338,11 +348,46 @@ def main() -> None:
     milaWrapper()
     asyncio.run(
         play_mila(
+    milaWrapper()
+    asyncio.run(
+        play_mila(
             hostname=host,
             port=port,
             game_id=game_id,
             power_name=power,
             outdir=outdir,
+        )
+    )
+
+async def test_mila_function():
+    """ 
+    The function is to test ability that we can access Mila game on TACC 
+    Manually replace GAMEID and USERNAME to test accessing Mila game features
+    """
+
+    game_id = GAMEID
+    connection = await connect('shade.tacc.utexas.edu', 8432)
+    channel = await connection.authenticate(
+        USERNAME, "password"
+    )
+    game: NetworkGame = await channel.join_game(game_id=game_id, power_name="ENGLAND")
+
+    logging.info(f"Waiting for game to start")
+    # while game.is_game_forming:
+    #     await asyncio.sleep(2)
+    curr_phase = game.get_current_phase()
+    while not game.is_game_done:
+        print(f" game history {game.state_history}")
+        print(f" message history {game.message_history}")
+        print(f" order history {game.order_history}")
+        possible_orders = game.get_all_possible_orders()
+        ENG_orders = [random.choice(possible_orders[loc]) for loc in game.get_orderable_locations('ENGLAND')
+                    if possible_orders[loc]]
+        await game.set_orders(power_name='ENGLAND', orders=ENG_orders, wait=False)
+        while curr_phase == game.get_current_phase():
+            print(f" message in current phase {game.messages}")
+            await asyncio.sleep(1)
+        curr_phase = game.get_current_phase()
         )
     )
 
