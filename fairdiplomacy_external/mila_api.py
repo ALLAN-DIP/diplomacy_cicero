@@ -438,7 +438,6 @@ def main() -> None:
     parser.add_argument(
         "--agent",
         type=Path,
-        required=True,
         default ="agents/cicero.prototxt",
         help="path to prototxt with agent's configurations (default: %(default)s)",
     )
