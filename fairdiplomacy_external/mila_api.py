@@ -463,7 +463,7 @@ def main() -> None:
             port=port,
             game_id=game_id,
             power_name=power,
-            outdir=outdir,
+            gamedir=outdir,
         )
     )
 
