@@ -150,7 +150,7 @@ class milaWrapper:
                 # PRESS
                 while not self.get_should_stop():
                     # if there is new message incoming
-                    if self.has_state_changed():
+                    if self.has_state_changed(power_name):
                         # update press in dipcc
                         self.update_press_dipcc_game()
                     # reply/gen new message
@@ -197,7 +197,7 @@ class milaWrapper:
         """
         return self.dipcc_current_phase == self.game.get_current_phase()
 
-    def has_state_changed(self)->bool:
+    def has_state_changed(self, power_name)->bool:
         """ 
         check dialogue state 
         """
@@ -206,6 +206,8 @@ class milaWrapper:
         phase_messages = self.get_messages(
             messages=self.game.messages, power=power_name
         )
+
+
 
         # update number of messages coming in
         phase_num_messages = len(phase_messages.values())
@@ -304,7 +306,7 @@ class milaWrapper:
         
         # timestamp condition
         last_timestamp_this_phase = self.get_last_timestamp_this_phase(default=Timestamp.now())
-        sleep_time = self.player.get_sleep_time(self.dipcc_game)
+        sleep_time = self.player.get_sleep_time(self.dipcc_game, recipient=None)
         wakeup_time = last_timestamp_this_phase + sleep_time
 
         sleep_time_for_conditioning = (
@@ -378,7 +380,7 @@ class milaWrapper:
         ):
 
         return {message.time_sent: {'message': message, 'sender': message.sender}
-                for message in messages
+                for message in messages.sub(None, None)
                 if message.recipient in [power]}
 
     def start_dipcc_game(self) -> Game:
