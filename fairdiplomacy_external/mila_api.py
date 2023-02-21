@@ -54,23 +54,6 @@ import torch
 from fairdiplomacy.utils.game import game_from_view_of
 from fairdiplomacy.viz.meta_annotations import api as meta_annotations
 from fairdiplomacy.pydipcc import Game
-from fairdiplomacy.webdip.message_approval_cache_api import (
-    PRESS_COUNTRY_ID_TO_POWER,
-    ApprovalStatus,
-    MessageReviewData,
-    compute_phase_message_history_state_with_power,
-    flag_proposal_as_stale,
-    gen_id,
-    get_message_review,
-    get_redis_host,
-    get_should_run_backup,
-    get_kill_switch,
-    maybe_get_phase_message_history_state,
-    set_message_review,
-    delete_message_review,
-    botgame_fp_to_context,
-    update_phase_message_history_state,
-)
 from fairdiplomacy.agents import build_agent_from_cfg
 from fairdiplomacy.agents.base_agent import BaseAgent
 from fairdiplomacy.data.build_dataset import (
@@ -87,6 +70,12 @@ from conf import conf_cfgs
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
 
 from fairdiplomacy.agents.searchbot_agent import SearchBotAgentState
+from fairdiplomacy.agents.bqre1p_agent import BQRE1PAgent as PyBQRE1PAgent
+
+from conf.agents_pb2 import *
+import google.protobuf.message
+import heyhi
+
 
 import argparse
 import asyncio
@@ -104,13 +93,12 @@ from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
-
+ProtoMessage = google.protobuf.message.Message
 
 class milaWrapper:
 
     def __init__(
-        self, 
-        cicero_path: Path
+        self, agent
     ):
         self.game: NetworkGame = None
         self.dipcc_game: Game = None
@@ -118,38 +106,37 @@ class milaWrapper:
         self.dialogue_state = {}                                    # {phase: number of all (= received + new) messages for agent}
         self.last_sent_message_time = 0                             # {phase: timestamp} 
         self.last_received_message_time = 0                         # {phase: time_sent (from Mila json)}
-        self.agent = build_agent_from_cfg(cicero_path)              # build cicero from config 
+        self.agent = agent                                         
         self.dipcc_current_phase = None                             
         self.last_successful_message_time = None                    # timestep for last message successfully sent in the current phase                       
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
 
     async def play_mila(
+        self,
         hostname: str,
         port: int,
         game_id: str,
         power_name: str,
-        bot_type: str,
-        discount_factor: float,
         gamedir: Path,
     ) -> None:
 
-        logging.info(f"CICERO joining game: {game_id} as {power_name}")
-        connection = connect(hostname, port)
-        channel = connection.authenticate(
+        print(f"CICERO joining game: {game_id} as {power_name}")
+        connection = await connect(hostname, port)
+        channel = await connection.authenticate(
             f"CICERO_{power_name}", "password"
         )
         self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
 
         # Wait while game is still being formed
-        logging.info(f"Waiting for game to start")
+        print(f"Waiting for game to start")
         while self.game.is_game_forming:
             await asyncio.sleep(2)
 
         # Playing game
-        logging.info(f"Started playing")
+        print(f"Started playing")
 
         self.dipcc_game = self.start_dipcc_game()
-        logging.info(f"Started dipcc game")
+        print(f"Started dipcc game")
 
         self.player = Player(self.agent, power_name)
 
@@ -172,7 +159,7 @@ class milaWrapper:
                     self.send_message(msg)
         
                 # ORDER
-                logging.info(f"Submit orders in {self.dipcc_current_phase}")
+                print(f"Submit orders in {self.dipcc_current_phase}")
                 agent_orders = self.player.get_orders(self.dipcc_game)
 
                 # set order in Mila
@@ -183,11 +170,11 @@ class milaWrapper:
                     await asyncio.sleep(2)
                 
                 # when the phase has changed, update submitted orders from Mila to dipcc
-                if self.has_phase_changed(self.dipcc_current_phase):
+                if self.has_phase_changed():
                     self.phase_end_time = time.time()
                     self.update_and_process_dipcc_game()
                     self.init_phase()
-                    logging.info(f"Process to new phase")
+                    print(f"Process to new phase")
         
         with open(gamedir / f"{power_name}_{game_id}_output.json", mode="w") as file:
             json.dump(
@@ -204,11 +191,11 @@ class milaWrapper:
         self.num_stop = 0
         self.last_successful_message_time = None
 
-    def has_phase_changed(self, current_phase)->bool:
+    def has_phase_changed(self)->bool:
         """ 
         check game phase 
         """
-        return current_phase == game.get_current_phase()
+        return self.dipcc_current_phase == self.game.get_current_phase()
 
     def has_state_changed(self)->bool:
         """ 
@@ -248,7 +235,7 @@ class milaWrapper:
         current_time = time.time()
 
         # PRESS allows in movement phase (ONLY)
-        if self.game.get_current_phase().endswith("M"):
+        if not self.game.get_current_phase().endswith("M"):
             return True
         if current_time - self.phase_start_time >= close_to_deadline:
             return True   
@@ -372,7 +359,7 @@ class milaWrapper:
                     msg['sender'], 
                     msg['recipient'], 
                     msg['message'], 
-                    time_sent=timesend
+                    time_sent=timesend,
                     increment_on_collision=True,
                 )
 
@@ -386,7 +373,7 @@ class milaWrapper:
 
     def get_messages(
         self, 
-        messages: SortedDict,
+        messages,
         power: str,
         ):
 
@@ -398,13 +385,13 @@ class milaWrapper:
 
         deadline = self.game.deadline
 
-            if deadline ==0:
-                deadline = 2
-            else:
-                deadline = int(ceil(deadline/60))
-            game = Game()
-            game.set_scoring_system(Game.SCORING_SOS)
-            game.set_metadata("phase_minutes", str(deadline))
+        if deadline ==0:
+            deadline = 2
+        else:
+            deadline = int(ceil(deadline/60))
+        game = Game()
+        game.set_scoring_system(Game.SCORING_SOS)
+        game.set_metadata("phase_minutes", str(deadline))
 
         return game
 
@@ -435,12 +422,13 @@ def main() -> None:
         required=True,
         help="power name",
     )
-    parser.add_argument(
-        "--agent",
-        type=Path,
-        default ="agents/cicero.prototxt",
-        help="path to prototxt with agent's configurations (default: %(default)s)",
-    )
+    # parser.add_argument(
+    #     "--agent",
+    #     type=Path,
+    #     # default ="/diplomacy_cicero/conf/common/agents/cicero.prototxt",
+    #     default ="/diplomacy_cicero/conf/agents/bqre1p_parlai_20220819_cicero_2.prototxt",
+    #     help="path to prototxt with agent's configurations (default: %(default)s)",
+    # )
     parser.add_argument(
         "--outdir", type=Path, help="output directory for game json to be stored"
     )
@@ -452,10 +440,18 @@ def main() -> None:
     power: str = args.power
     outdir: Optional[Path] = args.outdir
 
+    print(f"settings:")
+    print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
+
+    agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
+    print(f"successfully load cicero config")
+
+    agent = PyBQRE1PAgent(agent_config.bqre1p)
+
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
 
-    mila = milaWrapper()
+    mila = milaWrapper(agent)
 
     asyncio.run(
         mila.play_mila(
