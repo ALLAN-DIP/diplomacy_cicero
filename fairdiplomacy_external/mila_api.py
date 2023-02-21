@@ -352,7 +352,7 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
-    def send_message(self, msg: MessageDict, power_name: POWERS):
+    def send_message(self, msg: MessageDict):
         """ 
         send message in dipcc and mila games 
         """ 
