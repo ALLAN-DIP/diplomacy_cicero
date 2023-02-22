@@ -366,12 +366,12 @@ class milaWrapper:
                 )
 
         mila_msg = Message(
-            sender=sender,
+            sender=msg["sender"],
             recipient=msg["recipient"],
             message=msg["message"],
             phase=self.game.get_current_phase(),
             )
-        self.game.send_game_message(message=msg_obj)
+        self.game.send_game_message(message=mila_msg)
 
     def get_messages(
         self, 
