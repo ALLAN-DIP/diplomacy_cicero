@@ -152,7 +152,7 @@ class milaWrapper:
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
                         # update press in dipcc
-                        self.update_press_dipcc_game()
+                        self.update_press_dipcc_game(power_name)
                     # reply/gen new message
                     msg = self.generate_message(power_name)
                     # send message in dipcc and Mila
