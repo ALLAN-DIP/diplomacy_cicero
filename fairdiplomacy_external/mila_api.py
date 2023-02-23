@@ -163,11 +163,12 @@ class milaWrapper:
                     await asyncio.sleep(0.1)
         
                 # ORDER
-                print(f"Submit orders in {self.dipcc_current_phase}")
-                agent_orders = self.player.get_orders(self.dipcc_game)
+                if not self.has_phase_changed():
+                    print(f"Submit orders in {self.dipcc_current_phase}")
+                    agent_orders = self.player.get_orders(self.dipcc_game)
 
-                # set order in Mila
-                self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
+                    # set order in Mila
+                    self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
                 
                 # wait until the phase changed
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
