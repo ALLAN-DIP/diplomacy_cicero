@@ -14,6 +14,7 @@ def eng_to_daide():
     num_beams   = 4
     batch_size  = 16
     device = 'cuda:0'
+    
     model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
     print('loading models')
     inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
