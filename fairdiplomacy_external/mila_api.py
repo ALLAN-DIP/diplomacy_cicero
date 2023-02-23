@@ -286,8 +286,7 @@ class milaWrapper:
                 if timesent > most_recent:
                     most_recent = dipcc_timesent
                 
-                #TODO: FENG parsing parsing(message.message: str)
-
+                #TODO: FENG parsing(message.message: str)
 
                 print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
                 self.dipcc_game.add_message(
@@ -437,6 +436,7 @@ class milaWrapper:
         phase_message = self.game.message_history[phase]
         for timesent, message in phase_message.items():
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                #TODO: FENG parsing(message.message: str)
                 dipcc_game.add_message(
                     message.sender,
                     message.recipient,
