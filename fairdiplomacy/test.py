@@ -1,21 +1,24 @@
 import json
-from amrlib.models.parse_xfm.inference import Inference
 import sys
-sys.path.insert(0, '../AMR/DAIDE/DiplomacyAMR/code')
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
 from amrtodaide import AMR
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/penman')
+import penman
 import regex
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/amrlib')
+from amrlib.models.parse_xfm.inference import Inference
 def eng_to_daide():
     #data = [json.loads(line) for line in open('RUSSIA_0.json', 'r')]
     test_data = ''
     count = 0
     num_beams   = 4
     batch_size  = 16
-    device = 'cpu'
-    model_dir  = '../AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
+    device = 'cuda:0'
+    model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
     print('loading models')
     inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
     print('generating')
-    gen_graphs = inference.parse_sents(["ITALY send that Hey Austria! I know AT is one of the least successful alliances in the game, so I'm super down to work together here, especially if we can get Russia and Turkey fighting."], disable_progress=False)
+    gen_graphs = inference.parse_sents(["Italy send Austria that Hey! I know AT is one of the least successful alliances in the game, so I'm super down to work together here, especially if we can get Russia and Turkey fighting."], disable_progress=False)
     for graph in gen_graphs:
         print(graph)
         amr = AMR()
@@ -27,7 +30,6 @@ def eng_to_daide():
             daide_s, warnings = '', []
         else:
             daide_s, warnings = amr.amr_to_daide()
-            print(daide_s)
         if regex.search(r'[A-Z]{3}', daide_s):
             if regex.search(r'[a-z]', daide_s):
                 daide_status = 'Partial-DAIDE'
@@ -38,6 +40,7 @@ def eng_to_daide():
         else:
             daide_status = 'No-DAIDE'
         print(daide_status)
+        print(daide_s)
 
 
 if __name__ == "__main__":
