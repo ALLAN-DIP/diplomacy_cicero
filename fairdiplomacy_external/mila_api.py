@@ -134,12 +134,12 @@ class milaWrapper:
         self.dipcc_game = self.start_dipcc_game(power_name)
         print(f"Started dipcc game")
 
-        # agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
-        # print(f"successfully load cicero config")
+        agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
+        print(f"successfully load cicero config")
 
-        # self.agent = PyBQRE1PAgent(agent_config.bqre1p)
+        self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
-        # self.player = Player(self.agent, power_name)
+        self.player = Player(self.agent, power_name)
 
 
         while not self.game.is_game_done:
@@ -155,19 +155,17 @@ class milaWrapper:
                     if self.has_state_changed(power_name):
                         # update press in dipcc
                         self.update_press_dipcc_game(power_name)
+                        
                     # reply/gen new message
-                    # msg = self.generate_message(power_name)
-                    # # send message in dipcc and Mila
-                    # if msg is not None:
-                    #     self.send_message(msg)
+                    msg = self.generate_message(power_name)
+                    # send message in dipcc and Mila
+                    if msg is not None:
+                        self.send_message(msg)
                     await asyncio.sleep(0.25)
         
                 # ORDER
                 print(f"Submit orders in {self.dipcc_current_phase}")
-                possible_orders = self.game.get_all_possible_orders()
-                agent_orders = [random.choice(possible_orders[loc]) for loc in self.game.get_orderable_locations(power_name)
-                        if possible_orders[loc]]
-                # agent_orders = self.player.get_orders(self.dipcc_game)
+                agent_orders = self.player.get_orders(self.dipcc_game)
 
                 # set order in Mila
                 self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
@@ -237,7 +235,7 @@ class milaWrapper:
 
         deadline = self.game.deadline
         if deadline ==0:
-            deadline = 1*60
+            deadline = 2*60
         close_to_deadline = deadline - 15
 
         assert close_to_deadline > 0, "Press period is less than zero"
@@ -281,7 +279,7 @@ class milaWrapper:
                 if timesent > most_recent:
                     most_recent = dipcc_timesent
 
-                print(f'update from: {message.sender} to: {message.recipient} timesent: {timesent} and message : {message.message}')
+                print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
                 self.dipcc_game.add_message(
                     message.sender,
                     message.recipient,
@@ -307,9 +305,8 @@ class milaWrapper:
         for power, orders in orders_from_prev_phase.items():
             dipcc_game.set_orders(power, orders)
 
-        
-        dipcc_game_state = dipcc_game.to_json()
-        print(f'dipcc game state: {dipcc_game_state}')
+        # dipcc_game_state = dipcc_game.to_json()
+        # print(f'dipcc game state: {dipcc_game_state}')
 
         dipcc_game.process() # processing the orders set and moving on to the next phase of the dipcc game
 
@@ -391,6 +388,8 @@ class milaWrapper:
             )
         self.game.send_game_message(message=mila_msg)
 
+        print(f'update a message from: { msg["sender"] } to: { msg["recipient"] } timesent: {timesend} and body: {msg["message"]}')
+
     def get_messages(
         self, 
         messages,
@@ -406,7 +405,7 @@ class milaWrapper:
         deadline = self.game.deadline
 
         if deadline ==0:
-            deadline = 1
+            deadline = 2
         else:
             deadline = int(ceil(deadline/60))
         
