@@ -161,7 +161,7 @@ class milaWrapper:
                     msg = self.generate_message(power_name)
                     # send message in dipcc and Mila
                     if msg is not None:
-                        self.send_log(msg)
+                        # await self.send_log(msg)
                         self.send_message(msg)
                     await asyncio.sleep(0.1)
         
@@ -381,7 +381,7 @@ class milaWrapper:
         send log to mila games 
         """ 
 
-        log_data = self.game.new_log_data(body=f"CICERO English message: {msg["message"]}")
+        log_data = self.game.new_log_data(body=f'CICERO English message: {msg["message"]}')
         await self.game.send_log_data(log=log_data)
 
         print(f'update a log {msg["message"]}')
