@@ -94,6 +94,8 @@ from diplomacy.utils.export import to_saved_game_format
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
+DEFAULT_DEADLINE = 4
+
 class milaWrapper:
 
     def __init__(self):
@@ -159,15 +161,17 @@ class milaWrapper:
                     msg = self.generate_message(power_name)
                     # send message in dipcc and Mila
                     if msg is not None:
+                        self.send_log(msg)
                         self.send_message(msg)
                     await asyncio.sleep(0.1)
         
                 # ORDER
-                print(f"Submit orders in {self.dipcc_current_phase}")
-                agent_orders = self.player.get_orders(self.dipcc_game)
+                if not self.has_phase_changed():
+                    print(f"Submit orders in {self.dipcc_current_phase}")
+                    agent_orders = self.player.get_orders(self.dipcc_game)
 
-                # set order in Mila
-                self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
+                    # set order in Mila
+                    self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
                 
                 # wait until the phase changed
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
@@ -234,7 +238,7 @@ class milaWrapper:
 
         deadline = self.game.deadline
         if deadline ==0:
-            deadline = 2*60
+            deadline = DEFAULT_DEADLINE*60
         close_to_deadline = deadline - 15
         no_message_second = 30
 
@@ -281,6 +285,8 @@ class milaWrapper:
 
                 if timesent > most_recent:
                     most_recent = dipcc_timesent
+                
+                #TODO: FENG parsing(message.message: str)
 
                 print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
                 self.dipcc_game.add_message(
@@ -370,6 +376,16 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
+    async def send_log(self, msg: MessageDict):
+        """ 
+        send log to mila games 
+        """ 
+
+        log_data = self.game.new_log_data(body=f"CICERO English message: {msg["message"]}")
+        await self.game.send_log_data(log=log_data)
+
+        print(f'update a log {msg["message"]}')
+
     def send_message(self, msg: MessageDict):
         """ 
         send message in dipcc and mila games 
@@ -408,7 +424,7 @@ class milaWrapper:
         deadline = self.game.deadline
 
         if deadline ==0:
-            deadline = 2
+            deadline = DEFAULT_DEADLINE
         else:
             deadline = int(ceil(deadline/60))
         
@@ -430,6 +446,7 @@ class milaWrapper:
         phase_message = self.game.message_history[phase]
         for timesent, message in phase_message.items():
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                #TODO: FENG parsing(message.message: str)
                 dipcc_game.add_message(
                     message.sender,
                     message.recipient,
