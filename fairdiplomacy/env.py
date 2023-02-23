@@ -45,6 +45,8 @@ import json
 import sys
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
 from amrtodaide import AMR
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/penman')
+# import penman
 import regex
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/amrlib')
 from amrlib.models.parse_xfm.inference import Inference
