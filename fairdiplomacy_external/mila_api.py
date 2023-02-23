@@ -94,6 +94,8 @@ from diplomacy.utils.export import to_saved_game_format
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
+DEFAULT_DEADLINE = 4
+
 class milaWrapper:
 
     def __init__(self):
@@ -139,10 +141,7 @@ class milaWrapper:
         self.dipcc_game = self.start_dipcc_game(power_name)
         print(f"Started dipcc game")
 
-
-
         self.player = Player(self.agent, power_name)
-
 
         while not self.game.is_game_done:
             self.phase_start_time = time.time()
@@ -162,15 +161,17 @@ class milaWrapper:
                     msg = self.generate_message(power_name)
                     # send message in dipcc and Mila
                     if msg is not None:
+                        self.send_log(msg)
                         self.send_message(msg)
-                    await asyncio.sleep(0.25)
+                    await asyncio.sleep(0.1)
         
                 # ORDER
-                print(f"Submit orders in {self.dipcc_current_phase}")
-                agent_orders = self.player.get_orders(self.dipcc_game)
+                if not self.has_phase_changed():
+                    print(f"Submit orders in {self.dipcc_current_phase}")
+                    agent_orders = self.player.get_orders(self.dipcc_game)
 
-                # set order in Mila
-                self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
+                    # set order in Mila
+                    self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
                 
                 # wait until the phase changed
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
@@ -237,8 +238,9 @@ class milaWrapper:
 
         deadline = self.game.deadline
         if deadline ==0:
-            deadline = 2*60
+            deadline = DEFAULT_DEADLINE*60
         close_to_deadline = deadline - 15
+        no_message_second = 30
 
         assert close_to_deadline > 0, "Press period is less than zero"
 
@@ -251,6 +253,9 @@ class milaWrapper:
             return True
         if current_time - self.phase_start_time >= close_to_deadline:
             return True   
+        if self.last_received_message_time != 0 and current_time - self.last_received_message_time >=no_message_second:
+            print(f'no incoming message for {current_time - self.last_received_message_time} seconds')
+            return True
         
         # check if reuse state psedo orders for too long
         if self.reuse_stale_pseudo():
@@ -280,6 +285,9 @@ class milaWrapper:
 
                 if timesent > most_recent:
                     most_recent = dipcc_timesent
+                
+                #TODO: FENG parsing parsing(message.message: str)
+
 
                 print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
                 self.dipcc_game.add_message(
@@ -407,7 +415,7 @@ class milaWrapper:
         deadline = self.game.deadline
 
         if deadline ==0:
-            deadline = 2
+            deadline = DEFAULT_DEADLINE
         else:
             deadline = int(ceil(deadline/60))
         
