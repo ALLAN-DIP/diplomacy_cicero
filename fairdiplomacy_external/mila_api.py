@@ -161,6 +161,7 @@ class milaWrapper:
                     msg = self.generate_message(power_name)
                     # send message in dipcc and Mila
                     if msg is not None:
+                        self.send_log(msg)
                         self.send_message(msg)
                     await asyncio.sleep(0.1)
         
@@ -284,6 +285,8 @@ class milaWrapper:
 
                 if timesent > most_recent:
                     most_recent = dipcc_timesent
+                
+                #TODO: FENG parsing(message.message: str)
 
                 print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
                 self.dipcc_game.add_message(
@@ -373,6 +376,16 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
+    async def send_log(self, msg: MessageDict):
+        """ 
+        send log to mila games 
+        """ 
+
+        log_data = self.game.new_log_data(body=f"CICERO English message: {msg["message"]}")
+        await self.game.send_log_data(log=log_data)
+
+        print(f'update a log {msg["message"]}')
+
     def send_message(self, msg: MessageDict):
         """ 
         send message in dipcc and mila games 
@@ -433,6 +446,7 @@ class milaWrapper:
         phase_message = self.game.message_history[phase]
         for timesent, message in phase_message.items():
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                #TODO: FENG parsing(message.message: str)
                 dipcc_game.add_message(
                     message.sender,
                     message.recipient,
