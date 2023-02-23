@@ -376,6 +376,16 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
+    def send_log(self, msg: MessageDict):
+        """ 
+        send log to mila games 
+        """ 
+
+        log_data = self.game.new_log_data(body=f"CICERO English message: {msg["message"]}")
+        await self.game.send_log_data(log=log_data)
+
+        print(f'update a log {msg["message"]}')
+
     def send_message(self, msg: MessageDict):
         """ 
         send message in dipcc and mila games 
