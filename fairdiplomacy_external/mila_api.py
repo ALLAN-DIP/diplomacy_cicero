@@ -161,6 +161,7 @@ class milaWrapper:
                     msg = self.generate_message(power_name)
                     # send message in dipcc and Mila
                     if msg is not None:
+                        self.send_log(msg)
                         self.send_message(msg)
                     await asyncio.sleep(0.1)
         
@@ -284,6 +285,9 @@ class milaWrapper:
 
                 if timesent > most_recent:
                     most_recent = dipcc_timesent
+                
+                #TODO: FENG parsing parsing(message.message: str)
+
 
                 print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
                 self.dipcc_game.add_message(
