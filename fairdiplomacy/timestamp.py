@@ -30,6 +30,14 @@ class Timestamp(int):
         return Timestamp(int(x * 100))
 
     @classmethod
+    def from_micros(cls, x: Union[int, float]):
+        return Timestamp(int(x * 1e-4))
+
+    @classmethod
+    def to_micros(cls, x: Union[int, float]):
+        return Timestamp(int(x * 1e4))
+    
+    @classmethod
     def now(cls):
         # returns system time since 1970-01-01 UTC, which are the timestamps
         # used by webdip
