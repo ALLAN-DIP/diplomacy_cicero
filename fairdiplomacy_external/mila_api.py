@@ -441,10 +441,16 @@ class milaWrapper:
         phase_message = self.game.message_history[phase]
         for timesent, message in phase_message.items():
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+
+                pre_processed = preprocess(message.message)
+                generated = gen_English(pre_processed, message.recipient, message.sender)
+                post_processed = post_process(generated, message.recipient, message.sender)
+
+
                 dipcc_game.add_message(
                     message.sender,
                     message.recipient,
-                    message.message,
+                    post_processed,
                     time_sent=dipcc_timesent,
                     increment_on_collision=True,
                 )
