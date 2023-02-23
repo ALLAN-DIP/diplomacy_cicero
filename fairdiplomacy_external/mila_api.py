@@ -376,7 +376,7 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
-    def send_log(self, msg: MessageDict):
+    async def send_log(self, msg: MessageDict):
         """ 
         send log to mila games 
         """ 
