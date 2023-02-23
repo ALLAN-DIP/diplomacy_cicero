@@ -97,16 +97,13 @@ ProtoMessage = google.protobuf.message.Message
 
 class milaWrapper:
 
-    def __init__(
-        self, agent
-    ):
+    def __init__(self):
         self.game: NetworkGame = None
         self.dipcc_game: Game = None
         self.prev_state = 0                                         # number of number received messages in the current phase
         self.dialogue_state = {}                                    # {phase: number of all (= received + new) messages for agent}
         self.last_sent_message_time = 0                             # {phase: timestamp} 
-        self.last_received_message_time = 0                         # {phase: time_sent (from Mila json)}
-        self.agent = agent                                         
+        self.last_received_message_time = 0                         # {phase: time_sent (from Mila json)}                                      
         self.dipcc_current_phase = None                             
         self.last_successful_message_time = None                    # timestep for last message successfully sent in the current phase                       
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
@@ -135,8 +132,13 @@ class milaWrapper:
         # Playing game
         print(f"Started playing")
 
-        self.dipcc_game = self.start_dipcc_game()
+        self.dipcc_game = self.start_dipcc_game(power_name)
         print(f"Started dipcc game")
+
+        agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
+        print(f"successfully load cicero config")
+
+        self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
         self.player = Player(self.agent, power_name)
 
@@ -156,7 +158,8 @@ class milaWrapper:
                     # reply/gen new message
                     msg = self.generate_message(power_name)
                     # send message in dipcc and Mila
-                    self.send_message(msg)
+                    if msg is not None:
+                        self.send_message(msg)
         
                 # ORDER
                 print(f"Submit orders in {self.dipcc_current_phase}")
@@ -166,7 +169,9 @@ class milaWrapper:
                 self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
                 
                 # wait until the phase changed
+                print(f"wait until {self.dipcc_current_phase} is done")
                 while not self.has_phase_changed():
+                    print('.')
                     await asyncio.sleep(2)
                 
                 # when the phase has changed, update submitted orders from Mila to dipcc
@@ -195,7 +200,7 @@ class milaWrapper:
         """ 
         check game phase 
         """
-        return self.dipcc_current_phase == self.game.get_current_phase()
+        return self.dipcc_current_phase != self.game.get_current_phase()
 
     def has_state_changed(self, power_name)->bool:
         """ 
@@ -239,6 +244,8 @@ class milaWrapper:
         # PRESS allows in movement phase (ONLY)
         if not self.game.get_current_phase().endswith("M"):
             return True
+        if self.has_phase_changed():
+            return True
         if current_time - self.phase_start_time >= close_to_deadline:
             return True   
         
@@ -263,16 +270,18 @@ class milaWrapper:
         most_recent = self.last_received_message_time
 
         # update message in dipcc game
-        for timesent, dict_message in phase_messages:
+        for timesent, message in phase_messages.items():
             if timesent > self.last_received_message_time:
                 if timesent > most_recent:
                     most_recent = timesent
+                
+                dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
 
                 self.dipcc_game.add_message(
-                    dict_message['sender'],
-                    power_name,
-                    dict_message['message'],
-                    time_sent=Timestamp.from_micros(int(timesent)),
+                    message.sender,
+                    message.recipient,
+                    message.message,
+                    time_sent=dipcc_timesent,
                     increment_on_collision=True,
                 )
 
@@ -290,7 +299,7 @@ class milaWrapper:
         orders_from_prev_phase = mila_game.order_history[dipcc_phase] 
         
         # gathering orders from other powers from the phase that just ended
-        for power, orders in orders_from_prev_phase:
+        for power, orders in orders_from_prev_phase.items():
             dipcc_game.set_orders(power, orders)
 
         dipcc_game.process() # processing the orders set and moving on to the next phase of the dipcc game
@@ -320,19 +329,19 @@ class milaWrapper:
 
         # generate message using pseudo orders
         pseudo_orders = None
-        if isinstance(self.player.state, SearchBotAgentState):
-            pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
-                self.dipcc_game, self.player.power, True, True, None
-            )
-            msg = self.player.generate_message(
-                game=self.dipcc_game,
-                timestamp=timestamp_for_conditioning,
-                pseudo_orders=pseudo_orders,
-            )
+        # if isinstance(self.player.state, SearchBotAgentState):
+        #     pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
+        #         self.dipcc_game, self.player.power, True, True, None
+        #     ) 
 
-            self.last_successful_message_time = Timestamp.now()
-            assert msg is not None, "Message has None value"
-            return msg
+        msg = self.player.generate_message(
+            game=self.dipcc_game,
+            timestamp=timestamp_for_conditioning,
+            pseudo_orders=pseudo_orders,
+        )
+
+        self.last_successful_message_time = Timestamp.now()
+        return msg
 
     def reuse_stale_pseudo(self):
         last_msg_time = self.last_successful_message_time
@@ -379,11 +388,11 @@ class milaWrapper:
         power: str,
         ):
 
-        return {message.time_sent: {'message': message, 'sender': message.sender}
+        return {message.time_sent: message
                 for message in messages.sub(None, None)
                 if message.recipient in [power]}
 
-    def start_dipcc_game(self) -> Game:
+    def start_dipcc_game(self, power_name: POWERS) -> Game:
 
         deadline = self.game.deadline
 
@@ -391,12 +400,36 @@ class milaWrapper:
             deadline = 2
         else:
             deadline = int(ceil(deadline/60))
+        
         game = Game()
+
         game.set_scoring_system(Game.SCORING_SOS)
         game.set_metadata("phase_minutes", str(deadline))
 
-        return game
+        while game.get_state()['name'] != self.game.get_current_phase():
+            self.update_past_phase(game,  game.get_state()['name'], power_name)
 
+        return game
+    
+    def update_past_phase(self, dipcc_game: Game, phase: str, power_name: str):
+        phase_message = self.game.message_history[phase]
+        for timesent, message in phase_message.items():
+                dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                dipcc_game.add_message(
+                    message.sender,
+                    message.recipient,
+                    message.message,
+                    time_sent=dipcc_timesent,
+                    increment_on_collision=True,
+                )
+
+        phase_order = self.game.order_history[phase] 
+
+        for power, orders in phase_order.items():
+            dipcc_game.set_orders(power, orders)
+        
+        dipcc_game.process()
+            
 def main() -> None:
 
     parser = argparse.ArgumentParser(description=__doc__)
@@ -445,15 +478,10 @@ def main() -> None:
     print(f"settings:")
     print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
 
-    agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
-    print(f"successfully load cicero config")
-
-    agent = PyBQRE1PAgent(agent_config.bqre1p)
-
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
 
-    mila = milaWrapper(agent)
+    mila = milaWrapper()
 
     asyncio.run(
         mila.play_mila(
