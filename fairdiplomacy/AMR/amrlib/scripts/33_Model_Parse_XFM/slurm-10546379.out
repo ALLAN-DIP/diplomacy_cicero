@@ -1,0 +1,42 @@
+==========================================
+SLURM_JOB_ID = 10546379
+SLURM_JOB_NODELIST = a11-01
+TMPDIR = /tmp/SLURM_10546379
+==========================================
+Lmod has detected the following error: These module(s) or extension(s) exist
+but cannot be loaded as requested: "cuda/11.6.2"
+   Try: "module spider cuda/11.6.2" to see how to load the module(s).
+
+
+
+Loading test data amrlib/data/tdata_xfm/test.txt.nowiki
+Loading and converting amrlib/data/tdata_xfm/test.txt.nowiki
+  0%|                                                                      | 0/1898 [00:00<?, ?it/s] 13%|███████▍                                                  | 243/1898 [00:00<00:00, 2427.69it/s] 26%|██████████████▊                                           | 486/1898 [00:00<00:00, 2415.52it/s] 44%|█████████████████████████▎                                | 829/1898 [00:00<00:00, 2874.84it/s] 59%|█████████████████████████████████▌                       | 1117/1898 [00:00<00:00, 2399.12it/s] 72%|█████████████████████████████████████████                | 1367/1898 [00:00<00:00, 2317.72it/s] 85%|████████████████████████████████████████████████▏        | 1605/1898 [00:00<00:00, 2267.23it/s] 97%|███████████████████████████████████████████████████████▏ | 1836/1898 [00:00<00:00, 2128.25it/s]100%|█████████████████████████████████████████████████████████| 1898/1898 [00:00<00:00, 2283.90it/s]
+Loading model, tokenizer and data
+Traceback (most recent call last):
+  File "/home1/yanzewan/.conda/envs/myAMR/lib/python3.10/site-packages/transformers/configuration_utils.py", line 614, in _get_config_dict
+    resolved_config_file = cached_file(
+  File "/home1/yanzewan/.conda/envs/myAMR/lib/python3.10/site-packages/transformers/utils/hub.py", line 409, in cached_file
+    resolved_file = hf_hub_download(
+  File "/home1/yanzewan/.conda/envs/myAMR/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    validate_repo_id(arg_value)
+  File "/home1/yanzewan/.conda/envs/myAMR/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 166, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.utils._validators.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': 'amrlib/data/checkpoint-55472'. Use `repo_type` argument if needed.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home1/yanzewan/AMR/amrlib/scripts/33_Model_Parse_XFM/22_Test_Model.py", line 32, in <module>
+    inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
+  File "/home1/yanzewan/AMR/amrlib/amrlib/models/parse_xfm/inference.py", line 26, in __init__
+    model     = AutoModelForSeq2SeqLM.from_pretrained(model_dir).to(self.device)
+  File "/home1/yanzewan/.conda/envs/myAMR/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 434, in from_pretrained
+    config, kwargs = AutoConfig.from_pretrained(
+  File "/home1/yanzewan/.conda/envs/myAMR/lib/python3.10/site-packages/transformers/models/auto/configuration_auto.py", line 809, in from_pretrained
+    config_dict, unused_kwargs = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+  File "/home1/yanzewan/.conda/envs/myAMR/lib/python3.10/site-packages/transformers/configuration_utils.py", line 559, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+  File "/home1/yanzewan/.conda/envs/myAMR/lib/python3.10/site-packages/transformers/configuration_utils.py", line 635, in _get_config_dict
+    raise EnvironmentError(
+OSError: Can't load the configuration of 'amrlib/data/checkpoint-55472'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'amrlib/data/checkpoint-55472' is the correct path to a directory containing a config.json file

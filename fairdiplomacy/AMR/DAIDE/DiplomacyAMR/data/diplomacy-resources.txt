@@ -1,0 +1,135 @@
+::power-id AUS ::power-name Austria ::power-alt-names Austria-Hungary, Austro-Hungarian Empire
+::power-id ENG ::power-name England ::power-alt-names Britain, British Empire, United Kingdom
+::power-id FRA ::power-name France
+::power-id GER ::power-name Germany ::power-alt-names German Empire
+::power-id ITA ::power-name Italy
+::power-id RUS ::power-name Russia ::power-alt-names Russian Empire
+::power-id TUR ::power-name Turkey ::power-alt-names Ottoman Empire
+
+::sea-id ADR ::sea-name Adriatic Sea
+::sea-id AEG ::sea-name Aegean Sea
+::sea-id BAL ::sea-name Baltic Sea
+::sea-id BAR ::sea-name Barents Sea
+::sea-id BLA ::sea-name Black Sea
+::sea-id BOT ::sea-name Gulf of Bothnia
+::sea-id EAS ::sea-name Eastern Mediterranean
+::sea-id ECH ::sea-name English Channel ::alt-ids ENG
+::sea-id HEL ::sea-name Helgoland Bight ::sea-alt-names Heligoland Bight
+::sea-id ION ::sea-name Ionian Sea
+::sea-id IRI ::sea-name Irish Sea
+::sea-id LYO ::sea-name Gulf of Lyon ::sea-alt-names Gulf of Lion
+::sea-id MAO ::sea-name Mid-Atlantic Ocean ::alt-ids MID
+::sea-id NAO ::sea-name North Atlantic Ocean
+::sea-id NTH ::sea-name North Sea
+::sea-id NWG ::sea-name Norwegian Sea
+::sea-id SKA ::sea-name Skagerrak
+::sea-id TYS ::sea-name Tyrrhenian Sea ::alt-ids TYH, TYN
+::sea-id WES ::sea-name Western Mediterranean
+
+::province-id ALB ::province-name Albania
+::province-id ANK ::province-name Ankara ::supply-center-of TUR
+::province-id APU ::province-name Apulia
+::province-id ARM ::province-name Armenia
+::province-id BEL ::province-name Belgium ::supply-center True
+::province-id BER ::province-name Berlin ::supply-center-of GER
+::province-id BOH ::province-name Bohemia
+::province-id BRE ::province-name Brest ::supply-center-of FRA
+::province-id BUD ::province-name Budapest ::supply-center-of AUS
+::province-id BUL ::province-name Bulgaria ::supply-center True ::has-coasts SCS, ECS
+::province-id BUR ::province-name Burgundy
+::province-id CLY ::province-name Clyde
+::province-id CON ::province-name Constantinople ::supply-center-of TUR
+::province-id DEN ::province-name Denmark ::supply-center True
+::province-id EDI ::province-name Edinburgh ::supply-center-of ENG
+::province-id FIN ::province-name Finland
+::province-id GAL ::province-name Galicia
+::province-id GAS ::province-name Gascony
+::province-id GRE ::province-name Greece ::supply-center True
+::province-id HOL ::province-name Holland ::supply-center True ::province-alt-names Netherlands
+::province-id IRE ::province-name Ireland ::passable False
+::province-id KIE ::province-name Kiel ::supply-center-of GER
+::province-id LVN ::province-name Livonia
+::province-id LVP ::province-name Liverpool ::supply-center-of ENG ::alt-ids LVP
+::province-id LON ::province-name London ::supply-center-of ENG
+::province-id MAR ::province-name Marseille ::supply-center-of FRA
+::province-id MOS ::province-name Moscow ::supply-center-of RUS
+::province-id MUN ::province-name Munich ::supply-center-of GER
+::province-id NAF ::province-name North Africa
+::province-id NAP ::province-name Naples ::supply-center-of ITA
+::province-id NWY ::province-name Norway ::supply-center True ::alt-ids NOR
+::province-id PAR ::province-name Paris ::supply-center-of FRA
+::province-id PIC ::province-name Picardy
+::province-id PIE ::province-name Piedmont
+::province-id POR ::province-name Portugal ::supply-center True
+::province-id PRU ::province-name Prussia
+::province-id ROM ::province-name Rome ::supply-center-of ITA
+::province-id RUH ::province-name Ruhr
+::province-id RUM ::province-name Romania ::supply-center True ::province-alt-names Rumania
+::province-id SER ::province-name Serbia ::supply-center True
+::province-id SEV ::province-name Sevastopol ::supply-center-of RUS
+::province-id SIL ::province-name Silesia
+::province-id SMY ::province-name Smyrna ::supply-center-of TUR
+::province-id SPA ::province-name Spain ::supply-center True ::has-coasts SCS, NCS
+::province-id STP ::province-name St. Petersburg ::supply-center-of RUS ::has-coasts SCS, NCS
+::province-id SWE ::province-name Sweden ::supply-center True
+::province-id SWI ::province-name Switzerland ::passable False
+::province-id SYR ::province-name Syria
+::province-id TRI ::province-name Trieste ::supply-center-of AUS
+::province-id TUN ::province-name Tunisia ::supply-center True
+::province-id TUS ::province-name Tuscany
+::province-id TYR ::province-name Tyrolia ::province-alt-names Tyrol, Tyrole
+::province-id UKR ::province-name Ukraine
+::province-id VEN ::province-name Venice ::supply-center-of ITA
+::province-id VIE ::province-name Vienna ::supply-center-of AUS
+::province-id WAL ::province-name Wales
+::province-id WAR ::province-name Warsaw ::supply-center-of RUS
+::province-id YOR ::province-name Yorkshire
+# SCO (AUS BUD TRI VIE) (ENG LPL EDI LON) (FRA BRE MAR PAR) (GER KIE BER MUN) (ITA ROM NAP VEN)
+# (RUS STP MOS WAR SEV) (TUR ANK CON SMY) (UNO NWY SWE DEN HOL BEL SPA POR TUN GRE SER RUM BUL)
+
+::name Austria ::pertainym Austrian ::demonym Austrian ::demonym-plural Austrians
+::name Austria-Hungary ::pertainym Austro-Hungarian ::demonym Austro-Hungarian ::demonym-plural Austro-Hungarians
+::name Austro-Hungarian Empire ::definite-article True
+::name Belgium ::pertainym Belgian ::demonym Belgian ::demonym-plural Belgians
+::name Britain ::pertainym British ::demonym Brit ::demonym-plural British
+::name British Empire ::definite-article True
+::name England ::pertainym English ::demonym Englishman ::demonym-plural English
+::name France ::pertainym French ::demonym Frenchman ::demonym-plural French
+::name German Empire ::definite-article True
+::name Germany ::pertainym German ::demonym German ::demonym-plural Germans
+::name Holland ::pertainym Dutch ::demonym Dutchman ::demonym-plural Dutch
+::name Netherlands ::pertainym Dutch ::demonym Dutchman ::demonym-plural Dutch ::definite-article True
+::name Italy ::pertainym Italian ::demonym Italian ::demonym-plural Italians
+::name Russia ::pertainym Russian ::demonym Russian ::demonym-plural Russians
+::name Russian Empire ::definite-article True
+::name Turkey ::pertainym Turkish ::demonym Turk ::demonym-plural Turks
+::name United Kingdom ::abbreviation UK ::definite-article True
+
+::season-id SPR ::season-name spring moves
+::season-id SUM ::season-name spring retreats
+::season-id FAL ::season-name fall moves
+::season-id AUT ::season-name fall retreats
+::season-id WIN ::season-name adjustments
+
+::coast-id NCS ::coast-name north coast ::coast-alt-names north
+::coast-id ECS ::coast-name east coast ::coast-alt-names east
+::coast-id SCS ::coast-name south coast ::coast-alt-names south
+::coast-id WCS ::coast-name west coast ::coast-alt-names west
+ 
+::unit-type-id AMY ::unit-type-name army
+::unit-type-id FLT ::unit-type-name fleet
+
+::amr-mapping accept-01 accept yes
+::amr-mapping ally-01 ally aly
+::amr-mapping build-01 bld build
+::amr-mapping demilitarize-01 demilitarize dmz
+::amr-mapping hold-03 hld hold
+::amr-mapping move-01 move mto mv
+::amr-mapping propose-01 propose prp
+::amr-mapping reject-01 rej reject
+::amr-mapping remove-01 rem remove
+::amr-mapping retreat-01 retreat rto
+::amr-mapping submit-01 sub submit
+::amr-mapping support-01 sup support
+::amr-mapping transport-01 convoy cto cvy transport
+
