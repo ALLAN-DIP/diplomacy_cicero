@@ -106,6 +106,11 @@ class milaWrapper:
         self.dipcc_current_phase = None                             
         self.last_successful_message_time = None                    # timestep for last message successfully sent in the current phase                       
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
+        
+        agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
+        print(f"successfully load cicero config")
+
+        self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
     async def play_mila(
         self,
@@ -115,7 +120,7 @@ class milaWrapper:
         power_name: str,
         gamedir: Path,
     ) -> None:
-
+        
         print(f"CICERO joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
         channel = await connection.authenticate(
@@ -134,10 +139,7 @@ class milaWrapper:
         self.dipcc_game = self.start_dipcc_game(power_name)
         print(f"Started dipcc game")
 
-        agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
-        print(f"successfully load cicero config")
 
-        self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
         self.player = Player(self.agent, power_name)
 
