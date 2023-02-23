@@ -94,6 +94,8 @@ from diplomacy.utils.export import to_saved_game_format
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
+DEFAULT_DEADLINE = 4
+
 class milaWrapper:
 
     def __init__(self):
@@ -235,7 +237,7 @@ class milaWrapper:
 
         deadline = self.game.deadline
         if deadline ==0:
-            deadline = 2*60
+            deadline = DEFAULT_DEADLINE*60
         close_to_deadline = deadline - 15
         no_message_second = 30
 
@@ -409,7 +411,7 @@ class milaWrapper:
         deadline = self.game.deadline
 
         if deadline ==0:
-            deadline = 2
+            deadline = DEFAULT_DEADLINE
         else:
             deadline = int(ceil(deadline/60))
         
