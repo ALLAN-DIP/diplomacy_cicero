@@ -91,6 +91,8 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 
+from daidepp.utils import preprocess, gen_English, post_process
+
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
@@ -287,13 +289,15 @@ class milaWrapper:
                     most_recent = dipcc_timesent
                 
                 #TODO: FENG parsing parsing(message.message: str)
+                pre_processed = preprocess(message.message)
+                generated_English = gen_English(pre_processed, message.recipient, message.sender)
+                post_processed = post_process(generated_English, message.recipient, message.sender)
 
-
-                print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
+                print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {post_processed}')
                 self.dipcc_game.add_message(
                     message.sender,
                     message.recipient,
-                    message.message,
+                    post_processed,
                     time_sent=dipcc_timesent,
                     increment_on_collision=True,
                 )
