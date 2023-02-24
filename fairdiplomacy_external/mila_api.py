@@ -243,11 +243,11 @@ class milaWrapper:
             file.write("\n")
 
     def psudo_code_gene(self,current_phase_code,message,power_dict,af_dict):
-        string1 = 'PRP ( ORR '
-        string2 = 'FCT ( ORR '
+        string1 = 'FCT ( ORR '
+        string2 = 'PRP ( ORR '
         for country in current_phase_code.keys():
             if country == message["sender"]:
-            #PRP for sender
+            #FCT for sender
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
@@ -266,7 +266,7 @@ class milaWrapper:
                             string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+') '
                             string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')) '
             else:
-            # #FCT for recipient
+            # #PRP for recipient
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
