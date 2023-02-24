@@ -1,0 +1,71 @@
+{
+  "_name_or_path": "facebook/bart-base",
+  "activation_dropout": 0.1,
+  "activation_function": "gelu",
+  "add_bias_logits": false,
+  "add_final_layer_norm": false,
+  "architectures": [
+    "BartForConditionalGeneration"
+  ],
+  "attention_dropout": 0.1,
+  "bos_token_id": 0,
+  "classif_dropout": 0.1,
+  "classifier_dropout": 0.0,
+  "d_model": 768,
+  "decoder_attention_heads": 12,
+  "decoder_ffn_dim": 3072,
+  "decoder_layerdrop": 0.0,
+  "decoder_layers": 6,
+  "decoder_start_token_id": 2,
+  "dropout": 0.1,
+  "early_stopping": true,
+  "encoder_attention_heads": 12,
+  "encoder_ffn_dim": 3072,
+  "encoder_layerdrop": 0.0,
+  "encoder_layers": 6,
+  "eos_token_id": 2,
+  "forced_eos_token_id": 2,
+  "gradient_checkpointing": false,
+  "id2label": {
+    "0": "LABEL_0",
+    "1": "LABEL_1",
+    "2": "LABEL_2"
+  },
+  "init_std": 0.02,
+  "is_encoder_decoder": true,
+  "label2id": {
+    "LABEL_0": 0,
+    "LABEL_1": 1,
+    "LABEL_2": 2
+  },
+  "max_position_embeddings": 1024,
+  "model_type": "bart",
+  "normalize_before": false,
+  "normalize_embedding": true,
+  "num_beams": 4,
+  "num_hidden_layers": 6,
+  "pad_token_id": 1,
+  "scale_embedding": false,
+  "task_specific_params": {
+    "parse_amr": {
+      "corpus_dir": "amrlib/data/tdata_xfm/",
+      "custom_save_checkpoint": true,
+      "eval_batch_size": 32,
+      "eval_fn": "test.txt.nowiki",
+      "eval_num_beams": 1,
+      "first_eval_epoch": 1,
+      "max_in_len": 1024,
+      "max_out_len": 1024,
+      "max_train_graph_len": 512,
+      "max_train_sent_len": 100,
+      "model_name_or_path": "facebook/bart-base",
+      "save_at_end": false,
+      "save_tokenizer": false,
+      "train_fn": "train.txt.nowiki"
+    }
+  },
+  "torch_dtype": "float32",
+  "transformers_version": "4.25.1",
+  "use_cache": true,
+  "vocab_size": 50265
+}
