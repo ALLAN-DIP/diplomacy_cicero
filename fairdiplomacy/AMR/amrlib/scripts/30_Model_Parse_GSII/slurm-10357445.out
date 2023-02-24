@@ -1,0 +1,21 @@
+==========================================
+SLURM_JOB_ID = 10357445
+SLURM_JOB_NODELIST = a11-01
+TMPDIR = /tmp/SLURM_10357445
+==========================================
+Lmod has detected the following error: These module(s) or extension(s) exist
+but cannot be loaded as requested: "cuda/11.6.2"
+   Try: "module spider cuda/11.6.2" to see how to load the module(s).
+
+
+
+The tokenizer class you load from this checkpoint is not the same type as the class this function is called from. It may result in unexpected tokenization. 
+The tokenizer class you load from this checkpoint is 'BertTokenizer'. 
+The class this function is called from is 'BertEncoderTokenizer'.
+Some weights of the model checkpoint at bert-base-cased were not used when initializing BertEncoder: ['cls.seq_relationship.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.LayerNorm.weight']
+- This IS expected if you are initializing BertEncoder from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertEncoder from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Loading model amrlib/data/model_parse_gsii/epoch600bz2000.pt
+Loading test data from  amrlib/data/tdata_gsiinew/test.txt.features.nowiki
+  0%|          | 0/2354 [00:00<?, ?it/s]  0%|          | 1/2354 [00:03<2:18:34,  3.53s/it]  4%|▍         | 90/2354 [00:06<02:15, 16.73it/s]   8%|▊         | 180/2354 [00:09<01:34, 23.04it/s] 11%|█▏        | 268/2354 [00:12<01:20, 25.81it/s] 15%|█▌        | 357/2354 [00:15<01:13, 27.31it/s] 19%|█▉        | 442/2354 [00:19<01:19, 24.02it/s] 22%|██▏       | 527/2354 [00:24<01:24, 21.53it/s] 27%|██▋       | 633/2354 [00:26<01:04, 26.82it/s] 31%|███▏      | 740/2354 [00:30<01:00, 26.85it/s] 36%|███▋      | 854/2354 [00:34<00:54, 27.46it/s] 41%|████      | 968/2354 [00:36<00:43, 31.92it/s] 45%|████▌     | 1065/2354 [00:39<00:38, 33.61it/s] 49%|████▉     | 1163/2354 [00:41<00:33, 35.79it/s] 54%|█████▍    | 1271/2354 [00:44<00:28, 37.84it/s] 59%|█████▊    | 1380/2354 [00:46<00:24, 39.63it/s] 62%|██████▏   | 1466/2354 [00:48<00:22, 39.36it/s] 66%|██████▌   | 1553/2354 [00:51<00:20, 38.54it/s] 70%|██████▉   | 1639/2354 [00:53<00:19, 36.71it/s] 73%|███████▎  | 1726/2354 [00:56<00:18, 34.40it/s] 77%|███████▋  | 1821/2354 [01:00<00:17, 31.04it/s] 81%|████████▏ | 1916/2354 [01:05<00:16, 26.86it/s] 85%|████████▌ | 2009/2354 [01:07<00:11, 29.19it/s] 89%|████████▉ | 2103/2354 [01:10<00:08, 30.28it/s] 93%|█████████▎| 2183/2354 [01:13<00:05, 29.80it/s] 96%|█████████▌| 2263/2354 [01:14<00:02, 35.30it/s] 98%|█████████▊| 2309/2354 [01:15<00:01, 36.74it/s]100%|██████████| 2354/2354 [01:15<00:00, 31.12it/s]
+Smatch F: 0.516.  Wrote 2354 AMR graphs to amrlib/data/model_parse_gsii/epoch600bz2000.pt.test_generated

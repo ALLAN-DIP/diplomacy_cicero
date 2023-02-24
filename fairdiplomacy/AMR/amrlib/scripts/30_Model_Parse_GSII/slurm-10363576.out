@@ -1,0 +1,263 @@
+==========================================
+SLURM_JOB_ID = 10363576
+SLURM_JOB_NODELIST = a11-01
+TMPDIR = /tmp/SLURM_10363576
+==========================================
+Lmod has detected the following error: These module(s) or extension(s) exist
+but cannot be loaded as requested: "cuda/11.6.2"
+   Try: "module spider cuda/11.6.2" to see how to load the module(s).
+
+
+
+The tokenizer class you load from this checkpoint is not the same type as the class this function is called from. It may result in unexpected tokenization. 
+The tokenizer class you load from this checkpoint is 'BertTokenizer'. 
+The class this function is called from is 'BertEncoderTokenizer'.
+Some weights of the model checkpoint at bert-base-cased were not used when initializing BertEncoder: ['cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight', 'cls.predictions.bias']
+- This IS expected if you are initializing BertEncoder from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertEncoder from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Training started: 2023-01-23 16:35:15
+Vocab tok                   size  1631  coverage 0.942
+Vocab lem                   size  1310  coverage 0.957
+Vocab pos                   size    51  coverage 1.000
+Vocab ner                   size    20  coverage 1.000
+Vocab predictable_concept   size   147  coverage 0.999
+Vocab concept               size   151  coverage 0.999
+Vocab rel                   size    42  coverage 0.999
+Vocab word_char             size    65  coverage 0.998
+Vocab concept_char          size    51  coverage 0.998
+Setting up the model
+Loading training data
+Training
+Epoch    1, Batch     8, LR 0.000004, conc_loss 5.082, arc_loss 1.866, rel_loss 2.510, duration 10.5 seconds
+Epoch    2, Batch    16, LR 0.000008, conc_loss 4.895, arc_loss 2.104, rel_loss 2.510, duration 8.4 seconds
+Epoch    3, Batch    24, LR 0.000012, conc_loss 4.315, arc_loss 1.490, rel_loss 1.555, duration 8.6 seconds
+Epoch    4, Batch    32, LR 0.000016, conc_loss 4.301, arc_loss 1.951, rel_loss 1.830, duration 8.6 seconds
+Epoch    5, Batch    40, LR 0.000020, conc_loss 4.035, arc_loss 1.666, rel_loss 1.446, duration 8.6 seconds
+Epoch    6, Batch    48, LR 0.000024, conc_loss 3.826, arc_loss 1.679, rel_loss 1.426, duration 8.6 seconds
+Epoch    7, Batch    56, LR 0.000028, conc_loss 3.848, arc_loss 1.722, rel_loss 1.405, duration 8.5 seconds
+Epoch    8, Batch    64, LR 0.000032, conc_loss 3.855, arc_loss 2.247, rel_loss 1.713, duration 8.6 seconds
+Epoch    9, Batch    72, LR 0.000036, conc_loss 3.390, arc_loss 1.588, rel_loss 1.156, duration 8.5 seconds
+Epoch   10, Batch    80, LR 0.000040, conc_loss 3.386, arc_loss 1.720, rel_loss 1.200, duration 8.6 seconds
+Epoch   11, Batch    88, LR 0.000043, conc_loss 3.468, arc_loss 2.307, rel_loss 1.479, duration 8.6 seconds
+Epoch   12, Batch    96, LR 0.000047, conc_loss 3.138, arc_loss 1.792, rel_loss 1.108, duration 8.5 seconds
+Epoch   13, Batch   104, LR 0.000051, conc_loss 2.488, arc_loss 0.871, rel_loss 0.537, duration 8.6 seconds
+Epoch   14, Batch   112, LR 0.000055, conc_loss 2.825, arc_loss 1.694, rel_loss 0.978, duration 8.6 seconds
+Epoch   15, Batch   120, LR 0.000059, conc_loss 2.721, arc_loss 1.502, rel_loss 0.840, duration 8.5 seconds
+Epoch   16, Batch   128, LR 0.000063, conc_loss 2.537, arc_loss 1.343, rel_loss 0.719, duration 8.6 seconds
+Epoch   17, Batch   136, LR 0.000067, conc_loss 2.559, arc_loss 1.534, rel_loss 0.776, duration 8.6 seconds
+Epoch   18, Batch   144, LR 0.000071, conc_loss 2.381, arc_loss 1.427, rel_loss 0.713, duration 8.5 seconds
+Epoch   19, Batch   152, LR 0.000075, conc_loss 2.757, arc_loss 2.073, rel_loss 1.051, duration 8.6 seconds
+Epoch   20, Batch   160, LR 0.000079, conc_loss 2.675, arc_loss 1.902, rel_loss 0.936, duration 8.6 seconds
+Epoch   21, Batch   168, LR 0.000083, conc_loss 2.374, arc_loss 1.640, rel_loss 0.786, duration 8.5 seconds
+Epoch   22, Batch   176, LR 0.000087, conc_loss 2.079, arc_loss 1.262, rel_loss 0.597, duration 8.6 seconds
+Epoch   23, Batch   184, LR 0.000091, conc_loss 2.320, arc_loss 1.512, rel_loss 0.709, duration 8.6 seconds
+Epoch   24, Batch   192, LR 0.000095, conc_loss 2.649, arc_loss 1.958, rel_loss 0.899, duration 8.5 seconds
+Epoch   25, Batch   200, LR 0.000099, conc_loss 2.499, arc_loss 1.790, rel_loss 0.819, duration 8.6 seconds
+Epoch   26, Batch   208, LR 0.000103, conc_loss 2.304, arc_loss 1.515, rel_loss 0.687, duration 8.6 seconds
+Epoch   27, Batch   216, LR 0.000107, conc_loss 2.243, arc_loss 1.614, rel_loss 0.741, duration 8.5 seconds
+Epoch   28, Batch   224, LR 0.000111, conc_loss 2.040, arc_loss 1.363, rel_loss 0.602, duration 8.6 seconds
+Epoch   29, Batch   232, LR 0.000115, conc_loss 2.418, arc_loss 1.826, rel_loss 0.814, duration 8.6 seconds
+Epoch   30, Batch   240, LR 0.000119, conc_loss 2.426, arc_loss 1.771, rel_loss 0.810, duration 8.6 seconds
+Epoch   31, Batch   248, LR 0.000123, conc_loss 2.351, arc_loss 1.687, rel_loss 0.772, duration 8.5 seconds
+Epoch   32, Batch   256, LR 0.000126, conc_loss 1.999, arc_loss 1.266, rel_loss 0.598, duration 8.6 seconds
+Epoch   33, Batch   264, LR 0.000130, conc_loss 1.892, arc_loss 1.373, rel_loss 0.615, duration 8.5 seconds
+Epoch   34, Batch   272, LR 0.000134, conc_loss 1.964, arc_loss 1.316, rel_loss 0.623, duration 8.6 seconds
+Epoch   35, Batch   280, LR 0.000138, conc_loss 1.725, arc_loss 1.097, rel_loss 0.532, duration 8.5 seconds
+Epoch   36, Batch   288, LR 0.000142, conc_loss 1.734, arc_loss 1.343, rel_loss 0.586, duration 8.6 seconds
+Epoch   37, Batch   296, LR 0.000146, conc_loss 1.777, arc_loss 1.214, rel_loss 0.551, duration 8.6 seconds
+Epoch   38, Batch   304, LR 0.000150, conc_loss 2.222, arc_loss 1.650, rel_loss 0.749, duration 8.6 seconds
+Epoch   39, Batch   312, LR 0.000154, conc_loss 1.922, arc_loss 1.361, rel_loss 0.628, duration 8.6 seconds
+Epoch   40, Batch   320, LR 0.000158, conc_loss 1.603, arc_loss 1.047, rel_loss 0.501, duration 8.5 seconds
+Epoch   41, Batch   328, LR 0.000162, conc_loss 2.030, arc_loss 1.378, rel_loss 0.644, duration 8.6 seconds
+Epoch   42, Batch   336, LR 0.000166, conc_loss 2.156, arc_loss 1.585, rel_loss 0.741, duration 8.6 seconds
+Epoch   43, Batch   344, LR 0.000170, conc_loss 1.597, arc_loss 0.990, rel_loss 0.481, duration 8.6 seconds
+Epoch   44, Batch   352, LR 0.000174, conc_loss 2.183, arc_loss 1.721, rel_loss 0.756, duration 8.5 seconds
+Epoch   45, Batch   360, LR 0.000178, conc_loss 2.043, arc_loss 1.424, rel_loss 0.619, duration 8.6 seconds
+Epoch   46, Batch   368, LR 0.000182, conc_loss 2.054, arc_loss 1.481, rel_loss 0.670, duration 8.6 seconds
+Epoch   47, Batch   376, LR 0.000186, conc_loss 2.303, arc_loss 1.771, rel_loss 0.794, duration 8.5 seconds
+Epoch   48, Batch   384, LR 0.000190, conc_loss 1.552, arc_loss 1.132, rel_loss 0.505, duration 8.5 seconds
+Epoch   49, Batch   392, LR 0.000194, conc_loss 1.749, arc_loss 1.316, rel_loss 0.575, duration 8.6 seconds
+Epoch   50, Batch   400, LR 0.000198, conc_loss 1.754, arc_loss 1.171, rel_loss 0.586, duration 8.6 seconds
+Epoch   51, Batch   408, LR 0.000202, conc_loss 1.389, arc_loss 0.939, rel_loss 0.444, duration 8.5 seconds
+Epoch   52, Batch   416, LR 0.000206, conc_loss 1.759, arc_loss 1.250, rel_loss 0.579, duration 8.6 seconds
+Epoch   53, Batch   424, LR 0.000210, conc_loss 1.526, arc_loss 1.056, rel_loss 0.484, duration 8.5 seconds
+Epoch   54, Batch   432, LR 0.000213, conc_loss 1.903, arc_loss 1.366, rel_loss 0.654, duration 8.6 seconds
+Epoch   55, Batch   440, LR 0.000217, conc_loss 1.990, arc_loss 1.551, rel_loss 0.713, duration 8.5 seconds
+Epoch   56, Batch   448, LR 0.000221, conc_loss 1.542, arc_loss 1.002, rel_loss 0.494, duration 8.5 seconds
+Epoch   57, Batch   456, LR 0.000225, conc_loss 1.375, arc_loss 1.036, rel_loss 0.450, duration 8.6 seconds
+Epoch   58, Batch   464, LR 0.000229, conc_loss 1.889, arc_loss 1.376, rel_loss 0.630, duration 8.5 seconds
+Epoch   59, Batch   472, LR 0.000233, conc_loss 1.584, arc_loss 1.165, rel_loss 0.573, duration 8.6 seconds
+Epoch   60, Batch   480, LR 0.000237, conc_loss 1.595, arc_loss 1.044, rel_loss 0.509, duration 8.6 seconds
+Evaluating and saving the model
+Loading test data from  ./amrlib/data/tdata_gsiinew/dev.txt.features.nowiki
+  0%|          | 0/1415 [00:00<?, ?it/s]  0%|          | 1/1415 [00:01<25:36,  1.09s/it]  7%|▋         | 92/1415 [00:02<00:26, 49.01it/s] 13%|█▎        | 184/1415 [00:04<00:27, 44.38it/s] 21%|██        | 292/1415 [00:06<00:25, 44.78it/s] 28%|██▊       | 400/1415 [00:07<00:17, 57.08it/s] 36%|███▌      | 511/1415 [00:10<00:17, 52.37it/s] 44%|████▍     | 622/1415 [00:11<00:12, 61.34it/s] 53%|█████▎    | 743/1415 [00:14<00:12, 55.38it/s] 61%|██████    | 865/1415 [00:15<00:08, 64.22it/s] 67%|██████▋   | 953/1415 [00:17<00:08, 56.84it/s] 74%|███████▎  | 1042/1415 [00:18<00:06, 58.68it/s] 81%|████████  | 1143/1415 [00:21<00:05, 51.77it/s] 88%|████████▊ | 1245/1415 [00:23<00:03, 53.60it/s] 94%|█████████▍| 1330/1415 [00:24<00:01, 60.60it/s]100%|██████████| 1415/1415 [00:24<00:00, 58.81it/s]
+Smatch F: 0.177.  Wrote 1415 AMR graphs to amrlib/data/model_parse_gsii/epoch60.pt.dev_generated
+Epoch   61, Batch   488, LR 0.000241, conc_loss 1.914, arc_loss 1.551, rel_loss 0.693, duration 8.6 seconds
+Epoch   62, Batch   496, LR 0.000245, conc_loss 1.459, arc_loss 0.986, rel_loss 0.474, duration 8.5 seconds
+Epoch   63, Batch   504, LR 0.000249, conc_loss 1.436, arc_loss 1.032, rel_loss 0.486, duration 8.6 seconds
+Epoch   64, Batch   512, LR 0.000253, conc_loss 1.624, arc_loss 0.962, rel_loss 0.496, duration 8.4 seconds
+Epoch   65, Batch   520, LR 0.000257, conc_loss 1.825, arc_loss 1.258, rel_loss 0.609, duration 8.6 seconds
+Epoch   66, Batch   528, LR 0.000261, conc_loss 1.512, arc_loss 1.028, rel_loss 0.528, duration 8.5 seconds
+Epoch   67, Batch   536, LR 0.000265, conc_loss 1.441, arc_loss 0.869, rel_loss 0.463, duration 8.6 seconds
+Epoch   68, Batch   544, LR 0.000269, conc_loss 1.840, arc_loss 1.317, rel_loss 0.630, duration 8.6 seconds
+Epoch   69, Batch   552, LR 0.000273, conc_loss 1.798, arc_loss 1.251, rel_loss 0.596, duration 8.5 seconds
+Epoch   70, Batch   560, LR 0.000277, conc_loss 1.952, arc_loss 1.487, rel_loss 0.694, duration 8.6 seconds
+Epoch   71, Batch   568, LR 0.000281, conc_loss 2.045, arc_loss 1.715, rel_loss 0.772, duration 8.6 seconds
+Epoch   72, Batch   576, LR 0.000285, conc_loss 1.794, arc_loss 1.123, rel_loss 0.597, duration 8.5 seconds
+Epoch   73, Batch   584, LR 0.000289, conc_loss 1.364, arc_loss 0.961, rel_loss 0.499, duration 8.6 seconds
+Epoch   74, Batch   592, LR 0.000293, conc_loss 1.488, arc_loss 0.874, rel_loss 0.469, duration 8.5 seconds
+Epoch   75, Batch   600, LR 0.000296, conc_loss 1.791, arc_loss 1.284, rel_loss 0.619, duration 8.6 seconds
+Epoch   76, Batch   608, LR 0.000300, conc_loss 1.587, arc_loss 1.176, rel_loss 0.554, duration 8.5 seconds
+Epoch   77, Batch   616, LR 0.000304, conc_loss 1.321, arc_loss 0.688, rel_loss 0.385, duration 8.6 seconds
+Epoch   78, Batch   624, LR 0.000308, conc_loss 1.515, arc_loss 0.976, rel_loss 0.466, duration 8.6 seconds
+Epoch   79, Batch   632, LR 0.000312, conc_loss 1.772, arc_loss 1.449, rel_loss 0.635, duration 8.5 seconds
+Epoch   80, Batch   640, LR 0.000316, conc_loss 1.628, arc_loss 1.033, rel_loss 0.533, duration 8.6 seconds
+Evaluating and saving the model
+Loading test data from  ./amrlib/data/tdata_gsiinew/dev.txt.features.nowiki
+  0%|          | 0/1415 [00:00<?, ?it/s]  0%|          | 1/1415 [00:01<29:45,  1.26s/it]  7%|▋         | 92/1415 [00:03<00:48, 27.08it/s] 13%|█▎        | 184/1415 [00:06<00:37, 32.83it/s] 21%|██        | 292/1415 [00:10<00:40, 27.96it/s] 28%|██▊       | 400/1415 [00:12<00:29, 34.47it/s] 36%|███▌      | 511/1415 [00:15<00:25, 35.84it/s] 44%|████▍     | 622/1415 [00:17<00:19, 39.89it/s] 53%|█████▎    | 743/1415 [00:20<00:16, 39.78it/s] 61%|██████    | 865/1415 [00:23<00:13, 40.20it/s] 67%|██████▋   | 953/1415 [00:26<00:11, 40.01it/s] 74%|███████▎  | 1042/1415 [00:28<00:09, 38.71it/s] 81%|████████  | 1143/1415 [00:31<00:07, 35.65it/s] 88%|████████▊ | 1245/1415 [00:35<00:04, 34.25it/s] 94%|█████████▍| 1330/1415 [00:36<00:02, 38.42it/s]100%|██████████| 1415/1415 [00:36<00:00, 38.63it/s]
+Smatch F: 0.177.  Wrote 1415 AMR graphs to amrlib/data/model_parse_gsii/epoch80.pt.dev_generated
+Epoch   81, Batch   648, LR 0.000320, conc_loss 1.719, arc_loss 1.161, rel_loss 0.599, duration 8.5 seconds
+Epoch   82, Batch   656, LR 0.000324, conc_loss 1.669, arc_loss 1.173, rel_loss 0.554, duration 8.6 seconds
+Epoch   83, Batch   664, LR 0.000328, conc_loss 1.744, arc_loss 1.352, rel_loss 0.626, duration 8.6 seconds
+Epoch   84, Batch   672, LR 0.000332, conc_loss 1.512, arc_loss 0.915, rel_loss 0.474, duration 8.5 seconds
+Epoch   85, Batch   680, LR 0.000336, conc_loss 1.461, arc_loss 0.931, rel_loss 0.497, duration 8.6 seconds
+Epoch   86, Batch   688, LR 0.000340, conc_loss 1.900, arc_loss 1.503, rel_loss 0.714, duration 8.5 seconds
+Epoch   87, Batch   696, LR 0.000344, conc_loss 1.336, arc_loss 0.780, rel_loss 0.435, duration 8.6 seconds
+Epoch   88, Batch   704, LR 0.000348, conc_loss 1.525, arc_loss 1.089, rel_loss 0.563, duration 8.6 seconds
+Epoch   89, Batch   712, LR 0.000352, conc_loss 1.657, arc_loss 1.060, rel_loss 0.528, duration 8.5 seconds
+Epoch   90, Batch   720, LR 0.000356, conc_loss 1.169, arc_loss 0.772, rel_loss 0.379, duration 8.6 seconds
+Epoch   91, Batch   728, LR 0.000360, conc_loss 1.572, arc_loss 1.228, rel_loss 0.592, duration 8.6 seconds
+Epoch   92, Batch   736, LR 0.000364, conc_loss 1.584, arc_loss 1.033, rel_loss 0.526, duration 8.6 seconds
+Epoch   93, Batch   744, LR 0.000368, conc_loss 1.252, arc_loss 0.953, rel_loss 0.476, duration 8.6 seconds
+Epoch   94, Batch   752, LR 0.000372, conc_loss 1.420, arc_loss 0.988, rel_loss 0.496, duration 8.6 seconds
+Epoch   95, Batch   760, LR 0.000376, conc_loss 1.349, arc_loss 0.965, rel_loss 0.474, duration 8.5 seconds
+Epoch   96, Batch   768, LR 0.000379, conc_loss 1.339, arc_loss 0.875, rel_loss 0.440, duration 8.6 seconds
+Epoch   97, Batch   776, LR 0.000383, conc_loss 1.288, arc_loss 0.880, rel_loss 0.435, duration 8.6 seconds
+Epoch   98, Batch   784, LR 0.000387, conc_loss 1.293, arc_loss 0.854, rel_loss 0.431, duration 8.5 seconds
+Epoch   99, Batch   792, LR 0.000391, conc_loss 1.185, arc_loss 0.711, rel_loss 0.370, duration 8.6 seconds
+Epoch  100, Batch   800, LR 0.000395, conc_loss 1.089, arc_loss 0.716, rel_loss 0.366, duration 8.5 seconds
+Evaluating and saving the model
+Loading test data from  ./amrlib/data/tdata_gsiinew/dev.txt.features.nowiki
+  0%|          | 0/1415 [00:00<?, ?it/s]  0%|          | 1/1415 [00:02<1:08:47,  2.92s/it]  7%|▋         | 92/1415 [00:06<01:23, 15.75it/s]  13%|█▎        | 184/1415 [00:09<00:54, 22.40it/s] 21%|██        | 292/1415 [00:15<00:54, 20.60it/s] 28%|██▊       | 400/1415 [00:18<00:41, 24.49it/s] 36%|███▌      | 511/1415 [00:21<00:33, 26.97it/s] 44%|████▍     | 622/1415 [00:23<00:23, 33.46it/s] 53%|█████▎    | 743/1415 [00:27<00:19, 34.00it/s] 61%|██████    | 865/1415 [00:31<00:16, 32.63it/s] 67%|██████▋   | 953/1415 [00:33<00:13, 34.21it/s] 74%|███████▎  | 1042/1415 [00:36<00:11, 32.52it/s] 81%|████████  | 1143/1415 [00:39<00:08, 31.71it/s] 88%|████████▊ | 1245/1415 [00:43<00:05, 31.87it/s] 94%|█████████▍| 1330/1415 [00:44<00:02, 35.81it/s]100%|██████████| 1415/1415 [00:44<00:00, 31.66it/s]
+Smatch F: 0.307.  Wrote 1415 AMR graphs to amrlib/data/model_parse_gsii/epoch100.pt.dev_generated
+Epoch  101, Batch   808, LR 0.000399, conc_loss 1.455, arc_loss 0.916, rel_loss 0.488, duration 8.6 seconds
+Epoch  102, Batch   816, LR 0.000403, conc_loss 1.418, arc_loss 0.972, rel_loss 0.504, duration 8.5 seconds
+Epoch  103, Batch   824, LR 0.000407, conc_loss 1.051, arc_loss 0.660, rel_loss 0.333, duration 8.5 seconds
+Epoch  104, Batch   832, LR 0.000411, conc_loss 1.055, arc_loss 0.566, rel_loss 0.312, duration 8.6 seconds
+Epoch  105, Batch   840, LR 0.000415, conc_loss 1.114, arc_loss 0.718, rel_loss 0.359, duration 8.5 seconds
+Epoch  106, Batch   848, LR 0.000419, conc_loss 1.131, arc_loss 0.608, rel_loss 0.341, duration 8.6 seconds
+Epoch  107, Batch   856, LR 0.000423, conc_loss 1.453, arc_loss 0.894, rel_loss 0.455, duration 8.5 seconds
+Epoch  108, Batch   864, LR 0.000427, conc_loss 1.373, arc_loss 0.944, rel_loss 0.490, duration 8.6 seconds
+Epoch  109, Batch   872, LR 0.000431, conc_loss 1.443, arc_loss 0.920, rel_loss 0.474, duration 8.5 seconds
+Epoch  110, Batch   880, LR 0.000435, conc_loss 1.221, arc_loss 0.784, rel_loss 0.409, duration 8.6 seconds
+Epoch  111, Batch   888, LR 0.000439, conc_loss 1.656, arc_loss 1.311, rel_loss 0.660, duration 8.6 seconds
+Epoch  112, Batch   896, LR 0.000443, conc_loss 1.358, arc_loss 0.973, rel_loss 0.499, duration 8.5 seconds
+Epoch  113, Batch   904, LR 0.000447, conc_loss 1.193, arc_loss 0.747, rel_loss 0.400, duration 8.6 seconds
+Epoch  114, Batch   912, LR 0.000451, conc_loss 1.257, arc_loss 0.823, rel_loss 0.450, duration 8.6 seconds
+Epoch  115, Batch   920, LR 0.000455, conc_loss 0.953, arc_loss 0.504, rel_loss 0.271, duration 8.5 seconds
+Epoch  116, Batch   928, LR 0.000459, conc_loss 1.463, arc_loss 1.012, rel_loss 0.532, duration 8.6 seconds
+Epoch  117, Batch   936, LR 0.000462, conc_loss 1.259, arc_loss 0.809, rel_loss 0.422, duration 8.6 seconds
+Epoch  118, Batch   944, LR 0.000466, conc_loss 1.094, arc_loss 0.673, rel_loss 0.368, duration 8.5 seconds
+Epoch  119, Batch   952, LR 0.000470, conc_loss 1.557, arc_loss 1.123, rel_loss 0.545, duration 8.6 seconds
+Epoch  120, Batch   960, LR 0.000474, conc_loss 1.408, arc_loss 0.972, rel_loss 0.513, duration 8.6 seconds
+Evaluating and saving the model
+Loading test data from  ./amrlib/data/tdata_gsiinew/dev.txt.features.nowiki
+  0%|          | 0/1415 [00:00<?, ?it/s]  0%|          | 1/1415 [00:01<42:42,  1.81s/it]  7%|▋         | 92/1415 [00:03<00:47, 27.63it/s] 13%|█▎        | 184/1415 [00:06<00:38, 32.07it/s] 21%|██        | 292/1415 [00:10<00:39, 28.60it/s] 28%|██▊       | 400/1415 [00:12<00:29, 34.69it/s] 36%|███▌      | 511/1415 [00:15<00:25, 35.49it/s] 44%|████▍     | 622/1415 [00:17<00:19, 40.65it/s] 53%|█████▎    | 743/1415 [00:20<00:16, 39.85it/s] 61%|██████    | 865/1415 [00:23<00:12, 43.61it/s] 67%|██████▋   | 953/1415 [00:25<00:11, 41.68it/s] 74%|███████▎  | 1042/1415 [00:28<00:09, 40.26it/s] 81%|████████  | 1143/1415 [00:31<00:07, 37.61it/s] 88%|████████▊ | 1245/1415 [00:33<00:04, 38.14it/s] 94%|█████████▍| 1330/1415 [00:35<00:02, 41.80it/s]100%|██████████| 1415/1415 [00:35<00:00, 40.20it/s]
+Smatch F: 0.435.  Wrote 1415 AMR graphs to amrlib/data/model_parse_gsii/epoch120.pt.dev_generated
+Epoch  121, Batch   968, LR 0.000478, conc_loss 1.118, arc_loss 0.618, rel_loss 0.364, duration 8.5 seconds
+Epoch  122, Batch   976, LR 0.000482, conc_loss 1.393, arc_loss 0.947, rel_loss 0.482, duration 8.6 seconds
+Epoch  123, Batch   984, LR 0.000486, conc_loss 1.461, arc_loss 1.003, rel_loss 0.518, duration 8.5 seconds
+Epoch  124, Batch   992, LR 0.000490, conc_loss 1.295, arc_loss 0.874, rel_loss 0.458, duration 8.6 seconds
+Epoch  125, Batch  1000, LR 0.000494, conc_loss 1.188, arc_loss 0.790, rel_loss 0.422, duration 8.5 seconds
+Epoch  126, Batch  1008, LR 0.000498, conc_loss 1.165, arc_loss 0.712, rel_loss 0.382, duration 8.6 seconds
+Epoch  127, Batch  1016, LR 0.000502, conc_loss 1.153, arc_loss 0.741, rel_loss 0.405, duration 8.5 seconds
+Epoch  128, Batch  1024, LR 0.000506, conc_loss 0.927, arc_loss 0.598, rel_loss 0.323, duration 8.6 seconds
+Epoch  129, Batch  1032, LR 0.000510, conc_loss 1.316, arc_loss 0.894, rel_loss 0.478, duration 8.6 seconds
+Epoch  130, Batch  1040, LR 0.000514, conc_loss 1.134, arc_loss 0.672, rel_loss 0.383, duration 8.6 seconds
+Epoch  131, Batch  1048, LR 0.000518, conc_loss 1.182, arc_loss 0.839, rel_loss 0.431, duration 8.6 seconds
+Epoch  132, Batch  1056, LR 0.000522, conc_loss 1.188, arc_loss 0.813, rel_loss 0.414, duration 8.6 seconds
+Epoch  133, Batch  1064, LR 0.000526, conc_loss 0.986, arc_loss 0.543, rel_loss 0.316, duration 8.5 seconds
+Epoch  134, Batch  1072, LR 0.000530, conc_loss 1.147, arc_loss 0.884, rel_loss 0.431, duration 8.5 seconds
+Epoch  135, Batch  1080, LR 0.000534, conc_loss 0.895, arc_loss 0.647, rel_loss 0.325, duration 8.6 seconds
+Epoch  136, Batch  1088, LR 0.000538, conc_loss 0.832, arc_loss 0.487, rel_loss 0.279, duration 8.6 seconds
+Epoch  137, Batch  1096, LR 0.000542, conc_loss 1.243, arc_loss 0.818, rel_loss 0.441, duration 8.5 seconds
+Epoch  138, Batch  1104, LR 0.000545, conc_loss 1.427, arc_loss 1.079, rel_loss 0.550, duration 8.6 seconds
+Epoch  139, Batch  1112, LR 0.000549, conc_loss 1.180, arc_loss 0.766, rel_loss 0.412, duration 8.6 seconds
+Epoch  140, Batch  1120, LR 0.000553, conc_loss 0.972, arc_loss 0.569, rel_loss 0.317, duration 8.5 seconds
+Evaluating and saving the model
+Loading test data from  ./amrlib/data/tdata_gsiinew/dev.txt.features.nowiki
+  0%|          | 0/1415 [00:00<?, ?it/s]  0%|          | 1/1415 [00:04<1:42:19,  4.34s/it]  6%|▌         | 82/1415 [00:04<00:52, 25.61it/s]   8%|▊         | 114/1415 [00:06<01:08, 19.05it/s] 13%|█▎        | 184/1415 [00:09<00:58, 21.14it/s] 21%|██        | 292/1415 [00:16<01:00, 18.53it/s] 28%|██▊       | 400/1415 [00:18<00:39, 25.52it/s] 36%|███▌      | 511/1415 [00:21<00:32, 27.99it/s] 44%|████▍     | 622/1415 [00:23<00:23, 34.35it/s] 53%|█████▎    | 743/1415 [00:27<00:19, 33.78it/s] 61%|██████    | 865/1415 [00:31<00:16, 32.58it/s] 67%|██████▋   | 953/1415 [00:34<00:14, 32.60it/s] 74%|███████▎  | 1042/1415 [00:37<00:12, 30.62it/s] 81%|████████  | 1143/1415 [00:41<00:09, 28.85it/s] 88%|████████▊ | 1245/1415 [00:45<00:06, 28.29it/s] 94%|█████████▍| 1330/1415 [00:47<00:02, 31.71it/s]100%|██████████| 1415/1415 [00:47<00:00, 30.04it/s]
+Smatch F: 0.443.  Wrote 1415 AMR graphs to amrlib/data/model_parse_gsii/epoch140.pt.dev_generated
+Epoch  141, Batch  1128, LR 0.000557, conc_loss 0.995, arc_loss 0.660, rel_loss 0.351, duration 8.6 seconds
+Epoch  142, Batch  1136, LR 0.000561, conc_loss 1.286, arc_loss 0.899, rel_loss 0.471, duration 8.5 seconds
+Epoch  143, Batch  1144, LR 0.000565, conc_loss 1.098, arc_loss 0.674, rel_loss 0.377, duration 8.6 seconds
+Epoch  144, Batch  1152, LR 0.000569, conc_loss 1.242, arc_loss 0.932, rel_loss 0.445, duration 8.5 seconds
+Epoch  145, Batch  1160, LR 0.000573, conc_loss 1.440, arc_loss 1.207, rel_loss 0.565, duration 8.6 seconds
+Epoch  146, Batch  1168, LR 0.000577, conc_loss 0.740, arc_loss 0.476, rel_loss 0.267, duration 8.5 seconds
+Epoch  147, Batch  1176, LR 0.000581, conc_loss 1.227, arc_loss 0.966, rel_loss 0.475, duration 8.6 seconds
+Epoch  148, Batch  1184, LR 0.000585, conc_loss 1.372, arc_loss 1.060, rel_loss 0.505, duration 8.6 seconds
+Epoch  149, Batch  1192, LR 0.000589, conc_loss 1.005, arc_loss 0.659, rel_loss 0.357, duration 8.5 seconds
+Epoch  150, Batch  1200, LR 0.000593, conc_loss 0.795, arc_loss 0.433, rel_loss 0.267, duration 8.6 seconds
+Epoch  151, Batch  1208, LR 0.000597, conc_loss 0.949, arc_loss 0.573, rel_loss 0.337, duration 8.5 seconds
+Epoch  152, Batch  1216, LR 0.000601, conc_loss 0.813, arc_loss 0.600, rel_loss 0.292, duration 8.6 seconds
+Epoch  153, Batch  1224, LR 0.000605, conc_loss 0.974, arc_loss 0.652, rel_loss 0.326, duration 8.6 seconds
+Epoch  154, Batch  1232, LR 0.000609, conc_loss 0.966, arc_loss 0.622, rel_loss 0.324, duration 8.5 seconds
+Epoch  155, Batch  1240, LR 0.000613, conc_loss 1.137, arc_loss 0.838, rel_loss 0.418, duration 8.6 seconds
+Epoch  156, Batch  1248, LR 0.000617, conc_loss 1.337, arc_loss 1.078, rel_loss 0.512, duration 8.6 seconds
+Epoch  157, Batch  1256, LR 0.000621, conc_loss 1.303, arc_loss 0.984, rel_loss 0.490, duration 8.5 seconds
+Epoch  158, Batch  1264, LR 0.000625, conc_loss 1.223, arc_loss 0.901, rel_loss 0.447, duration 8.6 seconds
+Epoch  159, Batch  1272, LR 0.000629, conc_loss 1.086, arc_loss 0.747, rel_loss 0.391, duration 8.6 seconds
+Epoch  160, Batch  1280, LR 0.000632, conc_loss 1.001, arc_loss 0.665, rel_loss 0.373, duration 8.6 seconds
+Evaluating and saving the model
+Loading test data from  ./amrlib/data/tdata_gsiinew/dev.txt.features.nowiki
+  0%|          | 0/1415 [00:00<?, ?it/s]  0%|          | 1/1415 [00:02<53:57,  2.29s/it]  7%|▋         | 92/1415 [00:04<00:53, 24.86it/s] 13%|█▎        | 184/1415 [00:07<00:44, 27.64it/s] 21%|██        | 292/1415 [00:12<00:47, 23.57it/s] 28%|██▊       | 400/1415 [00:15<00:34, 29.50it/s] 36%|███▌      | 511/1415 [00:18<00:29, 30.56it/s] 44%|████▍     | 622/1415 [00:20<00:22, 35.77it/s] 53%|█████▎    | 743/1415 [00:24<00:19, 34.76it/s] 61%|██████    | 865/1415 [00:27<00:14, 37.17it/s] 67%|██████▋   | 953/1415 [00:29<00:12, 36.29it/s] 74%|███████▎  | 1042/1415 [00:33<00:11, 32.10it/s] 81%|████████  | 1143/1415 [00:36<00:08, 30.57it/s] 88%|████████▊ | 1245/1415 [00:40<00:05, 31.08it/s] 94%|█████████▍| 1330/1415 [00:41<00:02, 34.36it/s]100%|██████████| 1415/1415 [00:41<00:00, 33.74it/s]
+Smatch F: 0.488.  Wrote 1415 AMR graphs to amrlib/data/model_parse_gsii/epoch160.pt.dev_generated
+Epoch  161, Batch  1288, LR 0.000636, conc_loss 0.874, arc_loss 0.578, rel_loss 0.309, duration 8.6 seconds
+Epoch  162, Batch  1296, LR 0.000640, conc_loss 1.083, arc_loss 0.676, rel_loss 0.383, duration 8.5 seconds
+Epoch  163, Batch  1304, LR 0.000644, conc_loss 1.016, arc_loss 0.749, rel_loss 0.359, duration 8.5 seconds
+Epoch  164, Batch  1312, LR 0.000648, conc_loss 1.006, arc_loss 0.702, rel_loss 0.361, duration 8.6 seconds
+Epoch  165, Batch  1320, LR 0.000652, conc_loss 1.153, arc_loss 0.822, rel_loss 0.427, duration 8.6 seconds
+Epoch  166, Batch  1328, LR 0.000656, conc_loss 1.095, arc_loss 0.815, rel_loss 0.408, duration 8.6 seconds
+Epoch  167, Batch  1336, LR 0.000660, conc_loss 0.908, arc_loss 0.662, rel_loss 0.339, duration 8.5 seconds
+Epoch  168, Batch  1344, LR 0.000664, conc_loss 1.021, arc_loss 0.687, rel_loss 0.367, duration 8.5 seconds
+Epoch  169, Batch  1352, LR 0.000668, conc_loss 1.064, arc_loss 0.754, rel_loss 0.402, duration 8.6 seconds
+Epoch  170, Batch  1360, LR 0.000672, conc_loss 0.986, arc_loss 0.672, rel_loss 0.372, duration 8.5 seconds
+Epoch  171, Batch  1368, LR 0.000676, conc_loss 0.893, arc_loss 0.547, rel_loss 0.317, duration 8.6 seconds
+Epoch  172, Batch  1376, LR 0.000680, conc_loss 1.197, arc_loss 1.020, rel_loss 0.488, duration 8.5 seconds
+Epoch  173, Batch  1384, LR 0.000684, conc_loss 1.042, arc_loss 0.754, rel_loss 0.383, duration 8.6 seconds
+Epoch  174, Batch  1392, LR 0.000688, conc_loss 0.885, arc_loss 0.621, rel_loss 0.343, duration 8.6 seconds
+Epoch  175, Batch  1400, LR 0.000692, conc_loss 0.816, arc_loss 0.496, rel_loss 0.291, duration 8.6 seconds
+Epoch  176, Batch  1408, LR 0.000696, conc_loss 0.889, arc_loss 0.726, rel_loss 0.350, duration 8.5 seconds
+Epoch  177, Batch  1416, LR 0.000700, conc_loss 0.939, arc_loss 0.648, rel_loss 0.348, duration 8.6 seconds
+Epoch  178, Batch  1424, LR 0.000704, conc_loss 0.938, arc_loss 0.621, rel_loss 0.326, duration 8.6 seconds
+Epoch  179, Batch  1432, LR 0.000708, conc_loss 0.701, arc_loss 0.476, rel_loss 0.241, duration 8.6 seconds
+Epoch  180, Batch  1440, LR 0.000712, conc_loss 0.837, arc_loss 0.551, rel_loss 0.315, duration 8.5 seconds
+Evaluating and saving the model
+Loading test data from  ./amrlib/data/tdata_gsiinew/dev.txt.features.nowiki
+  0%|          | 0/1415 [00:00<?, ?it/s]  0%|          | 1/1415 [00:03<1:25:40,  3.64s/it]  7%|▋         | 92/1415 [00:07<01:38, 13.48it/s]  13%|█▎        | 184/1415 [00:11<01:06, 18.43it/s] 21%|██        | 292/1415 [00:18<01:08, 16.50it/s] 28%|██▊       | 400/1415 [00:22<00:48, 20.95it/s] 36%|███▌      | 511/1415 [00:25<00:38, 23.54it/s] 44%|████▍     | 622/1415 [00:28<00:28, 27.67it/s] 53%|█████▎    | 743/1415 [00:32<00:24, 27.87it/s] 61%|██████    | 865/1415 [00:37<00:19, 27.74it/s] 67%|██████▋   | 953/1415 [00:40<00:16, 28.01it/s] 72%|███████▏  | 1023/1415 [00:40<00:10, 35.72it/s] 74%|███████▎  | 1043/1415 [00:44<00:15, 23.63it/s] 81%|████████  | 1143/1415 [00:49<00:12, 21.28it/s] 88%|████████▊ | 1245/1415 [00:54<00:07, 21.84it/s] 94%|█████████▍| 1330/1415 [00:56<00:03, 24.94it/s]100%|██████████| 1415/1415 [00:56<00:00, 25.02it/s]
+Smatch F: 0.462.  Wrote 1415 AMR graphs to amrlib/data/model_parse_gsii/epoch180.pt.dev_generated
+Epoch  181, Batch  1448, LR 0.000715, conc_loss 0.789, arc_loss 0.436, rel_loss 0.277, duration 8.6 seconds
+Epoch  182, Batch  1456, LR 0.000719, conc_loss 0.682, arc_loss 0.433, rel_loss 0.246, duration 8.5 seconds
+Epoch  183, Batch  1464, LR 0.000723, conc_loss 0.921, arc_loss 0.648, rel_loss 0.344, duration 8.6 seconds
+Epoch  184, Batch  1472, LR 0.000727, conc_loss 0.749, arc_loss 0.460, rel_loss 0.277, duration 8.5 seconds
+Epoch  185, Batch  1480, LR 0.000731, conc_loss 0.779, arc_loss 0.538, rel_loss 0.305, duration 8.6 seconds
+Epoch  186, Batch  1488, LR 0.000735, conc_loss 1.074, arc_loss 0.943, rel_loss 0.433, duration 8.5 seconds
+Epoch  187, Batch  1496, LR 0.000739, conc_loss 0.833, arc_loss 0.590, rel_loss 0.321, duration 8.5 seconds
+Epoch  188, Batch  1504, LR 0.000743, conc_loss 0.875, arc_loss 0.557, rel_loss 0.328, duration 8.6 seconds
+Epoch  189, Batch  1512, LR 0.000747, conc_loss 0.758, arc_loss 0.560, rel_loss 0.275, duration 8.5 seconds
+Epoch  190, Batch  1520, LR 0.000751, conc_loss 0.654, arc_loss 0.346, rel_loss 0.233, duration 8.6 seconds
+Epoch  191, Batch  1528, LR 0.000755, conc_loss 1.031, arc_loss 0.827, rel_loss 0.396, duration 8.5 seconds
+Epoch  192, Batch  1536, LR 0.000759, conc_loss 1.066, arc_loss 0.846, rel_loss 0.392, duration 8.6 seconds
+Epoch  193, Batch  1544, LR 0.000763, conc_loss 0.708, arc_loss 0.411, rel_loss 0.248, duration 8.6 seconds
+Epoch  194, Batch  1552, LR 0.000767, conc_loss 0.764, arc_loss 0.450, rel_loss 0.276, duration 8.6 seconds
+Epoch  195, Batch  1560, LR 0.000771, conc_loss 0.899, arc_loss 0.685, rel_loss 0.341, duration 8.5 seconds
+Epoch  196, Batch  1568, LR 0.000775, conc_loss 0.889, arc_loss 0.547, rel_loss 0.329, duration 8.6 seconds
+Epoch  197, Batch  1576, LR 0.000779, conc_loss 0.777, arc_loss 0.523, rel_loss 0.287, duration 8.6 seconds
+Epoch  198, Batch  1584, LR 0.000783, conc_loss 0.852, arc_loss 0.609, rel_loss 0.325, duration 8.5 seconds
+Epoch  199, Batch  1592, LR 0.000787, conc_loss 0.788, arc_loss 0.599, rel_loss 0.313, duration 8.6 seconds
+Epoch  200, Batch  1600, LR 0.000791, conc_loss 0.810, arc_loss 0.574, rel_loss 0.297, duration 8.6 seconds
+Evaluating and saving the model
+Loading test data from  ./amrlib/data/tdata_gsiinew/dev.txt.features.nowiki
+  0%|          | 0/1415 [00:00<?, ?it/s]  0%|          | 1/1415 [00:02<55:15,  2.34s/it]  7%|▋         | 92/1415 [00:04<00:52, 25.13it/s] 13%|█▎        | 184/1415 [00:07<00:43, 28.61it/s] 21%|██        | 292/1415 [00:11<00:41, 26.88it/s] 28%|██▊       | 400/1415 [00:13<00:30, 33.08it/s] 36%|███▌      | 511/1415 [00:16<00:27, 33.44it/s] 44%|████▍     | 622/1415 [00:19<00:20, 38.22it/s] 53%|█████▎    | 743/1415 [00:22<00:18, 36.54it/s] 61%|██████    | 865/1415 [00:25<00:13, 39.50it/s] 67%|██████▋   | 953/1415 [00:27<00:12, 37.47it/s] 74%|███████▎  | 1042/1415 [00:30<00:10, 36.28it/s] 81%|████████  | 1143/1415 [00:34<00:08, 33.75it/s] 88%|████████▊ | 1245/1415 [00:37<00:04, 34.07it/s] 94%|█████████▍| 1330/1415 [00:38<00:02, 36.91it/s]100%|██████████| 1415/1415 [00:38<00:00, 36.42it/s]
+Smatch F: 0.487.  Wrote 1415 AMR graphs to amrlib/data/model_parse_gsii/epoch200.pt.dev_generated
+Training finished: 2023-01-23 17:10:32

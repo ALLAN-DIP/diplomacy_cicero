@@ -1,0 +1,4345 @@
+# ::id dip_test_0001.1
+# ::snt Hey Austria! I know AT is one of the least successful alliances in the game, so I'm super down to work together here, especially if we can get Russia and Turkey fighting.
+(a / amr-empty)
+
+# ::id dip_test_0001.2
+# ::snt Hey Germany! Just reaching out to say I think our two nations tend to benefit a ton from working together, and I'm very down to work together if you'd be interested!
+(a / amr-empty)
+
+# ::id dip_test_0001.3
+# ::snt Hey Italy! I think our two nations tend to do best when we can leave each other alone, so I'd love it if we could agree to not harass one another?
+(a / amr-empty)
+
+# ::id dip_test_0001.4
+# ::snt Hey France, absolutely! Are you up for a DMZ in Burgundy?
+(a / amr-empty)
+
+# ::id dip_test_0001.5
+# ::snt Hey Russia, just wanna say good luck and hopefully we can be friends!
+(a / amr-empty)
+
+# ::id dip_test_0001.6
+# ::snt I'm also down! Have you heard from either of them yet?
+(a / amr-empty)
+
+# ::id dip_test_0001.7
+# ::snt Hey France! I think we both have bigger concerns than each other so I'd like to propose an alliance between us. Would you be willing to agree to a DMZ in the Channel?
+(a / amr-empty)
+
+# ::id dip_test_0001.8
+# ::snt Hi Russia, good luck this game! Would you be interested in working together? Do you want to bounce Galicia?
+(a / amr-empty)
+
+# ::id dip_test_0001.9
+# ::snt Hey Austria! Just checking in. If there's anything I can do for you, feel free to ask!
+(a / amr-empty)
+
+# ::id dip_test_0001.10
+# ::snt Hey Italy! Just wanted to get things going. Let me know if there's anything I can do for you.
+(a / amr-empty)
+
+# ::id dip_test_0001.11
+# ::snt Hey Austria, just wanna say good luck and hopefully we can be friends!
+(a / amr-empty)
+
+# ::id dip_test_0001.12
+# ::snt Hey England! I'm more than happy to agree to that, I think our nations tend to do best when we don't harass one another. Would you like to focus together on attacking Germany, or would you rather move in separate directions?
+(a / amr-empty)
+
+# ::id dip_test_0001.13
+# ::snt Hey Germany! Just wanted to get things started here. If there's anything I can do for you, let me know!
+(a / amr-empty)
+
+# ::id dip_test_0001.14
+# ::snt I agree! I love playing as Italy, so I have no interest in causing problems for France and vice versa.
+(a / amr-empty)
+
+# ::id dip_test_0001.15
+# ::snt Hey, thanks for the offer! Will do.
+(a / amr-empty)
+
+# ::id dip_test_0001.16
+# ::snt Hey Italy, just wanna say good luck and hopefully we can be friends!
+(a / amr-empty)
+
+# ::id dip_test_0001.17
+# ::snt Thanks Turkey! I'm definitely down for that.
+(a / amr-empty)
+
+# ::id dip_test_0001.18
+# ::snt Hey Russia! I love an R/I, and I think it's one of the more effective alliances in the game. What do you say we work together to take out Turkey and then Austria?
+(a / amr-empty)
+
+# ::id dip_test_0001.19
+# ::snt Hey Russia! I'd like to take Norway this year, but I'm not planning on sending any further units your way. If there's anything I can do to help you, feel free to ask!
+(a / amr-empty)
+
+# ::id dip_test_0001.20
+# ::snt Hey England, that's great to hear! Good luck this game, let's stay in touch
+(a / amr-empty)
+
+# ::id dip_test_0001.21
+# ::snt Cheers!
+(a / amr-empty)
+
+# ::id dip_test_0001.22
+# ::snt Turkey messaged me just to wish me luck, nothing really consequential. Have you heard from them?
+(a / amr-empty)
+
+# ::id dip_test_0001.23
+# ::snt Hi Turkey! Thanks for reaching out. I definitely hope so too, but I understand that you can't just be friends with everyone. What are you thinking about for a strategy in the Balkans?
+(a / amr-empty)
+
+# ::id dip_test_0001.24
+# ::snt Absolutely! I'm glad we could come to an agreement so quickly, I look forward to our alliance!
+(a / amr-empty)
+
+# ::id dip_test_0001.25
+# ::snt Have you heard from Russia yet?
+(a / amr-empty)
+
+# ::id dip_test_0001.26
+# ::snt Excellent! I feel the same way, so I look forward to our alliance!
+(a / amr-empty)
+
+# ::id dip_test_0001.27
+# ::snt Hey England, sounds good to me! If you wouldn't mind convoying over rather than sending an army, that'd make me feel much better :)
+(a / amr-empty)
+
+# ::id dip_test_0001.28
+# ::snt I've heard from them, but nothing super substantial. They just wished me luck
+(a / amr-empty)
+
+# ::id dip_test_0001.29
+# ::snt I'm gonna move for Bulgaria for now. Are you moving for Austria?
+(a / amr-empty)
+
+# ::id dip_test_0001.30
+# ::snt Hey Italy, sounds good to me! I agree, IR is quite nice :)
+(a / amr-empty)
+
+# ::id dip_test_0001.31
+# ::snt I don't think I can do that; it would leave me completely open to France. However, I am planning on taking it with a fleet.
+(a / amr-empty)
+
+# ::id dip_test_0001.32
+# ::snt Hey Austria, sounds good to me! Bounce Galicia and work together sounds good to me, I think the R/A is one of the more powerful alliances on the board.
+(a / amr-empty)
+
+# ::id dip_test_0001.33
+# ::snt I'd be super down for that. I don't see any point in either of us moving there, and it just ties up a unit for each of us that we can use elsewhere.
+(a / amr-empty)
+
+# ::id dip_test_0001.34
+# ::snt Not sure yet. I definitely don't want to attack Austria and get stuck on 4 centres.
+(a / amr-empty)
+
+# ::id dip_test_0001.35
+# ::snt I have. He wants me to not take Norway with an army. Which is fine by me but I'm not going to oblige. What do you think of him?
+(a / amr-empty)
+
+# ::id dip_test_0001.36
+# ::snt Fair enough, as long as it's with a fleet, that works well!
+(a / amr-empty)
+
+# ::id dip_test_0001.37
+# ::snt Thanks England! And same for you.
+(a / amr-empty)
+
+# ::id dip_test_0001.38
+# ::snt Let's do an E/F against Germany. I'd like a second build this year, though. Do you mind supporting me into Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0001.39
+# ::snt Hey Germany! Just wanted to say hi. Let me know if there's anything I can do for you.
+(a / amr-empty)
+
+# ::id dip_test_0001.40
+# ::snt Okay!
+(a / amr-empty)
+
+# ::id dip_test_0001.41
+# ::snt Hey Turkey, same to you! Best of luck and hopefully we can be friends too :)
+(a / amr-empty)
+
+# ::id dip_test_0001.42
+# ::snt Good luck!
+(a / amr-empty)
+
+# ::id dip_test_0001.43
+# ::snt Yeah, I think so too! What do you think Turkey will do?
+(a / amr-empty)
+
+# ::id dip_test_0001.44
+# ::snt I've heard from Russia too now, they seem willing to work together
+(a / amr-empty)
+
+# ::id dip_test_0001.45
+# ::snt How do you want to split the Balkans?
+(a / amr-empty)
+
+# ::id dip_test_0001.46
+# ::snt No problem, I can support you into Belgium from Picardy!
+(a / amr-empty)
+
+# ::id dip_test_0001.47
+# ::snt Exactly my thoughts!
+(a / amr-empty)
+
+# ::id dip_test_0001.48
+# ::snt Well, like any Russian player I would be concerned about a strong North opening from him.
+(a / amr-empty)
+
+# ::id dip_test_0001.49
+# ::snt Hey Germany, best of luck! How's it going?
+(a / amr-empty)
+
+# ::id dip_test_0001.50
+# ::snt Sure thing. What do you make of Russia?
+(a / amr-empty)
+
+# ::id dip_test_0001.51
+# ::snt England is trying to convince me to attack you, and I want to give you the heads up since England has a very clear interest in Germany being destroyed, he's even asking for me to support him into Belgium this year.
+(a / amr-empty)
+
+# ::id dip_test_0001.52
+# ::snt He seems willing to cooperate with me at least. He probably wants to avoid conflict in the north at all costs.
+(a / amr-empty)
+
+# ::id dip_test_0001.53
+# ::snt Excellent. Are you thinking of opening into Burgundy?
+(a / amr-empty)
+
+# ::id dip_test_0001.54
+# ::snt I wonder if we could talk Germany into bouncing him out of Sweden.
+(a / amr-empty)
+
+# ::id dip_test_0001.55
+# ::snt I think Turkey will open standard and then decide from there. Maybe see where Italy is going, take advantage of that?
+(a / amr-empty)
+
+# ::id dip_test_0001.56
+# ::snt I'm actually going to open into Picardy. From there I can support you into Belgium, and I can also keep Germany out of Burgundy, and then next year we can move in on him.
+(a / amr-empty)
+
+# ::id dip_test_0001.57
+# ::snt Hey Germany, just wanted to wish you good luck! I'm thinking we might want to cooperate this game, maybe team up to fight off a potential juggernaut
+(a / amr-empty)
+
+# ::id dip_test_0001.58
+# ::snt That would be interesting, let's see what they say.
+(a / amr-empty)
+
+# ::id dip_test_0001.59
+# ::snt I'm not sure, what are you thinking?
+(a / amr-empty)
+
+# ::id dip_test_0001.60
+# ::snt Hey Austria, agreed! I'd like to stay friendly, we're both in tough spots
+(a / amr-empty)
+
+# ::id dip_test_0001.61
+# ::snt Turkey did message me to wish me luck and tell me we could be friends. So I think he might move to the Black Sea.
+(a / amr-empty)
+
+# ::id dip_test_0001.62
+# ::snt I'll shoot him a message. I'd like to see a strong Austria this game.
+(a / amr-empty)
+
+# ::id dip_test_0001.63
+# ::snt Great! I think Russia is going to try and stay friendly with both of us at first, and that's a dangerous game.
+(a / amr-empty)
+
+# ::id dip_test_0001.64
+# ::snt What are your feelings about Greece?
+(a / amr-empty)
+
+# ::id dip_test_0001.65
+# ::snt Same, thanks!
+(a / amr-empty)
+
+# ::id dip_test_0001.66
+# ::snt Hey Italy, good luck this game! I'd love if you and Austria stayed friendly
+(a / amr-empty)
+
+# ::id dip_test_0001.67
+# ::snt What are you thinking for a strategy in the Balkans?
+(a / amr-empty)
+
+# ::id dip_test_0001.68
+# ::snt Interesting, I appreciate the heads up. Let me try to get more information
+(a / amr-empty)
+
+# ::id dip_test_0001.69
+# ::snt I was thinking Greece and Serbia for me, and Bulgaria and Rumania for you. Do you want to work against Russia?
+(a / amr-empty)
+
+# ::id dip_test_0001.70
+# ::snt That sounds like a good plan. Germany should fall rather quickly.
+(a / amr-empty)
+
+# ::id dip_test_0001.71
+# ::snt Seems pretty friendly so far, hopefully we can stay on good terms. What are you thinking?
+(a / amr-empty)
+
+# ::id dip_test_0001.72
+# ::snt Sounds good, and no problem!
+(a / amr-empty)
+
+# ::id dip_test_0001.73
+# ::snt How do you want to approach Turkey?
+(a / amr-empty)
+
+# ::id dip_test_0001.74
+# ::snt Hey Russia, same to you!
+(a / amr-empty)
+
+# ::id dip_test_0001.75
+# ::snt I'd like to take him out, but of course the first move is crucial and Black Sea would be a good sign for that.
+(a / amr-empty)
+
+# ::id dip_test_0001.76
+# ::snt Thanks, hope we can have a nice peaceful border between us :)
+(a / amr-empty)
+
+# ::id dip_test_0001.77
+# ::snt Agreed!
+(a / amr-empty)
+
+# ::id dip_test_0001.78
+# ::snt I think Italy is also interested in taking Turkey out, which would be great.
+(a / amr-empty)
+
+# ::id dip_test_0001.79
+# ::snt Hey Austria! I know we're not super close to each other at the moment, but I just wanted to reach out and say I'm always open to communication if you'd like to work together at all in the future!
+(a / amr-empty)
+
+# ::id dip_test_0001.80
+# ::snt I think we should open standard, I'll try to get into Galicia and secure Rum, you should go for Bul and then see what happens.
+(a / amr-empty)
+
+# ::id dip_test_0001.81
+# ::snt Yeah, he messaged me that too! Which is good, gives us all options :)
+(a / amr-empty)
+
+# ::id dip_test_0001.82
+# ::snt Perfect
+(a / amr-empty)
+
+# ::id dip_test_0001.83
+# ::snt Hey Russia! I know we're not super close to each other at the moment, but I just wanted to reach out and say I'm always open to communication if you'd like to work together at all in the future! I've also heard some talk about England wanting to focus on Scandinavia early, and I wanted to give you the heads up.
+(a / amr-empty)
+
+# ::id dip_test_0001.84
+# ::snt Yeah me too! I'll see what I can do.
+(a / amr-empty)
+
+# ::id dip_test_0001.85
+# ::snt That works for me. I can't immediately go against Russia but after a few turns maybe
+(a / amr-empty)
+
+# ::id dip_test_0001.86
+# ::snt Hey France, I appreciate it! And I will definitely keep that in mind. Do you think you're going to work with Germany or England?
+(a / amr-empty)
+
+# ::id dip_test_0001.87
+# ::snt Awesome! Do you want to work with Austria for the time being, and take out Turkey first?
+(a / amr-empty)
+
+# ::id dip_test_0001.88
+# ::snt Are you gonna be going against Italy?
+(a / amr-empty)
+
+# ::id dip_test_0001.89
+# ::snt He seems noncommital. I don't know what to make of him. I'd like to keep him out of Sweden if possible. I think it'd help both of us.
+(a / amr-empty)
+
+# ::id dip_test_0001.90
+# ::snt So are you thinking a standard Lepanto?
+(a / amr-empty)
+
+# ::id dip_test_0001.91
+# ::snt I'm not super interested in it myself, but I don't want to see Austria in there.
+(a / amr-empty)
+
+# ::id dip_test_0001.92
+# ::snt Hey France, best of luck and thanks for the heads up! Always open to communicating, and I'm also super open to working together if the opportunity presents itself!
+(a / amr-empty)
+
+# ::id dip_test_0001.93
+# ::snt Are we gonna bounce black sea?
+(a / amr-empty)
+
+# ::id dip_test_0001.94
+# ::snt No, not at first, probably once I pick up my first or second build.
+(a / amr-empty)
+
+# ::id dip_test_0001.95
+# ::snt Yeah, that would be perfect! We've already established a good relationship.
+(a / amr-empty)
+
+# ::id dip_test_0001.96
+# ::snt That's what I'm thinking. I know Turkey's going for Bulgaria, so it shouldn't be too hard to take him out
+(a / amr-empty)
+
+# ::id dip_test_0001.97
+# ::snt Good! I just got the same message. I think he is just going for Tunis this year, but maybe he will commit against Turkey after that.
+(a / amr-empty)
+
+# ::id dip_test_0001.98
+# ::snt Sounds good, best of luck to you as well! And I'd love to work together if the opportunity presents itself!
+(a / amr-empty)
+
+# ::id dip_test_0001.99
+# ::snt Sounds good!
+(a / amr-empty)
+
+# ::id dip_test_0001.100
+# ::snt Awesome! Just to be clear, you're focusing on securing the north before moving south? If so, I think we should be good
+(a / amr-empty)
+
+# ::id dip_test_0001.101
+# ::snt Ok cool
+(a / amr-empty)
+
+# ::id dip_test_0001.102
+# ::snt How about you, what are you thinking?
+(a / amr-empty)
+
+# ::id dip_test_0001.103
+# ::snt Might as well, good way to ensure neither of us takes it.
+(a / amr-empty)
+
+# ::id dip_test_0001.104
+# ::snt Awesome! How do you want to play the first few turns? I'll go for the standard lepanto opening, but apart from that we should think about how to maximise our units
+(a / amr-empty)
+
+# ::id dip_test_0001.105
+# ::snt Sounds good to me! Yeah, I assume he'll be waiting to see how this first move goes.
+(a / amr-empty)
+
+# ::id dip_test_0001.106
+# ::snt Honestly I'm not sure yet, I'm going to see how this first turn plays out and go from there. Have you decided on who you're going to work with yet?
+(a / amr-empty)
+
+# ::id dip_test_0001.107
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_0001.108
+# ::snt I'm thinking Vienna to Galicia and Budapest to Serbia. Have you decided what to do with Venice?
+(a / amr-empty)
+
+# ::id dip_test_0001.109
+# ::snt Yeah, me and England will establish a peaceful border and I'll secure Rum. We'll see how the next year goes, but taking Turkey should be fairly simple :)
+(a / amr-empty)
+
+# ::id dip_test_0001.110
+# ::snt I would assume so.
+(a / amr-empty)
+
+# ::id dip_test_0001.111
+# ::snt Perfect. I'll open standard lepanto, and hopefully Austria and Turkey fight.
+(a / amr-empty)
+
+# ::id dip_test_0001.112
+# ::snt Have you decided what to do about the Black Sea?
+(a / amr-empty)
+
+# ::id dip_test_0001.113
+# ::snt Agreed. If he opens south, are you thinking of convoying to Norway?
+(a / amr-empty)
+
+# ::id dip_test_0001.114
+# ::snt I haven't decided yet
+(a / amr-empty)
+
+# ::id dip_test_0001.115
+# ::snt Awesome! Have you heard much from the east?
+(a / amr-empty)
+
+# ::id dip_test_0001.116
+# ::snt Yep, Turkey wants to bounce, should I let him in?
+(a / amr-empty)
+
+# ::id dip_test_0001.117
+# ::snt I'll probably just leave it in Venice. I can't really move it anywhere that won't compromise our position. I definitely don't want to leave it, but I also don't want to antagonize France
+(a / amr-empty)
+
+# ::id dip_test_0001.118
+# ::snt I see, have you heard from Russia? Are you thinking of going to the Black Sea?
+(a / amr-empty)
+
+# ::id dip_test_0001.119
+# ::snt I would bounce, but that's just me.
+(a / amr-empty)
+
+# ::id dip_test_0001.120
+# ::snt Have you heard much from the west? I'd rather not have Germany try and interfere with us
+(a / amr-empty)
+
+# ::id dip_test_0001.121
+# ::snt Also, do you mind if I ask if you're going to bounce in Black Sea?
+(a / amr-empty)
+
+# ::id dip_test_0001.122
+# ::snt Russia and I are bouncing the black sea
+(a / amr-empty)
+
+# ::id dip_test_0001.123
+# ::snt Just to be safe
+(a / amr-empty)
+
+# ::id dip_test_0001.124
+# ::snt Are you planning to go against Austria?
+(a / amr-empty)
+
+# ::id dip_test_0001.125
+# ::snt Not really, there isn't really anyone who is committed to an alliance with me at this point.
+(a / amr-empty)
+
+# ::id dip_test_0001.126
+# ::snt True, it's a bit too risky to let Turkey in, and even if I was working with him, I'd rather not leave Sev open.
+(a / amr-empty)
+
+# ::id dip_test_0001.127
+# ::snt Yes, that's the plan :)
+(a / amr-empty)
+
+# ::id dip_test_0001.128
+# ::snt Yeah, I think I agree with that. I've only talked to Germany briefly, we just wanted to be friendly.
+(a / amr-empty)
+
+# ::id dip_test_0001.129
+# ::snt Yep, that's the plan!
+(a / amr-empty)
+
+# ::id dip_test_0001.130
+# ::snt How about you?
+(a / amr-empty)
+
+# ::id dip_test_0001.131
+# ::snt That makes sense
+(a / amr-empty)
+
+# ::id dip_test_0001.132
+# ::snt Yeah, that's what I've gotten from them too. I was worried that they might want to move south.
+(a / amr-empty)
+
+# ::id dip_test_0001.133
+# ::snt That's fair, what do you think he will do with his other unit?
+(a / amr-empty)
+
+# ::id dip_test_0001.134
+# ::snt Perfect!
+(a / amr-empty)
+
+# ::id dip_test_0001.135
+# ::snt They agreed to stay friendly. Have they talked to you about what they're going to do about England and France?
+(a / amr-empty)
+
+# ::id dip_test_0001.136
+# ::snt I'm not planning on it. I'll be taking it with a fleet.
+(a / amr-empty)
+
+# ::id dip_test_0001.137
+# ::snt Ok cool. I'm gonna work with Austria for a few turns but once you get into position I'll move for Greece
+(a / amr-empty)
+
+# ::id dip_test_0001.138
+# ::snt Same, my choice is really between England and Germany. England wants me to attack Germany with him, while Germany is more suspicious of England.
+(a / amr-empty)
+
+# ::id dip_test_0001.139
+# ::snt You?
+(a / amr-empty)
+
+# ::id dip_test_0001.140
+# ::snt And then after that we can split Austria
+(a / amr-empty)
+
+# ::id dip_test_0001.141
+# ::snt No, I've actually only spoken to England, Germany, and Austria so far. You?
+(a / amr-empty)
+
+# ::id dip_test_0001.142
+# ::snt Got it, sounds good
+(a / amr-empty)
+
+# ::id dip_test_0001.143
+# ::snt I've spoken to everyone now lol
+(a / amr-empty)
+
+# ::id dip_test_0001.144
+# ::snt No, not really. They just said they'd like for us to stay friendly
+(a / amr-empty)
+
+# ::id dip_test_0001.145
+# ::snt Who reached out to you first?
+(a / amr-empty)
+
+# ::id dip_test_0001.146
+# ::snt That's good, I don't think they will interfere
+(a / amr-empty)
+
+# ::id dip_test_0001.147
+# ::snt Russia, Austria, and you
+(a / amr-empty)
+
+# ::id dip_test_0001.148
+# ::snt Awesome!
+(a / amr-empty)
+
+# ::id dip_test_0001.149
+# ::snt How are you planning to open?
+(a / amr-empty)
+
+# ::id dip_test_0001.150
+# ::snt Turkey wants to bounce, I'll let him in, not a huge risk in letting him into it if you're opening Lepanto. Austria and I are going to bounce in Galicia, pretty standard. You?
+(a / amr-empty)
+
+# ::id dip_test_0001.151
+# ::snt That's perfect!
+(a / amr-empty)
+
+# ::id dip_test_0001.152
+# ::snt Just wanted to confirm with you that Russia told me he's planning on bouncing in Galicia? I trust that what you've heard from them is the truth
+(a / amr-empty)
+
+# ::id dip_test_0001.153
+# ::snt Hey Germany, just wanna say good luck and hopefully we can be friends!
+(a / amr-empty)
+
+# ::id dip_test_0001.154
+# ::snt Hey England, just wanna say good luck and hopefully we can be friends!
+(a / amr-empty)
+
+# ::id dip_test_0001.155
+# ::snt Awesome!
+(a / amr-empty)
+
+# ::id dip_test_0001.156
+# ::snt Hey France, just wanna say good luck and hopefully we can be friends!
+(a / amr-empty)
+
+# ::id dip_test_0001.157
+# ::snt Yeah me too
+(a / amr-empty)
+
+# ::id dip_test_0001.158
+# ::snt Yep! That's what he said.
+(a / amr-empty)
+
+# ::id dip_test_0001.159
+# ::snt Awesome. Have you heard from Russia or Austria much?
+(a / amr-empty)
+
+# ::id dip_test_0001.160
+# ::snt Perfect. Just wanted to double check.
+(a / amr-empty)
+
+# ::id dip_test_0001.161
+# ::snt Sounds good! You too, and yeah I'm down for that, I think Turkey and France are some of the best late game allies!
+(a / amr-empty)
+
+# ::id dip_test_0001.162
+# ::snt Oh interesting, that's very different than my experience haha
+(a / amr-empty)
+
+# ::id dip_test_0001.163
+# ::snt That's true, we can meet up in Italy!
+(a / amr-empty)
+
+# ::id dip_test_0001.164
+# ::snt Cheers! I like having friends. You should probably try to get on good terms with Austria.
+(a / amr-empty)
+
+# ::id dip_test_0001.165
+# ::snt Hey Turkey, good luck to you too! I'd love to stay on good terms
+(a / amr-empty)
+
+# ::id dip_test_0001.166
+# ::snt Absolutely! I look forward to it!
+(a / amr-empty)
+
+# ::id dip_test_0001.167
+# ::snt Yeah I'm getting along with Austria pretty well
+(a / amr-empty)
+
+# ::id dip_test_0001.168
+# ::snt It's a very different one. Hopefully they're more to be trusted than not
+(a / amr-empty)
+
+# ::id dip_test_0001.169
+# ::snt Sounds good
+(a / amr-empty)
+
+# ::id dip_test_0001.170
+# ::snt Me too
+(a / amr-empty)
+
+# ::id dip_test_0001.171
+# ::snt Yeah, not too much. Are you just gonna stay neutral for now?
+(a / amr-empty)
+
+# ::id dip_test_0001.172
+# ::snt That's great. I'm getting along with Russia too but I don't like how noncommital he is. I hope he gets bounced out of Sweden.
+(a / amr-empty)
+
+# ::id dip_test_0001.173
+# ::snt Hopefully so!
+(a / amr-empty)
+
+# ::id dip_test_0001.174
+# ::snt Have you talked with Italy much?
+(a / amr-empty)
+
+# ::id dip_test_0001.175
+# ::snt That's the plan
+(a / amr-empty)
+
+# ::id dip_test_0001.176
+# ::snt I would imagine he will
+(a / amr-empty)
+
+# ::id dip_test_0001.177
+# ::snt Hopefully.
+(a / amr-empty)
+
+# ::id dip_test_0001.178
+# ::snt What are your thoughts on Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0001.179
+# ::snt Are you getting along with Germany?
+(a / amr-empty)
+
+# ::id dip_test_0001.180
+# ::snt Yep. Have you heard much from them?
+(a / amr-empty)
+
+# ::id dip_test_0001.181
+# ::snt I haven't really tried, since they're usually not a huge concern for France early game
+(a / amr-empty)
+
+# ::id dip_test_0001.182
+# ::snt Though it's not surprising since I don't interact with them much
+(a / amr-empty)
+
+# ::id dip_test_0001.183
+# ::snt I think it goes without saying that I'd like it.
+(a / amr-empty)
+
+# ::id dip_test_0001.184
+# ::snt That's fair. I guess we'll see what happens!
+(a / amr-empty)
+
+# ::id dip_test_0001.185
+# ::snt Yeah! Let's just hope we both come out of this in a good spot hahaha
+(a / amr-empty)
+
+# ::id dip_test_0001.186
+# ::snt Have you heard much from the west? I'm wondering how England will be moving in the north
+(a / amr-empty)
+
+# ::id dip_test_0001.187
+# ::snt Yep! At the very least, we know we can trust each other :)
+(a / amr-empty)
+
+# ::id dip_test_0001.188
+# ::snt He said he's not planning much beyond taking Norway, but that's it.
+(a / amr-empty)
+
+# ::id dip_test_0001.189
+# ::snt Exactly!
+(a / amr-empty)
+
+# ::id dip_test_0001.190
+# ::snt That's interesting. Hopefully that means he's friendly with Germany and not looking for conflict in the east
+(a / amr-empty)
+
+# ::id dip_test_0001.191
+# ::snt Of course haha, just wondering what you're thinking in that regard
+(a / amr-empty)
+
+# ::id dip_test_0001.192
+# ::snt Fingers crossed
+(a / amr-empty)
+
+# ::id dip_test_0001.193
+# ::snt I've talked to Italy a little, we agreed to try and stay out of each other's ways.
+(a / amr-empty)
+
+# ::id dip_test_0001.194
+# ::snt Gotcha. I talked with Italy some as well and we said we are both gonna stay neutral
+(a / amr-empty)
+
+# ::id dip_test_0001.195
+# ::snt Yeah, that seems like a good strategy for Italy. Have you heard anything from Russia?
+(a / amr-empty)
+
+# ::id dip_test_0001.196
+# ::snt What do you think Turkey is going to do?
+(a / amr-empty)
+
+# ::id dip_test_0001.197
+# ::snt Did they tell you they were going to bounce the Black Sea?
+(a / amr-empty)
+
+# ::id dip_test_0001.198
+# ::snt Well I'd like two builds this year. I'm hoping to get Belgium.
+(a / amr-empty)
+
+# ::id dip_test_0001.199
+# ::snt That's what they told me
+(a / amr-empty)
+
+# ::id dip_test_0001.200
+# ::snt Ok gotcha
+(a / amr-empty)
+
+# ::id dip_test_0001.201
+# ::snt Yeah he's just gonna open up standard
+(a / amr-empty)
+
+# ::id dip_test_0001.202
+# ::snt Hopefully.
+(a / amr-empty)
+
+# ::id dip_test_0001.203
+# ::snt Understood
+(a / amr-empty)
+
+# ::id dip_test_0001.204
+# ::snt Fingers crossed! How are you feeling about the Black Sea?
+(a / amr-empty)
+
+# ::id dip_test_0001.205
+# ::snt Not really sure yet, but the bounce in Black Sea is much safer for me.
+(a / amr-empty)
+
+# ::id dip_test_0001.206
+# ::snt Fair enough!
+(a / amr-empty)
+
+# ::id dip_test_0002.1
+# ::snt I'm going for Greece, do you want me to support you into Rumania?
+(a / amr-empty)
+
+# ::id dip_test_0002.2
+# ::snt I'm going for Greece, are you going for Tunis?
+(a / amr-empty)
+
+# ::id dip_test_0002.3
+# ::snt I'm surprised England opened north
+(a / amr-empty)
+
+# ::id dip_test_0002.4
+# ::snt I think I'm on decent terms with him.
+(a / amr-empty)
+
+# ::id dip_test_0002.5
+# ::snt Yeah, definitely a good sign for us!
+(a / amr-empty)
+
+# ::id dip_test_0002.6
+# ::snt Yep, that's the plan. Are you using your fleet for Greece?
+(a / amr-empty)
+
+# ::id dip_test_0002.7
+# ::snt That worked out fairly well!
+(a / amr-empty)
+
+# ::id dip_test_0002.8
+# ::snt Great, that worked out fairly well! Do you want to DMZ the Black Sea now?
+(a / amr-empty)
+
+# ::id dip_test_0002.9
+# ::snt Are you planning to bounce Russia in Sweden?
+(a / amr-empty)
+
+# ::id dip_test_0002.10
+# ::snt Can you support Yorkshire into Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0002.11
+# ::snt Yes, I am.
+(a / amr-empty)
+
+# ::id dip_test_0002.12
+# ::snt Yup, that's the plan
+(a / amr-empty)
+
+# ::id dip_test_0002.13
+# ::snt What do you think France is doing? Is Germany and England both going to Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0002.14
+# ::snt Ok, are you planning to go against Russia?
+(a / amr-empty)
+
+# ::id dip_test_0002.15
+# ::snt I just wanna know so I can make plans
+(a / amr-empty)
+
+# ::id dip_test_0002.16
+# ::snt Great, that worked out fairly well! Any plans for this move?
+(a / amr-empty)
+
+# ::id dip_test_0002.17
+# ::snt Yeah, I can do that!
+(a / amr-empty)
+
+# ::id dip_test_0002.18
+# ::snt I assume we'll be focusing together on attacking Germany?
+(a / amr-empty)
+
+# ::id dip_test_0002.19
+# ::snt I'm going to use Sev to support Ukr-rum and then we'll start moving on Austria next year.
+(a / amr-empty)
+
+# ::id dip_test_0002.20
+# ::snt Do you need support into Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0002.21
+# ::snt I'm going for Greece, do you need me to support you into Rumania?
+(a / amr-empty)
+
+# ::id dip_test_0002.22
+# ::snt I'm going to use Vienna to cover Trieste.
+(a / amr-empty)
+
+# ::id dip_test_0002.23
+# ::snt I would like to be in the Black Sea just to make sure I can trust you
+(a / amr-empty)
+
+# ::id dip_test_0002.24
+# ::snt Hey Italy, let me know if I can help you with anything
+(a / amr-empty)
+
+# ::id dip_test_0002.25
+# ::snt Who are you thinking of siding with, between Austria and Russia?
+(a / amr-empty)
+
+# ::id dip_test_0002.26
+# ::snt I haven't decided yet. What are you thinking?
+(a / amr-empty)
+
+# ::id dip_test_0002.27
+# ::snt Sounds good to me! Yeah, I'll move to Rum from Ukr and then we'll start moving on Turkey next year.
+(a / amr-empty)
+
+# ::id dip_test_0002.28
+# ::snt Looks like things are going well, just be careful with Trieste
+(a / amr-empty)
+
+# ::id dip_test_0002.29
+# ::snt I haven't decided yet either
+(a / amr-empty)
+
+# ::id dip_test_0002.30
+# ::snt Thanks for the heads up!
+(a / amr-empty)
+
+# ::id dip_test_0002.31
+# ::snt Yup! We should make quick work of him.
+(a / amr-empty)
+
+# ::id dip_test_0002.32
+# ::snt Thanks Germany! Let me know if you hear anything about the east!
+(a / amr-empty)
+
+# ::id dip_test_0002.33
+# ::snt Great!
+(a / amr-empty)
+
+# ::id dip_test_0002.34
+# ::snt Excellent! Sounds like a plan!
+(a / amr-empty)
+
+# ::id dip_test_0002.35
+# ::snt Just wanted to make sure we were on the same page!
+(a / amr-empty)
+
+# ::id dip_test_0002.36
+# ::snt Nah, I'm not. At least, not right now.
+(a / amr-empty)
+
+# ::id dip_test_0002.37
+# ::snt Is Italy moving for Tunis or convoying to Greece?
+(a / amr-empty)
+
+# ::id dip_test_0002.38
+# ::snt Let me know once you decide. If I'm gonna go with one of them it will probably be easier if I know you are going against the other
+(a / amr-empty)
+
+# ::id dip_test_0002.39
+# ::snt Nothing useful, just that Turkey seemed friendly
+(a / amr-empty)
+
+# ::id dip_test_0002.40
+# ::snt Ok, we will see what happens
+(a / amr-empty)
+
+# ::id dip_test_0002.41
+# ::snt What's your read on France?
+(a / amr-empty)
+
+# ::id dip_test_0002.42
+# ::snt Is that ok?
+(a / amr-empty)
+
+# ::id dip_test_0002.43
+# ::snt I'm not sure, he hasn't really said anything about it. I'm not sure if he is going for Tunis or not.
+(a / amr-empty)
+
+# ::id dip_test_0002.44
+# ::snt I think I'll be fine. I'm moving from Yorkshire to Belgium.
+(a / amr-empty)
+
+# ::id dip_test_0002.45
+# ::snt Sounds good, I'll let you know!
+(a / amr-empty)
+
+# ::id dip_test_0002.46
+# ::snt Yes we will.
+(a / amr-empty)
+
+# ::id dip_test_0002.47
+# ::snt Would you mind if I take Greece for now and we can trade it later?
+(a / amr-empty)
+
+# ::id dip_test_0002.48
+# ::snt Awesome
+(a / amr-empty)
+
+# ::id dip_test_0002.49
+# ::snt Sounds good
+(a / amr-empty)
+
+# ::id dip_test_0002.50
+# ::snt How do you want to proceed after the first year?
+(a / amr-empty)
+
+# ::id dip_test_0002.51
+# ::snt I think we should go after France. We can see how the builds shake out.
+(a / amr-empty)
+
+# ::id dip_test_0002.52
+# ::snt Agreed
+(a / amr-empty)
+
+# ::id dip_test_0002.53
+# ::snt I'd prefer not, why do you want it now?
+(a / amr-empty)
+
+# ::id dip_test_0002.54
+# ::snt It's just easier to defend if I have it already
+(a / amr-empty)
+
+# ::id dip_test_0002.55
+# ::snt You aren't going to be able to take it this turn anyway and it will be easier if I have it then you if Italy goes for it
+(a / amr-empty)
+
+# ::id dip_test_0002.56
+# ::snt Who are you thinking of siding with in the east, between Russia and Turkey?
+(a / amr-empty)
+
+# ::id dip_test_0002.57
+# ::snt Just a heads up, I'm going to bounce you in Sweden this turn
+(a / amr-empty)
+
+# ::id dip_test_0002.58
+# ::snt I'm taking Norway with a fleet as promised. I think Germany might bounce you out of Sweden.
+(a / amr-empty)
+
+# ::id dip_test_0002.59
+# ::snt I know you said you weren't interested in Greece but I'm gonna take it for now so Austria can't have it
+(a / amr-empty)
+
+# ::id dip_test_0002.60
+# ::snt I really don't like that idea, we should work together. I'd be willing to help you against England.
+(a / amr-empty)
+
+# ::id dip_test_0002.61
+# ::snt No, that makes no sense for either of us. A DMZ in Black Sea would be perfect so we can work together against Austria and Italy.
+(a / amr-empty)
+
+# ::id dip_test_0002.62
+# ::snt Thanks, hopefully he doesn't.
+(a / amr-empty)
+
+# ::id dip_test_0002.63
+# ::snt I'm trying to work with Russia
+(a / amr-empty)
+
+# ::id dip_test_0002.64
+# ::snt Italy is going for Tunis, they have no reason to try and take it now.
+(a / amr-empty)
+
+# ::id dip_test_0002.65
+# ::snt Indeed! Are you planning on moving Sev-rum this turn?
+(a / amr-empty)
+
+# ::id dip_test_0002.66
+# ::snt I'll be going for Tunis and holding Venice
+(a / amr-empty)
+
+# ::id dip_test_0002.67
+# ::snt I'm just looking to keep balance, especially given the south
+(a / amr-empty)
+
+# ::id dip_test_0002.68
+# ::snt That's perfectly fine with me, and actually works out better for me since I don't have to commit my fleet in the Ionian Sea
+(a / amr-empty)
+
+# ::id dip_test_0002.69
+# ::snt Sounds good, I was just curious since I haven't spoken to Russia much
+(a / amr-empty)
+
+# ::id dip_test_0002.70
+# ::snt I wouldn't put it past him.
+(a / amr-empty)
+
+# ::id dip_test_0002.71
+# ::snt However, that doesn't mean I'll try to help him if he does.
+(a / amr-empty)
+
+# ::id dip_test_0002.72
+# ::snt How's it looking in the east?
+(a / amr-empty)
+
+# ::id dip_test_0002.73
+# ::snt Pretty decent, pretty standard start all around. How about you?
+(a / amr-empty)
+
+# ::id dip_test_0002.74
+# ::snt Yeah, I agree. As long as you're focused on France or Germany and not me, I'd be happy to help you against Germany.
+(a / amr-empty)
+
+# ::id dip_test_0002.75
+# ::snt Yep, I'll be going Ukr-rum with Sev support, pretty standard :)
+(a / amr-empty)
+
+# ::id dip_test_0002.76
+# ::snt That'd be great.
+(a / amr-empty)
+
+# ::id dip_test_0002.77
+# ::snt Ok. Are we still going against Russia?
+(a / amr-empty)
+
+# ::id dip_test_0002.78
+# ::snt Sounds good!
+(a / amr-empty)
+
+# ::id dip_test_0002.79
+# ::snt How do I know I can trust you?
+(a / amr-empty)
+
+# ::id dip_test_0002.80
+# ::snt You're not in position yet
+(a / amr-empty)
+
+# ::id dip_test_0002.81
+# ::snt Are you and Austria planning on bouncing Russia out of Rumania?
+(a / amr-empty)
+
+# ::id dip_test_0002.82
+# ::snt That's not what I was planning on doing, why?
+(a / amr-empty)
+
+# ::id dip_test_0002.83
+# ::snt Yeah pretty similar, I assume you and Austria are teaming up on Turkey?
+(a / amr-empty)
+
+# ::id dip_test_0002.84
+# ::snt Yep, that's the plan! Any plans for your end?
+(a / amr-empty)
+
+# ::id dip_test_0002.85
+# ::snt I'm still deciding right now, I'll have to see how this next year plays out first. I'm just glad I don't have to worry about Italy for now
+(a / amr-empty)
+
+# ::id dip_test_0002.86
+# ::snt Okay, that's all he told me as well. Turkey also wants to bounce in the Black Sea, which I obviously don't want to do haha.
+(a / amr-empty)
+
+# ::id dip_test_0002.87
+# ::snt You can't really, I guess I could let you into the Black Sea this year and trust you'll vacate it next year, but I'd rather not.
+(a / amr-empty)
+
+# ::id dip_test_0002.88
+# ::snt Yeah, I'm glad as well!
+(a / amr-empty)
+
+# ::id dip_test_0002.89
+# ::snt How do I know you won't take it?
+(a / amr-empty)
+
+# ::id dip_test_0002.90
+# ::snt Just wanted to give you the heads up though, England is planning on focusing on Scandinavia
+(a / amr-empty)
+
+# ::id dip_test_0002.91
+# ::snt I'm glad to see you and Austria are getting along so well.
+(a / amr-empty)
+
+# ::id dip_test_0002.92
+# ::snt Indeed! We're far apart enough that there's no need to worry about an alliance, so there's no reason not to be friendly :)
+(a / amr-empty)
+
+# ::id dip_test_0002.93
+# ::snt I agree.
+(a / amr-empty)
+
+# ::id dip_test_0002.94
+# ::snt Have you heard much from France or Germany?
+(a / amr-empty)
+
+# ::id dip_test_0002.95
+# ::snt Glad to see that we can both be trusted!
+(a / amr-empty)
+
+# ::id dip_test_0002.96
+# ::snt I've heard from both. They seem to want to attack each other.
+(a / amr-empty)
+
+# ::id dip_test_0002.97
+# ::snt Agreed! How are things looking in the east?
+(a / amr-empty)
+
+# ::id dip_test_0002.98
+# ::snt France has been friendly towards me, so I'm not expecting them to be hostile towards me any time soon
+(a / amr-empty)
+
+# ::id dip_test_0002.99
+# ::snt Not surprising. If they do, that would leave an opening for you to strike, assuming you're planning to convoy the army to Norway?
+(a / amr-empty)
+
+# ::id dip_test_0002.100
+# ::snt It would.
+(a / amr-empty)
+
+# ::id dip_test_0002.101
+# ::snt Hopefully good. I'm taking Tunis with my army in Apulia and holding Venice. How about you?
+(a / amr-empty)
+
+# ::id dip_test_0002.102
+# ::snt Interesting. I guess that leaves France as the odd one out, but they'll still get two builds
+(a / amr-empty)
+
+# ::id dip_test_0002.103
+# ::snt Are you and France working together to stop Germany from getting Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0002.104
+# ::snt Sounds good. I'm moving my fleet to Portugal and supporting England into Belgium
+(a / amr-empty)
+
+# ::id dip_test_0002.105
+# ::snt Makes sense! I'd love for England to commit to attacking Russia
+(a / amr-empty)
+
+# ::id dip_test_0002.106
+# ::snt I'm not sure. I hope not!
+(a / amr-empty)
+
+# ::id dip_test_0002.107
+# ::snt I'm hoping to get Belgium. Why?
+(a / amr-empty)
+
+# ::id dip_test_0002.108
+# ::snt It would indeed. Are you thinking of doing a Lepanto?
+(a / amr-empty)
+
+# ::id dip_test_0002.109
+# ::snt I think it would be smart if England and France worked together to stop Germany from getting it, I'm hoping that's what is going to happen.
+(a / amr-empty)
+
+# ::id dip_test_0002.110
+# ::snt That's what France has said, and given that England doesn't need to worry about a Russian attack, I assume that's what's going to happen. We'll see what happens.
+(a / amr-empty)
+
+# ::id dip_test_0002.111
+# ::snt It doesn't seem like Germany is going to help you much. If you let France have it, you will eventually be in a battle against them. I haven't talked to France much, but I think they are more likely to help you than Germany.
+(a / amr-empty)
+
+# ::id dip_test_0002.112
+# ::snt Yeah, that makes sense.
+(a / amr-empty)
+
+# ::id dip_test_0002.113
+# ::snt At the moment I'm not sure. If Austria and Turkey ally, I'll probably have to, but we'll see what happens
+(a / amr-empty)
+
+# ::id dip_test_0002.114
+# ::snt Are you planning to move against Turkey? I'm currently working with Russia against them, I think it would be beneficial if we were all working together against them.
+(a / amr-empty)
+
+# ::id dip_test_0002.115
+# ::snt Thanks for the insight.
+(a / amr-empty)
+
+# ::id dip_test_0002.116
+# ::snt I'd like to see that.
+(a / amr-empty)
+
+# ::id dip_test_0002.117
+# ::snt No problem, I just want to see a strong England.
+(a / amr-empty)
+
+# ::id dip_test_0002.118
+# ::snt Definitely the plan at the moment. I'll be convoying Apulia to Tunis and holding Venice.
+(a / amr-empty)
+
+# ::id dip_test_0002.119
+# ::snt As do I.
+(a / amr-empty)
+
+# ::id dip_test_0002.120
+# ::snt I'd imagine you would too
+(a / amr-empty)
+
+# ::id dip_test_0002.121
+# ::snt Awesome, I think that will work out well.
+(a / amr-empty)
+
+# ::id dip_test_0002.122
+# ::snt Naturally.
+(a / amr-empty)
+
+# ::id dip_test_0002.123
+# ::snt I'd also like to see a strong Italy.
+(a / amr-empty)
+
+# ::id dip_test_0002.124
+# ::snt A strong Italy would obviously also like to see a strong England :)
+(a / amr-empty)
+
+# ::id dip_test_0002.125
+# ::snt Fingers crossed!
+(a / amr-empty)
+
+# ::id dip_test_0002.126
+# ::snt Very true.
+(a / amr-empty)
+
+# ::id dip_test_0002.127
+# ::snt Austria?
+(a / amr-empty)
+
+# ::id dip_test_0002.128
+# ::snt Are you planning to take Trieste?
+(a / amr-empty)
+
+# ::id dip_test_0002.129
+# ::snt Austria hasn't been responding to me
+(a / amr-empty)
+
+# ::id dip_test_0002.130
+# ::snt Yes, sorry.
+(a / amr-empty)
+
+# ::id dip_test_0002.131
+# ::snt Do you want support into Rumania or am I taking Greece?
+(a / amr-empty)
+
+# ::id dip_test_0002.132
+# ::snt I'm gonna take Greece for now so Italy doesn't get it
+(a / amr-empty)
+
+# ::id dip_test_0002.133
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_0002.134
+# ::snt You can take it back next year and we can switch it out
+(a / amr-empty)
+
+# ::id dip_test_0002.135
+# ::snt I haven't decided yet. I might hold since it's a pretty vulnerable position
+(a / amr-empty)
+
+# ::id dip_test_0002.136
+# ::snt It will definitely be worth it to take it, we can take Austria pretty quick
+(a / amr-empty)
+
+# ::id dip_test_0002.137
+# ::snt Fair point. I'll think about it
+(a / amr-empty)
+
+# ::id dip_test_0003.1
+# ::snt I mean, it's really up to you, but you'll be much more secure if you don't build in Ankara.
+(a / amr-empty)
+
+# ::id dip_test_0003.2
+# ::snt Interesting, I'm glad you stayed cautious
+(a / amr-empty)
+
+# ::id dip_test_0003.3
+# ::snt Sorry France, I think I made a mistake
+(a / amr-empty)
+
+# ::id dip_test_0003.4
+# ::snt How did Turkey get the Black Sea?
+(a / amr-empty)
+
+# ::id dip_test_0003.5
+# ::snt I have no idea, that was very unexpected.
+(a / amr-empty)
+
+# ::id dip_test_0003.6
+# ::snt What made you decide to support England into Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0003.7
+# ::snt Yeah, given that they have to choose between attacking me or attacking England, I'm not too worried
+(a / amr-empty)
+
+# ::id dip_test_0003.8
+# ::snt Very interesting. It makes sense in retrospect since Turkey will be building in Ankara, but I was expecting Sev to support the move to Rum
+(a / amr-empty)
+
+# ::id dip_test_0003.9
+# ::snt Do you think they are working with Russia?
+(a / amr-empty)
+
+# ::id dip_test_0003.10
+# ::snt That worked out great for you, Italy going for Tunis is great for us!
+(a / amr-empty)
+
+# ::id dip_test_0003.11
+# ::snt Agreed
+(a / amr-empty)
+
+# ::id dip_test_0003.12
+# ::snt Yeah, I don't know why Turkey would build in Ankara other than to move to Armenia next turn.
+(a / amr-empty)
+
+# ::id dip_test_0003.13
+# ::snt That worked out well for you. It's definitely going to be interesting to see where England builds
+(a / amr-empty)
+
+# ::id dip_test_0003.14
+# ::snt What are you thinking for builds?
+(a / amr-empty)
+
+# ::id dip_test_0003.15
+# ::snt How did you get the Black Sea? Are you going to build in Ankara and move to Armenia?
+(a / amr-empty)
+
+# ::id dip_test_0003.16
+# ::snt No I'm building in Smyrna just in case Italy comes after me
+(a / amr-empty)
+
+# ::id dip_test_0003.17
+# ::snt Yeah, pretty surprised that Germany decided to support England, I was expecting Germany to bounce him out for sure
+(a / amr-empty)
+
+# ::id dip_test_0003.18
+# ::snt England seemed more communicative and I thought it would make sense to keep my border secure. Clearly it was a mistake though. How do you want to go forward?
+(a / amr-empty)
+
+# ::id dip_test_0003.19
+# ::snt I'm not planning on building in Ankara
+(a / amr-empty)
+
+# ::id dip_test_0003.20
+# ::snt Yeah, that worked out great for us. What is going on with Turkey? I'm surprised they got the Black Sea.
+(a / amr-empty)
+
+# ::id dip_test_0003.21
+# ::snt Honestly I'm not sure yet, I'm waiting to see where builds are to make a decision. What are you thinking?
+(a / amr-empty)
+
+# ::id dip_test_0003.22
+# ::snt Alright, makes sense. Italy's move to Tunis makes it look like they aren't going for you.
+(a / amr-empty)
+
+# ::id dip_test_0003.23
+# ::snt Great!
+(a / amr-empty)
+
+# ::id dip_test_0003.24
+# ::snt I'm probably going to go double army, try to secure my northern border
+(a / amr-empty)
+
+# ::id dip_test_0003.25
+# ::snt He said he's not planning on building in Ankara, but we'll see. I'll probably have to build in Warsaw.
+(a / amr-empty)
+
+# ::id dip_test_0003.26
+# ::snt Are you still planning on going against Russia?
+(a / amr-empty)
+
+# ::id dip_test_0003.27
+# ::snt For obvious reasons haha
+(a / amr-empty)
+
+# ::id dip_test_0003.28
+# ::snt Either that or try to take Rum with it. I guess we'll have to see what Russia says
+(a / amr-empty)
+
+# ::id dip_test_0003.29
+# ::snt I assume that move to the Black Sea wasn't planned?
+(a / amr-empty)
+
+# ::id dip_test_0003.30
+# ::snt Yeah, what do you think we should do?
+(a / amr-empty)
+
+# ::id dip_test_0003.31
+# ::snt Yeah
+(a / amr-empty)
+
+# ::id dip_test_0003.32
+# ::snt I'm building an army in Edinburgh and a fleet in London. I'm thinking an army might be more useful right now.
+(a / amr-empty)
+
+# ::id dip_test_0003.33
+# ::snt Haha yes, the build in Warsaw makes sense
+(a / amr-empty)
+
+# ::id dip_test_0003.34
+# ::snt I don't know, I will have to see what happens with Italy's build
+(a / amr-empty)
+
+# ::id dip_test_0003.35
+# ::snt Makes sense
+(a / amr-empty)
+
+# ::id dip_test_0003.36
+# ::snt It will probably be a fleet in Naples
+(a / amr-empty)
+
+# ::id dip_test_0003.37
+# ::snt Sounds good. What about me, should I double fleet build and focus on taking down Italy or would you be alright with me building an army in Brest and going after Germany?
+(a / amr-empty)
+
+# ::id dip_test_0003.38
+# ::snt Yeah, I don't think I can afford to build in Stp or Mos without England's cooperation, and I don't want to anger him until we've taken out Turkey.
+(a / amr-empty)
+
+# ::id dip_test_0003.39
+# ::snt That's smart, a battle against Germany wouldn't be good right now.
+(a / amr-empty)
+
+# ::id dip_test_0003.40
+# ::snt Yeah
+(a / amr-empty)
+
+# ::id dip_test_0003.41
+# ::snt Nope, but not much I could have done about it. The good news is he didn't move his army to Armenia and he said he's not going to build in Ankara, so hopefully I can sneak in there.
+(a / amr-empty)
+
+# ::id dip_test_0003.42
+# ::snt I'm happy to let you into Sweden now though
+(a / amr-empty)
+
+# ::id dip_test_0003.43
+# ::snt Have you talked to Italy at all?
+(a / amr-empty)
+
+# ::id dip_test_0003.44
+# ::snt I'm surprised that Germany didn't let you have Sweden
+(a / amr-empty)
+
+# ::id dip_test_0003.45
+# ::snt I don't think there's much you could have done about it either. At least you still have a pretty strong position
+(a / amr-empty)
+
+# ::id dip_test_0003.46
+# ::snt Yeah, I think I'm in pretty good shape for now, we'll just have to see how it plays out.
+(a / amr-empty)
+
+# ::id dip_test_0003.47
+# ::snt Not in a while, why?
+(a / amr-empty)
+
+# ::id dip_test_0003.48
+# ::snt I'm glad to hear that! What are your thoughts about England?
+(a / amr-empty)
+
+# ::id dip_test_0003.49
+# ::snt Fingers crossed!
+(a / amr-empty)
+
+# ::id dip_test_0003.50
+# ::snt He says he's going to let me in next turn, and I'd rather not fight him right now. You and Italy are on good terms, is he planning on going for Turkey with us?
+(a / amr-empty)
+
+# ::id dip_test_0003.51
+# ::snt Are you planning to build a fleet in Naples?
+(a / amr-empty)
+
+# ::id dip_test_0003.52
+# ::snt And what are you planning on building?
+(a / amr-empty)
+
+# ::id dip_test_0003.53
+# ::snt I was just curious, he told me he is planning to go for you.
+(a / amr-empty)
+
+# ::id dip_test_0003.54
+# ::snt I believe so
+(a / amr-empty)
+
+# ::id dip_test_0003.55
+# ::snt I don't know where he is going to go, but I think we are on good terms.
+(a / amr-empty)
+
+# ::id dip_test_0003.56
+# ::snt Are you planning to let Russia into Sweden?
+(a / amr-empty)
+
+# ::id dip_test_0003.57
+# ::snt I am. Fleet in Naples makes sense to me, since I'll probably need naval support against Turkey
+(a / amr-empty)
+
+# ::id dip_test_0003.58
+# ::snt I think so, unless England or France can offer me something in return
+(a / amr-empty)
+
+# ::id dip_test_0003.59
+# ::snt Yeah I figured
+(a / amr-empty)
+
+# ::id dip_test_0003.60
+# ::snt So are you planning to go for me?
+(a / amr-empty)
+
+# ::id dip_test_0003.61
+# ::snt England and France are both pretty reasonable, I'm not sure which way I'll go yet. Probably double army to be safe
+(a / amr-empty)
+
+# ::id dip_test_0003.62
+# ::snt Ok, that's smart
+(a / amr-empty)
+
+# ::id dip_test_0003.63
+# ::snt Makes sense
+(a / amr-empty)
+
+# ::id dip_test_0003.64
+# ::snt How do you want to defend against it?
+(a / amr-empty)
+
+# ::id dip_test_0003.65
+# ::snt I'm definitely considering it. It's probably one of my better options given that you're in the Black Sea
+(a / amr-empty)
+
+# ::id dip_test_0003.66
+# ::snt Unless you have a better plan
+(a / amr-empty)
+
+# ::id dip_test_0003.67
+# ::snt What about you?
+(a / amr-empty)
+
+# ::id dip_test_0003.68
+# ::snt Well if you go for me I won't have a reason to help you against Austria
+(a / amr-empty)
+
+# ::id dip_test_0003.69
+# ::snt I have to see what Russia is gonna do. If I don't have to worry about you and Italy I can defend against it easily
+(a / amr-empty)
+
+# ::id dip_test_0003.70
+# ::snt I'll probably have to build in Warsaw, so I can move my fleet to Sweden and my army to Stp, and be prepared if England makes a move towards Stp.
+(a / amr-empty)
+
+# ::id dip_test_0003.71
+# ::snt I'm building in Smyrna so I will easily be able to defend against you
+(a / amr-empty)
+
+# ::id dip_test_0003.72
+# ::snt That's good, the Lepanto would be especially effective with Turkey focusing on me.
+(a / amr-empty)
+
+# ::id dip_test_0003.73
+# ::snt That makes sense. Have you decided what you're doing in the south?
+(a / amr-empty)
+
+# ::id dip_test_0003.74
+# ::snt It all really depends on what Turkey and Austria decide to do, I haven't gotten that far yet. What about you?
+(a / amr-empty)
+
+# ::id dip_test_0003.75
+# ::snt I'll probably go double army, not sure where though
+(a / amr-empty)
+
+# ::id dip_test_0003.76
+# ::snt Okay, that's probably a good idea.
+(a / amr-empty)
+
+# ::id dip_test_0003.77
+# ::snt Cool
+(a / amr-empty)
+
+# ::id dip_test_0003.78
+# ::snt If you ever need help, let me know
+(a / amr-empty)
+
+# ::id dip_test_0003.79
+# ::snt Thanks, I'll let you know!
+(a / amr-empty)
+
+# ::id dip_test_0003.80
+# ::snt Fair enough
+(a / amr-empty)
+
+# ::id dip_test_0003.81
+# ::snt Ok, I can defend against it if you are able to defend against Russia
+(a / amr-empty)
+
+# ::id dip_test_0003.82
+# ::snt Do you know what Italy is planning to do?
+(a / amr-empty)
+
+# ::id dip_test_0003.83
+# ::snt How do you think we should split Turkey's supply centers?
+(a / amr-empty)
+
+# ::id dip_test_0003.84
+# ::snt I assume he's going after Turkey
+(a / amr-empty)
+
+# ::id dip_test_0003.85
+# ::snt So are you gonna go for it?
+(a / amr-empty)
+
+# ::id dip_test_0003.86
+# ::snt I haven't decided yet. I'll let you know when I do
+(a / amr-empty)
+
+# ::id dip_test_0003.87
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_0003.88
+# ::snt Well it would make sense for me to get Ankara and Smyrna, since you've gotten the Balkans, but Con and Bul are up for grabs.
+(a / amr-empty)
+
+# ::id dip_test_0003.89
+# ::snt Ok, thanks
+(a / amr-empty)
+
+# ::id dip_test_0003.90
+# ::snt That makes sense, I'll probably take Bul and Con then
+(a / amr-empty)
+
+# ::id dip_test_0003.91
+# ::snt Have you talked to Italy much?
+(a / amr-empty)
+
+# ::id dip_test_0003.92
+# ::snt Sounds good, we can figure out the exact details once we get there.
+
+I have talked to Italy a bit, mostly to discuss our plans for Turkey, which we haven't really had to coordinate much on. I'll reach out again, and see what he thinks.
+(a / amr-empty)
+
+# ::id dip_test_0003.93
+# ::snt Ok, sounds good
+(a / amr-empty)
+
+# ::id dip_test_0004.1
+# ::snt Are you planning to go after Italy?
+(a / amr-empty)
+
+# ::id dip_test_0004.2
+# ::snt I'm not sure yet, I haven't decided
+(a / amr-empty)
+
+# ::id dip_test_0004.3
+# ::snt I'm still a bit worried about Germany and England
+(a / amr-empty)
+
+# ::id dip_test_0004.4
+# ::snt What are your plans for this round? Do you want me to support hold you in Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0004.5
+# ::snt Yeah, it's probably smart to be. The fleet in Marseilles is aggressive against Italy.
+(a / amr-empty)
+
+# ::id dip_test_0004.6
+# ::snt Probably, though I'm still not completely sure. What are your plans for the east? Are you and Russia planning on going after Turkey?
+(a / amr-empty)
+
+# ::id dip_test_0004.7
+# ::snt Yes, I'd like that. Are you going to move Paris to Burgundy?
+(a / amr-empty)
+
+# ::id dip_test_0004.8
+# ::snt Yeah, that's my plan. What are you thinking about doing?
+(a / amr-empty)
+
+# ::id dip_test_0004.9
+# ::snt Is there any reason why you decided to build in Warsaw?
+(a / amr-empty)
+
+# ::id dip_test_0004.10
+# ::snt We haven't decided yet.
+(a / amr-empty)
+
+# ::id dip_test_0004.11
+# ::snt I thought I told you that's what I was doing?
+(a / amr-empty)
+
+# ::id dip_test_0004.12
+# ::snt I wouldn't be surprised if you and Russia teamed up on Germany soon, it looks like you guys are already kind of set up to do so
+(a / amr-empty)
+
+# ::id dip_test_0004.13
+# ::snt Right, but I thought you were building in St. Petersburg
+(a / amr-empty)
+
+# ::id dip_test_0004.14
+# ::snt It looks like I'm going to go for it. Sorry to mislead you
+(a / amr-empty)
+
+# ::id dip_test_0004.15
+# ::snt Why do you think we are set up to do so?
+(a / amr-empty)
+
+# ::id dip_test_0004.16
+# ::snt I'm trying to figure out what to do.
+(a / amr-empty)
+
+# ::id dip_test_0004.17
+# ::snt That's fair, I'm assuming you're going to be focusing on taking out Germany?
+(a / amr-empty)
+
+# ::id dip_test_0004.18
+# ::snt If so, maybe you can convince Germany to support hold you in Belgium and you could move North Sea to Heligo and London to North Sea?
+(a / amr-empty)
+
+# ::id dip_test_0004.19
+# ::snt I don't understand why you would mislead me
+(a / amr-empty)
+
+# ::id dip_test_0004.20
+# ::snt What are you thinking about for this turn? We could take Bulgaria by supporting your army in Serbia there. I'd move to Armenia as well, and I'm pretty sure that would mean we take one or the other.
+(a / amr-empty)
+
+# ::id dip_test_0004.21
+# ::snt Also, is there anything I could help you with with my army in Warsaw? I had agreed with Germany that I would only build there so I could move my fleet to Sweden and be prepared if England moved to Stp, but that's obviously not what happened haha.
+(a / amr-empty)
+
+# ::id dip_test_0004.22
+# ::snt I thought you were planning on letting me into Sweden, but that obviously didn't happen haha. I'm not going to get into a war with you, and I have no intention of fighting you.
+(a / amr-empty)
+
+# ::id dip_test_0004.23
+# ::snt Do you mind if I hold for now? Italy is gonna come after me and I want to defend against it.
+(a / amr-empty)
+
+# ::id dip_test_0004.24
+# ::snt What's your plan for this turn?
+(a / amr-empty)
+
+# ::id dip_test_0004.25
+# ::snt I think I'll make a move for Sweden and/or Burgundy
+(a / amr-empty)
+
+# ::id dip_test_0004.26
+# ::snt Turkey would be able to hold Bulgaria by using his fleet in the Black Sea to support, and Con to support hold Bul. I think we should wait until you are in Armenia so we can take Turkey's supply centers in one turn.
+(a / amr-empty)
+
+# ::id dip_test_0004.27
+# ::snt I could support you into Sweden.
+(a / amr-empty)
+
+# ::id dip_test_0004.28
+# ::snt Sorry, that's why I tried to clear the air, so there wasn't any misunderstanding
+(a / amr-empty)
+
+# ::id dip_test_0004.29
+# ::snt Yeah, I don't mind. I will also be able to defend myself from Italy if he decides to come after me.
+(a / amr-empty)
+
+# ::id dip_test_0004.30
+# ::snt What are you thinking for this year?
+(a / amr-empty)
+
+# ::id dip_test_0004.31
+# ::snt And we can plan more specifically after this turn.
+(a / amr-empty)
+
+# ::id dip_test_0004.32
+# ::snt Are you planning to attack Russia?
+(a / amr-empty)
+
+# ::id dip_test_0004.33
+# ::snt Where are you planning to send your fleets?
+(a / amr-empty)
+
+# ::id dip_test_0004.34
+# ::snt I'm going to move for Sweden, and also prepare for a potential war on my eastern front
+(a / amr-empty)
+
+# ::id dip_test_0004.35
+# ::snt Can you move to the Aegean? I'll try to move to East Med, and if you get bounced in Aegean, then at least we've prevented Turkey from moving there and can still convoy my army.
+(a / amr-empty)
+
+# ::id dip_test_0004.36
+# ::snt No worries, I should have mentioned I'd have to build there in the first place, since it doesn't really affect anything.
+(a / amr-empty)
+
+# ::id dip_test_0004.37
+# ::snt I haven't decided yet. Why?
+(a / amr-empty)
+
+# ::id dip_test_0004.38
+# ::snt Sounds good, are you planning on taking Belgium back or are you fine with England keeping it?
+(a / amr-empty)
+
+# ::id dip_test_0004.39
+# ::snt He's weak and vulnerable.
+(a / amr-empty)
+
+# ::id dip_test_0004.40
+# ::snt It's in my best interests
+(a / amr-empty)
+
+# ::id dip_test_0004.41
+# ::snt Have you been talking to Germany about attacking Russia?
+(a / amr-empty)
+
+# ::id dip_test_0004.42
+# ::snt I'd like to take it eventually
+(a / amr-empty)
+
+# ::id dip_test_0004.43
+# ::snt Not really.
+(a / amr-empty)
+
+# ::id dip_test_0004.44
+# ::snt I don't really know yet.
+(a / amr-empty)
+
+# ::id dip_test_0004.45
+# ::snt Yes, I can probably move there. I'm worried that Turkey might support Bul, so I want to use Greece to support myself into Bul in the fall, but I can try to move to the Aegean.
+(a / amr-empty)
+
+# ::id dip_test_0004.46
+# ::snt That's fair, are you planning on taking it this turn or in the fall?
+(a / amr-empty)
+
+# ::id dip_test_0004.47
+# ::snt Ok, I wasn't sure if you had talked to him much.
+(a / amr-empty)
+
+# ::id dip_test_0004.48
+# ::snt How?
+(a / amr-empty)
+
+# ::id dip_test_0004.49
+# ::snt Yeah, it's all good
+(a / amr-empty)
+
+# ::id dip_test_0004.50
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_0004.51
+# ::snt Fair, let me know if you decide anything
+(a / amr-empty)
+
+# ::id dip_test_0004.52
+# ::snt I'm curious to see what Italy does
+(a / amr-empty)
+
+# ::id dip_test_0004.53
+# ::snt Yeah, me too
+(a / amr-empty)
+
+# ::id dip_test_0004.54
+# ::snt What would you prefer?
+(a / amr-empty)
+
+# ::id dip_test_0004.55
+# ::snt Will do. What are you planning on doing?
+(a / amr-empty)
+
+# ::id dip_test_0004.56
+# ::snt I suppose that's true, so how do you think we should do this? I could try moving to Armenia while you move your fleet to the Aegean, but that would mean my fleet would probably be destroyed.
+(a / amr-empty)
+
+# ::id dip_test_0004.57
+# ::snt Yeah, I've talked to Germany a little bit. We're still undecided about what we're going to do.
+(a / amr-empty)
+
+# ::id dip_test_0004.58
+# ::snt We could wait to take one of his supply centers until you are in Armenia, and then take it.
+(a / amr-empty)
+
+# ::id dip_test_0004.59
+# ::snt And then take the other one the next turn
+(a / amr-empty)
+
+# ::id dip_test_0004.60
+# ::snt It gets me centres, and allows me to have influence over the Eastern theatre
+(a / amr-empty)
+
+# ::id dip_test_0004.61
+# ::snt Having an ally that's sandwiched between me and an opponent is usually a bad situation for the other party
+(a / amr-empty)
+
+# ::id dip_test_0004.62
+# ::snt Well you are in a better position to go for Austria and I would rather you go for that
+(a / amr-empty)
+
+# ::id dip_test_0004.63
+# ::snt We can easily take Austria
+(a / amr-empty)
+
+# ::id dip_test_0004.64
+# ::snt Going to Sweden and Burgundy, probably
+(a / amr-empty)
+
+# ::id dip_test_0004.65
+# ::snt Thanks
+(a / amr-empty)
+
+# ::id dip_test_0004.66
+# ::snt Okay, so what are your moves this turn then? And how do you want me to move my army in Warsaw?
+(a / amr-empty)
+
+# ::id dip_test_0004.67
+# ::snt I think we could take Austria easily regardless, but I'm not too worried about that
+(a / amr-empty)
+
+# ::id dip_test_0004.68
+# ::snt It's not that I don't want to work with you. I just want to be clear that I've made my decision, and I'm sticking to it
+(a / amr-empty)
+
+# ::id dip_test_0004.69
+# ::snt What's your relationship with Russia?
+(a / amr-empty)
+
+# ::id dip_test_0004.70
+# ::snt Not great
+(a / amr-empty)
+
+# ::id dip_test_0004.71
+# ::snt I'm planning on moving my fleet to the Aegean Sea and rearranging the armies in the Balkans.
+(a / amr-empty)
+
+# ::id dip_test_0004.72
+# ::snt And what are your moves?
+(a / amr-empty)
+
+# ::id dip_test_0004.73
+# ::snt Okay, if we're going to wait a turn, then I'll just hold most of my units. And I think I'm going to try to move my fleet to Armenia.
+(a / amr-empty)
+
+# ::id dip_test_0004.74
+# ::snt No problem
+(a / amr-empty)
+
+# ::id dip_test_0004.75
+# ::snt Just want to give you the heads up that I'm not coming after you, the fleet in Marseilles is to move it to Spain
+(a / amr-empty)
+
+# ::id dip_test_0004.76
+# ::snt Okay, thank you for letting me know. I'll be moving East against Turkey
+(a / amr-empty)
+
+# ::id dip_test_0004.77
+# ::snt Personally I'd prefer that you wait till the fall to take it, that way I can move to Burgundy in the Spring to set up an attack on Belgium in the fall and not have to worry about the army in Belgium retreating into Burgundy and threatening Marseilles. Would you be okay with waiting until the fall to take Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0004.78
+# ::snt Sounds good
+(a / amr-empty)
+
+# ::id dip_test_0004.79
+# ::snt Do you want support into Sweden?
+(a / amr-empty)
+
+# ::id dip_test_0004.80
+# ::snt Are you willing to support me into Sweden in the Fall?
+(a / amr-empty)
+
+# ::id dip_test_0004.81
+# ::snt I don't think I'd be willing to do that
+(a / amr-empty)
+
+# ::id dip_test_0004.82
+# ::snt That would be great! I can then help you out with Germany.
+(a / amr-empty)
+
+# ::id dip_test_0004.83
+# ::snt Potentially, yes.
+(a / amr-empty)
+
+# ::id dip_test_0004.84
+# ::snt Great! Are you moving there in the spring?
+(a / amr-empty)
+
+# ::id dip_test_0004.85
+# ::snt Yes, I'll be moving from the Gulf of Bothnia to Sweden this turn.
+(a / amr-empty)
+
+# ::id dip_test_0004.86
+# ::snt Would you like to go after Austria?
+(a / amr-empty)
+
+# ::id dip_test_0004.87
+# ::snt What are you proposing?
+(a / amr-empty)
+
+# ::id dip_test_0004.88
+# ::snt Okay, that's fine. If you do move to Burgundy, I'd prefer that you not support yourself in
+(a / amr-empty)
+
+# ::id dip_test_0004.89
+# ::snt You take Budapest and Vienna and I take Serbia and Greece. We can negotiate who gets Trieste
+(a / amr-empty)
+
+# ::id dip_test_0004.90
+# ::snt Are you still planning on sneaking in to Armenia?
+(a / amr-empty)
+
+# ::id dip_test_0004.91
+# ::snt Do you know what Russia is planning to do with that army in Warsaw?
+(a / amr-empty)
+
+# ::id dip_test_0004.92
+# ::snt Austria is planning on waiting a turn, so I'll probably hold most of my units for the time being.
+(a / amr-empty)
+
+# ::id dip_test_0004.93
+# ::snt Okay, thanks for letting me know
+(a / amr-empty)
+
+# ::id dip_test_0004.94
+# ::snt Sounds like a plan, how do you want to go about doing this?
+(a / amr-empty)
+
+# ::id dip_test_0004.95
+# ::snt Fair
+(a / amr-empty)
+
+# ::id dip_test_0004.96
+# ::snt Well I'll have to defend for now
+(a / amr-empty)
+
+# ::id dip_test_0004.97
+# ::snt We will see how the next turn goes and decide who takes what
+(a / amr-empty)
+
+# ::id dip_test_0004.98
+# ::snt Okay, that's probably the safest thing to do.
+(a / amr-empty)
+
+# ::id dip_test_0004.99
+# ::snt Cool!
+(a / amr-empty)
+
+# ::id dip_test_0004.100
+# ::snt Ok great
+(a / amr-empty)
+
+# ::id dip_test_0004.101
+# ::snt I don't think I'll be moving for Burgundy this turn
+(a / amr-empty)
+
+# ::id dip_test_0004.102
+# ::snt France and England are probably trying to get you to go after Russia
+(a / amr-empty)
+
+# ::id dip_test_0004.103
+# ::snt Do you want to organize a bounce somewhere?
+(a / amr-empty)
+
+# ::id dip_test_0004.104
+# ::snt Sounds good!
+(a / amr-empty)
+
+# ::id dip_test_0004.105
+# ::snt What are you thinking?
+(a / amr-empty)
+
+# ::id dip_test_0004.106
+# ::snt They might be trying to get me to help them
+(a / amr-empty)
+
+# ::id dip_test_0004.107
+# ::snt I'm not sure, I'll ask him
+(a / amr-empty)
+
+# ::id dip_test_0004.108
+# ::snt Ok, that's good.
+(a / amr-empty)
+
+# ::id dip_test_0004.109
+# ::snt Good to know, thanks
+(a / amr-empty)
+
+# ::id dip_test_0004.110
+# ::snt Nothing for this turn, maybe for the next
+(a / amr-empty)
+
+# ::id dip_test_0004.111
+# ::snt Thank you
+(a / amr-empty)
+
+# ::id dip_test_0004.112
+# ::snt No problem. How are things going in the west?
+(a / amr-empty)
+
+# ::id dip_test_0004.113
+# ::snt Pretty good
+(a / amr-empty)
+
+# ::id dip_test_0004.114
+# ::snt I've decided that I will not be moving to Burgundy
+(a / amr-empty)
+
+# ::id dip_test_0004.115
+# ::snt Nice
+(a / amr-empty)
+
+# ::id dip_test_0004.116
+# ::snt What about you? Any new developments?
+(a / amr-empty)
+
+# ::id dip_test_0004.117
+# ::snt Are you planning to attack Russia?
+(a / amr-empty)
+
+# ::id dip_test_0004.118
+# ::snt I'm planning to move to Sweden
+(a / amr-empty)
+
+# ::id dip_test_0004.119
+# ::snt Are you planning on attacking Italy?
+(a / amr-empty)
+
+# ::id dip_test_0004.120
+# ::snt I'm not sure, I'll probably have to see how this year plays out first. I'm still not sure what I'm doing
+(a / amr-empty)
+
+# ::id dip_test_0004.121
+# ::snt Sounds good, what are your plans for this year?
+(a / amr-empty)
+
+# ::id dip_test_0004.122
+# ::snt Ok, just curious
+(a / amr-empty)
+
+# ::id dip_test_0004.123
+# ::snt What about you?
+(a / amr-empty)
+
+# ::id dip_test_0004.124
+# ::snt Okay, keep me updated if you figure anything out, I could potentially be able to help you out.
+(a / amr-empty)
+
+# ::id dip_test_0004.125
+# ::snt Preemptively defend myself, and hopefully gain Sweden. Not sure what I'll do after that though
+(a / amr-empty)
+
+# ::id dip_test_0004.126
+# ::snt Are you worried about that army in Warsaw?
+(a / amr-empty)
+
+# ::id dip_test_0004.127
+# ::snt Sounds good. I'm hoping to move to Burgundy to support an attack on Belgium in the fall, just wanted to give you a heads up
+(a / amr-empty)
+
+# ::id dip_test_0004.128
+# ::snt Do you know what's happening with Turkey and Austria?
+(a / amr-empty)
+
+# ::id dip_test_0004.129
+# ::snt Will do, what are you planning on doing with England and Germany?
+(a / amr-empty)
+
+# ::id dip_test_0004.130
+# ::snt Cool, thanks
+(a / amr-empty)
+
+# ::id dip_test_0004.131
+# ::snt I'll support you into Burgundy.
+(a / amr-empty)
+
+# ::id dip_test_0004.132
+# ::snt I think that Turkey is about to be in a very bad situation
+(a / amr-empty)
+
+# ::id dip_test_0004.133
+# ::snt I'm always worried, but I'm not going to start a war I can't win
+(a / amr-empty)
+
+# ::id dip_test_0004.134
+# ::snt Not really, nothing that affects you.
+(a / amr-empty)
+
+# ::id dip_test_0004.135
+# ::snt It seems that way.
+(a / amr-empty)
+
+# ::id dip_test_0004.136
+# ::snt I'm just gonna hold for now, see what happens
+(a / amr-empty)
+
+# ::id dip_test_0004.137
+# ::snt How are your relations with Russia?
+(a / amr-empty)
+
+# ::id dip_test_0004.138
+# ::snt Right now England is helping me into Sweden, but that's about it. Germany is suspicious of me, but I don't plan on attacking him at this time. How about you?
+(a / amr-empty)
+
+# ::id dip_test_0004.139
+# ::snt Yeah, I guess that army could be potentially used against you, but it would be pretty foolish of Russia to do so. I don't expect you to be able to stop them
+(a / amr-empty)
+
+# ::id dip_test_0004.140
+# ::snt I think they're pretty good. Why do you ask?
+(a / amr-empty)
+
+# ::id dip_test_0004.141
+# ::snt England seems like a really strong player, so you might want to be cautious, he could be up to something.
+(a / amr-empty)
+
+# ::id dip_test_0004.142
+# ::snt Yeah, I'm getting a bit nervous about England. We'll see how this year plays out. It's kind of confusing because England made the move to Belgium that I wasn't expecting Germany to support
+(a / amr-empty)
+
+# ::id dip_test_0004.143
+# ::snt How are things going in the west?
+(a / amr-empty)
+
+# ::id dip_test_0004.144
+# ::snt Is that all good?
+(a / amr-empty)
+
+# ::id dip_test_0004.145
+# ::snt Are you planning on attacking France?
+(a / amr-empty)
+
+# ::id dip_test_0004.146
+# ::snt Pretty well.
+(a / amr-empty)
+
+# ::id dip_test_0004.147
+# ::snt Yeah, it's pretty quiet
+(a / amr-empty)
+
+# ::id dip_test_0004.148
+# ::snt Are you going after Russia?
+(a / amr-empty)
+
+# ::id dip_test_0004.149
+# ::snt You?
+(a / amr-empty)
+
+# ::id dip_test_0004.150
+# ::snt Not right now, but I may later.
+(a / amr-empty)
+
+# ::id dip_test_0004.151
+# ::snt Are you moving to Burgundy?
+(a / amr-empty)
+
+# ::id dip_test_0004.152
+# ::snt Yeah
+(a / amr-empty)
+
+# ::id dip_test_0004.153
+# ::snt Yeah, I think so.
+(a / amr-empty)
+
+# ::id dip_test_0004.154
+# ::snt That's good.
+(a / amr-empty)
+
+# ::id dip_test_0004.155
+# ::snt Are you attacking Turkey?
+(a / amr-empty)
+
+# ::id dip_test_0004.156
+# ::snt I haven't decided yet. Why do you ask?
+(a / amr-empty)
+
+# ::id dip_test_0004.157
+# ::snt Are you planning to go for Italy?
+(a / amr-empty)
+
+# ::id dip_test_0004.158
+# ::snt I'm curious cause Italy said he is planning to go for me
+(a / amr-empty)
+
+# ::id dip_test_0004.159
+# ::snt You have a good chance at taking Galicia
+(a / amr-empty)
+
+# ::id dip_test_0004.160
+# ::snt I'm not planning on attacking him, though I'd be willing to go after him later if I see an opening
+(a / amr-empty)
+
+# ::id dip_test_0004.161
+# ::snt That's true, but I'm not sure if it's the best choice for me to make at the moment.
+(a / amr-empty)
+
+# ::id dip_test_0004.162
+# ::snt Sorry for the delayed response. To be honest I don't think I'm planning on going after Italy at the moment, though I'd be willing to do so if I see an opening later on
+(a / amr-empty)
+
+# ::id dip_test_0004.163
+# ::snt Do you think it would be worthwhile for me to talk to Italy about convoying into Turkey?
+(a / amr-empty)
+
+# ::id dip_test_0004.164
+# ::snt Sorry for the delayed response. I am planning on moving Paris to Burgundy
+(a / amr-empty)
+
+# ::id dip_test_0004.165
+# ::snt Are you moving North Sea to Heligo and London to North Sea?
+(a / amr-empty)
+
+# ::id dip_test_0004.166
+# ::snt Well if you do that we can easily take down Austria
+(a / amr-empty)
+
+# ::id dip_test_0004.167
+# ::snt Ok, that's fine
+(a / amr-empty)
+
+# ::id dip_test_0004.168
+# ::snt I would appreciate if you would go for him
+(a / amr-empty)
+
+# ::id dip_test_0004.169
+# ::snt Ok, that's understandable
+(a / amr-empty)
+
+# ::id dip_test_0004.170
+# ::snt Yeah, he has already asked me to move to the Aegean to help convoy
+(a / amr-empty)
+
+# ::id dip_test_0004.171
+# ::snt Okay, I can ask him about that as well.
+(a / amr-empty)
+
+# ::id dip_test_0004.172
+# ::snt Are you planning on convoying into Turkey this year?
+(a / amr-empty)
+
+# ::id dip_test_0004.173
+# ::snt You seem to be in a good position to do so.
+(a / amr-empty)
+
+# ::id dip_test_0004.174
+# ::snt I have to talk to Italy, Russia, and Turkey about what I'm going to do.
+(a / amr-empty)
+
+# ::id dip_test_0004.175
+# ::snt Yep.
+(a / amr-empty)
+
+# ::id dip_test_0004.176
+# ::snt Italy hasn't been responding to my messages, so I'll try and get him on board with convoying. I will be holding everything else except for moving to Armenia.
+(a / amr-empty)
+
+# ::id dip_test_0004.177
+# ::snt I was just curious if you might be going after St.p
+(a / amr-empty)
+
+# ::id dip_test_0004.178
+# ::snt Yes
+(a / amr-empty)
+
+# ::id dip_test_0004.179
+# ::snt Not right now.
+(a / amr-empty)
+
+# ::id dip_test_0004.180
+# ::snt Sounds good, I'll probably be moving Portugal back to MAO and then moving it into Brest in the fall to cover my back, just giving you a heads up
+(a / amr-empty)
+
+# ::id dip_test_0004.181
+# ::snt Will do, good luck against Italy
+(a / amr-empty)
+
+# ::id dip_test_0004.182
+# ::snt Thanks
+(a / amr-empty)
+
+# ::id dip_test_0004.183
+# ::snt Great! I'll try to get my fleet into Armenia, and we should be able to take one of his Scs next turn.
+(a / amr-empty)
+
+# ::id dip_test_0004.184
+# ::snt Fair enough
+(a / amr-empty)
+
+# ::id dip_test_0004.185
+# ::snt Yeah, that's what I was thinking. There's a chance Turkey bounces one of us out, but then they'll be in a really bad position regardless
+(a / amr-empty)
+
+# ::id dip_test_0004.186
+# ::snt Exactly, if not then I'll have a decent shot at taking an SC in the fall, so hopefully it works out.
+(a / amr-empty)
+
+# ::id dip_test_0004.187
+# ::snt Fingers crossed
+(a / amr-empty)
+
+# ::id dip_test_0004.188
+# ::snt Thanks for the heads up.
+(a / amr-empty)
+
+# ::id dip_test_0004.189
+# ::snt What are you going to do about Russia?
+(a / amr-empty)
+
+# ::id dip_test_0004.190
+# ::snt Not much
+(a / amr-empty)
+
+# ::id dip_test_0004.191
+# ::snt Probably going to attack Russia
+(a / amr-empty)
+
+# ::id dip_test_0004.192
+# ::snt No problem
+(a / amr-empty)
+
+# ::id dip_test_0004.193
+# ::snt Not sure, why do you ask?
+(a / amr-empty)
+
+# ::id dip_test_0004.194
+# ::snt Because I might be able to help you out if that's the case.
+(a / amr-empty)
+
+# ::id dip_test_0004.195
+# ::snt Ok. I might join if you do
+(a / amr-empty)
+
+# ::id dip_test_0004.196
+# ::snt Do you know what Austria is doing?
+(a / amr-empty)
+
+# ::id dip_test_0004.197
+# ::snt Do you know what Austria is planning on doing?
+(a / amr-empty)
+
+# ::id dip_test_0004.198
+# ::snt I don't think I'm going to attack France
+(a / amr-empty)
+
+# ::id dip_test_0004.199
+# ::snt They haven't told me much, but I'd be surprised if they were attacking me
+(a / amr-empty)
+
+# ::id dip_test_0004.200
+# ::snt We'll see what happens
+(a / amr-empty)
+
+# ::id dip_test_0004.201
+# ::snt Ok. That's fair
+(a / amr-empty)
+
+# ::id dip_test_0004.202
+# ::snt Okay, then I'll just focus on Turkey for the time being.
+(a / amr-empty)
+
+# ::id dip_test_0004.203
+# ::snt Cool, I'll let you know if that changes
+(a / amr-empty)
+
+# ::id dip_test_0004.204
+# ::snt Not entirely sure, I'd assume that he's going to be going after Turkey though, but I'm not completely sure
+(a / amr-empty)
+
+# ::id dip_test_0004.205
+# ::snt Okay, thanks.
+(a / amr-empty)
+
+# ::id dip_test_0005.1
+# ::snt That worked perfectly
+(a / amr-empty)
+
+# ::id dip_test_0005.2
+# ::snt It worked out perfectly! And I'll move my army into Sevastopol, so Turkey will have to choose between protecting Ankara and Smyrna, so we should be able to take an SC by next year.
+(a / amr-empty)
+
+# ::id dip_test_0005.3
+# ::snt Nice! You managed to get Sweden
+(a / amr-empty)
+
+# ::id dip_test_0005.4
+# ::snt Nice, you should be able to take Holland now
+(a / amr-empty)
+
+# ::id dip_test_0005.5
+# ::snt It worked perfectly! Do you want support into Bulgaria?
+(a / amr-empty)
+
+# ::id dip_test_0005.6
+# ::snt Yep. I'll convoy to Syria, and then we'll have enough units surrounding them to be guaranteed to get at least one centre
+(a / amr-empty)
+
+# ::id dip_test_0005.7
+# ::snt Hmm, what are you planning on doing? It looks like England is coming after you now
+(a / amr-empty)
+
+# ::id dip_test_0005.8
+# ::snt Thanks for the support! And it seems like things are going well with France, you should be able to take some Scs from Germany.
+(a / amr-empty)
+
+# ::id dip_test_0005.9
+# ::snt Perfect!
+(a / amr-empty)
+
+# ::id dip_test_0005.10
+# ::snt I'm trying to defend myself. Are you going to be attacking me?
+(a / amr-empty)
+
+# ::id dip_test_0005.11
+# ::snt Yeah, that was great! Support into Bulgaria would be great
+(a / amr-empty)
+
+# ::id dip_test_0005.12
+# ::snt I hope so. Would you mind support holding Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0005.13
+# ::snt It's not really up to me, it's up to you what you want to do, I'm just trying to see what your plan is. Are you trying to take Belgium?
+(a / amr-empty)
+
+# ::id dip_test_0005.14
+# ::snt Will do, which unit are you moving to Bulgaria?
+(a / amr-empty)
+
+# ::id dip_test_0005.15
+# ::snt I hope so too. Would you mind supporting me into Denmark next year?
+(a / amr-empty)
+
+# ::id dip_test_0005.16
+# ::snt I'd like to, but I can't take it and defend myself
+(a / amr-empty)
+
+# ::id dip_test_0005.17
+# ::snt Absolutely, would you mind holding Sweden for me this turn?
+(a / amr-empty)
+
+# ::id dip_test_0005.18
+# ::snt Yeah, I'm not completely sure yet what I'm going to do
+(a / amr-empty)
+
+# ::id dip_test_0005.19
+# ::snt No problem. Are you planning on attacking Denmark or Holland?
+(a / amr-empty)
+
+# ::id dip_test_0005.20
+# ::snt I don't know what England is going to do, they might support you into Ruhr or Holland, but I think I'll be able to hold them off if you are willing to attack them
+(a / amr-empty)
+
+# ::id dip_test_0005.21
+# ::snt It's probably a bit of a waste of your time to try to force Bulgaria this turn, but you can give it a go if you want
+(a / amr-empty)
+
+# ::id dip_test_0005.22
+# ::snt Serbia
+(a / amr-empty)
+
+# ::id dip_test_0005.23
+# ::snt I think I'll be attacking Holland. Are you going for Munich?
+(a / amr-empty)
+
+# ::id dip_test_0005.24
+# ::snt Yeah, I was planning on it
+(a / amr-empty)
+
+# ::id dip_test_0005.25
+# ::snt Okay, support is in!
+(a / amr-empty)
+
+# ::id dip_test_0005.26
+# ::snt Not sure yet, I'll have to see if I get any messages from Germany first. I'll probably support Belgium unless I get any messages from Germany about his plans
+(a / amr-empty)
+
+# ::id dip_test_0005.27
+# ::snt Sounds good
+(a / amr-empty)
+
+# ::id dip_test_0005.28
+# ::snt Ok, thanks.
+(a / amr-empty)
+
+# ::id dip_test_0005.29
+# ::snt The Lepanto worked perfectly
+(a / amr-empty)
+
+# ::id dip_test_0005.30
+# ::snt I'm not sure what England is planning yet, but I'd be willing to attack him if you want to support hold Holland and make sure he doesn't take it
+(a / amr-empty)
+
+# ::id dip_test_0005.31
+# ::snt No problem
+(a / amr-empty)
+
+# ::id dip_test_0005.32
+# ::snt That sounds good, thanks
+(a / amr-empty)
+
+# ::id dip_test_0005.33
+# ::snt No problem. If I get some more information on what England is planning on doing then I'll let you know
+(a / amr-empty)
+
+# ::id dip_test_0005.34
+# ::snt Thanks
+(a / amr-empty)
+
+# ::id dip_test_0005.35
+# ::snt Hey man, what's up with the move into Silesia? You're not going to get anywhere if you attack me, I'll just let France or England take your Scs.
+(a / amr-empty)
+
+# ::id dip_test_0005.36
+# ::snt Yep. Turkey's in a really bad situation
+(a / amr-empty)
+
+# ::id dip_test_0005.37
+# ::snt You're going to convoy to Syria, right?
+(a / amr-empty)
+
+# ::id dip_test_0005.38
+# ::snt That wasn't my original intention
+(a / amr-empty)
+
+# ::id dip_test_0005.39
+# ::snt Yeah. There's a decent chance it bounces, but Turkey can't defend everywhere at once
+(a / amr-empty)
+
+# ::id dip_test_0005.40
+# ::snt True
+(a / amr-empty)
+
+# ::id dip_test_0005.41
+# ::snt How are you and Russia planning to split up the Balkans?
+(a / amr-empty)
+
+# ::id dip_test_0005.42
+# ::snt Have you and Austria decided how to split up the Balkans?
+(a / amr-empty)
+
+# ::id dip_test_0005.43
+# ::snt We haven't discussed it in great detail yet, we're waiting until next turn to decide.
+(a / amr-empty)
+
+# ::id dip_test_0005.44
+# ::snt And what was your original intention?
+(a / amr-empty)
+
+# ::id dip_test_0005.45
+# ::snt Hmm, it's interesting that you are working with England against Germany at the moment. Are you planning on attacking Turkey and leaving Germany alone for now?
+(a / amr-empty)
+
+# ::id dip_test_0005.46
+# ::snt Fair enough. We've agreed that Bulgaria will be theirs, but beyond that I don't know what will happen
+(a / amr-empty)
+
+# ::id dip_test_0005.47
+# ::snt Also, are you concerned about England going after St Petersburg?
+(a / amr-empty)
+
+# ::id dip_test_0005.48
+# ::snt That England was going to help me into Sweden
+(a / amr-empty)
+
+# ::id dip_test_0005.49
+# ::snt But obviously they lied
+(a / amr-empty)
+
+# ::id dip_test_0005.50
+# ::snt I haven't talked to him about it, do you have any suggestions?
+(a / amr-empty)
+
+# ::id dip_test_0005.51
+# ::snt I am a bit concerned, but I think we've worked it out. It seems like you and England are working together at the moment, so you might want to be careful.
+(a / amr-empty)
+
+# ::id dip_test_0005.52
+# ::snt How do you want to split up Turkey's centers?
+(a / amr-empty)
+
+# ::id dip_test_0005.53
+# ::snt Okay, that sounds good, I think that should work well for all of us.
+(a / amr-empty)
+
+# ::id dip_test_0005.54
+# ::snt Ahhh, it's a shame.
+(a / amr-empty)
+
+# ::id dip_test_0005.55
+# ::snt I'd like to take Ankara at least, so I was thinking you could take Bulgaria and Constantinople and Italy would take Smyrna.
+(a / amr-empty)
+
+# ::id dip_test_0005.56
+# ::snt Perfect
+(a / amr-empty)
+
+# ::id dip_test_0005.57
+# ::snt I'm assuming Russia will get Ankara, and you will get Bulgaria. Beyond that, I'm not sure how the two of you will split it
+(a / amr-empty)
+
+# ::id dip_test_0005.58
+# ::snt I think it would make more sense if you took Ankara and Italy took Smyrna
+(a / amr-empty)
+
+# ::id dip_test_0005.59
+# ::snt Yeah, hopefully I'll be able to survive this
+(a / amr-empty)
+
+# ::id dip_test_0005.60
+# ::snt Thanks for the warning, I'll be sure to watch my back
+(a / amr-empty)
+
+# ::id dip_test_0005.61
+# ::snt No problem, I just wanted to let you know that I'm still open to working together down the road.
+(a / amr-empty)
+
+# ::id dip_test_0005.62
+# ::snt That's what I was thinking as well, glad we're on the same page.
+(a / amr-empty)
+
+# ::id dip_test_0005.63
+# ::snt The only thing I worry about is that we'll have Austria sandwiched between us, and it might be easy for them to stab either of us
+(a / amr-empty)
+
+# ::id dip_test_0005.64
+# ::snt I think we will just try to get all of Turkey's centers
+(a / amr-empty)
+
+# ::id dip_test_0005.65
+# ::snt Me too
+(a / amr-empty)
+
+# ::id dip_test_0005.66
+# ::snt That's what I'm thinking. I assume you and Russia will make sure that you get at least one centre, and that might as well be Bulgaria
+(a / amr-empty)
+
+# ::id dip_test_0005.67
+# ::snt Just wanted to confirm, you're moving Serbia to Bulgaria?
+(a / amr-empty)
+
+# ::id dip_test_0005.68
+# ::snt Yeah, I should get Bulgaria next turn
+(a / amr-empty)
+
+# ::id dip_test_0005.69
+# ::snt Are you and Russia attacking Turkey together?
+(a / amr-empty)
+
+# ::id dip_test_0005.70
+# ::snt Yes, I'm moving Serbia to Bulgaria
+(a / amr-empty)
+
+# ::id dip_test_0005.71
+# ::snt Great
+(a / amr-empty)
+
+# ::id dip_test_0005.72
+# ::snt It might be, but we can easily kick him out of the Balkans once we're done with Turkey.
+(a / amr-empty)
+
+# ::id dip_test_0005.73
+# ::snt Sounds good, good luck against Turkey
+(a / amr-empty)
+
+# ::id dip_test_0005.74
+# ::snt Great, and Rumania will support.
+(a / amr-empty)
+
+# ::id dip_test_0005.75
+# ::snt Are you working with Austria at the moment?
+(a / amr-empty)
+
+# ::id dip_test_0005.76
+# ::snt I hope so
+(a / amr-empty)
+
+# ::id dip_test_0005.77
+# ::snt We have agreed to work together to attack Turkey
+(a / amr-empty)
+
+# ::id dip_test_0005.78
+# ::snt Also, Austria and I have decided that you'll take Smyrna and I'll take Ankara, just wanted to let you know.
+(a / amr-empty)
+
+# ::id dip_test_0005.79
+# ::snt I assumed that was the case
+(a / amr-empty)
+
+# ::id dip_test_0005.80
+# ::snt Thanks
+(a / amr-empty)
+
+# ::id dip_test_0005.81
+# ::snt Yes, we're coordinating against Turkey, but after that I'm not sure.
+(a / amr-empty)
+
+# ::id dip_test_0005.82
+# ::snt Cool.
+(a / amr-empty)
+
+# ::id dip_test_0005.83
+# ::snt Ok, just curious, do you know what Italy is planning on doing?
+(a / amr-empty)
+
+# ::id dip_test_0005.84
+# ::snt Are you going to be letting Russia keep Sweden?
+(a / amr-empty)
+
+# ::id dip_test_0005.85
+# ::snt I haven't decided yet. Why do you ask?
+(a / amr-empty)
+
+# ::id dip_test_0005.86
+# ::snt I don't know much about that, I do know that he's going to try and convoy into Syria, but I don't know what his plans are beyond that.
+(a / amr-empty)
+
+# ::id dip_test_0005.87
+# ::snt Also, now that we're done with Turkey, what are your plans?
+(a / amr-empty)
+
+# ::id dip_test_0005.88
+# ::snt I don't have any yet
+(a / amr-empty)
+
+# ::id dip_test_0005.89
+# ::snt How about you, do you know anything about what he's planning?
+(a / amr-empty)
+
+# ::id dip_test_0005.90
+# ::snt Are you going after England?
+(a / amr-empty)
+
+# ::id dip_test_0005.91
+# ::snt It might affect what moves I would make
+(a / amr-empty)
+
+# ::id dip_test_0005.92
+# ::snt What do you want to do after we finish off Turkey?
+(a / amr-empty)
+
+# ::id dip_test_0005.93
+# ::snt And it would influence your decisions too
+(a / amr-empty)
+
+# ::id dip_test_0005.94
+# ::snt Not sure yet, I'm in the process of finding out what his plans are, but I think I'm going to make sure that he doesn't get any more centers this turn
+(a / amr-empty)
+
+# ::id dip_test_0005.95
+# ::snt No idea, I'm trying to find out
+(a / amr-empty)
+
+# ::id dip_test_0005.96
+# ::snt He also hasn't responded to me since spring of 1901 so I don't think I'm going to be able to get any information from him
+(a / amr-empty)
+
+# ::id dip_test_0005.97
+# ::snt Ahhh, that's not good.
+(a / amr-empty)
+
+# ::id dip_test_0005.98
+# ::snt I'm not sure, I might attack Germany or Italy
+(a / amr-empty)
+
+# ::id dip_test_0005.99
+# ::snt Yeah, I'll try to see if I can get anything out of him though
+(a / amr-empty)
+
+# ::id dip_test_0005.100
+# ::snt Okay, that's fine with me. Let's just finish off Turkey first and then decide what to do next.
+(a / amr-empty)
+
+# ::id dip_test_0005.101
+# ::snt Thanks man, let me know if I can do anything for you.
+(a / amr-empty)
+
+# ::id dip_test_0005.102
+# ::snt Sounds good
+(a / amr-empty)
+
+# ::id dip_test_0005.103
+# ::snt No problem, thanks for the offer
+(a / amr-empty)
+
+# ::id dip_test_0005.104
+# ::snt Interesting move to Hel. Are you planning to make a push against Germany?
+(a / amr-empty)
+
+# ::id dip_test_0005.105
+# ::snt That's the plan. I assume you're convoying Tunis to Syria?
+(a / amr-empty)
+
+# ::id dip_test_0005.106
+# ::snt How are things going in the east?
+(a / amr-empty)
+
+# ::id dip_test_0005.107
+# ::snt How are things going in the east? It looks like you are working with Russia
+(a / amr-empty)
+
+# ::id dip_test_0005.108
+# ::snt Yeah, Russia and I have agreed to work together against Turkey
+(a / amr-empty)
+
+# ::id dip_test_0005.109
+# ::snt Yep
+(a / amr-empty)
+
+# ::id dip_test_0005.110
+# ::snt Pretty well. Turkey should be dead in a couple of turns
+(a / amr-empty)
+
+# ::id dip_test_0005.111
+# ::snt That's good to know
+(a / amr-empty)
+
+# ::id dip_test_0005.112
+# ::snt That's good to hear
+(a / amr-empty)
+
+# ::id dip_test_0005.113
+# ::snt How are your relations with England and France?
+(a / amr-empty)
+
+# ::id dip_test_0005.114
+# ::snt Not great, but I might be able to survive
+(a / amr-empty)
+
+# ::id dip_test_0005.115
+# ::snt How are you doing? Just curious what you are planning on doing for the fall
+(a / amr-empty)
+
+# ::id dip_test_0005.116
+# ::snt England was supposed to support me into Sweden, but they lied about that
+(a / amr-empty)
+
+# ::id dip_test_0005.117
+# ::snt Yeah, I'm doing well. I'm planning on convoying the army in Tunis to Syria. Beyond that, I'm just going to try to defend myself against an Austrian stab
+(a / amr-empty)
+
+# ::id dip_test_0005.118
+# ::snt Hmm
+(a / amr-empty)
+
+# ::id dip_test_0005.119
+# ::snt Yeah, that's annoying
+(a / amr-empty)
+
+# ::id dip_test_0005.120
+# ::snt What are you planning on doing?
+(a / amr-empty)
+
+# ::id dip_test_0005.121
+# ::snt How are things going in the west?
+(a / amr-empty)
+
+# ::id dip_test_0005.122
+# ::snt Just so you know, I'll be moving Armenia to Ankara this turn, so be careful if you decide to bounce it with the Black Sea.
+(a / amr-empty)
+
+# ::id dip_test_0005.123
+# ::snt Ok, why did you move to Armenia?
+(a / amr-empty)
+
+# ::id dip_test_0005.124
+# ::snt Not sure yet, I'm not completely sure what England is planning on doing, so I'll probably try to keep him from taking any more supply centers this year
+(a / amr-empty)
+
+# ::id dip_test_0005.125
+# ::snt Yup
+(a / amr-empty)
+
+# ::id dip_test_0005.126
+# ::snt Fair enough
+(a / amr-empty)
+
+# ::id dip_test_0005.127
+# ::snt Not great, I don't think I'll be able to survive
+(a / amr-empty)
+
+# ::id dip_test_0005.128
+# ::snt Also, just so you know, I'll be moving to St. Petersburg this turn, just as a precaution.
+(a / amr-empty)
+
+# ::id dip_test_0005.129
+# ::snt If you don't mind me asking, what are you planning on doing after you are done attacking Turkey?
+(a / amr-empty)
+
+# ::id dip_test_0005.130
+# ::snt Well, at least your eastern border is safe
+(a / amr-empty)
+
+# ::id dip_test_0005.131
+# ::snt I haven't decided yet. It depends what the situation is like in the east at the time
+(a / amr-empty)
+
+# ::id dip_test_0005.132
+# ::snt Ok.
+(a / amr-empty)
+
+# ::id dip_test_0005.133
+# ::snt I'm just trying to convince Italy and Austria that I'm on their side.
+(a / amr-empty)
+
+# ::id dip_test_0005.134
+# ::snt That's true
+(a / amr-empty)
+
+# ::id dip_test_0005.135
+# ::snt Do you know anything about France's plans?
+(a / amr-empty)
+
+# ::id dip_test_0005.136
+# ::snt Ok, that's understandable. Let me know if I can help you in any way
+(a / amr-empty)
+
+# ::id dip_test_0005.137
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_0005.138
+# ::snt Do you think I should try for Ankara this turn?
+(a / amr-empty)
+
+# ::id dip_test_0005.139
+# ::snt I don't think I can attack Russia, but that should take some pressure off of you
+(a / amr-empty)
+
+# ::id dip_test_0005.140
+# ::snt Will do
+(a / amr-empty)
+
+# ::id dip_test_0005.141
+# ::snt Ok. I'll see what I can do
+(a / amr-empty)
+
+# ::id dip_test_0005.142
+# ::snt I would appreciate it if you don't do that
+(a / amr-empty)
+
+# ::id dip_test_0005.143
+# ::snt Good luck
+(a / amr-empty)
+
+# ::id dip_test_0005.144
+# ::snt Thanks, let me know if I can help you at all
+(a / amr-empty)
+
+# ::id dip_test_0005.145
+# ::snt And the same goes for you
+(a / amr-empty)
+
+# ::id dip_test_0005.146
+# ::snt I'd really appreciate if you don't tell Austria or Italy that I'm working with you, they'll just stop sharing information with me, especially if they find out that I'm not attacking you.
+(a / amr-empty)
+
+# ::id dip_test_0005.147
+# ::snt I won't
+(a / amr-empty)
+
+# ::id dip_test_0005.148
+# ::snt Thank you.
+(a / amr-empty)
+
+# ::id dip_test_0005.149
+# ::snt Sorry Turkey, but I had to ally with either Russia or Austria in the east, and it was much easier for me to ally with them
+(a / amr-empty)
+
+# ::id dip_test_0005.150
+# ::snt That said, if Russia or Austria stab each other, I'm happy to reconsider
+(a / amr-empty)
+
+# ::id dip_test_0005.151
+# ::snt I'm going to start redeploying my army in Venice
+(a / amr-empty)
+
+# ::id dip_test_0005.152
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_0005.153
+# ::snt I think you might want to watch out for a convoy from Tunis into Syria, that's what Italy told me he was going to do
+(a / amr-empty)
+
+# ::id dip_test_0005.154
+# ::snt Thanks for letting me know
+(a / amr-empty)
+
+# ::id dip_test_0005.155
+# ::snt Are you happy to do the same? That will let us avoid having to leave any units there as a precaution
+(a / amr-empty)
+
+# ::id dip_test_0005.156
+# ::snt Maybe in future turns we can even demilitarise both Venice and Trieste
+(a / amr-empty)
+
+# ::id dip_test_0005.157
+# ::snt Ok, that's fine. We'll see what happens
+(a / amr-empty)
+
+# ::id dip_test_0005.158
+# ::snt No problem. If you don't mind me asking, do you know what Russia is planning on doing?
+(a / amr-empty)
+
+# ::id dip_test_0005.159
+# ::snt I'm not sure. He says he isn't planning to attack me but I don't know
+(a / amr-empty)
+
+# ::id dip_test_0005.160
+# ::snt But his moves suggest he is working with Austria
+(a / amr-empty)
+
+# ::id dip_test_0005.161
+# ::snt That's understandable, I'll try to see if I can find anything out for you
+(a / amr-empty)
+
+# ::id dip_test_0005.162
+# ::snt Thanks
+(a / amr-empty)
+
+# ::id dip_test_0005.163
+# ::snt If you don't mind me asking, why didn't you support Austria into Bulgaria?
+(a / amr-empty)
+
+# ::id dip_test_0005.164
+# ::snt I think you should, but it's your choice
+(a / amr-empty)
+
+# ::id dip_test_0005.165
+# ::snt Yeah, we can demilitarize the area once Turkey is dead
+(a / amr-empty)
+
+# ::id dip_test_0005.166
+# ::snt No, I haven't heard much about France's intentions
+(a / amr-empty)
+
+# ::id dip_test_0005.167
+# ::snt You should move Constantinople to Ankara to bounce with Russia
+(a / amr-empty)
+
+# ::id dip_test_0005.168
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_0005.169
+# ::snt So far they've been telling me they aren't going to attack me, but it looks like that might change
+(a / amr-empty)
+
+# ::id dip_test_0005.170
+# ::snt How do I know you aren't going to attack Bulgaria?
+(a / amr-empty)
+
+# ::id dip_test_0005.171
+# ::snt Yeah, they might attack you
+(a / amr-empty)
+
+# ::id dip_test_0005.172
+# ::snt Sounds good to me
+(a / amr-empty)
+
+# ::id dip_test_0005.173
+# ::snt Well, I haven't told you anything that you didn't already know
+(a / amr-empty)
+
+# ::id dip_test_0005.174
+# ::snt But you haven't given me any reason to trust you
+(a / amr-empty)
+
+# ::id dip_test_0005.175
+# ::snt I guess that's true
+(a / amr-empty)
+
+# ::id dip_test_0005.176
+# ::snt Yeah
+(a / amr-empty)
+
+# ::id dip_test_0005.177
+# ::snt What's your relationship with Russia and Italy?
+(a / amr-empty)
+
+# ::id dip_test_0005.178
+# ::snt I'm on friendly terms with both
+(a / amr-empty)
+
+# ::id dip_test_0005.179
+# ::snt Ok. I've heard Italy was going for me and that Russia might be helping
+(a / amr-empty)
+
+# ::id dip_test_0005.180
+# ::snt You shouldn't believe everything you hear
+(a / amr-empty)
+
+# ::id dip_test_0005.181
+# ::snt Yeah, that's why I'm trying to see who I can trust
+(a / amr-empty)
+
+# ::id dip_test_0005.182
+# ::snt You should probably cover Ankara
+(a / amr-empty)
+
+# ::id dip_test_0005.183
+# ::snt That's what I'm doing
+(a / amr-empty)
+
+# ::id dip_test_0005.184
+# ::snt Nice
+(a / amr-empty)
+
+# ::id dip_test_0005.185
+# ::snt You can use Smyrna to bounce with Italy in the Aegean Sea
+(a / amr-empty)
+
+# ::id dip_test_0005.186
+# ::snt Ok. Good idea
+(a / amr-empty)
+
+# ::id dip_test_0005.187
+# ::snt It will probably be a standoff
+(a / amr-empty)
+
+# ::id dip_test_0005.188
+# ::snt Unless Italy supports Eastern Med to Smyrna
+(a / amr-empty)
+
+# ::id dip_test_0005.189
+# ::snt You're probably right
+(a / amr-empty)
+
+# ::id dip_test_0005.190
+# ::snt You have a 50% chance of surviving if everything goes right
+(a / amr-empty)
+
+# ::id dip_test_0005.191
+# ::snt Yeah
+(a / amr-empty)
+
+# ::id dip_test_0005.192
+# ::snt Are you going to try to take Munich?
+(a / amr-empty)
+
+# ::id dip_test_0005.193
+# ::snt Still not sure, I'll have to see if I can get any information out of Germany about what he's planning on doing
+(a / amr-empty)
+
+# ::id dip_test_0005.194
+# ::snt Ok, I'm going to attack England
+(a / amr-empty)
+
+# ::id dip_test_0005.195
+# ::snt I'm assuming you are going to support hold Holland and not let England take it?
+(a / amr-empty)
+
+# ::id dip_test_0005.196
+# ::snt Yup. Holland is supporting Burgundy into Belgium
+(a / amr-empty)
+
+# ::id dip_test_0005.197
+# ::snt I'd appreciate if you didn't tell England that I told you that
+(a / amr-empty)
+
+# ::id dip_test_0005.198
+# ::snt Ok, I'll be sure not to tell him anything. I'll probably attack Belgium from Picardy so that I can keep burgundy in place in case Italy or Austria tries anything funny
+(a / amr-empty)
+
+# ::id dip_test_0005.199
+# ::snt I would suggest attacking from Burgundy
+(a / amr-empty)
+
+# ::id dip_test_0005.200
+# ::snt But it's your call
+(a / amr-empty)
+
+# ::id dip_test_0005.201
+# ::snt I'm thinking that I'll move from Picardy so that I can get my fleets in a better position
+(a / amr-empty)
+
+# ::id dip_test_0005.202
+# ::snt The downside is that if you move from Burgundy then you can move Gascony to Burgundy, and attack me from there next turn
+(a / amr-empty)
+
+# ::id dip_test_0005.203
+# ::snt That would give England Holland, so they'd get a build, and probably make a fleet in Liverpool to stop you from taking it.
+If you go from Burgundy, you get a build, you are guaranteed to take Belgium, you can move Gascony to Burgundy to block England, and your fleets can still move to MAO to prepare to attack them next turn.
+
+You'll probably get Belgium either way, but this way you also prevent England from getting a build. If you go from Picardy, you leave Burgundy undefended and England can defend Belgium
+(a / amr-empty)
+
+# ::id dip_test_0005.204
+# ::snt I think that I'm going to go from Picardy, so I can get my fleets in a better position
+(a / amr-empty)
+
+# ::id dip_test_0005.205
+# ::snt I'll go from Picardy so that I can keep Burgundy in place in case Austria or Italy does anything funny
+(a / amr-empty)
+
+# ::id dip_test_0005.206
+# ::snt Ok. Are you still moving from Picardy then?
+(a / amr-empty)
+
+# ::id dip_test_0005.207
+# ::snt Yes
+(a / amr-empty)
+
+# ::id dip_test_0006.1
+# ::snt I wasn't sure if Turkey would be trying to move into the Black Sea again, so I had to take my chances.
+(a / amr-empty)
+
+# ::id dip_test_0006.2
+# ::snt And nice move this turn.
+(a / amr-empty)
+
+# ::id dip_test_0006.3
+# ::snt Ok, it's understandable. Thanks, and nice job yourself
+(a / amr-empty)
+
+# ::id dip_test_0006.4
+# ::snt Are you going to be going after Norway?
+(a / amr-empty)
+
+# ::id dip_test_0006.5
+# ::snt Yeah, most likely.
+(a / amr-empty)
+
+# ::id dip_test_0006.6
+# ::snt Ok, that's great, let me know if I can do anything to help you
+(a / amr-empty)
+
+# ::id dip_test_0006.7
+# ::snt What are your plans once you and Italy take out Turkey?
+(a / amr-empty)
+
+# ::id dip_test_0006.8
+# ::snt I'm not sure, it depends on how the rest of the board looks
+(a / amr-empty)
+
+# ::id dip_test_0006.9
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_0006.10
+# ::snt I might attack Russia, but I'm not sure yet
+(a / amr-empty)
+
+# ::id dip_test_0006.11
+# ::snt Ok, let me know if I can help you out in any way
+(a / amr-empty)
+
+# ::id dip_test_0006.12
+# ::snt Ok, thanks
+(a / amr-empty)
+
+# ::id dip_test_0006.13
+# ::snt Are you happy to support me into Smyrna next turn?
+(a / amr-empty)
+
+# ::id dip_test_0006.14
+# ::snt Yeah, for sure, I think that it's going to be the best move for both of us.
+(a / amr-empty)
+
+# ::id dip_test_0006.15
+# ::snt Great
+(a / amr-empty)
+
+# ::id dip_test_0006.16
+# ::snt How are you going to deal with that Turkish fleet in the Black Sea?
+(a / amr-empty)
+
+# ::id dip_test_0006.17
+# ::snt I'm building a fleet in Sevastopol, so I'll support myself in.
+(a / amr-empty)
+
+# ::id dip_test_0006.18
+# ::snt It's annoying, but it shouldn't be a problem long term.
+(a / amr-empty)
+
+# ::id dip_test_0006.19
+# ::snt Sounds good
+(a / amr-empty)
+
+# ::id dip_test_0006.20
+# ::snt Hey, just wanted to check in and see what your plans are for this upcoming turn. I could use Rumania to support you into Bulgaria again, but I just need to know where from.
+(a / amr-empty)
+
+# ::id dip_test_0006.21
+# ::snt It will probably be from Serbia
+(a / amr-empty)
+
+# ::id dip_test_0006.22
+# ::snt Okay, I'll support from Rumania then.
+(a / amr-empty)
+
+# ::id dip_test_0006.23
+# ::snt Thanks
+(a / amr-empty)
+
+# ::id dip_test_0006.24
+# ::snt No problem.
+(a / amr-empty)
+
+# ::id dip_test_0006.25
+# ::snt Hey, just so you know, I'm going to support Austria into Bulgaria this turn, so I won't be able to support you into Smyrna, but I'll attack the Black Sea, so you should still have a pretty good chance at getting Smyrna.
+(a / amr-empty)
+
+# ::id dip_test_0006.26
+# ::snt You might also want to talk to Austria about coordinating in the Aegean Sea so that you don't bounce with him again.
+(a / amr-empty)
+
+# ::id dip_test_0006.27
+# ::snt Thanks for letting me know
+(a / amr-empty)
+
+# ::id dip_test_0006.28
+# ::snt No problem, it's a win win for us.
+(a / amr-empty)
+
+# ::id dip_test_0006.29
+# ::snt I'll see what I can do about the Aegean Sea
+(a / amr-empty)
+
+# ::id dip_test_0006.30
+# ::snt And if it turns out that I need to support myself in to Ankara, then I'll do that instead of supporting you into Smyrna.
+(a / amr-empty)
+
+# ::id dip_test_0006.31
+# ::snt How do you want to deal with the Aegean Sea?
+(a / amr-empty)
+
+# ::id dip_test_0006.32
+# ::snt I don't want to bounce you, and neither of us want Turkey to have the opportunity to retreat there
+(a / amr-empty)
+
+# ::id dip_test_0006.33
+# ::snt Ok, thanks
+(a / amr-empty)
+
+# ::id dip_test_0006.34
+# ::snt I'll let you know what I hear from Austria
+(a / amr-empty)
+
+# ::id dip_test_0006.35
+# ::snt Ok, I'll let you know if I hear anything as well.
+(a / amr-empty)
+
+# ::id dip_test_0006.36
+# ::snt Are you planning to build a fleet in Brest? If so, I'd appreciate it if you didn't build in Marseille. That will make me feel more secure
+(a / amr-empty)
+
+# ::id dip_test_0006.37
+# ::snt Turkey will have to destroy a unit, so they shouldn't be able to retreat there
+(a / amr-empty)
+
+# ::id dip_test_0006.38
+# ::snt Ok, so what do you want to do about the Aegean?
+(a / amr-empty)
+
+# ::id dip_test_0006.39
+# ::snt I will be building in Brest, I'll make sure not to build in Marseilles
+(a / amr-empty)
+
+# ::id dip_test_0006.40
+# ::snt Thank you for asking
+(a / amr-empty)
+
+# ::id dip_test_0006.41
+# ::snt Can you support Greece to Aegean?
+(a / amr-empty)
+
+# ::id dip_test_0006.42
+# ::snt No problem
+(a / amr-empty)
+
+# ::id dip_test_0006.43
+# ::snt I can do that
+(a / amr-empty)
+
+# ::id dip_test_0006.44
+# ::snt So long as you can help me into Smyrna once you're in the Aegean
+(a / amr-empty)
+
+# ::id dip_test_0006.45
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_0006.46
+# ::snt Actually, I have a better idea
+(a / amr-empty)
+
+# ::id dip_test_0006.47
+# ::snt I'll support you into the Aegean, and once you're in the Aegean, I can convoy my army in Syria back to my home territory
+(a / amr-empty)
+
+# ::id dip_test_0006.48
+# ::snt You can take Smyrna on your own, I can take Bulgaria on my own
+(a / amr-empty)
+
+# ::id dip_test_0006.49
+# ::snt Ok, as long as you're happy to support me into Smyrna when you're in the Aegean
+(a / amr-empty)
+
+# ::id dip_test_0006.50
+# ::snt I will
+(a / amr-empty)
+
+# ::id dip_test_0006.51
+# ::snt Great, thanks
+(a / amr-empty)
+
+# ::id dip_test_0007.1
+# ::snt That worked out well
+(a / amr-empty)
+
+# ::id dip_test_0007.2
+# ::snt Yes it did, what are your plans for this upcoming year?
+(a / amr-empty)
+
+# ::id dip_test_0007.3
+# ::snt Well it depends on which unit England destroys
+(a / amr-empty)
+
+# ::id dip_test_0007.4
+# ::snt But I'm probably going to take Hel
+(a / amr-empty)
+
+# ::id dip_test_0007.5
+# ::snt Ok, I'm planning on taking Liverpool, if I could get a support into the North Sea in Autumn 1903, that would be nice, but if you have anything else you would like to do in exchange for that support, I'm fine with that
+(a / amr-empty)
+
+# ::id dip_test_0007.6
+# ::snt I'm fine with that
+(a / amr-empty)
+
+# ::id dip_test_0007.7
+# ::snt By the way, I'm assuming that you will be building a fleet in Sevastopol this turn, but I'm just wondering what you are planning to do with Warsaw
+(a / amr-empty)
+
+# ::id dip_test_0007.8
+# ::snt I was just curious if you're going to continue attacking England after you take Liverpool this turn. I don't want to get in the way of your conquest, and I could also be of help with Germany.
+(a / amr-empty)
+
+# ::id dip_test_0007.9
+# ::snt I'm going to continue attacking England, but I will see what I'm going to do afterwards. I will also let you know if I need help with Germany
+(a / amr-empty)
+
+# ::id dip_test_0007.10
+# ::snt I'm sorry England, it was nothing personal
+(a / amr-empty)
+
+# ::id dip_test_0007.11
+# ::snt Thank you
+(a / amr-empty)
+
+# ::id dip_test_0007.12
+# ::snt I'm sure it was nothing personal. What made you change your mind?
+(a / amr-empty)
+
+# ::id dip_test_0007.13
+# ::snt Germany offered me Belgium for helping him
+(a / amr-empty)
+
+# ::id dip_test_0007.14
+# ::snt I see.
+(a / amr-empty)
+
+# ::id dip_test_0007.15
+# ::snt I would still be open to working with you in the future if the situation allows it
+(a / amr-empty)
+
+# ::id dip_test_0007.16
+# ::snt You have to do what you have to do.
+(a / amr-empty)
+
+# ::id dip_test_0007.17
+# ::snt This is true
+(a / amr-empty)
+
+# ::id dip_test_0007.18
+# ::snt I'm guessing you are not planning on attacking Germany just yet?
+(a / amr-empty)
+
+# ::id dip_test_0007.19
+# ::snt Yeah, not until I finish with Turkey first.
+(a / amr-empty)
+
+# ::id dip_test_0007.20
+# ::snt Also, you might want to coordinate with Italy to prevent Turkey from bouncing the Aegean Sea again, that would make it a lot easier for all of us to finish off Turkey.
+(a / amr-empty)
+
+# ::id dip_test_0007.21
+# ::snt If Turkey gets into the Aegean, it'll be a lot more difficult for us to take his centers.
+(a / amr-empty)
+
+# ::id dip_test_0007.22
+# ::snt Yes, I have already done that
+(a / amr-empty)
+
+# ::id dip_test_0007.23
+# ::snt Ok, sounds good
+(a / amr-empty)
+
+# ::id dip_test_0007.24
+# ::snt Do you have any idea what Austria is planning on doing after Turkey is done for?
+(a / amr-empty)
+
+# ::id dip_test_0007.25
+# ::snt No, but I'd be happy to help you with Germany if you decide to fight him after England.
+(a / amr-empty)
+
+# ::id dip_test_0007.26
+# ::snt That's great
+(a / amr-empty)
+
+# ::id dip_test_0007.27
+# ::snt Also, I'm not sure what Austria is planning once Turkey is done for, I don't think I'll get a straight answer when I ask.
+(a / amr-empty)
+
+# ::id dip_test_0007.28
+# ::snt Ok, thanks for letting me know
+(a / amr-empty)
+
+# ::id dip_test_00010.1
+# ::snt Germany is attacking you, you should move Ukraine to Warsaw and Rumania to Ukraine
+(a / amr-empty)
+
+# ::id dip_test_00010.2
+# ::snt Do you want me to move Rumania to Galicia and Ukraine to Warsaw?
+(a / amr-empty)
+
+# ::id dip_test_00010.3
+# ::snt No, just Ukraine to Warsaw and Rumania to Ukraine
+(a / amr-empty)
+
+# ::id dip_test_00010.4
+# ::snt I think I'm going to move St. Petersburg to Livonia and Ukraine to Warsaw to prevent Germany from getting any further.
+(a / amr-empty)
+
+# ::id dip_test_00010.5
+# ::snt Yeah, that would work too
+(a / amr-empty)
+
+# ::id dip_test_00010.6
+# ::snt Have you decided on your next target after England?
+(a / amr-empty)
+
+# ::id dip_test_00010.7
+# ::snt Actually, do you mind if I move Rumania to Galicia and use Ukraine to bounce him out of Warsaw?
+(a / amr-empty)
+
+# ::id dip_test_00010.8
+# ::snt That's fine
+(a / amr-empty)
+
+# ::id dip_test_00010.9
+# ::snt Ok, thanks.
+(a / amr-empty)
+
+# ::id dip_test_00010.10
+# ::snt Actually, you can just use Ukraine and St. Petersburg to do that
+(a / amr-empty)
+
+# ::id dip_test_00010.11
+# ::snt Yeah, I already planned on using those two armies to stop him.
+(a / amr-empty)
+
+# ::id dip_test_00010.12
+# ::snt Not yet, I'm still trying to figure out what I'm going to do
+(a / amr-empty)
+
+# ::id dip_test_00010.13
+# ::snt You can't stop him if he supports Silesia to Warsaw, so it might be better if you just use Ukraine to cover Warsaw and move Rumania to Galicia
+(a / amr-empty)
+
+# ::id dip_test_00010.14
+# ::snt But if he goes for Warsaw, then I'll just bounce him and it'll end up staying open.
+(a / amr-empty)
+
+# ::id dip_test_00010.15
+# ::snt That's true
+(a / amr-empty)
+
+# ::id dip_test_00010.16
+# ::snt I'm just going to move Ukraine to Warsaw and Rumania to Galicia and then I can stop him next turn if he supports himself in.
+(a / amr-empty)
+
+# ::id dip_test_00010.17
+# ::snt Ok, that's a good plan
+(a / amr-empty)
+
+# ::id dip_test_00010.18
+# ::snt Ok, great.
+(a / amr-empty)
+
+# ::id dip_test_00010.19
+# ::snt Once I take Ankara, I can support you into Con, so you should be able to start using your armies to take Munich.
+(a / amr-empty)
+
+# ::id dip_test_00010.20
+# ::snt Thanks
+(a / amr-empty)
+
+# ::id dip_test_00010.21
+# ::snt I might start attacking Germany at the same time as you
+(a / amr-empty)
+
+# ::id dip_test_00010.22
+# ::snt Are you attacking Russia?
+(a / amr-empty)
+
+# ::id dip_test_00010.23
+# ::snt Yeah. I was just moving my army East, in case Russia attacked me
+(a / amr-empty)
+
+# ::id dip_test_00010.24
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_00010.25
+# ::snt I will probably attack Russia next year
+(a / amr-empty)
+
+# ::id dip_test_00010.26
+# ::snt Ok. I will probably try to take Warsaw then
+(a / amr-empty)
+
+# ::id dip_test_00010.27
+# ::snt You won't be able to, Russia is covering it
+(a / amr-empty)
+
+# ::id dip_test_00010.28
+# ::snt You won't be able to take it, Russia is covering it with both of their armies. The only way you can get it is if Russia doesn't cover it. I will be attacking Russia next year, so I can tell you their moves in advance.
+(a / amr-empty)
+
+# ::id dip_test_00010.29
+# ::snt Ok. That's good to know
+(a / amr-empty)
+
+# ::id dip_test_00010.30
+# ::snt You should still try for it, there's nothing else you can do
+(a / amr-empty)
+
+# ::id dip_test_00010.31
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_00011.1
+# ::snt Ok, I would be fine with that
+(a / amr-empty)
+
+# ::id dip_test_00011.2
+# ::snt I might wait a little while to start attacking Germany
+(a / amr-empty)
+
+# ::id dip_test_00011.3
+# ::snt That's fine
+(a / amr-empty)
+
+# ::id dip_test_00012.1
+# ::snt I'm planning on building in Warsaw to continue the attack on Germany, do you think it's a good idea?
+(a / amr-empty)
+
+# ::id dip_test_00012.2
+# ::snt Yes, probably a fleet on the South Coast of St. Petersburg
+(a / amr-empty)
+
+# ::id dip_test_00012.3
+# ::snt I was thinking I could build an army in Warsaw and move Livonia to St. Petersburg and Ukraine to Moscow.
+(a / amr-empty)
+
+# ::id dip_test_00012.4
+# ::snt It's probably better to build a fleet on St. Petersburg South Coast
+(a / amr-empty)
+
+# ::id dip_test_00013.1
+# ::snt Are you planning on attacking me?
+(a / amr-empty)
+
+# ::id dip_test_00013.2
+# ::snt Wow, I didn't even notice that he had a fleet in the Baltic Sea until now.
+(a / amr-empty)
+
+# ::id dip_test_00013.3
+# ::snt Do you know what Italy is planning on doing with that fleet build in Naples?
+(a / amr-empty)
+
+# ::id dip_test_00013.4
+# ::snt I have no idea, I'll ask Italy and let you know
+(a / amr-empty)
+
+# ::id dip_test_00013.5
+# ::snt It's fine, you can probably still take Silesia and Prussia and Norway.
+(a / amr-empty)
+
+# ::id dip_test_00013.6
+# ::snt Why did you build a fleet in Naples?
+(a / amr-empty)
+
+# ::id dip_test_00013.7
+# ::snt Also, what do you want to do this turn?
+(a / amr-empty)
+
+# ::id dip_test_00013.8
+# ::snt France told me they were planning to build in Marseille. I wanted the extra security
+(a / amr-empty)
+
+# ::id dip_test_00013.9
+# ::snt I can support you into Con this turn
+(a / amr-empty)
+
+# ::id dip_test_00013.10
+# ::snt That's what I was thinking.
+(a / amr-empty)
+
+# ::id dip_test_00013.11
+# ::snt No, I'm not planning to attack you
+(a / amr-empty)
+
+# ::id dip_test_00013.12
+# ::snt Do you need any support into Con?
+(a / amr-empty)
+
+# ::id dip_test_00013.13
+# ::snt Hi Russia, how do you want to handle the situation in Turkey?
+(a / amr-empty)
+
+# ::id dip_test_00013.14
+# ::snt I think I have enough support, but you can give it if you want
+(a / amr-empty)
+
+# ::id dip_test_00013.15
+# ::snt Ok, thank you
+(a / amr-empty)
+
+# ::id dip_test_00013.16
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_00013.17
+# ::snt I think I'm going to use my fleet in the Black Sea to support myself, but if you really need it then I can give it.
+(a / amr-empty)
+
+# ::id dip_test_00013.18
+# ::snt I just want to make sure that Italy doesn't take it.
+(a / amr-empty)
+
+# ::id dip_test_00013.19
+# ::snt I'm not sure, we'll see when Turkey is eliminated. I'm also a little worried about Germany, he seems to be pretty focused on attacking me at the moment, but hopefully I can convince him to retreat.
+(a / amr-empty)
+
+# ::id dip_test_00013.20
+# ::snt Ok, that's fine
+(a / amr-empty)
+
+# ::id dip_test_00013.21
+# ::snt Are you going to go after Norway now?
+(a / amr-empty)
+
+# ::id dip_test_00013.22
+# ::snt It depends on if Germany retreats or not, I'll probably just bounce him.
+(a / amr-empty)
+
+# ::id dip_test_00013.23
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_00013.24
+# ::snt Also, are you planning on attacking Germany any time soon? I could really use the help.
+(a / amr-empty)
+
+# ::id dip_test_00013.25
+# ::snt I might be able to attack him in the Autumn
+(a / amr-empty)
+
+# ::id dip_test_00013.26
+# ::snt That would be great, thanks.
+(a / amr-empty)
+
+# ::id dip_test_00013.27
+# ::snt No problem
+(a / amr-empty)
+
+# ::id dip_test_00013.28
+# ::snt I don't think Germany will be much of a threat for much longer. You might be able to convince France to go for Munich
+(a / amr-empty)
+
+# ::id dip_test_00013.29
+# ::snt That's what I've been doing, he's told me that he might help me with Germany in the Autumn.
+(a / amr-empty)
+
+# ::id dip_test_00013.30
+# ::snt Good luck
+(a / amr-empty)
+
+# ::id dip_test_00013.31
+# ::snt Thanks, you too.
+(a / amr-empty)
+
+# ::id dip_test_00013.32
+# ::snt Hi Germany, I know you've been attacking me, but we can still work together if you want.
+(a / amr-empty)
+
+# ::id dip_test_00013.33
+# ::snt Ok. What do you suggest?
+(a / amr-empty)
+
+# ::id dip_test_00013.34
+# ::snt I'm not sure, do you have anything to suggest?
+(a / amr-empty)
+
+# ::id dip_test_00013.35
+# ::snt Do you have any plans for your fleet in Ankara once Turkey is eliminated? If not, would you be open to the idea of letting me take it, so that I have another unit with which to move against Austria?
+(a / amr-empty)
+
+# ::id dip_test_00013.36
+# ::snt Not really
+(a / amr-empty)
+
+# ::id dip_test_00013.37
+# ::snt Well, the first thing you have to do is get out of Silesia and the Baltic Sea.
+(a / amr-empty)
+
+# ::id dip_test_00013.38
+# ::snt We can coordinate our moves so that we don't bounce anywhere.
+(a / amr-empty)
+
+# ::id dip_test_00013.39
+# ::snt I might be able to let you have it later on, we'll see.
+(a / amr-empty)
+
+# ::id dip_test_00013.40
+# ::snt Well I think I'd have to keep a unit in Silesia, just to defend
+(a / amr-empty)
+
+# ::id dip_test_00013.41
+# ::snt And I don't really have anything planned for it yet.
+(a / amr-empty)
+
+# ::id dip_test_00013.42
+# ::snt I'm happy to work together in Scandinavia though
+(a / amr-empty)
+
+# ::id dip_test_00013.43
+# ::snt Ok, sounds good
+(a / amr-empty)
+
+# ::id dip_test_00013.44
+# ::snt I would much prefer if you moved out of Silesia, especially since you need to defend Munich from France.
+(a / amr-empty)
+
+# ::id dip_test_00013.45
+# ::snt I just need to see how things play out.
+(a / amr-empty)
+
+# ::id dip_test_00013.46
+# ::snt Ok. Do you want me to support you into Austria?
+(a / amr-empty)
+
+# ::id dip_test_00013.47
+# ::snt No, I already have armies there. I'm not planning on attacking him.
+(a / amr-empty)
+
+# ::id dip_test_00013.48
+# ::snt Ok. Good luck
+(a / amr-empty)
+
+# ::id dip_test_00013.49
+# ::snt Thanks.
+(a / amr-empty)
+
+# ::id dip_test_00014.1
+# ::snt I can support you to Ankara this turn
+(a / amr-empty)
+
+# ::id dip_test_00014.2
+# ::snt Thanks, I would appreciate that
+(a / amr-empty)
+
+# ::id dip_test_00014.3
+# ::snt Ok
+(a / amr-empty)
+
+# ::id dip_test_00014.4
+# ::snt I will be moving to Ankara from Smyrna
+(a / amr-empty)
+
+# ::id dip_test_00014.5
+# ::snt Ok, I will support you
+(a / amr-empty)
+
+# ::id dip_test_00014.6
+# ::snt Thanks
+(a / amr-empty)
+
+# ::id dip_test_00014.7
+# ::snt It looks like Austria is moving against you. I can help you out if you need it
+(a / amr-empty)
+
+# ::id dip_test_00014.8
+# ::snt I'm not sure if I need it, but I would definitely appreciate your help. If you want to start attacking him, I can support you into Con.
+(a / amr-empty)
+
+# ::id dip_test_00014.9
+# ::snt If you support me into Con, I'll use my fleets to take the Aegean, so I can help you take Bulgaria the turn after
+(a / amr-empty)
+
+# ::id dip_test_00014.10
+# ::snt Ok, I'll support Smyrna to Con.
+(a / amr-empty)
+
+# ::id dip_test_00014.11
+# ::snt Great, thanks
+(a / amr-empty)
+
+# ::id dip_test_00015.1
+# ::snt I'll cut support from Bulgaria, so you should be able to take Rumania back
+(a / amr-empty)
+
+# ::id dip_test_00015.2
+# ::snt Thanks, that will help a lot.
+(a / amr-empty)
+
+# ::id dip_test_00015.3
+# ::snt Nice job taking Rumania
+(a / amr-empty)
+
+# ::id dip_test_00015.4
+# ::snt I'm going to try to move my army in Tuscany back to my home territory, so I can convoy it back there
+(a / amr-empty)
+
+# ::id dip_test_00016.1
+# ::snt Sorry. It was too tempting
+(a / amr-empty)
+
+# ::id dip_test_00016.2
+# ::snt No problem, I understand.
+(a / amr-empty)
+
+# ::id dip_test_00016.3
+# ::snt Well, it looks like your attack on me didn't really work out that well.
+(a / amr-empty)
+
+# ::id dip_test_00016.4
+# ::snt I would have done the same in your position.
+(a / amr-empty)
+
+# ::id dip_test_00016.5
+# ::snt That went very well.
+(a / amr-empty)
+
+# ::id dip_test_00016.6
+# ::snt I'm surprised it did work
+(a / amr-empty)
+
+# ::id dip_test_00016.7
+# ::snt You shouldn't have stabbed me.
+(a / amr-empty)
+
+# ::id dip_test_00016.8
+# ::snt It did. It's a shame about Rumania
+(a / amr-empty)
+
+# ::id dip_test_00016.9
+# ::snt Thanks
+(a / amr-empty)
+
+# ::id dip_test_00016.10
+# ::snt Why did you stab me?
+(a / amr-empty)
+
+# ::id dip_test_00016.11
+# ::snt I didn't expect it to work
+(a / amr-empty)
+
+# ::id dip_test_00016.12
+# ::snt It seemed like the best way to get the centres I needed to get me up to speed on Scs
+(a / amr-empty)
+
+# ::id dip_test_00016.13
+# ::snt I think it was a mistake though, as France is now likely to become a real threat. I'm happy to reconsider if you have a good proposal
+(a / amr-empty)
+
+# ::id dip_test_00016.14
+# ::snt Yeah, oh well, I think that I can take it back next turn.
+(a / amr-empty)
+
+# ::id dip_test_00016.15
+# ::snt We both would have benefited from working together.
+(a / amr-empty)
+
+# ::id dip_test_00016.16
+# ::snt You should be able to
+(a / amr-empty)
+
+# ::id dip_test_00016.17
+# ::snt I was going to help you get all of Turkey's centers
+(a / amr-empty)
+
+# ::id dip_test_00016.18
+# ::snt That's true
+(a / amr-empty)
+
+# ::id dip_test_00016.19
+# ::snt No hard feelings.
+(a / amr-empty)
+
+# ::id dip_test_00016.20
+# ::snt I just have to make sure that I don't lose any other centers.
+(a / amr-empty)
+
+# ::id dip_test_00016.21
+# ::snt We can still fix it, you just have to give me back Rumania.
+(a / amr-empty)
+
+# ::id dip_test_00016.22
+# ::snt We should be able to take Bulgaria and Rumania next year.
+(a / amr-empty)
+
+# ::id dip_test_00016.23
+# ::snt Why would I do that?
+(a / amr-empty)
+
+# ::id dip_test_00016.24
+# ::snt Because you need my help to defeat Italy.
+(a / amr-empty)
+
+# ::id dip_test_00016.25
+# ::snt So what do you propose?
+(a / amr-empty)
+
+# ::id dip_test_00016.26
+# ::snt Otherwise he will defeat you.
+(a / amr-empty)
+
+# ::id dip_test_00016.27
+# ::snt That's true, I will think about it
+(a / amr-empty)
+
+# ::id dip_test_00016.28
+# ::snt Indeed
+(a / amr-empty)
+
+# ::id dip_test_00016.29
+# ::snt Let's trade Con for Greece
+(a / amr-empty)
+
+# ::id dip_test_00016.30
+# ::snt You may be able to convince France to help you take Norway back
+(a / amr-empty)
+
+# ::id dip_test_00016.31
+# ::snt I don't think I'll have much luck, but I can try.
+(a / amr-empty)
+
+# ::id dip_test_00016.32
+# ::snt Worth a try
+(a / amr-empty)
+
+# ::id dip_test_00016.33
+# ::snt If you move from Sev to Rumania and cut support from Galicia, you'll be guaranteed to take it
+(a / amr-empty)
+
+# ::id dip_test_00016.34
+# ::snt I know, but that means that I will lose Stp.
+(a / amr-empty)
+
+# ::id dip_test_00016.35
+# ::snt I'm actually planning to retreat my fleet to the Barents Sea and then use that to retake it.
+(a / amr-empty)
+
+# ::id dip_test_00016.36
+# ::snt I'm not going to take it personally if you don't.
+(a / amr-empty)
+
+# ::id dip_test_00016.37
+# ::snt Fair point
+(a / amr-empty)
+
+# ::id dip_test_00016.38
+# ::snt I'll consider it
+(a / amr-empty)
+
+# ::id dip_test_00016.39
+# ::snt Ok, that's all I wanted to hear.
+(a / amr-empty)
+
+# ::id dip_test_00016.40
+# ::snt I don't really have anything else to say.
+(a / amr-empty)
+
+# ::id dip_test_00016.41
+# ::snt Yeah. I was happy to work with you until I saw an opportunity to take some Scs
+(a / amr-empty)
+
+# ::id dip_test_00016.42
+# ::snt That's how the game works.
+(a / amr-empty)
+
+# ::id dip_test_00016.43
+# ::snt Yep
+(a / amr-empty)
+
+# ::id dip_test_00016.44
+# ::snt I'm still going to try my best to defend myself.
+(a / amr-empty)
+
+# ::id dip_test_00016.45
+# ::snt Are you planning on attacking Austria?
+(a / amr-empty)
+
+# ::id dip_test_00016.46
+# ::snt Yes, and I believe I've put Russia in a bad position. I think we may need to work together to prevent a French solo
+(a / amr-empty)
+
+# ::id dip_test_00016.47
+# ::snt Would you be open to the idea of a ceasefire with Russia?
+(a / amr-empty)
+
+# ::id dip_test_00016.48
+# ::snt Yes
+(a / amr-empty)
+
+# ::id dip_test_00016.49
+# ::snt I can't really do much against France right now
+(a / amr-empty)
+
+# ::id dip_test_00016.50
+# ::snt The problem is that Italy won't cooperate
+(a / amr-empty)
+
+# ::id dip_test_00016.51
+# ::snt You can always try.
+(a / amr-empty)
+
+# ::id dip_test_00016.52
+# ::snt I will
+(a / amr-empty)
+
+# ::id dip_test_00016.53
+# ::snt That's true, but hopefully we can work together to prevent France from making further gains. If you could try to take the North Sea, that would put a lot of pressure on him
+(a / amr-empty)
+
+# ::id dip_test_00016.54
+# ::snt Ok, but if you don't, I'm still going to attack you.
+(a / amr-empty)
+
+# ::id dip_test_00016.55
+# ::snt I can try
+(a / amr-empty)
+
+# ::id dip_test_00016.56
+# ::snt Thanks
+(a / amr-empty)
+
