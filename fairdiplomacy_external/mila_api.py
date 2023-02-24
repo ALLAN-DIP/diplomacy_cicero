@@ -91,7 +91,7 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 
-from daidepp.utils import preprocess, gen_English, post_process
+from daidepp.utils import pre_process, gen_English, post_process, is_daide
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -163,7 +163,7 @@ class milaWrapper:
                     msg = self.generate_message(power_name)
                     # send message in dipcc and Mila
                     if msg is not None:
-                        self.send_log(msg)
+                        # await self.send_log(msg)
                         self.send_message(msg)
                     await asyncio.sleep(0.1)
         
@@ -289,7 +289,7 @@ class milaWrapper:
                     most_recent = dipcc_timesent
                 
                 #TODO: FENG parsing parsing(message.message: str)
-                pre_processed = preprocess(message.message)
+                pre_processed = pre_process(message.message)
                 generated_English = gen_English(pre_processed, message.recipient, message.sender)
                 post_processed = post_process(generated_English, message.recipient, message.sender)
 
@@ -381,12 +381,12 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
-    def send_log(self, msg: MessageDict):
+    async def send_log(self, msg: MessageDict):
         """ 
         send log to mila games 
         """ 
 
-        log_data = self.game.new_log_data(body=f"CICERO English message: {msg["message"]}")
+        log_data = self.game.new_log_data(body=f'CICERO English message: {msg["message"]}')
         await self.game.send_log_data(log=log_data)
 
         print(f'update a log {msg["message"]}')
@@ -452,7 +452,7 @@ class milaWrapper:
         for timesent, message in phase_message.items():
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
 
-                pre_processed = preprocess(message.message)
+                pre_processed = pre_process(message.message)
                 generated = gen_English(pre_processed, message.recipient, message.sender)
                 post_processed = post_process(generated, message.recipient, message.sender)
 
