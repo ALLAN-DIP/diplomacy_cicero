@@ -619,12 +619,6 @@ def psudo_code_gene(current_phase_code,message,power_dict,af_dict):
                         string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')) '
     return string1,string2
 
-
-
-
-
-
-
 def eng_to_daide(message:MessageDict,inference):
     gen_graphs = inference.parse_sents([message["sender"]+' send that '+message["message"]], disable_progress=False)
     for graph in gen_graphs:
