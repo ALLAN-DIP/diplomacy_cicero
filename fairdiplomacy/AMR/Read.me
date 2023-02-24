@@ -1,0 +1,13 @@
+Please download model file from https://drive.google.com/file/d/1d1bHcxYI-ftNn_Z18ItE5CLYPTRZ7LBB/view?usp=sharing
+
+And then put the model under the folder path like /work/09256/yanze/ls6/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm
+
+The bind command I am using is 
+singularity run  --nv \
+    --bind /work/09256/yanze/ls6/diplomacy_cicero/fairdiplomacy/env.py:/diplomacy_cicero/fairdiplomacy/env.py \
+    --bind /work/09256/yanze/ls6/diplomacy_cicero/fairdiplomacy/agents/:/diplomacy_cicero/fairdiplomacy/agents \
+    --bind /work/09256/yanze/ls6/diplomacy_cicero/fairdiplomacy/AMR/:/diplomacy_cicero/fairdiplomacy/AMR \
+	  --bind `pwd`/agents:/diplomacy_cicero/conf/common/agents \
+	  --bind `pwd`/models:/diplomacy_cicero/models \
+	  --bind `pwd`/gpt2:/usr/local/lib/python3.7/site-packages/data/gpt2 \
+    --pwd /diplomacy_cicero cicero_latest.sif

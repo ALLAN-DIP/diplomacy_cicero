@@ -14,7 +14,6 @@ import random
 import torch
 from io import StringIO
 from typing import Any, Dict, List, Optional, Tuple
-
 from fairdiplomacy.agents.base_agent import BaseAgent
 from fairdiplomacy.agents.base_search_agent import BaseSearchAgent
 from fairdiplomacy.agents.base_strategy_model_wrapper import BaseStrategyModelWrapper
@@ -41,6 +40,16 @@ from fairdiplomacy.viz.meta_annotations import api as meta_annotations
 PYDIPCC_MAX_YEAR = 1935
 STATE_SUFFIX = ".state.bin"
 MIN_INTERVAL = Timestamp.from_centis(1)
+
+import json
+import sys
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
+from amrtodaide import AMR
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/penman')
+# import penman
+import regex
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/amrlib')
+from amrlib.models.parse_xfm.inference import Inference
 
 
 class BasePolicyProfile(ABC):
@@ -480,20 +489,165 @@ def get_alive_powers(game: Game) -> List[Power]:
     return game.get_alive_powers()
 
 
-def add_messages_to_game_object(game: Game, messages: List[MessageDict]) -> None:
+# def add_messages_to_game_object(game: Game, messages: List[MessageDict]) -> None:
+#     # add all of the messages sent in a round to the game object, excluding
+#     # messages to dead powers
+#     alive_powers = get_alive_powers(game)
+#     assert alive_powers[0] == alive_powers[0].upper(), "Bad power name formatting!"
+#     for message in messages:
+#         game.add_message(
+#             message["sender"], message["recipient"], message["message"], message["time_sent"]
+#         )
+#         logging.info(
+#             f"({int(message['time_sent'])}) {message['sender']} -> {message['recipient']}: {message['message']}"
+#         )
+#         meta_annotations.after_message_add(list(game.messages.values())[-1])
+
+
+def add_messages_to_game_object(game: Game, messages: List[MessageDict],profile:BasePolicyProfile) -> None:
     # add all of the messages sent in a round to the game object, excluding
     # messages to dead powers
     alive_powers = get_alive_powers(game)
     assert alive_powers[0] == alive_powers[0].upper(), "Bad power name formatting!"
 
+    num_beams   = 4
+    batch_size  = 16
+    device = 'cuda:0'
+    model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
+    inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
+    power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
+    af_dict = {'A':'AMY','F':'FLT'}
     for message in messages:
-        game.add_message(
-            message["sender"], message["recipient"], message["message"], message["time_sent"]
-        )
         logging.info(
-            f"({int(message['time_sent'])}) {message['sender']} -> {message['recipient']}: {message['message']}"
-        )
+                f"({int(message['time_sent'])}) {message['sender']} -> {message['recipient']}: {message['message']}"
+            )
+        pseudo_code = profile.get_player(message["sender"]).get_pseudo_orders(game=game,recipient=message["recipient"])
+        try:
+            daide_status,daide_s = eng_to_daide(message,inference)
+        except:
+            daide_status,daide_s ='NO-DAIDE',''
+        # I didn't test add daide sentence and daide status into the game.add_message function and thus into game object, I will test this whether I can change this function once get gpu.
+        # Do we need to add DAIDE-ENG function here?
+        if daide_status == 'Full-DAIDE':
+            game.add_message(
+                message["sender"], message["recipient"], message["message"], message["time_sent"]
+            )
+            print(daide_status)
+            print(daide_s)
+        elif daide_status == 'Partial-DAIDE':
+            current_phase_code = pseudo_code[message["phase"]]
+            PRP_DAIDE,FCT_DAIDE = psudo_code_gene(current_phase_code,message,power_dict,af_dict)
+            game.add_message(
+                message["sender"], message["recipient"], message["message"], message["time_sent"]
+            )
+            print(daide_status)
+            print(daide_s)
+            print(PRP_DAIDE)
+            print(FCT_DAIDE)
+        elif daide_status == 'Para-DAIDE':
+            current_phase_code = pseudo_code[message["phase"]]
+            PRP_DAIDE,FCT_DAIDE = psudo_code_gene(current_phase_code,message,power_dict,af_dict)
+            game.add_message(
+                message["sender"], message["recipient"], message["message"], message["time_sent"]
+            )
+            print(daide_status)
+            print(daide_s)
+            print(PRP_DAIDE)
+            print(FCT_DAIDE)
+        else:
+            game.add_message(
+                message["sender"], message["recipient"], message["message"], message["time_sent"]
+            )
+            print(daide_status)
+            print(daide_s)
         meta_annotations.after_message_add(list(game.messages.values())[-1])
+        # print(game.get_all_possible_orders())
+        # print(game.get_orders())
+        # print('-----------')
+        # print(game.get_staged_phase_data().orders)
+        # print(game.get_staged_phase_data().name)
+        # print(game.get_staged_phase_data().messages)
+        # print(game.get_staged_phase_data().state)
+        # print('-----------------------')
+        # for i in game.get_all_phases():
+        #     print(i.orders)
+        #     print(i.name)
+        #     print(i.messages)
+        #     print(i.state)
+
+def psudo_code_gene(current_phase_code,message,power_dict,af_dict):
+    string1 = 'PRP ( ORR '
+    string2 = 'FCT ( ORR '
+    for country in current_phase_code.keys():
+        if country == message["sender"]:
+        #PRP for sender
+            for i in current_phase_code[country]:
+                sen_length = len(i)
+                if sen_length == 11:
+                    string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') MTO '+i[8:11]+') '
+                elif sen_length == 7:
+                    if i[6] == 'H':
+                        string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') HLD) '
+                    elif i[6] == 'B':
+                        string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') BLD) '
+                    elif i[6] == 'R':
+                        string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') REM) '
+                elif sen_length == 19:
+                    if i[6] =='S':
+                        string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') SUP ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') MTO '+i[16:19]+') '
+                    elif i[6] == 'C':
+                        string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+') '
+                        string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')) '
+        else:
+        # #FCT for recipient
+            for i in current_phase_code[country]:
+                sen_length = len(i)
+                if sen_length == 11:
+                    string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') MTO '+i[8:11]+') '
+                elif sen_length == 7:
+                    if i[6] == 'H':
+                        string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') HLD) '
+                    elif i[6] == 'B':
+                        string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') BLD) '
+                    elif i[6] == 'R':
+                        string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') REM) '
+                elif sen_length == 19:
+                    if i[6] =='S':
+                        string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') SUP ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') MTO '+i[16:19]+') '
+                    elif i[6] == 'C':
+                        string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+') '
+                        string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')) '
+    return string1,string2
+
+def eng_to_daide(message:MessageDict,inference):
+    gen_graphs = inference.parse_sents([message["sender"]+' send that '+message["message"]], disable_progress=False)
+    for graph in gen_graphs:
+        amr = AMR()
+        amr_node, s, error_list, snt_id, snt, amr_s = amr.string_to_amr(graph)
+        if amr_node:
+            amr.root = amr_node
+        try:
+            amr_s2 = amr.amr_to_string()
+        except RecursionError:
+            return 'No-DAIDE',''
+        if amr_s2 == '(a / amr-empty)':
+            daide_s, warnings = '', []
+        else:
+            daide_s, warnings = amr.amr_to_daide()
+        if regex.search(r'[A-Z]{3}', daide_s):
+            if regex.search(r'[a-z]', daide_s):
+                daide_status = 'Partial-DAIDE'
+            elif warnings:
+                daide_status = 'Para-DAIDE'
+            else:
+                daide_status = 'Full-DAIDE'
+        else:
+            daide_status = 'No-DAIDE'
+
+        return daide_status,daide_s
+
+
+
 
 
 def _get_affected_powers(msg_dicts: List[MessageDict]):
@@ -707,8 +861,17 @@ class TimeBasedMessageRunner(AbstractMessageRunner):
         self.phase_time_so_far += slept_for + offset
         self.total_time += slept_for + offset
 
+        print(self.total_time)
         # Get dialogue messages from the current speaker
         msg_dicts = self.get_message_from_speaker(curr_speaker, self.total_time)
+        print('-------------------------------------------------------')
+        print(msg_dicts)
+        print(self.num_phase_messages)
+        print(self.total_time)
+        # msg_dicts = self.get_message_from_speaker(curr_speaker, self.total_time)
+        # print('hhhhhhhh')
+        #print(msg_dicts)
+
 
         assert (
             len(msg_dicts) <= 1
@@ -716,7 +879,7 @@ class TimeBasedMessageRunner(AbstractMessageRunner):
 
         # Add messages to the game object
         assert self.game is not None
-        add_messages_to_game_object(self.game, msg_dicts)
+        add_messages_to_game_object(self.game, msg_dicts,self.policy_profile)
         self.num_phase_messages += 1
         # Update sleep times
         self._update_sleep_times(curr_speaker, slept_for, msg_dicts)
