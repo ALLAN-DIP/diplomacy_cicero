@@ -94,7 +94,7 @@ from diplomacy.utils.export import to_saved_game_format
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
-DEFAULT_DEADLINE = 4
+DEFAULT_DEADLINE = 3
 
 import json
 import sys
@@ -106,7 +106,8 @@ import regex
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/amrlib')
 from amrlib.models.parse_xfm.inference import Inference
 
-
+power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
+af_dict = {'A':'AMY','F':'FLT'}
 
 class milaWrapper:
 
@@ -159,9 +160,8 @@ class milaWrapper:
         batch_size  = 16
         device = 'cuda:0'
         model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
-        inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
-        power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
-        af_dict = {'A':'AMY','F':'FLT'}
+        self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
+
         while not self.game.is_game_done:
             self.phase_start_time = time.time()
             self.dipcc_current_phase = self.game.get_current_phase()
@@ -178,41 +178,17 @@ class milaWrapper:
                         
                     # reply/gen new message
                     msg = self.generate_message(power_name)
-                    print('-----------------------')
-                    print(msg)
-                    try:
-                        daide_status,daide_s = self.eng_to_daide(msg,inference)
-                    except:
-                        daide_status,daide_s = 'NO-DAIDE',''
-                    # if isinstance(self.player.state, SearchBotAgentState):
-                    pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
-                            self.dipcc_game, self.player.power, True, True, None
-                        ) 
-                    if daide_status == 'Full-DAIDE':
-                        print(daide_status)
-                        print(daide_s)
-                    elif daide_status == 'Partial-DAIDE':
-                        current_phase_code = pseudo_orders[msg["phase"]]
-                        PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
-                        print(daide_status)
-                        print(daide_s)
-                        print(PRP_DAIDE)
-                        print(FCT_DAIDE)
-                    elif daide_status == 'Para-DAIDE':
-                        current_phase_code = pseudo_orders[msg["phase"]]
-                        PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
-                        print(daide_status)
-                        print(daide_s)
-                        print(PRP_DAIDE)
-                        print(FCT_DAIDE)
-                    else:
-                        print(daide_status)
-                        print(daide_s)
 
                     # send message in dipcc and Mila
                     if msg is not None:
+
                         # await self.send_log(msg)
-                        self.send_message(msg)
+                        list_msg = self.to_daide_msg(msg)
+                        if len(list_msg)>0:
+                            self.send_message(msg, 'dipcc')
+                        for msg in list_msg:
+                            self.send_message(msg, 'mila')
+
                     await asyncio.sleep(0.1)
         
                 # ORDER
@@ -242,11 +218,59 @@ class milaWrapper:
             )
             file.write("\n")
 
+    def to_daide_msg(self, msg: MessageDict):
+        print('-----------------------')
+        print(f'Parsing {msg} to DAIDE')
+
+        try:
+            daide_status,daide_s = self.eng_to_daide(msg, self.inference)
+        except:
+            daide_status,daide_s = 'NO-DAIDE',''
+        # if isinstance(self.player.state, SearchBotAgentState):
+        pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
+                self.dipcc_game, self.player.power, True, True, None
+            ) 
+        list_msg = []
+        if daide_status == 'Full-DAIDE':
+            print(daide_status)
+            print(daide_s)
+            daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
+            list_msg.append(daide_msg)
+        elif daide_status == 'Partial-DAIDE':
+            current_phase_code = pseudo_orders[msg["phase"]]
+            PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
+            print(daide_status)
+            print(daide_s)
+            print(PRP_DAIDE)
+            print(FCT_DAIDE)
+            fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
+            prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
+            list_msg.append(fct_msg)
+            list_msg.append(prp_msg)
+
+        elif daide_status == 'Para-DAIDE':
+            current_phase_code = pseudo_orders[msg["phase"]]
+            PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
+            print(daide_status)
+            print(daide_s)
+            print(PRP_DAIDE)
+            print(FCT_DAIDE)
+            fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
+            prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
+            list_msg.append(fct_msg)
+            list_msg.append(prp_msg)
+        else:
+            print(daide_status)
+            print(daide_s)
+
+        return list_msg
+
     def psudo_code_gene(self,current_phase_code,message,power_dict,af_dict):
         string1 = 'FCT ( ORR'
         string2 = 'PRP ( ORR'
         for country in current_phase_code.keys():
             if country == message["sender"]:
+            #FCT for sender
             #FCT for sender
                 for i in current_phase_code[country]:
                     sen_length = len(i)
@@ -266,7 +290,7 @@ class milaWrapper:
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+')'
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+'))'
             else:
-            # #PRP for recipient
+            #PRP for recipient
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
@@ -509,28 +533,30 @@ class milaWrapper:
 
         print(f'update a log {msg["message"]}')
 
-    def send_message(self, msg: MessageDict):
+    def send_message(self, msg: MessageDict, engine: str):
         """ 
         send message in dipcc and mila games 
         """ 
         timesend = Timestamp.now()
-        self.dipcc_game.add_message(
-                    msg['sender'], 
-                    msg['recipient'], 
-                    msg['message'], 
-                    time_sent=timesend,
-                    increment_on_collision=True,
+        if engine =='dipcc':
+            self.dipcc_game.add_message(
+                        msg['sender'], 
+                        msg['recipient'], 
+                        msg['message'], 
+                        time_sent=timesend,
+                        increment_on_collision=True,
+                    )
+
+        if engine =='mila':
+            mila_msg = Message(
+                sender=msg["sender"],
+                recipient=msg["recipient"],
+                message=msg["message"],
+                phase=self.game.get_current_phase(),
                 )
+            self.game.send_game_message(message=mila_msg)
 
-        mila_msg = Message(
-            sender=msg["sender"],
-            recipient=msg["recipient"],
-            message=msg["message"],
-            phase=self.game.get_current_phase(),
-            )
-        self.game.send_game_message(message=mila_msg)
-
-        print(f'update a message from: { msg["sender"] } to: { msg["recipient"] } timesent: {timesend} and body: {msg["message"]}')
+        print(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
 
     def get_messages(
         self, 
