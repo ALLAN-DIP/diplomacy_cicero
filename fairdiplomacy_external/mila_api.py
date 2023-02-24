@@ -266,8 +266,8 @@ class milaWrapper:
         return list_msg
 
     def psudo_code_gene(self,current_phase_code,message,power_dict,af_dict):
-        string1 = 'FCT ( ORR'
-        string2 = 'PRP ( ORR'
+        string1 = 'FCT (ORR'
+        string2 = 'PRP (ORR'
         for country in current_phase_code.keys():
             if country == message["sender"]:
             #FCT for sender
