@@ -243,47 +243,49 @@ class milaWrapper:
             file.write("\n")
 
     def psudo_code_gene(self,current_phase_code,message,power_dict,af_dict):
-        string1 = 'FCT ( ORR '
-        string2 = 'PRP ( ORR '
+        string1 = 'FCT ( ORR'
+        string2 = 'PRP ( ORR'
         for country in current_phase_code.keys():
             if country == message["sender"]:
             #FCT for sender
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
-                        string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') MTO '+i[8:11]+') '
+                        string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') MTO '+i[8:11]+')'
                     elif sen_length == 7:
                         if i[6] == 'H':
-                            string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') HLD) '
+                            string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') HLD)'
                         elif i[6] == 'B':
-                            string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') BLD) '
+                            string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') BLD)'
                         elif i[6] == 'R':
-                            string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') REM) '
+                            string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') REM)'
                     elif sen_length == 19:
                         if i[6] =='S':
-                            string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') SUP ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') MTO '+i[16:19]+') '
+                            string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') SUP ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') MTO '+i[16:19]+')'
                         elif i[6] == 'C':
-                            string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+') '
-                            string1 += '(XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')) '
+                            string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+')'
+                            string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+'))'
             else:
             # #PRP for recipient
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
-                        string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') MTO '+i[8:11]+') '
+                        string2 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') MTO '+i[8:11]+')'
                     elif sen_length == 7:
                         if i[6] == 'H':
-                            string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') HLD) '
+                            string2 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') HLD)'
                         elif i[6] == 'B':
-                            string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') BLD) '
+                            string2 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') BLD)'
                         elif i[6] == 'R':
-                            string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') REM) '
+                            string2 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') REM)'
                     elif sen_length == 19:
                         if i[6] =='S':
-                            string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') SUP ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') MTO '+i[16:19]+') '
+                            string2 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') SUP ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') MTO '+i[16:19]+')'
                         elif i[6] == 'C':
-                            string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+') '
-                            string2 += '(XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')) '
+                            string2 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+')'
+                            string2 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+'))'
+        string1 += '))'
+        string2 += '))'
         return string1,string2
 
     def eng_to_daide(self,message:MessageDict,inference):
