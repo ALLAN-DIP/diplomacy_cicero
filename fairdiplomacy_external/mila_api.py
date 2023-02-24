@@ -288,19 +288,51 @@ class milaWrapper:
                 if timesent > most_recent:
                     most_recent = dipcc_timesent
                 
-                #TODO: FENG parsing parsing(message.message: str)
-                pre_processed = pre_process(message.message)
-                generated_English = gen_English(pre_processed, message.recipient, message.sender)
-                post_processed = post_process(generated_English, message.recipient, message.sender)
+                # Excluding the parentheses, check if the message only contains three upper letters.
+                # If so, go through daide++. If there is an error, then send 'ERROR parsing {message}' to global,
+                # and don't add it to the dipcc game.
+                # If it has at least one part that contains anything other than three upper letters,
+                # then just keep message body as original
 
-                print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {post_processed}')
-                self.dipcc_game.add_message(
-                    message.sender,
-                    message.recipient,
-                    post_processed,
-                    time_sent=dipcc_timesent,
-                    increment_on_collision=True,
-                )
+                if is_daide(message.message):
+                    pre_processed = pre_process(message.message)
+                    generated_English = gen_English(pre_processed, message.recipient, message.sender)
+
+                    # if the message is invalid daide, send an error to paquette global
+                    if generated_English.startswith("ERROR"):
+                        self.game.add_message(Message(
+                            sender=message.sender,
+                            recipient='GLOBAL',
+                            message=generated_English,
+                            phase=self.game.get_current_phase(),
+                            time_sent=dipcc_timesent))
+                        
+                        print(f'Error updating invalid daide from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}, an error message is sent to global')
+
+                    # if the message is valid daide, process and send it to dipcc recipient
+                    else:
+                        message_to_send = post_process(generated_English, message.recipient, message.sender)
+                        
+                        self.dipcc_game.add_message(
+                            message.sender,
+                            message.recipient,
+                            message_to_send,
+                            time_sent=dipcc_timesent,
+                            increment_on_collision=True)
+                        
+                        print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message_to_send}')
+
+                # if the message is english, just send it to dipcc recipient
+                else:
+                    self.dipcc_game.add_message(
+                        message.sender,
+                        message.recipient,
+                        message.message,
+                        time_sent=dipcc_timesent,
+                        increment_on_collision=True,
+                    )
+
+                    print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
 
         # update last_received_message_time 
         self.last_received_message_time = most_recent
@@ -452,18 +484,52 @@ class milaWrapper:
         for timesent, message in phase_message.items():
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
 
-                pre_processed = pre_process(message.message)
-                generated = gen_English(pre_processed, message.recipient, message.sender)
-                post_processed = post_process(generated, message.recipient, message.sender)
+                # Excluding the parentheses, check if the message only contains three upper letters.
+                # If so, go through daide++. If there is an error, then send 'ERROR parsing {message}' to global,
+                # and don't add it to the dipcc game.
+                # If it has at least one part that contains anything other than three upper letters,
+                # then just keep message body as original
 
+                if is_daide(message.message):
+                    pre_processed = pre_process(message.message)
+                    generated_English = gen_English(pre_processed, message.recipient, message.sender)
 
-                dipcc_game.add_message(
-                    message.sender,
-                    message.recipient,
-                    post_processed,
-                    time_sent=dipcc_timesent,
-                    increment_on_collision=True,
-                )
+                    # if the message is invalid daide, send an error to paquette global
+                    if generated_English.startswith("ERROR"):
+                        self.game.add_message(Message(
+                            sender=message.sender,
+                            recipient='GLOBAL',
+                            message=generated_English,
+                            phase=mila_phase,
+                            time_sent=dipcc_timesent))
+                        
+                        print(f'Error updating invalid daide from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}, an error message is sent to global')
+
+                    # if the message is valid daide, process and send it to dipcc recipient
+                    else:
+                        message_to_send = post_process(generated_English, message.recipient, message.sender)
+                        
+                        self.dipcc_game.add_message(
+                            message.sender,
+                            message.recipient,
+                            message_to_send,
+                            time_sent=dipcc_timesent,
+                            increment_on_collision=True)
+                        
+                        print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message_to_send}')
+
+                # if the message is english, just send it to dipcc recipient
+                else:
+                    self.dipcc_game.add_message(
+                        message.sender,
+                        message.recipient,
+                        message.message,
+                        time_sent=dipcc_timesent,
+                        increment_on_collision=True,
+                    )
+
+                    print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
+
 
         phase_order = self.game.order_history[phase] 
 
