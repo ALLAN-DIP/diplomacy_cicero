@@ -437,13 +437,13 @@ class AMR:
                 warnings = self.extend_new_warnings(warnings, sub_warnings)
                 if daide_element:
                     if ' ' in daide_element and not has_matching_outer_parentheses(daide_element):
-                        daide_element = '(' + daide_element + ')'
+                        daide_element = '(XDO ' + daide_element + ')'
                     daide_elements.append(daide_element)
                     i += 1
             if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01']):
                 return ' '.join(daide_elements), warnings
             else:
-                return f"AND {' '.join(daide_elements)}", warnings
+                return f"ORR {' '.join(daide_elements)}", warnings
         d = self.match_for_daide(amr_node,
                                      '($utype(army|fleet) :mod $power(country) :location $location(sea|province))')
         # if d := self.match_for_daide(amr_node,

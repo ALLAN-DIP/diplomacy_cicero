@@ -181,11 +181,21 @@ class milaWrapper:
                     # reply/gen new message
                     msg = self.generate_message(power_name)
 
+                    phase_messages = self.get_messages(
+                        messages=self.game.messages, power=power_name
+                    )
+                    print(phase_messages)
+
+                    yes_or_rej = self.reply_to_proposal(message.message,msg)
+
                     # send message in dipcc and Mila
                     if msg is not None:
-
                         # await self.send_log(msg)
-                        list_msg = self.to_daide_msg(msg)
+                        if yes_or_rej is not None:
+                            list_msg = yes_or_rej
+                        else:
+                            list_msg = self.to_daide_msg(msg)
+
                         if len(list_msg)>0:
                             self.send_message(msg, 'dipcc')
                         for msg in list_msg:
@@ -219,6 +229,16 @@ class milaWrapper:
                 to_saved_game_format(game), file, ensure_ascii=False, indent=2
             )
             file.write("\n")
+
+    def reply_to_proposal(self, proposal, cicero_response):
+        positive_reply = 'YES ('
+        negative_reply = 'REJ ('
+        if any(item in cicero_response for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection"]):
+            return negative_reply+proposal+')'
+        elif any(item in cicero_response for item in ["yeah","okay","agree",'agreement','good idea',"Good idea"]):
+            return positive_reply+proposal+')'
+        else:
+            return None
 
     def to_daide_msg(self, msg: MessageDict):
         print('-----------------------')
