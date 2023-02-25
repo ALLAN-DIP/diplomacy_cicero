@@ -186,15 +186,15 @@ class milaWrapper:
                     )
                     print(phase_messages)
 
-                    yes_or_rej = self.reply_to_proposal(message.message,msg)
+                    #yes_or_rej = self.reply_to_proposal(message.message,msg)
 
                     # send message in dipcc and Mila
                     if msg is not None:
                         # await self.send_log(msg)
-                        if yes_or_rej is not None:
-                            list_msg = yes_or_rej
-                        else:
-                            list_msg = self.to_daide_msg(msg)
+                        # if yes_or_rej is not None:
+                        #     list_msg = yes_or_rej
+                        # else:
+                        list_msg = self.to_daide_msg(msg)
 
                         if len(list_msg)>0:
                             self.send_message(msg, 'dipcc')
@@ -231,6 +231,10 @@ class milaWrapper:
             file.write("\n")
 
     def reply_to_proposal(self, proposal, cicero_response):
+        # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
+        # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
+        # return YES/REJ DAIDE response.
+
         positive_reply = 'YES ('
         negative_reply = 'REJ ('
         if any(item in cicero_response for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection"]):
