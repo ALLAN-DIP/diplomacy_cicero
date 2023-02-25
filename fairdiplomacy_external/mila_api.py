@@ -123,6 +123,8 @@ class milaWrapper:
         self.dipcc_current_phase = None                             
         self.last_successful_message_time = None                    # timestep for last message successfully sent in the current phase                       
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
+        self.sent_FCT = set()
+        self.sent_PRP = set()
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
@@ -163,6 +165,7 @@ class milaWrapper:
         device = 'cuda:0'
         model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
+        self.sent_self_intent = False
 
         while not self.game.is_game_done:
             self.phase_start_time = time.time()
@@ -175,11 +178,17 @@ class milaWrapper:
                 while not self.get_should_stop():
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
+                        
                         # update press in dipcc
                         self.update_press_dipcc_game(power_name)
                         
                     # reply/gen new message
                     msg = self.generate_message(power_name)
+
+                    #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
+                    # to get messages in current turn and check if it's daide)
+
+                    #TODO: Yanze reply_to_proposal(proposal, cicero_response)
 
                     # send message in dipcc and Mila
                     if msg is not None:
@@ -193,23 +202,25 @@ class milaWrapper:
                                 self_po = power_po[power]
                             else:
                                 recp_po = power_po[power]
-
-                        self_pseudo_log = f'CICERO_{power_name} intent: {self_po}'
-                        await self.send_log(self_pseudo_log) 
-
-                        power_pseudo_log = f'CICERO_{power_name} search intent for {recipient_power}: {recp_po}'
-                        await self.send_log(power_pseudo_log) 
+                        
+                        if not self.sent_self_intent:
+                            self_pseudo_log = f'CICERO_{power_name} intent: {self_po}'
+                            await self.send_log(self_pseudo_log) 
+                            self.sent_self_intent = True
 
                         # deceive_pseudo = self.player.agent.message_handler.get_deceive_orders()
                         # power_pseudo_log = f'CICERO_{power_name} random intent for {recipient_power}: {deceive_pseudo}'
                         # await self.send_log(power_pseudo_log) 
-                        
-                        nl_log = f"CICERO_{power_name} English message: {msg['message']}"
-                        await self.send_log(nl_log)   
 
-                        # await self.send_log(msg)
                         list_msg = self.to_daide_msg(msg)
                         if len(list_msg)>0:
+
+                            power_pseudo_log = f'CICERO_{power_name} search intent for {recipient_power}: {recp_po}'
+                            await self.send_log(power_pseudo_log) 
+
+                            nl_log = f"CICERO_{power_name} English message: {msg['message']}"
+                            await self.send_log(nl_log) 
+
                             self.send_message(msg, 'dipcc')
                         for msg in list_msg:
                             self.send_message(msg, 'mila')
@@ -266,24 +277,30 @@ class milaWrapper:
             PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
-            print(PRP_DAIDE)
-            print(FCT_DAIDE)
             fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
             prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
-            list_msg.append(fct_msg)
-            list_msg.append(prp_msg)
+
+            if fct_msg['message'] not in self.sent_FCT:
+                list_msg.append(fct_msg)
+                self.sent_FCT.add(fct_msg['message'])
+            if prp_msg['message'] not in self.sent_PRP:
+                list_msg.append(prp_msg)
+                self.sent_PRP.add(prp_msg['message'])
 
         elif daide_status == 'Para-DAIDE':
             current_phase_code = pseudo_orders[msg["phase"]]
             PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
-            print(PRP_DAIDE)
-            print(FCT_DAIDE)
             fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
             prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
-            list_msg.append(fct_msg)
-            list_msg.append(prp_msg)
+
+            if fct_msg['message'] not in self.sent_FCT:
+                list_msg.append(fct_msg)
+                self.sent_FCT.add(fct_msg['message'])
+            if prp_msg['message'] not in self.sent_PRP:
+                list_msg.append(prp_msg)
+                self.sent_PRP.add(prp_msg['message'])
         else:
             print(daide_status)
             print(daide_s)
@@ -372,6 +389,9 @@ class milaWrapper:
         self.prev_state = 0
         self.num_stop = 0
         self.last_successful_message_time = None
+        self.sent_self_intent = False
+        self.sent_FCT = set()
+        self.sent_PRP = set()
 
     def has_phase_changed(self)->bool:
         """ 
