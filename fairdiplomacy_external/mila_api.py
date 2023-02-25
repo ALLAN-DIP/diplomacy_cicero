@@ -185,9 +185,10 @@ class milaWrapper:
                     # reply/gen new message
                     msg = self.generate_message(power_name)
                     print(msg)
+
                     #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
                     # to get messages in current turn and check if it's daide)
-                    prp = self.PRP_message(power_name)
+                    #prp = self.PRP_message(power_name)
 
                     phase_messages = self.get_messages(
                         messages=self.game.messages, power=power_name
