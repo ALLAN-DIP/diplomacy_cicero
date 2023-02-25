@@ -123,6 +123,8 @@ class milaWrapper:
         self.dipcc_current_phase = None                             
         self.last_successful_message_time = None                    # timestep for last message successfully sent in the current phase                       
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
+        self.sent_FCT = set()
+        self.sent_PRP = set()
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
@@ -163,6 +165,7 @@ class milaWrapper:
         device = 'cuda:0'
         model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
+        self.sent_self_intent = False
 
         while not self.game.is_game_done:
             self.phase_start_time = time.time()
@@ -175,28 +178,55 @@ class milaWrapper:
                 while not self.get_should_stop():
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
+                        
                         # update press in dipcc
                         self.update_press_dipcc_game(power_name)
                         
                     # reply/gen new message
                     msg = self.generate_message(power_name)
-
+                    
                     phase_messages = self.get_messages(
-                        messages=self.game.messages, power=power_name
-                    )
+            messages=self.game.messages, power=power_name
+        )
+                    print('-------h-----------')
                     print(phase_messages)
+                    #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
+                    # to get messages in current turn and check if it's daide)
 
-                    #yes_or_rej = self.reply_to_proposal(message.message,msg)
+                    #TODO: Yanze reply_to_proposal(proposal, cicero_response)
 
                     # send message in dipcc and Mila
                     if msg is not None:
-                        # await self.send_log(msg)
-                        # if yes_or_rej is not None:
-                        #     list_msg = yes_or_rej
-                        # else:
+                        recipient_power = msg['recipient']
+                        power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
+                            self.dipcc_game, self.player.power, True, True, recipient_power) 
+                        
+                        power_po = power_pseudo[self.dipcc_current_phase]
+                        for power in power_po.keys():
+                            if power == power_name:
+                                self_po = power_po[power]
+                            else:
+                                recp_po = power_po[power]
+                        
+                        if not self.sent_self_intent:
+                            self_pseudo_log = f'CICERO_{power_name} intent: {self_po}'
+                            await self.send_log(self_pseudo_log) 
+                            self.sent_self_intent = True
+
+                        # deceive_pseudo = self.player.agent.message_handler.get_deceive_orders()
+                        # power_pseudo_log = f'CICERO_{power_name} random intent for {recipient_power}: {deceive_pseudo}'
+                        # await self.send_log(power_pseudo_log) 
+
                         list_msg = self.to_daide_msg(msg)
 
                         if len(list_msg)>0:
+
+                            power_pseudo_log = f'CICERO_{power_name} search intent for {recipient_power}: {recp_po}'
+                            await self.send_log(power_pseudo_log) 
+
+                            nl_log = f"CICERO_{power_name} English message: {msg['message']}"
+                            await self.send_log(nl_log) 
+
                             self.send_message(msg, 'dipcc')
                         for msg in list_msg:
                             self.send_message(msg, 'mila')
@@ -267,24 +297,30 @@ class milaWrapper:
             PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
-            print(PRP_DAIDE)
-            print(FCT_DAIDE)
             fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
             prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
-            list_msg.append(fct_msg)
-            list_msg.append(prp_msg)
+
+            if fct_msg['message'] not in self.sent_FCT:
+                list_msg.append(fct_msg)
+                self.sent_FCT.add(fct_msg['message'])
+            if prp_msg['message'] not in self.sent_PRP:
+                list_msg.append(prp_msg)
+                self.sent_PRP.add(prp_msg['message'])
 
         elif daide_status == 'Para-DAIDE':
             current_phase_code = pseudo_orders[msg["phase"]]
             PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
-            print(PRP_DAIDE)
-            print(FCT_DAIDE)
             fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
             prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
-            list_msg.append(fct_msg)
-            list_msg.append(prp_msg)
+
+            if fct_msg['message'] not in self.sent_FCT:
+                list_msg.append(fct_msg)
+                self.sent_FCT.add(fct_msg['message'])
+            if prp_msg['message'] not in self.sent_PRP:
+                list_msg.append(prp_msg)
+                self.sent_PRP.add(prp_msg['message'])
         else:
             print(daide_status)
             print(daide_s)
@@ -373,6 +409,9 @@ class milaWrapper:
         self.prev_state = 0
         self.num_stop = 0
         self.last_successful_message_time = None
+        self.sent_self_intent = False
+        self.sent_FCT = set()
+        self.sent_PRP = set()
 
     def has_phase_changed(self)->bool:
         """ 
@@ -475,7 +514,7 @@ class milaWrapper:
                             sender=message.sender,
                             recipient='GLOBAL',
                             message=generated_English,
-                            phase=self.game.get_current_phase(),
+                            phase=self.dipcc_current_phase,
                             time_sent=dipcc_timesent))
                         
                         print(f'Error updating invalid daide from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}, an error message is sent to global')
@@ -584,15 +623,13 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
-    async def send_log(self, msg: MessageDict):
+    async def send_log(self, log: str):
         """ 
         send log to mila games 
         """ 
 
-        log_data = self.game.new_log_data(body=f'CICERO English message: {msg["message"]}')
+        log_data = self.game.new_log_data(body=log)
         await self.game.send_log_data(log=log_data)
-
-        print(f'update a log {msg["message"]}')
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
@@ -667,22 +704,13 @@ class milaWrapper:
                     pre_processed = pre_process(message.message)
                     generated_English = gen_English(pre_processed, message.recipient, message.sender)
 
-                    # if the message is invalid daide, send an error to paquette global
-                    if generated_English.startswith("ERROR"):
-                        self.game.add_message(Message(
-                            sender=message.sender,
-                            recipient='GLOBAL',
-                            message=generated_English,
-                            phase=mila_phase,
-                            time_sent=dipcc_timesent))
-                        
-                        print(f'Error updating invalid daide from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}, an error message is sent to global')
-
+                    # if the message is invalid daide, send an error to paquette global; do nothing
+                    if not generated_English.startswith("ERROR"):
                     # if the message is valid daide, process and send it to dipcc recipient
-                    else:
+
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
                         
-                        self.dipcc_game.add_message(
+                        dipcc_game.add_message(
                             message.sender,
                             message.recipient,
                             message_to_send,
@@ -693,7 +721,7 @@ class milaWrapper:
 
                 # if the message is english, just send it to dipcc recipient
                 else:
-                    self.dipcc_game.add_message(
+                    dipcc_game.add_message(
                         message.sender,
                         message.recipient,
                         message.message,
