@@ -181,9 +181,10 @@ class milaWrapper:
                     if self.has_state_changed(power_name):
                         # update press in dipcc
                         self.update_press_dipcc_game(power_name)
+                        print("yes")
                     # reply/gen new message
                     msg = self.generate_message(power_name)
-
+                    print(msg)
                     #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
                     # to get messages in current turn and check if it's daide)
                     prp = self.PRP_message(power_name)
