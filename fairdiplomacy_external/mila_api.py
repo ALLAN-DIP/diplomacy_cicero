@@ -183,6 +183,29 @@ class milaWrapper:
 
                     # send message in dipcc and Mila
                     if msg is not None:
+                        recipient_power = msg['recipient']
+                        power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
+                            self.dipcc_game, self.player.power, True, True, recipient_power) 
+                        
+                        power_po = power_pseudo[self.dipcc_current_phase]
+                        for power in power_po.keys():
+                            if power == power_name:
+                                self_po = power_po[power]
+                            else:
+                                recp_po = power_po[power]
+
+                        self_pseudo_log = f'CICERO_{power_name} intent: {self_po}'
+                        await self.send_log(self_pseudo_log) 
+
+                        power_pseudo_log = f'CICERO_{power_name} search intent for {recipient_power}: {recp_po}'
+                        await self.send_log(power_pseudo_log) 
+
+                        # deceive_pseudo = self.player.agent.message_handler.get_deceive_orders()
+                        # power_pseudo_log = f'CICERO_{power_name} random intent for {recipient_power}: {deceive_pseudo}'
+                        # await self.send_log(power_pseudo_log) 
+                        
+                        nl_log = f"CICERO_{power_name} English message: {msg['message']}"
+                        await self.send_log(nl_log)   
 
                         # await self.send_log(msg)
                         list_msg = self.to_daide_msg(msg)
@@ -451,7 +474,7 @@ class milaWrapper:
                             sender=message.sender,
                             recipient='GLOBAL',
                             message=generated_English,
-                            phase=self.game.get_current_phase(),
+                            phase=self.dipcc_current_phase,
                             time_sent=dipcc_timesent))
                         
                         print(f'Error updating invalid daide from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}, an error message is sent to global')
@@ -560,15 +583,13 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
-    async def send_log(self, msg: MessageDict):
+    async def send_log(self, log: str):
         """ 
         send log to mila games 
         """ 
 
-        log_data = self.game.new_log_data(body=f'CICERO English message: {msg["message"]}')
+        log_data = self.game.new_log_data(body=log)
         await self.game.send_log_data(log=log_data)
-
-        print(f'update a log {msg["message"]}')
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
@@ -643,22 +664,13 @@ class milaWrapper:
                     pre_processed = pre_process(message.message)
                     generated_English = gen_English(pre_processed, message.recipient, message.sender)
 
-                    # if the message is invalid daide, send an error to paquette global
-                    if generated_English.startswith("ERROR"):
-                        self.game.add_message(Message(
-                            sender=message.sender,
-                            recipient='GLOBAL',
-                            message=generated_English,
-                            phase=mila_phase,
-                            time_sent=dipcc_timesent))
-                        
-                        print(f'Error updating invalid daide from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}, an error message is sent to global')
-
+                    # if the message is invalid daide, send an error to paquette global; do nothing
+                    if not generated_English.startswith("ERROR"):
                     # if the message is valid daide, process and send it to dipcc recipient
-                    else:
+
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
                         
-                        self.dipcc_game.add_message(
+                        dipcc_game.add_message(
                             message.sender,
                             message.recipient,
                             message_to_send,
@@ -669,7 +681,7 @@ class milaWrapper:
 
                 # if the message is english, just send it to dipcc recipient
                 else:
-                    self.dipcc_game.add_message(
+                    dipcc_game.add_message(
                         message.sender,
                         message.recipient,
                         message.message,
