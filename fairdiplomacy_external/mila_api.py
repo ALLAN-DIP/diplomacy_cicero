@@ -195,7 +195,6 @@ class milaWrapper:
                         if msg is not None and message is not None:
                             if msg['recipient'] == message.sender:
                                 if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
-                                    print(self.last_PRP_review_timestamp)
                                     dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
                                     if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
                                         most_recent[message.sender] = dipcc_timesent
