@@ -127,7 +127,9 @@ class milaWrapper:
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
         self.sent_FCT = set()
         self.sent_PRP = set()
+        self.sent_log = set()
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
+        self.random_order_prob = 0.3
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
@@ -186,11 +188,7 @@ class milaWrapper:
                     # reply/gen new message
                     msg = self.generate_message(power_name)
 
-                    #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
-                    # to get messages in current turn and check if it's daide)
-
                     proposal_response = self.check_PRP(msg,power_name)
-                    #TODO: Yanze reply_to_proposal(proposal, cicero_response)
 
                     # send message in dipcc and Mila
                     if msg is not None and not proposal_response:
@@ -210,20 +208,28 @@ class milaWrapper:
                             await self.send_log(self_pseudo_log) 
                             self.sent_self_intent = True
 
-                        # deceive_pseudo = self.player.agent.message_handler.get_deceive_orders()
-                        # power_pseudo_log = f'CICERO_{power_name} random intent for {recipient_power}: {deceive_pseudo}'
-                        # await self.send_log(power_pseudo_log) 
-
                         list_msg = self.to_daide_msg(msg)
-                        list_msg = randomize_message_dict_list(list_msg)
-
+                        
                         if len(list_msg)>0:
-
                             power_pseudo_log = f'CICERO_{power_name} search intent for {recipient_power}: {recp_po}'
                             await self.send_log(power_pseudo_log) 
 
                             nl_log = f"CICERO_{power_name} English message: {msg['message']}"
                             await self.send_log(nl_log) 
+
+                            order_rand = random.random()
+                            if order_rand > self.random_order_prob:
+                                list_msg = randomize_message_dict_list(list_msg)
+                                deceptive_fct = []
+                                for msg in list_msg:
+                                    if 'FCT' in msg['message']:
+                                        deceptive_fct.append(msg['message'])
+                            
+                                power_pseudo_log = f'CICERO_{power_name} decides to send deceptive FCT to {recipient_power} with following orders {deceptive_fct}'
+                                await self.send_log(power_pseudo_log) 
+                            else:
+                                power_pseudo_log = f'CICERO_{power_name} decides to send true FCT to {recipient_power}'
+                                await self.send_log(power_pseudo_log) 
 
                             self.send_message(msg, 'dipcc')
                         for msg in list_msg:
@@ -435,6 +441,7 @@ class milaWrapper:
         self.sent_self_intent = False
         self.sent_FCT = set()
         self.sent_PRP = set()
+        self.sent_log = set()
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
 
     def has_phase_changed(self)->bool:
@@ -618,10 +625,6 @@ class milaWrapper:
 
         # generate message using pseudo orders
         pseudo_orders = None
-        # if isinstance(self.player.state, SearchBotAgentState):
-        #     pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
-        #         self.dipcc_game, self.player.power, True, True, None
-        #     ) 
 
         msg = self.player.generate_message(
             game=self.dipcc_game,
@@ -654,9 +657,10 @@ class milaWrapper:
         """ 
         send log to mila games 
         """ 
-
-        log_data = self.game.new_log_data(body=log)
-        await self.game.send_log_data(log=log_data)
+        if log not in self.sent_log:
+            self.sent_log.add(log)
+            log_data = self.game.new_log_data(body=log)
+            await self.game.send_log_data(log=log_data)
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
