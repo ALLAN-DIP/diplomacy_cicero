@@ -125,7 +125,7 @@ class milaWrapper:
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
         self.sent_FCT = set()
         self.sent_PRP = set()
-        self.last_PRP_review_timestamp = 0
+        self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
@@ -181,52 +181,30 @@ class milaWrapper:
                     if self.has_state_changed(power_name):
                         # update press in dipcc
                         self.update_press_dipcc_game(power_name)
-                        print("yes")
                     # reply/gen new message
                     msg = self.generate_message(power_name)
-                    print(msg)
 
                     #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
                     # to get messages in current turn and check if it's daide)
-                    #prp = self.PRP_message(power_name)
 
                     phase_messages = self.get_messages(
                         messages=self.game.messages, power=power_name
                     )
-                    print('-----phase_message-----')
-                    print(phase_messages)
-                    most_recent = self.last_PRP_review_timestamp
-
-                    print('-----------current message--------')
-                    print(msg)
-
-                    # update message in dipcc game
-                    for timesent, message in phase_messages.items():
-                        print('---time---')
-                        print(self.last_PRP_review_timestamp)
-                        print(timesent)
-                        if timesent > self.last_PRP_review_timestamp:
-
-                            dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-
-                            if timesent > most_recent:
-                                most_recent = dipcc_timesent
-                            prp = message
-                            print('---------current prp------')
-                            print(prp.message)
-                            print(prp.sender)
-                            print(prp.recipient)
-                            if msg is not None and prp is not None:
-                                if msg['recipient'] == prp.sender:
-                                    result = self.reply_to_proposal(prp.message,msg)
-                                    print('---------result-----')
-                                    print(result)
-                                    self.last_PRP_review_timestamp = most_recent
-                                else:
-                                    self.last_PRP_review_timestamp = most_recent
+                    most_recent = self.last_PRP_review_timestamp.copy()
+                    for timesent,message in phase_messages.items():
+                        if msg is not None and message is not None:
+                            if msg['recipient'] == message.sender:
+                                if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
+                                    print(self.last_PRP_review_timestamp)
+                                    dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                                    if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
+                                        most_recent[message.sender] = dipcc_timesent
+                                    result = self.reply_to_proposal(message.message,msg)
+                                    if result is not None:
+                                        msg['message'] = result
+                                        self.send_message(msg, 'mila')
+                                        self.last_PRP_review_timestamp = most_recent
                     #TODO: Yanze reply_to_proposal(proposal, cicero_response)
-
-
 
                     # send message in dipcc and Mila
                     if msg is not None:
@@ -293,35 +271,6 @@ class milaWrapper:
             )
             file.write("\n")
 
-    def PRP_message(self, power_name: POWERS):
-        """ 
-        update new messages that present in Mila to dipcc
-        """
-        assert self.game.get_current_phase() == self.dipcc_current_phase, "Phase in two engines are not synchronized"
-
-        #mila_phase = self.game.get_current_phase()
-        
-        # new messages in current phase from Mila 
-        phase_messages = self.get_messages(
-            messages=self.game.messages, power=power_name
-        )
-        most_recent = self.last_PRP_review_timestamp
-
-        # update message in dipcc game
-        for timesent, message in phase_messages.items():
-            if timesent > self.last_PRP_review_timestamp:
-
-                dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-
-                if timesent > most_recent:
-                    most_recent = dipcc_timesent
-
-                if is_daide(message.message):
-                    return message
-                else:
-                    return None
-        self.last_PRP_review_timestamp = most_recent
-
     def reply_to_proposal(self, proposal, cicero_response):
         # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
         # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
@@ -329,9 +278,9 @@ class milaWrapper:
 
         positive_reply = 'YES ('
         negative_reply = 'REJ ('
-        if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not"]):
+        if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
             return negative_reply+proposal+')'
-        elif any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in"]):
+        elif any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great']):
             return positive_reply+proposal+')'
         else:
             return None
@@ -584,6 +533,8 @@ class milaWrapper:
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
+                        print('yes')
+                        print(message_to_send)
                         
                         self.dipcc_game.add_message(
                             message.sender,
@@ -596,6 +547,7 @@ class milaWrapper:
 
                 # if the message is english, just send it to dipcc recipient
                 else:
+                    print(message.message)
                     self.dipcc_game.add_message(
                         message.sender,
                         message.recipient,
