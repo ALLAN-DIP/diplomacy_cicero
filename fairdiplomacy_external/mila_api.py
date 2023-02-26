@@ -213,6 +213,9 @@ class milaWrapper:
                         # await self.send_log(power_pseudo_log) 
 
                         list_msg = self.to_daide_msg(msg)
+
+                        #TODO: Konstantine deception_to_FCT(list_msg) -> list_msg
+
                         if len(list_msg)>0:
 
                             power_pseudo_log = f'CICERO_{power_name} search intent for {recipient_power}: {recp_po}'
@@ -471,7 +474,7 @@ class milaWrapper:
 
         # update message in dipcc game
         for timesent, message in phase_messages.items():
-            if timesent > self.last_received_message_time:
+            if int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]):
 
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
 
