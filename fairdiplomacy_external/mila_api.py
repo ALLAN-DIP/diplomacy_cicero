@@ -125,6 +125,7 @@ class milaWrapper:
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
         self.sent_FCT = set()
         self.sent_PRP = set()
+        self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
@@ -178,20 +179,19 @@ class milaWrapper:
                 while not self.get_should_stop():
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
-                        
                         # update press in dipcc
                         self.update_press_dipcc_game(power_name)
-                        
                     # reply/gen new message
                     msg = self.generate_message(power_name)
 
                     #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
                     # to get messages in current turn and check if it's daide)
 
+                    proposal_response = self.check_PRP(msg,power_name)
                     #TODO: Yanze reply_to_proposal(proposal, cicero_response)
 
                     # send message in dipcc and Mila
-                    if msg is not None:
+                    if msg is not None and not proposal_response:
                         recipient_power = msg['recipient']
                         power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
                             self.dipcc_game, self.player.power, True, True, recipient_power) 
@@ -256,6 +256,45 @@ class milaWrapper:
                 to_saved_game_format(game), file, ensure_ascii=False, indent=2
             )
             file.write("\n")
+
+
+    def check_PRP(self,msg,power_name):
+        phase_messages = self.get_messages(
+                        messages=self.game.messages, power=power_name
+                    )
+        most_recent = self.last_PRP_review_timestamp.copy()
+        for timesent,message in phase_messages.items():
+            if msg is not None and message is not None:
+                if msg['recipient'] == message.sender:
+                    if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
+                        dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                        if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
+                            most_recent[message.sender] = dipcc_timesent
+                        result = self.reply_to_proposal(message.message,msg)
+                        if result is not None:
+                            msg['message'] = result
+                            self.send_message(msg, 'mila')
+                            self.last_PRP_review_timestamp = most_recent
+                            return True
+        return False
+
+
+    
+
+
+    def reply_to_proposal(self, proposal, cicero_response):
+        # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
+        # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
+        # return YES/REJ DAIDE response.
+
+        positive_reply = 'YES ('
+        negative_reply = 'REJ ('
+        if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
+            return negative_reply+proposal+')'
+        elif any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great']):
+            return positive_reply+proposal+')'
+        else:
+            return None
 
     def to_daide_msg(self, msg: MessageDict):
         print('-----------------------')
@@ -395,6 +434,7 @@ class milaWrapper:
         self.sent_self_intent = False
         self.sent_FCT = set()
         self.sent_PRP = set()
+        self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
 
     def has_phase_changed(self)->bool:
         """ 
@@ -505,6 +545,8 @@ class milaWrapper:
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
+                        print('yes')
+                        print(message_to_send)
                         
                         self.dipcc_game.add_message(
                             message.sender,
@@ -517,6 +559,7 @@ class milaWrapper:
 
                 # if the message is english, just send it to dipcc recipient
                 else:
+                    print(message.message)
                     self.dipcc_game.add_message(
                         message.sender,
                         message.recipient,
