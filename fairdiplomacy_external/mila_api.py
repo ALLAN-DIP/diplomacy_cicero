@@ -93,6 +93,8 @@ from diplomacy.utils.export import to_saved_game_format
 
 from daidepp.utils import pre_process, gen_English, post_process, is_daide
 
+from fairdiplomacy_external.deception import randomize_message_dict_list
+
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
@@ -213,8 +215,7 @@ class milaWrapper:
                         # await self.send_log(power_pseudo_log) 
 
                         list_msg = self.to_daide_msg(msg)
-
-                        #TODO: Konstantine deception_to_FCT(list_msg) -> list_msg
+                        list_msg = randomize_message_dict_list(list_msg)
 
                         if len(list_msg)>0:
 
