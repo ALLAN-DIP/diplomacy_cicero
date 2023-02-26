@@ -187,26 +187,11 @@ class milaWrapper:
                     #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
                     # to get messages in current turn and check if it's daide)
 
-                    phase_messages = self.get_messages(
-                        messages=self.game.messages, power=power_name
-                    )
-                    most_recent = self.last_PRP_review_timestamp.copy()
-                    for timesent,message in phase_messages.items():
-                        if msg is not None and message is not None:
-                            if msg['recipient'] == message.sender:
-                                if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
-                                    dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-                                    if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
-                                        most_recent[message.sender] = dipcc_timesent
-                                    result = self.reply_to_proposal(message.message,msg)
-                                    if result is not None:
-                                        msg['message'] = result
-                                        self.send_message(msg, 'mila')
-                                        self.last_PRP_review_timestamp = most_recent
+                    proposal_response = self.check_PRP(msg,power_name)
                     #TODO: Yanze reply_to_proposal(proposal, cicero_response)
 
                     # send message in dipcc and Mila
-                    if msg is not None:
+                    if msg is not None and not proposal_response:
                         recipient_power = msg['recipient']
                         power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
                             self.dipcc_game, self.player.power, True, True, recipient_power) 
@@ -269,6 +254,31 @@ class milaWrapper:
                 to_saved_game_format(game), file, ensure_ascii=False, indent=2
             )
             file.write("\n")
+
+
+    def check_PRP(self,msg,power_name):
+        phase_messages = self.get_messages(
+                        messages=self.game.messages, power=power_name
+                    )
+        most_recent = self.last_PRP_review_timestamp.copy()
+        for timesent,message in phase_messages.items():
+            if msg is not None and message is not None:
+                if msg['recipient'] == message.sender:
+                    if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
+                        dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                        if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
+                            most_recent[message.sender] = dipcc_timesent
+                        result = self.reply_to_proposal(message.message,msg)
+                        if result is not None:
+                            msg['message'] = result
+                            self.send_message(msg, 'mila')
+                            self.last_PRP_review_timestamp = most_recent
+                            return True
+        return False
+
+
+    
+
 
     def reply_to_proposal(self, proposal, cicero_response):
         # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
