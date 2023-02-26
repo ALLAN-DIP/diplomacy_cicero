@@ -432,6 +432,7 @@ class milaWrapper:
         self.sent_self_intent = False
         self.sent_FCT = set()
         self.sent_PRP = set()
+        self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
 
     def has_phase_changed(self)->bool:
         """ 
