@@ -1,5 +1,7 @@
-from daidepp import create_daide_grammar, AND, ORR, XDO, PRP, MTO, HLD, RTO, SUP, Location, DAIDEVisitor, RTO
+from daidepp import create_daide_grammar, AND, ORR, XDO, PRP, FCT, MTO, HLD, RTO, SUP, Location, DAIDEVisitor
 import random
+from types import List
+from fairdiplomacy.typedefs import MessageDict
 
 """
 Functions for randomizing orders using the daidepp library
@@ -134,3 +136,21 @@ def string_to_visited_tree(text : str):
     daide_visitor = DAIDEVisitor(None, None)
     visited = daide_visitor.visit(parse_tree)
     return visited
+
+def randomize_message_dict_list(message_dicts: List):
+    randomized = []
+
+    for message_dict in message_dicts:
+        message_tree = string_to_visited_tree(message_dict)
+        if isinstance(message_tree, FCT): # can be randomized
+            drop_chance = 0.2 # The chance that an order in an FCT message will get dropped completely
+            if random.random() > drop_chance: # message not getting dropped
+                randomized_message = randomize_daide_string(message_dict.message)
+                randomized.append(randomized_message)
+        else:
+            randomized.append(message_dict)
+
+
+
+    
+
