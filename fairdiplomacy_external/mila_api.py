@@ -123,8 +123,8 @@ class milaWrapper:
         self.dipcc_current_phase = None                             
         self.last_successful_message_time = None                    # timestep for last message successfully sent in the current phase                       
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
-        self.sent_FCT = set()
-        self.sent_PRP = set()
+        self.sent_FCT = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
+        self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
@@ -314,7 +314,7 @@ class milaWrapper:
             print(daide_s)
             daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
             list_msg.append(daide_msg)
-        elif daide_status == 'Partial-DAIDE':
+        elif daide_status == 'Partial-DAIDE' or daide_status == 'Para-DAIDE':
             current_phase_code = pseudo_orders[msg["phase"]]
             PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
@@ -324,28 +324,28 @@ class milaWrapper:
 
             if fct_msg['message'] not in self.sent_FCT:
                 list_msg.append(fct_msg)
-                self.sent_FCT.add(fct_msg['message'])
+                self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
             if prp_msg['message'] not in self.sent_PRP:
                 list_msg.append(prp_msg)
-                self.sent_PRP.add(prp_msg['message'])
+                self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
 
-        elif daide_status == 'Para-DAIDE':
-            current_phase_code = pseudo_orders[msg["phase"]]
-            PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
-            print(daide_status)
-            print(daide_s)
-            fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
-            prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
+        # elif daide_status == 'Para-DAIDE':
+        #     current_phase_code = pseudo_orders[msg["phase"]]
+        #     PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
+        #     print(daide_status)
+        #     print(daide_s)
+        #     fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
+        #     prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
 
-            if fct_msg['message'] not in self.sent_FCT:
-                list_msg.append(fct_msg)
-                self.sent_FCT.add(fct_msg['message'])
-            if prp_msg['message'] not in self.sent_PRP:
-                list_msg.append(prp_msg)
-                self.sent_PRP.add(prp_msg['message'])
-        else:
-            print(daide_status)
-            print(daide_s)
+        #     if fct_msg['message'] not in self.sent_FCT:
+        #         list_msg.append(fct_msg)
+        #         self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
+        #     if prp_msg['message'] not in self.sent_PRP:
+        #         list_msg.append(prp_msg)
+        #         self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
+        # else:
+        #     print(daide_status)
+        #     print(daide_s)
 
         return list_msg
 
@@ -432,8 +432,8 @@ class milaWrapper:
         self.num_stop = 0
         self.last_successful_message_time = None
         self.sent_self_intent = False
-        self.sent_FCT = set()
-        self.sent_PRP = set()
+        self.sent_FCT = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
+        self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
 
     def has_phase_changed(self)->bool:
