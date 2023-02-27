@@ -228,7 +228,7 @@ class milaWrapper:
                         for msg in list_msg:
                             self.send_message(msg, 'mila')
                             
-                    await asyncio.sleep(0.1)
+                    await asyncio.sleep(0.25)
         
                 # ORDER
                 if not self.has_phase_changed():
@@ -277,10 +277,6 @@ class milaWrapper:
                             self.last_PRP_review_timestamp = most_recent
                             return True
         return False
-
-
-    
-
 
     def reply_to_proposal(self, proposal, cicero_response):
         # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
@@ -740,8 +736,6 @@ class milaWrapper:
                             message_to_send,
                             time_sent=dipcc_timesent,
                             increment_on_collision=True)
-                        
-                        print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message_to_send}')
 
                 # if the message is english, just send it to dipcc recipient
                 else:
@@ -752,8 +746,6 @@ class milaWrapper:
                         time_sent=dipcc_timesent,
                         increment_on_collision=True,
                     )
-
-                    print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
 
         phase_order = self.game.order_history[phase] 
 
