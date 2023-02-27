@@ -150,6 +150,8 @@ def randomize_message_dict_list(message_dicts: List):
         else:
             randomized.append(message_dict)
 
+    return randomized
+
 
 
     
