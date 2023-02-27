@@ -98,7 +98,7 @@ from fairdiplomacy_external.deception import randomize_message_dict_list
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
-DEFAULT_DEADLINE = 3
+DEFAULT_DEADLINE = 5
 
 import json
 import sys
@@ -125,9 +125,9 @@ class milaWrapper:
         self.dipcc_current_phase = None                             
         self.last_successful_message_time = None                    # timestep for last message successfully sent in the current phase                       
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
-        self.sent_FCT = set()
-        self.sent_PRP = set()
-        self.sent_log = set()
+
+        self.sent_FCT = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
+        self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
         self.random_order_prob = 0.3
         
@@ -235,7 +235,7 @@ class milaWrapper:
                         for msg in list_msg:
                             self.send_message(msg, 'mila')
                             
-                    await asyncio.sleep(0.1)
+                    await asyncio.sleep(0.25)
         
                 # ORDER
                 if not self.has_phase_changed():
@@ -285,10 +285,6 @@ class milaWrapper:
                             return True
         return False
 
-
-    
-
-
     def reply_to_proposal(self, proposal, cicero_response):
         # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
         # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
@@ -321,7 +317,7 @@ class milaWrapper:
             print(daide_s)
             daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
             list_msg.append(daide_msg)
-        elif daide_status == 'Partial-DAIDE':
+        elif daide_status == 'Partial-DAIDE' or daide_status == 'Para-DAIDE':
             current_phase_code = pseudo_orders[msg["phase"]]
             PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
@@ -329,30 +325,30 @@ class milaWrapper:
             fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
             prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
 
-            if fct_msg['message'] not in self.sent_FCT:
+            if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
                 list_msg.append(fct_msg)
-                self.sent_FCT.add(fct_msg['message'])
-            if prp_msg['message'] not in self.sent_PRP:
+                self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
+            if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
                 list_msg.append(prp_msg)
-                self.sent_PRP.add(prp_msg['message'])
+                self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
 
-        elif daide_status == 'Para-DAIDE':
-            current_phase_code = pseudo_orders[msg["phase"]]
-            PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
-            print(daide_status)
-            print(daide_s)
-            fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
-            prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
+        # elif daide_status == 'Para-DAIDE':
+        #     current_phase_code = pseudo_orders[msg["phase"]]
+        #     PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
+        #     print(daide_status)
+        #     print(daide_s)
+        #     fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
+        #     prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
 
-            if fct_msg['message'] not in self.sent_FCT:
-                list_msg.append(fct_msg)
-                self.sent_FCT.add(fct_msg['message'])
-            if prp_msg['message'] not in self.sent_PRP:
-                list_msg.append(prp_msg)
-                self.sent_PRP.add(prp_msg['message'])
-        else:
-            print(daide_status)
-            print(daide_s)
+        #     if fct_msg['message'] not in self.sent_FCT:
+        #         list_msg.append(fct_msg)
+        #         self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
+        #     if prp_msg['message'] not in self.sent_PRP:
+        #         list_msg.append(prp_msg)
+        #         self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
+        # else:
+        #     print(daide_status)
+        #     print(daide_s)
 
         return list_msg
 
@@ -439,9 +435,9 @@ class milaWrapper:
         self.num_stop = 0
         self.last_successful_message_time = None
         self.sent_self_intent = False
-        self.sent_FCT = set()
-        self.sent_PRP = set()
-        self.sent_log = set()
+
+        self.sent_FCT = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
+        self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
 
     def has_phase_changed(self)->bool:
@@ -553,8 +549,6 @@ class milaWrapper:
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
-                        print('yes')
-                        print(message_to_send)
                         
                         self.dipcc_game.add_message(
                             message.sender,
@@ -589,14 +583,12 @@ class milaWrapper:
         dipcc_game = self.dipcc_game
         mila_game = self.game
         dipcc_phase = dipcc_game.get_state()['name'] # short name for phase
-        orders_from_prev_phase = mila_game.order_history[dipcc_phase] 
-        
-        # gathering orders from other powers from the phase that just ended
-        for power, orders in orders_from_prev_phase.items():
-            dipcc_game.set_orders(power, orders)
-
-        # dipcc_game_state = dipcc_game.to_json()
-        # print(f'dipcc game state: {dipcc_game_state}')
+        if dipcc_phase in mila_game.order_history:
+            orders_from_prev_phase = mila_game.order_history[dipcc_phase] 
+            
+            # gathering orders from other powers from the phase that just ended
+            for power, orders in orders_from_prev_phase.items():
+                dipcc_game.set_orders(power, orders)
 
         dipcc_game.process() # processing the orders set and moving on to the next phase of the dipcc game
 
@@ -730,7 +722,8 @@ class milaWrapper:
                 # and don't add it to the dipcc game.
                 # If it has at least one part that contains anything other than three upper letters,
                 # then just keep message body as original
-
+                if message.recipient == 'GLOBAL':
+                    continue
                 if is_daide(message.message):
                     pre_processed = pre_process(message.message)
                     generated_English = gen_English(pre_processed, message.recipient, message.sender)
@@ -747,8 +740,6 @@ class milaWrapper:
                             message_to_send,
                             time_sent=dipcc_timesent,
                             increment_on_collision=True)
-                        
-                        print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message_to_send}')
 
                 # if the message is english, just send it to dipcc recipient
                 else:
@@ -759,8 +750,6 @@ class milaWrapper:
                         time_sent=dipcc_timesent,
                         increment_on_collision=True,
                     )
-
-                    print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
 
         phase_order = self.game.order_history[phase] 
 
