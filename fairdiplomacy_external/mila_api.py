@@ -288,7 +288,7 @@ class milaWrapper:
         if DRAW_VOTE_TOKEN in msg['message']:
             self.game.powers[power_name].vote = strings.YES
             return True
-        if UNDRAW_VOTE_TOKEN in msg['message']
+        if UNDRAW_VOTE_TOKEN in msg['message']:
             self.game.powers[power_name].vote = strings.NO
             return True
         return False
