@@ -90,6 +90,7 @@ from diplomacy import connect
 from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
+from diplomacy.utils import strings
 
 from daidepp.utils import pre_process, gen_English, post_process, is_daide
 
@@ -184,14 +185,11 @@ class milaWrapper:
                     # reply/gen new message
                     msg = self.generate_message(power_name)
 
-                    #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
-                    # to get messages in current turn and check if it's daide)
-
+                    draw_token_message = self.is_draw_token_message(msg,power_name)
                     proposal_response = self.check_PRP(msg,power_name)
-                    #TODO: Yanze reply_to_proposal(proposal, cicero_response)
 
                     # send message in dipcc and Mila
-                    if msg is not None and not proposal_response:
+                    if msg is not None and not proposal_response and not is_draw_token_message:
                         recipient_power = msg['recipient']
                         power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
                             self.dipcc_game, self.player.power, True, True, recipient_power) 
@@ -204,24 +202,18 @@ class milaWrapper:
                                 recp_po = power_po[power]
                         
                         if not self.sent_self_intent:
-                            self_pseudo_log = f'CICERO_{power_name} intent: {self_po}'
+                            self_pseudo_log = f'I (Cicero) have an intent: {self_po}'
                             await self.send_log(self_pseudo_log) 
                             self.sent_self_intent = True
 
-                        # deceive_pseudo = self.player.agent.message_handler.get_deceive_orders()
-                        # power_pseudo_log = f'CICERO_{power_name} random intent for {recipient_power}: {deceive_pseudo}'
-                        # await self.send_log(power_pseudo_log) 
-
                         list_msg = self.to_daide_msg(msg)
-
-                        #TODO: Konstantine deception_to_FCT(list_msg) -> list_msg
 
                         if len(list_msg)>0:
 
-                            power_pseudo_log = f'CICERO_{power_name} search intent for {recipient_power}: {recp_po}'
+                            power_pseudo_log = f'I (Cicero) have searched an intent for {recipient_power} and retrieved: {recp_po}'
                             await self.send_log(power_pseudo_log) 
 
-                            nl_log = f"CICERO_{power_name} English message: {msg['message']}"
+                            nl_log = f"With above intent, I am sending a message to: {recipient_power} with {msg['message']}"
                             await self.send_log(nl_log) 
 
                             self.send_message(msg, 'dipcc')
@@ -277,7 +269,7 @@ class milaWrapper:
                             self.last_PRP_review_timestamp = most_recent
                             return True
         return False
-
+        
     def reply_to_proposal(self, proposal, cicero_response):
         # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
         # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
@@ -285,12 +277,21 @@ class milaWrapper:
 
         positive_reply = 'YES ('
         negative_reply = 'REJ ('
-        if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
-            return negative_reply+proposal+')'
-        elif any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great']):
+        # if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
+        #     return negative_reply+proposal+')'
+        if any(item in cicero_response['message'].lower() for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great','positive']):
             return positive_reply+proposal+')'
         else:
-            return None
+            return negative_reply+proposal+')'
+
+    def is_draw_token_message(self, msg ,power_name):
+        if DRAW_VOTE_TOKEN in msg['message']:
+            self.game.powers[power_name].vote = strings.YES
+            return True
+        if UNDRAW_VOTE_TOKEN in msg['message']
+            self.game.powers[power_name].vote = strings.NO
+            return True
+        return False
 
     def to_daide_msg(self, msg: MessageDict):
         print('-----------------------')
@@ -302,9 +303,11 @@ class milaWrapper:
             daide_status,daide_s = 'NO-DAIDE',''
         # if isinstance(self.player.state, SearchBotAgentState):
         pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
-                self.dipcc_game, self.player.power, True, True, None
+                self.dipcc_game, self.player.power, True, True, msg['recipient']
             ) 
         list_msg = []
+        if pseudo_orders is None:
+            return list_msg
         if daide_status == 'Full-DAIDE':
             print(daide_status)
             print(daide_s)
