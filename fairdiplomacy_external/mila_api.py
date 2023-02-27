@@ -184,9 +184,10 @@ class milaWrapper:
                         self.update_press_dipcc_game(power_name)
                     # reply/gen new message
                     msg = self.generate_message(power_name)
-
-                    draw_token_message = self.is_draw_token_message(msg,power_name)
-                    proposal_response = self.check_PRP(msg,power_name)
+                    
+                    if msg is not None:
+                        draw_token_message = self.is_draw_token_message(msg,power_name)
+                        proposal_response = self.check_PRP(msg,power_name)
 
                     # send message in dipcc and Mila
                     if msg is not None and not proposal_response and not draw_token_message:
