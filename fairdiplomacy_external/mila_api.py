@@ -717,7 +717,8 @@ class milaWrapper:
                 # and don't add it to the dipcc game.
                 # If it has at least one part that contains anything other than three upper letters,
                 # then just keep message body as original
-
+                if message.recipient == 'GLOBAL':
+                    continue
                 if is_daide(message.message):
                     pre_processed = pre_process(message.message)
                     generated_English = gen_English(pre_processed, message.recipient, message.sender)
