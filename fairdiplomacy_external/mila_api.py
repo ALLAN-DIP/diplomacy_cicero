@@ -280,7 +280,7 @@ class milaWrapper:
         negative_reply = 'REJ ('
         # if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
         #     return negative_reply+proposal+')'
-        if any(item in cicero_response['message'].lower() for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great','positive']):
+        if any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great','positive']):
             return positive_reply+proposal+')'
         else:
             return negative_reply+proposal+')'
