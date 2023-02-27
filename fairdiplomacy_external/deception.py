@@ -1,7 +1,5 @@
-from daidepp import create_daide_grammar, AND, ORR, XDO, PRP, FCT, MTO, HLD, RTO, SUP, Location, DAIDEVisitor
+from daidepp import create_daide_grammar, AND, ORR, XDO, FCT, MTO, HLD, RTO, SUP, Location, DAIDEVisitor
 import random
-from types import List
-from fairdiplomacy.typedefs import MessageDict
 
 """
 Functions for randomizing orders using the daidepp library
@@ -118,11 +116,11 @@ def randomize_order(arrangement):
         return arrangement
 
 def randomize_visited_tree(visited):
-    if isinstance(visited, PRP) and (isinstance(visited.arrangement, ORR) or isinstance(visited.arrangement, AND)):
-        for i in range(len(visited.arrangement.arrangements)):
-            all_arrangements_list = list(visited.arrangement.arrangements)
+    if isinstance(visited, FCT) and (isinstance(visited.arrangement_qry_not, ORR) or isinstance(visited.arrangement_qry_not, AND)):
+        for i in range(len(visited.arrangement_qry_not.arrangements)):
+            all_arrangements_list = list(visited.arrangement_qry_not.arrangements)
             all_arrangements_list[i] = randomize_order(all_arrangements_list[i])
-            visited.arrangement.arrangements = tuple(all_arrangements_list)
+            visited.arrangement_qry_not.arrangements = tuple(all_arrangements_list)
     return visited
 
 def randomize_daide_string(daide_text):
@@ -137,22 +135,20 @@ def string_to_visited_tree(text : str):
     visited = daide_visitor.visit(parse_tree)
     return visited
 
-def randomize_message_dict_list(message_dicts: List):
+def randomize_message_dict_list(message_dicts):
     randomized = []
 
     for message_dict in message_dicts:
-        message_tree = string_to_visited_tree(message_dict)
+        # print(message_dict)
+        # print(message_dict['message'])
+        message_tree = string_to_visited_tree(message_dict['message'])
         if isinstance(message_tree, FCT): # can be randomized
             drop_chance = 0.2 # The chance that an order in an FCT message will get dropped completely
             if random.random() > drop_chance: # message not getting dropped
-                randomized_message = randomize_daide_string(message_dict.message)
-                randomized.append(randomized_message)
+                randomized_message = randomize_daide_string(message_dict['message'])
+                message_dict['message'] = randomized_message
+                randomized.append(message_dict)
         else:
             randomized.append(message_dict)
 
     return randomized
-
-
-
-    
-
