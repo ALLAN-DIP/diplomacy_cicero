@@ -189,7 +189,7 @@ class milaWrapper:
                     proposal_response = self.check_PRP(msg,power_name)
 
                     # send message in dipcc and Mila
-                    if msg is not None and not proposal_response and not is_draw_token_message:
+                    if msg is not None and not proposal_response and not draw_token_message:
                         recipient_power = msg['recipient']
                         power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
                             self.dipcc_game, self.player.power, True, True, recipient_power) 
