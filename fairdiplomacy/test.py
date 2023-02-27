@@ -1,9 +1,11 @@
 import json
 import sys
-sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
+sys.path.insert(0, '../fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
 from amrtodaide import AMR
+sys.path.insert(0, '../fairdiplomacy/AMR/penman')
+# import penman
 import regex
-sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/amrlib')
+sys.path.insert(0, '../fairdiplomacy/AMR/amrlib')
 from amrlib.models.parse_xfm.inference import Inference
 def eng_to_daide():
     #data = [json.loads(line) for line in open('RUSSIA_0.json', 'r')]
@@ -11,13 +13,13 @@ def eng_to_daide():
     count = 0
     num_beams   = 4
     batch_size  = 16
-    device = 'cuda:0'
+    device = 'cpu'
 
-    model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
+    model_dir  = '../fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
     print('loading models')
     inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
     print('generating')
-    gen_graphs = inference.parse_sents(["Italy send Austria that Hey! I know AT is one of the least successful alliances in the game, so I'm super down to work together here, especially if we can get Russia and Turkey fighting."], disable_progress=False)
+    gen_graphs = inference.parse_sents(["RUSSIA send ITALY that I'd love to see your army take Tyrolia this spring :)"], disable_progress=False)
     for graph in gen_graphs:
         print(graph)
         amr = AMR()
