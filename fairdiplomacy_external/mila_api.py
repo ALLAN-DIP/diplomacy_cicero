@@ -575,14 +575,12 @@ class milaWrapper:
         dipcc_game = self.dipcc_game
         mila_game = self.game
         dipcc_phase = dipcc_game.get_state()['name'] # short name for phase
-        orders_from_prev_phase = mila_game.order_history[dipcc_phase] 
-        
-        # gathering orders from other powers from the phase that just ended
-        for power, orders in orders_from_prev_phase.items():
-            dipcc_game.set_orders(power, orders)
-
-        # dipcc_game_state = dipcc_game.to_json()
-        # print(f'dipcc game state: {dipcc_game_state}')
+        if dipcc_phase in mila_game.order_history:
+            orders_from_prev_phase = mila_game.order_history[dipcc_phase] 
+            
+            # gathering orders from other powers from the phase that just ended
+            for power, orders in orders_from_prev_phase.items():
+                dipcc_game.set_orders(power, orders)
 
         dipcc_game.process() # processing the orders set and moving on to the next phase of the dipcc game
 
