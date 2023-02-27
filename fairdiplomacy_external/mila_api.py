@@ -96,7 +96,7 @@ from daidepp.utils import pre_process, gen_English, post_process, is_daide
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
-DEFAULT_DEADLINE = 3
+DEFAULT_DEADLINE = 5
 
 import json
 import sys
