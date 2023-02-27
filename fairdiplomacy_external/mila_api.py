@@ -322,10 +322,10 @@ class milaWrapper:
             fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
             prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
 
-            if fct_msg['message'] not in self.sent_FCT:
+            if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
                 list_msg.append(fct_msg)
                 self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
-            if prp_msg['message'] not in self.sent_PRP:
+            if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
                 list_msg.append(prp_msg)
                 self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
 
@@ -545,8 +545,6 @@ class milaWrapper:
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
-                        print('yes')
-                        print(message_to_send)
                         
                         self.dipcc_game.add_message(
                             message.sender,
