@@ -253,7 +253,7 @@ class milaWrapper:
         
         with open(gamedir / f"{power_name}_{game_id}_output.json", mode="w") as file:
             json.dump(
-                to_saved_game_format(game), file, ensure_ascii=False, indent=2
+                to_saved_game_format(self.game), file, ensure_ascii=False, indent=2
             )
             file.write("\n")
 
