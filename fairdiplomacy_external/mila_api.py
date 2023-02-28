@@ -314,7 +314,7 @@ class milaWrapper:
 
         if daide_status == 'Full-DAIDE' and (daide_s == 'PRP (ORR )' or daide_s== 'FCT (ORR )'): 
             daide_status = 'Partial-DAIDE'
-            
+
         if daide_status == 'Full-DAIDE':
             print(daide_status)
             print(daide_s)
@@ -325,8 +325,10 @@ class milaWrapper:
             PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
-            fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
-            prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
+            if FCT_DAIDE is not None:
+                fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
+            if PRP_DAIDE is not None:
+                prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
 
             if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
                 list_msg.append(fct_msg)
@@ -358,10 +360,13 @@ class milaWrapper:
     def psudo_code_gene(self,current_phase_code,message,power_dict,af_dict):
         string1 = 'FCT (ORR'
         string2 = 'PRP (ORR'
+        has_FCT_order = False
+        has_PRP_order = False
         for country in current_phase_code.keys():
             if country == message["sender"]:
             #FCT for sender
             #FCT for sender
+                has_FCT_order = True
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
@@ -381,6 +386,7 @@ class milaWrapper:
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')))'
             else:
             #PRP for recipient
+                has_PRP_order = True
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
@@ -400,6 +406,10 @@ class milaWrapper:
                             string2 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')))'
         string1 += ')'
         string2 += ')'
+        if not has_FCT_order:
+            string1 = None
+        if not has_PRP_order:
+            string2 = None
         return string1,string2
 
     def eng_to_daide(self,message:MessageDict,inference):
