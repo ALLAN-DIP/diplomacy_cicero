@@ -264,33 +264,33 @@ class milaWrapper:
                     )
         most_recent = self.last_PRP_review_timestamp.copy()
         for timesent,message in phase_messages.items():
-            if msg is not None and message is not None:
-                if msg['recipient'] == message.sender:
-                    if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
-                        dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-                        if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
-                            most_recent[message.sender] = dipcc_timesent
-                        result = self.reply_to_proposal(message.message,msg)
-                        if result is not None:
-                            msg['message'] = result
-                            self.send_message(msg, 'mila')
-                            self.last_PRP_review_timestamp = most_recent
-                            return True
+            if message.message.startswith('PRP')
+                if msg is not None and message is not None:
+                    if msg['recipient'] == message.sender:
+                        if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
+                            dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                            if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
+                                most_recent[message.sender] = dipcc_timesent
+                            result = self.reply_to_proposal(message.message,msg)
+                            if result is not None:
+                                msg['message'] = result
+                                self.send_message(msg, 'mila')
+                                self.last_PRP_review_timestamp = most_recent
+                                return True
+            else:
+                continue
         return False
 
     def reply_to_proposal(self, proposal, cicero_response):
         # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
         # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
         # return YES/REJ DAIDE response.
-        if proposal.startswith('PRP'):
-            positive_reply = 'YES ('
-            negative_reply = 'REJ ('
-            if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
-                return negative_reply+proposal+')'
-            elif any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great']):
-                return positive_reply+proposal+')'
-            else:
-                return None
+        positive_reply = 'YES ('
+        negative_reply = 'REJ ('
+        if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
+            return negative_reply+proposal+')'
+        elif any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great']):
+            return positive_reply+proposal+')'
         else:
             return None
 
@@ -354,20 +354,11 @@ class milaWrapper:
         return daide_message[0:-1]
 
 
-
-
-
-
-
-
-
-
     def psudo_code_gene(self,current_phase_code,message,power_dict,af_dict):
         string1 = 'FCT (ORR'
         string2 = 'PRP (ORR'
         for country in current_phase_code.keys():
             if country == message["sender"]:
-            #FCT for sender
             #FCT for sender
                 for i in current_phase_code[country]:
                     sen_length = len(i)
@@ -558,9 +549,6 @@ class milaWrapper:
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
-                        print('yes')
-                        print(message_to_send)
-                        
                         self.dipcc_game.add_message(
                             message.sender,
                             message.recipient,
@@ -572,7 +560,6 @@ class milaWrapper:
 
                 # if the message is english, just send it to dipcc recipient
                 else:
-                    print(message.message)
                     self.dipcc_game.add_message(
                         message.sender,
                         message.recipient,
