@@ -368,8 +368,9 @@ class milaWrapper:
         return list_msg
 
     def remove_ORR(self,daide_message):
-        print(f'removing ORR from {daide_message}')
+        
         if 'ORR' in daide_message:
+            print(f'removing ORR from {daide_message}')
             removed_message = ''
             daide_message = daide_message.replace('(ORR ','')
             daide_message = daide_message[0:-1]
@@ -414,6 +415,7 @@ class milaWrapper:
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')))'
             else:
             #PRP for recipient
+                has_PRP_order = True
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
