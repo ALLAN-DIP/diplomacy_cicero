@@ -111,6 +111,7 @@ from amrlib.models.parse_xfm.inference import Inference
 
 power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
 af_dict = {'A':'AMY','F':'FLT'}
+possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive','sure','Alright','yes','yep','Awesome','Done','Works for me','Will do','Perfect','I agree','Fine','Agreed','yup','Absolutely','Understood','That\'s the plan','Deal'],
 
 class milaWrapper:
 
@@ -214,7 +215,7 @@ class milaWrapper:
                             power_pseudo_log = f'I (Cicero) have searched an intent for {recipient_power} and retrieved: {recp_po}'
                             await self.send_log(power_pseudo_log) 
 
-                            nl_log = f"With above intent, I am sending a message to: {recipient_power} with {msg['message']}"
+                            nl_log = f"With above intent, I am sending a message to: {recipient_power} \"{msg['message']}\""
                             await self.send_log(nl_log) 
 
                             self.send_message(msg, 'dipcc')
@@ -280,7 +281,7 @@ class milaWrapper:
         negative_reply = 'REJ ('
         # if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
         #     return negative_reply+proposal+')'
-        if any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive']):
+        if any(item in cicero_response['message'] for item in possible_positive_response):
             return positive_reply+proposal+')'
         else:
             return negative_reply+proposal+')'
