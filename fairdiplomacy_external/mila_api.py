@@ -90,6 +90,7 @@ from diplomacy import connect
 from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
+from diplomacy.utils import strings
 
 from daidepp.utils import pre_process, gen_English, post_process, is_daide
 
@@ -110,10 +111,11 @@ from amrlib.models.parse_xfm.inference import Inference
 
 power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
 af_dict = {'A':'AMY','F':'FLT'}
+possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive','sure','Alright','yes','yep','Awesome','Done','Works for me','Will do','Perfect','I agree','Fine','Agreed','yup','Absolutely','Understood','That\'s the plan','Deal']
 
 class milaWrapper:
 
-    def __init__(self):
+    def __init__(self, is_daide):
         self.game: NetworkGame = None
         self.dipcc_game: Game = None
         self.prev_state = 0                                         # number of number received messages in the current phase
@@ -126,6 +128,7 @@ class milaWrapper:
         self.sent_FCT = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
+        self.daide = is_daide
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
@@ -183,15 +186,13 @@ class milaWrapper:
                         self.update_press_dipcc_game(power_name)
                     # reply/gen new message
                     msg = self.generate_message(power_name)
-
-                    #TODO: Yanze check PRP message (you can follow some steps in update_press_dipcc_game 
-                    # to get messages in current turn and check if it's daide)
-
-                    proposal_response = self.check_PRP(msg,power_name)
-                    #TODO: Yanze reply_to_proposal(proposal, cicero_response)
+                    
+                    if msg is not None:
+                        draw_token_message = self.is_draw_token_message(msg,power_name)
+                        proposal_response = self.check_PRP(msg,power_name)
 
                     # send message in dipcc and Mila
-                    if msg is not None and not proposal_response:
+                    if msg is not None and not proposal_response and not draw_token_message:
                         recipient_power = msg['recipient']
                         power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
                             self.dipcc_game, self.player.power, True, True, recipient_power) 
@@ -204,24 +205,18 @@ class milaWrapper:
                                 recp_po = power_po[power]
                         
                         if not self.sent_self_intent:
-                            self_pseudo_log = f'CICERO_{power_name} intent: {self_po}'
+                            self_pseudo_log = f'I (Cicero) have an intent: {self_po}'
                             await self.send_log(self_pseudo_log) 
                             self.sent_self_intent = True
 
-                        # deceive_pseudo = self.player.agent.message_handler.get_deceive_orders()
-                        # power_pseudo_log = f'CICERO_{power_name} random intent for {recipient_power}: {deceive_pseudo}'
-                        # await self.send_log(power_pseudo_log) 
-
                         list_msg = self.to_daide_msg(msg)
-
-                        #TODO: Konstantine deception_to_FCT(list_msg) -> list_msg
 
                         if len(list_msg)>0:
 
-                            power_pseudo_log = f'CICERO_{power_name} search intent for {recipient_power}: {recp_po}'
+                            power_pseudo_log = f'I (Cicero) have searched an intent for {recipient_power} and retrieved: {recp_po}'
                             await self.send_log(power_pseudo_log) 
 
-                            nl_log = f"CICERO_{power_name} English message: {msg['message']}"
+                            nl_log = f"With above intent, I am sending a message to: {recipient_power} \"{msg['message']}\""
                             await self.send_log(nl_log) 
 
                             self.send_message(msg, 'dipcc')
@@ -249,11 +244,11 @@ class milaWrapper:
                     self.phase_end_time = time.time()
                     self.update_and_process_dipcc_game()
                     self.init_phase()
-                    print(f"Process to new phase")
+                    print(f"Process to {self.game.get_current_phase()}")
         
         with open(gamedir / f"{power_name}_{game_id}_output.json", mode="w") as file:
             json.dump(
-                to_saved_game_format(game), file, ensure_ascii=False, indent=2
+                to_saved_game_format(self.game), file, ensure_ascii=False, indent=2
             )
             file.write("\n")
 
@@ -264,33 +259,44 @@ class milaWrapper:
                     )
         most_recent = self.last_PRP_review_timestamp.copy()
         for timesent,message in phase_messages.items():
-            if msg is not None and message is not None:
-                if msg['recipient'] == message.sender:
-                    if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
-                        dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-                        if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
-                            most_recent[message.sender] = dipcc_timesent
-                        result = self.reply_to_proposal(message.message,msg)
-                        if result is not None:
-                            msg['message'] = result
-                            self.send_message(msg, 'mila')
-                            self.last_PRP_review_timestamp = most_recent
-                            return True
+            if message.message.startswith('PRP')
+                if msg is not None and message is not None:
+                    if msg['recipient'] == message.sender:
+                        if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
+                            dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                            if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
+                                most_recent[message.sender] = dipcc_timesent
+                            result = self.reply_to_proposal(message.message,msg)
+                            if result is not None:
+                                msg['message'] = result
+                                self.send_message(msg, 'mila')
+                                self.last_PRP_review_timestamp = most_recent
+                                return True
+            else:
+                continue
         return False
 
     def reply_to_proposal(self, proposal, cicero_response):
         # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
         # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
         # return YES/REJ DAIDE response.
-
         positive_reply = 'YES ('
         negative_reply = 'REJ ('
-        if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
-            return negative_reply+proposal+')'
-        elif any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great']):
+        # if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
+        #     return negative_reply+proposal+')'
+        if any(item in cicero_response['message'] for item in possible_positive_response):
             return positive_reply+proposal+')'
         else:
-            return None
+            return negative_reply+proposal+')'
+
+    def is_draw_token_message(self, msg ,power_name):
+        if DRAW_VOTE_TOKEN in msg['message']:
+            self.game.powers[power_name].vote = strings.YES
+            return True
+        if UNDRAW_VOTE_TOKEN in msg['message']:
+            self.game.powers[power_name].vote = strings.NO
+            return True
+        return False
 
     def to_daide_msg(self, msg: MessageDict):
         print('-----------------------')
@@ -302,12 +308,19 @@ class milaWrapper:
             daide_status,daide_s = 'NO-DAIDE',''
         # if isinstance(self.player.state, SearchBotAgentState):
         pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
-                self.dipcc_game, self.player.power, True, True, None
+                self.dipcc_game, self.player.power, True, True, msg['recipient']
             ) 
         list_msg = []
+        if pseudo_orders is None or msg['sender'] not in pseudo_orders[self.dipcc_current_phase] or msg['recipient'] not in pseudo_orders[self.dipcc_current_phase]:
+            return list_msg
+
+        if daide_status == 'Full-DAIDE' and (daide_s == 'PRP (ORR )' or daide_s== 'FCT (ORR )'): 
+            daide_status = 'Partial-DAIDE'
+
         if daide_status == 'Full-DAIDE':
             print(daide_status)
             print(daide_s)
+            daide_s = self.check_fulldaide(daide_s)
             daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
             list_msg.append(daide_msg)
         elif daide_status == 'Partial-DAIDE' or daide_status == 'Para-DAIDE':
@@ -315,9 +328,11 @@ class milaWrapper:
             PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
-            fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
-            prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
-
+            
+            if FCT_DAIDE is not None:
+                fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
+            if PRP_DAIDE is not None:
+                prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
             if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
                 list_msg.append(fct_msg)
                 self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
@@ -345,13 +360,20 @@ class milaWrapper:
 
         return list_msg
 
+    def check_fulldaide(self,daide_message):
+        if daide_message.count('PRP') >1:
+            daide_message = daide_message.replace('PRP (','',1)
+        return daide_message[0:-1]
+
     def psudo_code_gene(self,current_phase_code,message,power_dict,af_dict):
         string1 = 'FCT (ORR'
         string2 = 'PRP (ORR'
+        has_FCT_order = False
+        has_PRP_order = False
         for country in current_phase_code.keys():
             if country == message["sender"]:
             #FCT for sender
-            #FCT for sender
+                has_FCT_order = True
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
@@ -371,6 +393,7 @@ class milaWrapper:
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')))'
             else:
             #PRP for recipient
+                has_PRP_order = True
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
@@ -390,6 +413,10 @@ class milaWrapper:
                             string2 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')))'
         string1 += ')'
         string2 += ')'
+        if not has_FCT_order:
+            string1 = None
+        if not has_PRP_order:
+            string2 = None
         return string1,string2
 
     def eng_to_daide(self,message:MessageDict,inference):
@@ -541,7 +568,6 @@ class milaWrapper:
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
-                        
                         self.dipcc_game.add_message(
                             message.sender,
                             message.recipient,
@@ -553,7 +579,6 @@ class milaWrapper:
 
                 # if the message is english, just send it to dipcc recipient
                 else:
-                    print(message.message)
                     self.dipcc_game.add_message(
                         message.sender,
                         message.recipient,
@@ -789,6 +814,12 @@ def main() -> None:
     #     help="path to prototxt with agent's configurations (default: %(default)s)",
     # )
     parser.add_argument(
+        "--daide", 
+        type=bool, 
+        default= True, 
+        help="Is Cicero a daide speaker or no?",
+    )
+    parser.add_argument(
         "--outdir", type=Path, help="output directory for game json to be stored"
     )
     
@@ -797,6 +828,7 @@ def main() -> None:
     port: int = args.port
     game_id: str = args.game_id
     power: str = args.power
+    daide: bool = args.daide
     outdir: Optional[Path] = args.outdir
 
     print(f"settings:")
@@ -805,7 +837,7 @@ def main() -> None:
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
 
-    mila = milaWrapper()
+    mila = milaWrapper(is_daide=daide)
 
     asyncio.run(
         mila.play_mila(
