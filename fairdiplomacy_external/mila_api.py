@@ -282,13 +282,15 @@ class milaWrapper:
         # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
         # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
         # return YES/REJ DAIDE response.
-
-        positive_reply = 'YES ('
-        negative_reply = 'REJ ('
-        if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
-            return negative_reply+proposal+')'
-        elif any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great']):
-            return positive_reply+proposal+')'
+        if proposal.startswith('PRP'):
+            positive_reply = 'YES ('
+            negative_reply = 'REJ ('
+            if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
+                return negative_reply+proposal+')'
+            elif any(item in cicero_response['message'] for item in ["yeah","okay","agree",'agreement','good','great',"I'm in",'like','down','perfect','Brilliant','ok','Ok','Good','Great']):
+                return positive_reply+proposal+')'
+            else:
+                return None
         else:
             return None
 
@@ -308,6 +310,7 @@ class milaWrapper:
         if daide_status == 'Full-DAIDE':
             print(daide_status)
             print(daide_s)
+            daide_s = self.check_fulldaide(daide_s)
             daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
             list_msg.append(daide_msg)
         elif daide_status == 'Partial-DAIDE' or daide_status == 'Para-DAIDE':
@@ -344,6 +347,20 @@ class milaWrapper:
         #     print(daide_s)
 
         return list_msg
+
+    def check_fulldaide(self,daide_message):
+        if daide_message.count('PRP') >1:
+            daide_message = daide_message.replace('PRP (','',1)
+        return daide_message[0:-1]
+
+
+
+
+
+
+
+
+
 
     def psudo_code_gene(self,current_phase_code,message,power_dict,af_dict):
         string1 = 'FCT (ORR'
