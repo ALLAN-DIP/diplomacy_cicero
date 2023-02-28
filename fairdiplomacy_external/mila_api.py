@@ -91,7 +91,6 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
-sys.path.insert(0, '/diplomacy_cicero/daidepp/src')
 from daidepp.utils import pre_process, gen_English, post_process, is_daide
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
