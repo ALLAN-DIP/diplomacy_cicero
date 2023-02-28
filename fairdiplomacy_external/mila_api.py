@@ -583,10 +583,6 @@ class milaWrapper:
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
-<<<<<<< HEAD
-=======
-
->>>>>>> 5d9d37eb5daa813a92d0948e7ff535f3d14da17b
                         self.dipcc_game.add_message(
                             message.sender,
                             message.recipient,
