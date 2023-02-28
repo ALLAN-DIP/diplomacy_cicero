@@ -309,7 +309,7 @@ class milaWrapper:
                 self.dipcc_game, self.player.power, True, True, msg['recipient']
             ) 
         list_msg = []
-        if pseudo_orders is None or msg['sender'] not in pseudo_orders[self.dipcc_current_phase]:
+        if pseudo_orders is None or msg['sender'] not in pseudo_orders[self.dipcc_current_phase] or msg['recipient'] not in pseudo_orders[self.dipcc_current_phase]:
             return list_msg
 
         if daide_status == 'Full-DAIDE' and (daide_s == 'PRP (ORR )' or daide_s== 'FCT (ORR )'): 
