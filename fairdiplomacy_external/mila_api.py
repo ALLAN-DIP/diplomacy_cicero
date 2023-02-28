@@ -253,7 +253,7 @@ class milaWrapper:
         
         with open(gamedir / f"{power_name}_{game_id}_output.json", mode="w") as file:
             json.dump(
-                to_saved_game_format(game), file, ensure_ascii=False, indent=2
+                to_saved_game_format(self.game), file, ensure_ascii=False, indent=2
             )
             file.write("\n")
 
@@ -320,7 +320,6 @@ class milaWrapper:
             print(daide_s)
             fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
             prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
-
             if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
                 list_msg.append(fct_msg)
                 self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
@@ -352,7 +351,6 @@ class milaWrapper:
         if daide_message.count('PRP') >1:
             daide_message = daide_message.replace('PRP (','',1)
         return daide_message[0:-1]
-
 
     def psudo_code_gene(self,current_phase_code,message,power_dict,af_dict):
         string1 = 'FCT (ORR'
@@ -549,6 +547,7 @@ class milaWrapper:
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
                         message_to_send = post_process(generated_English, message.recipient, message.sender)
+
                         self.dipcc_game.add_message(
                             message.sender,
                             message.recipient,
