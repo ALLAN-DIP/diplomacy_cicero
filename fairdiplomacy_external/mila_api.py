@@ -115,7 +115,7 @@ possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"
 
 class milaWrapper:
 
-    def __init__(self):
+    def __init__(self, is_daide):
         self.game: NetworkGame = None
         self.dipcc_game: Game = None
         self.prev_state = 0                                         # number of number received messages in the current phase
@@ -128,6 +128,7 @@ class milaWrapper:
         self.sent_FCT = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
+        self.daide = is_daide
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
@@ -243,7 +244,7 @@ class milaWrapper:
                     self.phase_end_time = time.time()
                     self.update_and_process_dipcc_game()
                     self.init_phase()
-                    print(f"Process to new phase")
+                    print(f"Process to {self.game.get_current_phase()}")
         
         with open(gamedir / f"{power_name}_{game_id}_output.json", mode="w") as file:
             json.dump(
@@ -310,6 +311,10 @@ class milaWrapper:
         list_msg = []
         if pseudo_orders is None or msg['sender'] not in pseudo_orders[self.dipcc_current_phase]:
             return list_msg
+
+        if daide_status == 'Full-DAIDE' and (daide_s == 'PRP (ORR )' or daide_s== 'FCT (ORR )'): 
+            daide_status = 'Partial-DAIDE'
+            
         if daide_status == 'Full-DAIDE':
             print(daide_status)
             print(daide_s)
@@ -558,7 +563,7 @@ class milaWrapper:
 
                 # if the message is english, just send it to dipcc recipient
                 else:
-                    print(message.message)
+
                     self.dipcc_game.add_message(
                         message.sender,
                         message.recipient,
@@ -794,6 +799,12 @@ def main() -> None:
     #     help="path to prototxt with agent's configurations (default: %(default)s)",
     # )
     parser.add_argument(
+        "--daide", 
+        type=bool, 
+        default= True, 
+        help="Is Cicero a daide speaker or no?",
+    )
+    parser.add_argument(
         "--outdir", type=Path, help="output directory for game json to be stored"
     )
     
@@ -802,6 +813,7 @@ def main() -> None:
     port: int = args.port
     game_id: str = args.game_id
     power: str = args.power
+    daide: bool = args.daide
     outdir: Optional[Path] = args.outdir
 
     print(f"settings:")
@@ -810,7 +822,7 @@ def main() -> None:
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
 
-    mila = milaWrapper()
+    mila = milaWrapper(is_daide=daide)
 
     asyncio.run(
         mila.play_mila(
