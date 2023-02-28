@@ -76,7 +76,7 @@ from conf.agents_pb2 import *
 import google.protobuf.message
 import heyhi
 
-
+import sys
 import argparse
 import asyncio
 import json as json
@@ -91,7 +91,6 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
-
 from daidepp.utils import pre_process, gen_English, post_process, is_daide
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
@@ -100,7 +99,6 @@ ProtoMessage = google.protobuf.message.Message
 DEFAULT_DEADLINE = 5
 
 import json
-import sys
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
 from amrtodaide import AMR
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/penman')
@@ -259,7 +257,7 @@ class milaWrapper:
                     )
         most_recent = self.last_PRP_review_timestamp.copy()
         for timesent,message in phase_messages.items():
-            if message.message.startswith('PRP')
+            if message.message.startswith('PRP'):
                 if msg is not None and message is not None:
                     if msg['recipient'] == message.sender:
                         if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
@@ -321,6 +319,7 @@ class milaWrapper:
             print(daide_status)
             print(daide_s)
             daide_s = self.check_fulldaide(daide_s)
+            daide_s = self.remove_ORR(daide_s)
             daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
             list_msg.append(daide_msg)
         elif daide_status == 'Partial-DAIDE' or daide_status == 'Para-DAIDE':
@@ -328,6 +327,8 @@ class milaWrapper:
             PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
+            PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
+            FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
             
             if FCT_DAIDE is not None:
                 fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
@@ -359,6 +360,19 @@ class milaWrapper:
         #     print(daide_s)
 
         return list_msg
+
+    def remove_ORR(self,daide_message):
+        if 'ORR' in daide_message:
+            removed_message = ''
+            daide_message = daide_message.replace('(ORR ','')
+            daide_message = daide_message[0:-1]
+            message_list = daide_message.split('XDO')
+            if message_list:
+                removed_message += message_list[0]+'XDO'+message_list[1]
+            removed_message = removed_message.replace(') (',')')
+            return removed_message
+        else:
+            return daide_message
 
     def check_fulldaide(self,daide_message):
         if daide_message.count('PRP') >1:
