@@ -98,7 +98,7 @@ After each pull it's recommended to run `make` to re-compile internal C++ and pr
 	--pwd /diplomacy_cicero cicero_latest.sif`
 11. run `pip install ujson`
 12. run `pip install git+https://github.com/SiddarGu/daidepp.git`
-13. run `pip uninstall diplomcy` and then `pip install git+https://github.com/SHADE-AI/diplomacy.git@intent_log`
+13. run `pip uninstall diplomacy` and then `pip install git+https://github.com/SHADE-AI/diplomacy.git@intent_log`
 14. run `$GAME_COMMAND`
 
 ### Downloading model files
