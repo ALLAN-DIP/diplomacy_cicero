@@ -1,0 +1,1250 @@
+[
+    {
+        "daide": "PRP (DMZ (FRA ITA) (PIE LYO WES TYS))",
+        "translation": "I propose FRA and ITA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in PIE, LYO, WES, and TYS."
+    },
+    {
+        "daide": "YES (PRP (ALY (GER FRA) VSS (ENG)))",
+        "translation": "accepting \"I propose an ally of GER and FRA against ENG \"."
+    },
+    {
+        "daide": "PRP (DMZ (AUS RUS) (GAL))",
+        "translation": "I propose AUS and RUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in GAL."
+    },
+    {
+        "daide": "PRP (ALY (TUR AUS) VSS (RUS ITA))",
+        "translation": "I propose an ally of TUR and AUS against RUS and ITA."
+    },
+    {
+        "daide": "PRP (SCD (AUS TRI ROM) (TUR NAP TUN))",
+        "translation": "I propose arranging supply centre distribution as follows: AUS to have TRI and ROM and TUR to have NAP and TUN."
+    },
+    {
+        "daide": "PRP (XDO ((TUR AMY SER) MTO TRI))",
+        "translation": "I propose an order moving TUR's army in SER to TRI."
+    },
+    {
+        "daide": "PRP (DMZ (RUS AUS) (GAL))",
+        "translation": "I propose RUS and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in GAL."
+    },
+    {
+        "daide": "PRP (XDO ((RUS FLT BLA) REM))",
+        "translation": "I propose an order removing RUS's fleet in BLA."
+    },
+    {
+        "daide": "PRP (AND (XDO ((TUR FLT SMY) BLD)) (XDO ((TUR AMY CON) BLD)))",
+        "translation": "I propose an order building TUR's fleet in SMY and an order building TUR's army in CON."
+    },
+    {
+        "daide": "PRP (XDO ((RUS AMY WAR) MTO LVN))",
+        "translation": "I propose an order moving RUS's army in WAR to LVN."
+    },
+    {
+        "daide": "PRP (AND (XDO ((RUS AMY LVN) MTO PRU)) (XDO ((RUS AMY SEV) MTO UKR)) (XDO ((RUS FLT (STP NCS)) MTO BAR)) (XDO ((RUS FLT SWE) HLD)) (XDO ((RUS AMY WAR) MTO GAL)))",
+        "translation": "I propose an order moving RUS's army in LVN to PRU , an order moving RUS's army in SEV to UKR , an order moving RUS's fleet in (STP NCS) to BAR , an order holding RUS's fleet in SWE , and an order moving RUS's army in WAR to GAL."
+    },
+    {
+        "daide": "PRP (AND (XDO ((RUS FLT BAR) HLD)) (XDO ((RUS AMY GAL) MTO VIE)) (XDO ((RUS AMY PRU) MTO BER)) (XDO ((RUS FLT SWE) MTO DEN)) (XDO ((RUS AMY UKR) MTO WAR)))",
+        "translation": "I propose an order holding RUS's fleet in BAR , an order moving RUS's army in GAL to VIE , an order moving RUS's army in PRU to BER , an order moving RUS's fleet in SWE to DEN , and an order moving RUS's army in UKR to WAR."
+    },
+    {
+        "daide": "PRP (AND (XDO ((RUS FLT (STP SCS)) BLD)) (XDO ((RUS AMY WAR) BLD)) (XDO((RUS AMY MOS) BLD)))",
+        "translation": "I propose an order building RUS's fleet in (STP SCS) , an order building RUS's army in WAR , and an order building RUS's army in MOS."
+    },
+    {
+        "daide": "PRP (AND (XDO ((RUS AMY BER) MTO KIE)) (XDO ((RUS AMY GAL) MTO BOH)) (XDO ((RUS AMY MOS) MTO WAR)) (XDO ((RUS FLT NWY) SUP (RUS FLT SWE))) (XDO ((RUS FLT (STP SCS)) MTO GOB)) (XDO ((RUS FLT SWE) SUP (RUS FLT NWY))) (XDO ((RUS AMY VIE) MTO TYR)) (XDO ((RUS AMY WAR) MTO SIL)))",
+        "translation": "I propose an order moving RUS's army in BER to KIE , an order moving RUS's army in GAL to BOH , an order moving RUS's army in MOS to WAR , an order using RUS's fleet in NWY to support RUS's fleet in SWE , an order moving RUS's fleet in (STP SCS) to GOB , an order using RUS's fleet in SWE to support RUS's fleet in NWY , an order moving RUS's army in VIE to TYR , and an order moving RUS's army in WAR to SIL."
+    },
+    {
+        "daide": "PRP (AND (XDO ((RUS AMY BER) SUP (RUS AMY SIL) MTO MUN)) (XDO ((RUS AMY BOH) SUP (RUS AMY SIL) MTO MUN)) (XDO ((RUS FLT GOB) MTO BAL)) (XDO ((RUS FLT NWY) HLD)) (XDO ((RUS AMY SIL) MTO MUN)) (XDO ((RUS FLT SWE) SUP (RUS FLT NWY))) (XDO ((RUS AMY VIE) HLD)) (XDO ((RUS AMY WAR) MTO SIL)))",
+        "translation": "I propose an order using RUS's army in BER to support RUS's army in SIL moving into MUN , an order using RUS's army in BOH to support RUS's army in SIL moving into MUN , an order moving RUS's fleet in GOB to BAL , an order holding RUS's fleet in NWY , an order moving RUS's army in SIL to MUN , an order using RUS's fleet in SWE to support RUS's fleet in NWY , an order holding RUS's army in VIE , and an order moving RUS's army in WAR to SIL."
+    },
+    {
+        "daide": "PRP (AND (XDO ((RUS FLT NWY) MTO BAR)) (SCD (RUS TRI)) (SCD (TUR TRI)))",
+        "translation": "I propose an order moving RUS's fleet in NWY to BAR , arranging supply centre distribution as follows: RUS to have TRI , and arranging supply centre distribution as follows: TUR to have TRI."
+    },
+    {
+        "daide": "PRP (AND (XDO ((RUS AMY BER) SUP (RUS FLT SIL) MTO MUN)) (XDO ((RUS AMY BOH) SUP (RUS AMY SIL) MTO MUN)) (XDO ((RUS FLT GOB) MTO BAL)) (XDO ((RUS FLT NWY) MTO BAR)) (XDO ((RUS AMY SIL) MTO MUN)) (XDO ((RUS FLT SWE) MTO NWY)) (XDO ((RUS AMY VIE) MTO TRI)) (XDO ((RUS AMY WAR) MTO PRU)))",
+        "translation": "I propose an order using RUS's army in BER to support RUS's fleet in SIL moving into MUN , an order using RUS's army in BOH to support RUS's army in SIL moving into MUN , an order moving RUS's fleet in GOB to BAL , an order moving RUS's fleet in NWY to BAR , an order moving RUS's army in SIL to MUN , an order moving RUS's fleet in SWE to NWY , an order moving RUS's army in VIE to TRI , and an order moving RUS's army in WAR to PRU."
+    },
+    {
+        "daide": "PRP (XDO ((RUS AMY TRI) MTO VIE))",
+        "translation": "I propose an order moving RUS's army in TRI to VIE."
+    },
+    {
+        "daide": "PRP (ALY (FRA RUS) VSS (ENG))",
+        "translation": "I propose an ally of FRA and RUS against ENG."
+    },
+    {
+        "daide": "YES (PRP (ALY (RUS TUR FRA) VSS (ENG)))",
+        "translation": "accepting \"I propose an ally of RUS, TUR, and FRA against ENG \"."
+    },
+    {
+        "daide": "PRP (ALY (RUS TUR) VSS (FRA))",
+        "translation": "I propose an ally of RUS and TUR against FRA."
+    },
+    {
+        "daide": "PRP (ALY (RUS TUR FRA) VSS (ENG))",
+        "translation": "I propose an ally of RUS, TUR, and FRA against ENG."
+    },
+    {
+        "daide": "PRP (XDO ((RUS AMY SIL) MTO BER))",
+        "translation": "I propose an order moving RUS's army in SIL to BER."
+    },
+    {
+        "daide": "PRP (DMZ (TUR) (VIE BUD))",
+        "translation": "I propose TUR removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in VIE and BUD."
+    },
+    {
+        "daide": "PRP (ALY (RUS TUR) VSS (AUS))",
+        "translation": "I propose an ally of RUS and TUR against AUS."
+    },
+    {
+        "daide": "PRP (ALY (RUS FRA) VSS (ENG))",
+        "translation": "I propose an ally of RUS and FRA against ENG."
+    },
+    {
+        "daide": "PRP (PCE (RUS FRA))",
+        "translation": "I propose peace between RUS and FRA."
+    },
+    {
+        "daide": "PRP (ALY (FRA RUS) VSS (TUR))",
+        "translation": "I propose an ally of FRA and RUS against TUR."
+    },
+    {
+        "daide": "PRP (SCD (FRA HOL))",
+        "translation": "I propose arranging supply centre distribution as follows: FRA to have HOL."
+    },
+    {
+        "daide": "PRP (AND (XDO ((RUS AMY BER) MTO PRU)) (XDO ((RUS AMY BOH) MTO SIL)) (XDO ((RUS AMY DEN) MTO KIE)) (XDO ((RUS FLT HEL) MTO NTH)) (XDO ((RUS AMY HOL) MTO RUH)) (XDO ((RUS AMY KIE) MTO MUN)) (XDO ((RUS AMY MUN) MTO BOH)) (XDO ((RUS FLT NAO) MTO LVP)) (XDO ((RUS FLT NTH) MTO NWG)) (XDO ((RUS FLT NWG) MTO NAO)) (XDO ((RUS FLT NWY) MTO (STP NCS))))",
+        "translation": "I propose an order moving RUS's army in BER to PRU , an order moving RUS's army in BOH to SIL , an order moving RUS's army in DEN to KIE , an order moving RUS's fleet in HEL to NTH , an order moving RUS's army in HOL to RUH , an order moving RUS's army in KIE to MUN , an order moving RUS's army in MUN to BOH , an order moving RUS's fleet in NAO to LVP , an order moving RUS's fleet in NTH to NWG , an order moving RUS's fleet in NWG to NAO , and an order moving RUS's fleet in NWY to (STP NCS)."
+    },
+    {
+        "daide": "PRP (AND (XDO ((FRA AMY MUN) MTO BUR)) (XDO ((FRA AMY BUR) MTO GAS)))",
+        "translation": "I propose an order moving FRA's army in MUN to BUR and an order moving FRA's army in BUR to GAS."
+    },
+    {
+        "daide": "YES (PRP (XDO ((FRA AMY MUN) MTO BUR)))",
+        "translation": "accepting \"I propose an order moving FRA's army in MUN to BUR \"."
+    },
+    {
+        "daide": "PRP (XDO ((FRA AMY BUR) MTO PIC))",
+        "translation": "I propose an order moving FRA's army in BUR to PIC."
+    },
+    {
+        "daide": "PRP (SCD (RUS LON) (FRA HOL))",
+        "translation": "I propose arranging supply centre distribution as follows: RUS to have LON and FRA to have HOL."
+    },
+    {
+        "daide": "PRP (XDO ((RUS AMY MUN) MTO BUR))",
+        "translation": "I propose an order moving RUS's army in MUN to BUR."
+    },
+    {
+        "daide": "PRP (XDO ((RUS AMY MUN) MTO TYR))",
+        "translation": "I propose an order moving RUS's army in MUN to TYR."
+    },
+    {
+        "daide": "REJ (PRP (XDO ((RUS FLT STP) MTO SWE)))",
+        "translation": "rejecting \"I propose an order moving RUS's fleet in STP to SWE \"."
+    },
+    {
+        "daide": "PRP (ALY (ENG RUS) VSS (GER))",
+        "translation": "I propose an ally of ENG and RUS against GER."
+    },
+    {
+        "daide": "PRP (XDO ((FRA AMY RUH) MTO MUN))",
+        "translation": "I propose an order moving FRA's army in RUH to MUN."
+    },
+    {
+        "daide": "PRP (ALY (TUR AUS) VSS (ITA))",
+        "translation": "I propose an ally of TUR and AUS against ITA."
+    },
+    {
+        "daide": "YES (PRP (DMZ (ITA GER AUS) (TYR)))",
+        "translation": "accepting \"I propose ITA, GER, and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in TYR \"."
+    },
+    {
+        "daide": "YES (PRP (DMZ (GER ITA AUS) (TYR)))",
+        "translation": "accepting \"I propose GER, ITA, and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in TYR \"."
+    },
+    {
+        "daide": "PRP (ALY (RUS ITA) VSS (AUS TUR))",
+        "translation": "I propose an ally of RUS and ITA against AUS and TUR."
+    },
+    {
+        "daide": "PRP (SCD (ITA VEN))",
+        "translation": "I propose arranging supply centre distribution as follows: ITA to have VEN."
+    },
+    {
+        "daide": "PRP (ALY (RUS ITA) VSS (AUS))",
+        "translation": "I propose an ally of RUS and ITA against AUS."
+    },
+    {
+        "daide": "PRP (ALY (ENG ITA) VSS (GER FRA))",
+        "translation": "I propose an ally of ENG and ITA against GER and FRA."
+    },
+    {
+        "daide": "PRP (DMZ (ITA FRA) (PIE))",
+        "translation": "I propose ITA and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in PIE."
+    },
+    {
+        "daide": "PRP (DMZ (ITA) (PIE))",
+        "translation": "I propose ITA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in PIE."
+    },
+    {
+        "daide": "PRP (ALY (TUR ITA) VSS (AUS))",
+        "translation": "I propose an ally of TUR and ITA against AUS."
+    },
+    {
+        "daide": "PRP (ALY (FRA ITA) VSS (TUR))",
+        "translation": "I propose an ally of FRA and ITA against TUR."
+    },
+    {
+        "daide": "PRP (DMZ (GER AUS) (TYR))",
+        "translation": "I propose GER and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in TYR."
+    },
+    {
+        "daide": "YES (PRP (DMZ (AUS GER) (TYR)))",
+        "translation": "accepting \"I propose AUS and GER removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in TYR \"."
+    },
+    {
+        "daide": "PRP (DMZ (GER RUS) (SIL PRU))",
+        "translation": "I propose GER and RUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in SIL and PRU."
+    },
+    {
+        "daide": "YES (PRP (DMZ (GER RUS) (PRU BAL)))",
+        "translation": "accepting \"I propose GER and RUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in PRU and BAL \"."
+    },
+    {
+        "daide": "PRP (DMZ (RUS GER) (SIL))",
+        "translation": "I propose RUS and GER removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in SIL."
+    },
+    {
+        "daide": "PRP (AND (ALY (RUS GER) VSS (ENG)) (DMZ (RUS GER) (PRU BAL)))",
+        "translation": "I propose an ally of RUS and GER against ENG and RUS and GER removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in PRU and BAL."
+    },
+    {
+        "daide": "PRP (ALY (RUS AUS) VSS (TUR))",
+        "translation": "I propose an ally of RUS and AUS against TUR."
+    },
+    {
+        "daide": "PRP (AND (SCD (GER DEN)) (SCD (ENG NWY)) (ALY (GER ENG) VSS (FRA)))",
+        "translation": "I propose arranging supply centre distribution as follows: GER to have DEN , arranging supply centre distribution as follows: ENG to have NWY , and an ally of GER and ENG against FRA."
+    },
+    {
+        "daide": "YES (PRP (SCD (RUS SWE)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: RUS to have SWE \"."
+    },
+    {
+        "daide": "PRP (ALY (FRA ENG GER) VSS (RUS ITA))",
+        "translation": "I propose an ally of FRA, ENG, and GER against RUS and ITA."
+    },
+    {
+        "daide": "REJ (PRP (ALY (FRA ENG GER) VSS (ITA RUS)))",
+        "translation": "rejecting \"I propose an ally of FRA, ENG, and GER against ITA and RUS \"."
+    },
+    {
+        "daide": "PRP (XDO ((ENG FLT EDI) BLD))",
+        "translation": "I propose an order building ENG's fleet in EDI."
+    },
+    {
+        "daide": "YES (PRP (AND (SCD (ENG BEL)) (ALY (ENG GER) VSS (FRA))))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: ENG to have BEL and an ally of ENG and GER against FRA \"."
+    },
+    {
+        "daide": "PRP (DMZ (GER FRA) (BUR))",
+        "translation": "I propose GER and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in BUR."
+    },
+    {
+        "daide": "PRP (AND (XDO ((GER FLT KIE) BLD)) (SCD (FRA MUN)))",
+        "translation": "I propose an order building GER's fleet in KIE and arranging supply centre distribution as follows: FRA to have MUN."
+    },
+    {
+        "daide": "PRP (AND (SCD (FRA BEL)) (XDO ((FRA FLT MAO) MTO IRI)) (XDO ((FRA FLT BRE) MTO ECH)))",
+        "translation": "I propose arranging supply centre distribution as follows: FRA to have BEL , an order moving FRA's fleet in MAO to IRI , and an order moving FRA's fleet in BRE to ECH."
+    },
+    {
+        "daide": "PRP (XDO ((FRA AMY RUH) REM))",
+        "translation": "I propose an order removing FRA's army in RUH."
+    },
+    {
+        "daide": "PRP (DMZ (AUS RUS) (RUM))",
+        "translation": "I propose AUS and RUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in RUM."
+    },
+    {
+        "daide": "REJ (PRP (ALY (AUS RUS) VSS (TUR)))",
+        "translation": "rejecting \"I propose an ally of AUS and RUS against TUR \"."
+    },
+    {
+        "daide": "PRP (ALY (RUS AUS) VSS (TUR))",
+        "translation": "I propose an ally of RUS and AUS against TUR."
+    },
+    {
+        "daide": "REJ (PRP (DMZ (RUS AUS) (RUM)))",
+        "translation": "rejecting \"I propose RUS and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in RUM \"."
+    },
+    {
+        "daide": "PRP (ALY (RUS AUS) VSS (TUR))",
+        "translation": "I propose an ally of RUS and AUS against TUR."
+    },
+    {
+        "daide": "PRP (ALY (AUS RUS) VSS (TUR))",
+        "translation": "I propose an ally of AUS and RUS against TUR."
+    },
+    {
+        "daide": "PRP (ALY (RUS AUS) VSS (TUR))",
+        "translation": "I propose an ally of RUS and AUS against TUR."
+    },
+    {
+        "daide": "PRP (ALY (RUS AUS) VSS (TUR))",
+        "translation": "I propose an ally of RUS and AUS against TUR."
+    },
+    {
+        "daide": "PRP (SCD (TUR GRE BUL) (AUS RUM SER))",
+        "translation": "I propose arranging supply centre distribution as follows: TUR to have GRE and BUL and AUS to have RUM and SER."
+    },
+    {
+        "daide": "PRP (AND ((AUS FLT ADR) MTO ALB) (DMZ (FRA AUS) (TYR TRI)))",
+        "translation": "I propose moving AUS's fleet in ADR to ALB and FRA and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in TYR and TRI."
+    },
+    {
+        "daide": "PRP (XDO ((ITA FLT ION) REM))",
+        "translation": "I propose an order removing ITA's fleet in ION."
+    },
+    {
+        "daide": "PRP (XDO ((FRA AMY TRI) MTO VEN))",
+        "translation": "I propose an order moving FRA's army in TRI to VEN."
+    },
+    {
+        "daide": "PRP (ALY (TUR RUS FRA) VSS (AUS ENG))",
+        "translation": "I propose an ally of TUR, RUS, and FRA against AUS and ENG."
+    },
+    {
+        "daide": "PRP (XDO ((ENG FLT NWG) MTO EDI))",
+        "translation": "I propose an order moving ENG's fleet in NWG to EDI."
+    },
+    {
+        "daide": "YES (PRP (SCD (RUS NWY)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: RUS to have NWY \"."
+    },
+    {
+        "daide": "PRP (SCD (ENG DEN) (RUS NWY))",
+        "translation": "I propose arranging supply centre distribution as follows: ENG to have DEN and RUS to have NWY."
+    },
+    {
+        "daide": "PRP (AND (XDO ((ENG FLT EDI) MTO NTH)) (XDO ((ENG FLT NTH) MTO HEL)))",
+        "translation": "I propose an order moving ENG's fleet in EDI to NTH and an order moving ENG's fleet in NTH to HEL."
+    },
+    {
+        "daide": "PRP (SCD (ENG KIE HOL) (RUS BER MUN))",
+        "translation": "I propose arranging supply centre distribution as follows: ENG to have KIE and HOL and RUS to have BER and MUN."
+    },
+    {
+        "daide": "YES (PRP (SCD (RUS KIE)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: RUS to have KIE \"."
+    },
+    {
+        "daide": "PRP (SCD (RUS SEV))",
+        "translation": "I propose arranging supply centre distribution as follows: RUS to have SEV."
+    },
+    {
+        "daide": "PRP (SCD (TUR SER))",
+        "translation": "I propose arranging supply centre distribution as follows: TUR to have SER."
+    },
+    {
+        "daide": "YES (PRP (SCD (RUS BER)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: RUS to have BER \"."
+    },
+    {
+        "daide": "PRP (SCD (AUS TRI))",
+        "translation": "I propose arranging supply centre distribution as follows: AUS to have TRI."
+    },
+    {
+        "daide": "PRP (DMZ (ENG FRA) (ECH))",
+        "translation": "I propose ENG and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in ECH."
+    },
+    {
+        "daide": "YES (PRP (DMZ (ENG FRA) (ECH)))",
+        "translation": "accepting \"I propose ENG and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in ECH \"."
+    },
+    {
+        "daide": "PRP (XDO ((ENG FLT SKA) MTO DEN))",
+        "translation": "I propose an order moving ENG's fleet in SKA to DEN."
+    },
+    {
+        "daide": "REJ (PRP (SCD (ENG DEN)))",
+        "translation": "rejecting \"I propose arranging supply centre distribution as follows: ENG to have DEN \"."
+    },
+    {
+        "daide": "YES (PRP (ALY (ENG FRA RUS) VSS (AUS TUR)))",
+        "translation": "accepting \"I propose an ally of ENG, FRA, and RUS against AUS and TUR \"."
+    },
+    {
+        "daide": "YES (PRP (ALY (ENG FRA RUS) VSS (AUS TUR)))",
+        "translation": "accepting \"I propose an ally of ENG, FRA, and RUS against AUS and TUR \"."
+    },
+    {
+        "daide": "PRP (XDO ((ENG FLT DEN) MTO KIE))",
+        "translation": "I propose an order moving ENG's fleet in DEN to KIE."
+    },
+    {
+        "daide": "YES (PRP (SCD (RUS NWY)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: RUS to have NWY \"."
+    },
+    {
+        "daide": "PRP (AND (XDO ((ENG FLT NTH) MTO HEL)) (XDO ((ENG FLT DEN) MTO KIE)) (XDO ((ENG FLT EDI) MTO NTH)))",
+        "translation": "I propose an order moving ENG's fleet in NTH to HEL , an order moving ENG's fleet in DEN to KIE , and an order moving ENG's fleet in EDI to NTH."
+    },
+    {
+        "daide": "PRP (ALY (FRA RUS) VSS (ENG))",
+        "translation": "I propose an ally of FRA and RUS against ENG."
+    },
+    {
+        "daide": "PRP (SCD (FRA HOL) (RUS KIE))",
+        "translation": "I propose arranging supply centre distribution as follows: FRA to have HOL and RUS to have KIE."
+    },
+    {
+        "daide": "PRP (AND (ALY (TUR FRA) VSS (AUS)) (SCD (AUS GRE)))",
+        "translation": "I propose an ally of TUR and FRA against AUS and arranging supply centre distribution as follows: AUS to have GRE."
+    },
+    {
+        "daide": "PRP (ALY (TUR ITA) VSS (AUS))",
+        "translation": "I propose an ally of TUR and ITA against AUS."
+    },
+    {
+        "daide": "PRP (AND (ALY (GER ENG) VSS (FRA)) (SCD (GER DEN)))",
+        "translation": "I propose an ally of GER and ENG against FRA and arranging supply centre distribution as follows: GER to have DEN."
+    },
+    {
+        "daide": "YES (PRP (SCD (ITA TRI)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: ITA to have TRI \"."
+    },
+    {
+        "daide": "YES (PRP (SCD (ITA TRI)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: ITA to have TRI \"."
+    },
+    {
+        "daide": "PRP (AND (SCD (ENG SWE STP) (GER DEN)) (ALY (ITA GER) VSS (FRA)))",
+        "translation": "I propose arranging supply centre distribution as follows: ENG to have SWE and STP and GER to have DEN and an ally of ITA and GER against FRA."
+    },
+    {
+        "daide": "PRP (SCD (GER BRE))",
+        "translation": "I propose arranging supply centre distribution as follows: GER to have BRE."
+    },
+    {
+        "daide": "YES (PRP (NOT (SCD (ITA POR))))",
+        "translation": "accepting \"I propose not arranging supply centre distribution as follows: ITA to have POR \"."
+    },
+    {
+        "daide": "PRP (AND (XDO ((ITA FLT NAP) MTO ION)) (XDO ((ITA AMY ROM) MTO APU)) (XDO ((ITA AMY VEN) HLD)))",
+        "translation": "I propose an order moving ITA's fleet in NAP to ION , an order moving ITA's army in ROM to APU , and an order holding ITA's army in VEN."
+    },
+    {
+        "daide": "PRP (AND (XDO ((AUS FLT GRE) MTO AEG)) (XDO ((ITA FLT ION) MTO EAS)))",
+        "translation": "I propose an order moving AUS's fleet in GRE to AEG and an order moving ITA's fleet in ION to EAS."
+    },
+    {
+        "daide": "YES (PRP (SCD (ITA GRE)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: ITA to have GRE \"."
+    },
+    {
+        "daide": "PRP (AND (XDO ((ENG FLT LON) BLD)) (XDO ((FRA FLT BRE) BLD)))",
+        "translation": "I propose an order building ENG's fleet in LON and an order building FRA's fleet in BRE."
+    },
+    {
+        "daide": "PRP (SCD (AUS ANK) (ITA GRE))",
+        "translation": "I propose arranging supply centre distribution as follows: AUS to have ANK and ITA to have GRE."
+    },
+    {
+        "daide": "PRP (XDO ((ITA FLT NAP) BLD))",
+        "translation": "I propose an order building ITA's fleet in NAP."
+    },
+    {
+        "daide": "YES (PRP (XDO ((ITA FLT NAP) BLD)))",
+        "translation": "accepting \"I propose an order building ITA's fleet in NAP \"."
+    },
+    {
+        "daide": "PRP (SCD (AUS GRE VIE SMY))",
+        "translation": "I propose arranging supply centre distribution as follows: AUS to have GRE, VIE, and SMY."
+    },
+    {
+        "daide": "PRP (SCD (AUS TRI))",
+        "translation": "I propose arranging supply centre distribution as follows: AUS to have TRI."
+    },
+    {
+        "daide": "YES (PRP (SCD (AUS TRI)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: AUS to have TRI \"."
+    },
+    {
+        "daide": "PRP (SCD (AUS GRE))",
+        "translation": "I propose arranging supply centre distribution as follows: AUS to have GRE."
+    },
+    {
+        "daide": "PRP (ALY (AUS ITA) VSS (TUR))",
+        "translation": "I propose an ally of AUS and ITA against TUR."
+    },
+    {
+        "daide": "PRP (ALY (ITA ENG) VSS (FRA))",
+        "translation": "I propose an ally of ITA and ENG against FRA."
+    },
+    {
+        "daide": "PRP (ALY (ENG ITA RUS) VSS (GER FRA))",
+        "translation": "I propose an ally of ENG, ITA, and RUS against GER and FRA."
+    },
+    {
+        "daide": "PRP (ALY (ENG ITA) VSS (FRA))",
+        "translation": "I propose an ally of ENG and ITA against FRA."
+    },
+    {
+        "daide": "PRP (SCD (ITA MAR SPA) (ENG BRE POR) (GER BEL PAR))",
+        "translation": "I propose arranging supply centre distribution as follows: ITA to have MAR and SPA , ENG to have BRE and POR , and GER to have BEL and PAR."
+    },
+    {
+        "daide": "PRP (SCD (GER PAR))",
+        "translation": "I propose arranging supply centre distribution as follows: GER to have PAR."
+    },
+    {
+        "daide": "PRP (XDO ((GER FLT KIE) BLD))",
+        "translation": "I propose an order building GER's fleet in KIE."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((GER FLT KIE) BLD)))",
+        "translation": "I propose not an order building GER's fleet in KIE."
+    },
+    {
+        "daide": "PRP (DMZ (GER AUS) (BOH TYR))",
+        "translation": "I propose GER and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in BOH and TYR."
+    },
+    {
+        "daide": "YES (PRP (ALY (RUS GER ENG) VSS (AUS ITA)))",
+        "translation": "accepting \"I propose an ally of RUS, GER, and ENG against AUS and ITA \"."
+    },
+    {
+        "daide": "PRP (ALY (FRA ENG RUS) VSS (GER))",
+        "translation": "I propose an ally of FRA, ENG, and RUS against GER."
+    },
+    {
+        "daide": "PRP (ALY (ENG GER) VSS (FRA))",
+        "translation": "I propose an ally of ENG and GER against FRA."
+    },
+    {
+        "daide": "PRP (XDO ((ENG FLT LON) BLD))",
+        "translation": "I propose an order building ENG's fleet in LON."
+    },
+    {
+        "daide": "PRP (ALY (ENG GER ITA) VSS (RUS))",
+        "translation": "I propose an ally of ENG, GER, and ITA against RUS."
+    },
+    {
+        "daide": "PRP (SCD (GER DEN) (ENG SWE))",
+        "translation": "I propose arranging supply centre distribution as follows: GER to have DEN and ENG to have SWE."
+    },
+    {
+        "daide": "PRP (SCD (GER BEL PAR) (ENG BRE POR) (ITA MAR SPA))",
+        "translation": "I propose arranging supply centre distribution as follows: GER to have BEL and PAR , ENG to have BRE and POR , and ITA to have MAR and SPA."
+    },
+    {
+        "daide": "PRP (ALY (ENG GER ITA) VSS (FRA))",
+        "translation": "I propose an ally of ENG, GER, and ITA against FRA."
+    },
+    {
+        "daide": "PRP (XDO ((GER FLT BER) BLD))",
+        "translation": "I propose an order building GER's fleet in BER."
+    },
+    {
+        "daide": "PRP (XDO ((GER FLT BER) BLD))",
+        "translation": "I propose an order building GER's fleet in BER."
+    },
+    {
+        "daide": "YES (PRP (ALY (RUS GER ENG) VSS (ITA AUS FRA)))",
+        "translation": "accepting \"I propose an ally of RUS, GER, and ENG against ITA, AUS, and FRA \"."
+    },
+    {
+        "daide": "PRP (AND (ALY (ENG GER) VSS (ITA)) (SCD (GER BRE)) (ALY (ENG GER AUS) VSS (RUS ITA)))",
+        "translation": "I propose an ally of ENG and GER against ITA , arranging supply centre distribution as follows: GER to have BRE , and an ally of ENG, GER, and AUS against RUS and ITA."
+    },
+    {
+        "daide": "REJ (PRP (SCD (GER DEN)))",
+        "translation": "rejecting \"I propose arranging supply centre distribution as follows: GER to have DEN \"."
+    },
+    {
+        "daide": "PRP (XDO ((ENG FLT DEN) MTO NTH))",
+        "translation": "I propose an order moving ENG's fleet in DEN to NTH."
+    },
+    {
+        "daide": "PRP (XDO ((ENG FLT NAO) MTO MAO))",
+        "translation": "I propose an order moving ENG's fleet in NAO to MAO."
+    },
+    {
+        "daide": "PRP (XDO ((ENG FLT NTH) RTO EDI))",
+        "translation": "I propose an order retreating ENG's fleet in NTH to EDI."
+    },
+    {
+        "daide": "PRP (ALY (ENG GER) VSS (ITA))",
+        "translation": "I propose an ally of ENG and GER against ITA."
+    },
+    {
+        "daide": "PRP (ALY (ENG GER AUS) VSS (RUS ITA))",
+        "translation": "I propose an ally of ENG, GER, and AUS against RUS and ITA."
+    },
+    {
+        "daide": "YES (PRP (ALY (ENG GER) VSS (ITA)))",
+        "translation": "accepting \"I propose an ally of ENG and GER against ITA \"."
+    },
+    {
+        "daide": "YES (PRP (ALY (ENG GER) VSS (ITA)))",
+        "translation": "accepting \"I propose an ally of ENG and GER against ITA \"."
+    },
+    {
+        "daide": "YES (PRP (SCD (ENG LVP)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: ENG to have LVP \"."
+    },
+    {
+        "daide": "PRP (ALY (AUS RUS) VSS (TUR))",
+        "translation": "I propose an ally of AUS and RUS against TUR."
+    },
+    {
+        "daide": "PRP (AND (XDO ((RUS AMY SEV) BLD)) (DMZ (RUS AUS) (GAL)))",
+        "translation": "I propose an order building RUS's army in SEV and RUS and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in GAL."
+    },
+    {
+        "daide": "PRP (AND (XDO ((ENG FLT LON) BLD)) (XDO ((FRA FLT BRE) BLD)))",
+        "translation": "I propose an order building ENG's fleet in LON and an order building FRA's fleet in BRE."
+    },
+    {
+        "daide": "PRP (ALY (ENG AUS) VSS (RUS))",
+        "translation": "I propose an ally of ENG and AUS against RUS."
+    },
+    {
+        "daide": "PRP (XDO ((FRA FLT BRE) BLD))",
+        "translation": "I propose an order building FRA's fleet in BRE."
+    },
+    {
+        "daide": "PRP (SCD (AUS TRI))",
+        "translation": "I propose arranging supply centre distribution as follows: AUS to have TRI."
+    },
+    {
+        "daide": "PRP (ALY (FRA ENG GER) VSS (ITA))",
+        "translation": "I propose an ally of FRA, ENG, and GER against ITA."
+    },
+    {
+        "daide": "PRP (SCD (RUS RUM))",
+        "translation": "I propose arranging supply centre distribution as follows: RUS to have RUM."
+    },
+    {
+        "daide": "PRP (DMZ (ENG FRA) (ECH))",
+        "translation": "I propose ENG and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in ECH."
+    },
+    {
+        "daide": "YES (PRP (DMZ (FRA ENG) (ECH)))",
+        "translation": "accepting \"I propose FRA and ENG removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in ECH \"."
+    },
+    {
+        "daide": "PRP (ALY (AUS ITA) VSS (RUS TUR))",
+        "translation": "I propose an ally of AUS and ITA against RUS and TUR."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((FRA FLT BRE) BLD)))",
+        "translation": "I propose not an order building FRA's fleet in BRE."
+    },
+    {
+        "daide": "PRP (DMZ (ENG FRA) (ECH))",
+        "translation": "I propose ENG and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in ECH."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((FRA FLT MAR) BLD)))",
+        "translation": "I propose not an order building FRA's fleet in MAR."
+    },
+    {
+        "daide": "PRP (DMZ (ITA FRA) (PIE))",
+        "translation": "I propose ITA and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in PIE."
+    },
+    {
+        "daide": "PRP (ALY (ITA GER) VSS (FRA))",
+        "translation": "I propose an ally of ITA and GER against FRA."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((GER AMY BER) BLD)))",
+        "translation": "I propose not an order building GER's army in BER."
+    },
+    {
+        "daide": "PRP (XDO ((GER AMY BER) BLD))",
+        "translation": "I propose an order building GER's army in BER."
+    },
+    {
+        "daide": "PRP (AND (XDO ((GER AMY BER) BLD)) (XDO ((GER AMY MUN) BLD)))",
+        "translation": "I propose an order building GER's army in BER and an order building GER's army in MUN."
+    },
+    {
+        "daide": "PRP (XDO ((GER AMY MUN) MTO TYR))",
+        "translation": "I propose an order moving GER's army in MUN to TYR."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((GER AMY MUN) MTO TYR)))",
+        "translation": "I propose not an order moving GER's army in MUN to TYR."
+    },
+    {
+        "daide": "PRP (ALY (GER ENG) VSS (AUS))",
+        "translation": "I propose an ally of GER and ENG against AUS."
+    },
+    {
+        "daide": "PRP (SCD (ITA TUN))",
+        "translation": "I propose arranging supply centre distribution as follows: ITA to have TUN."
+    },
+    {
+        "daide": "PRP (ALY (AUS ITA) VSS (TUR))",
+        "translation": "I propose an ally of AUS and ITA against TUR."
+    },
+    {
+        "daide": "YES (PRP (ALY (ITA AUS) VSS (TUR)))",
+        "translation": "accepting \"I propose an ally of ITA and AUS against TUR \"."
+    },
+    {
+        "daide": "YES (PRP (DMZ (ITA AUS) (VEN TRI)))",
+        "translation": "accepting \"I propose ITA and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in VEN and TRI \"."
+    },
+    {
+        "daide": "YES (PRP (XDO ((ITA FLT NAP) BLD)))",
+        "translation": "accepting \"I propose an order building ITA's fleet in NAP \"."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((ITA AMY VEN) BLD)))",
+        "translation": "I propose not an order building ITA's army in VEN."
+    },
+    {
+        "daide": "PRP (XDO ((AUS FLT TRI) MTO ADR))",
+        "translation": "I propose an order moving AUS's fleet in TRI to ADR."
+    },
+    {
+        "daide": "PRP (PCE (ENG GER))",
+        "translation": "I propose peace between ENG and GER."
+    },
+    {
+        "daide": "PRP (XDO ((AUS AMY VIE) BLD))",
+        "translation": "I propose an order building AUS's army in VIE."
+    },
+    {
+        "daide": "PRP (XDO ((AUS AMY BUD) BLD))",
+        "translation": "I propose an order building AUS's army in BUD."
+    },
+    {
+        "daide": "PRP (NOT (SCD (ITA SMY)))",
+        "translation": "I propose not arranging supply centre distribution as follows: ITA to have SMY."
+    },
+    {
+        "daide": "PRP (ALY (AUS ITA) VSS (FRA TUR))",
+        "translation": "I propose an ally of AUS and ITA against FRA and TUR."
+    },
+    {
+        "daide": "YES (PRP (ALY (ITA AUS ENG) VSS (GER)))",
+        "translation": "accepting \"I propose an ally of ITA, AUS, and ENG against GER \"."
+    },
+    {
+        "daide": "YES (PRP (DMZ (ITA AUS) (TYR)))",
+        "translation": "accepting \"I propose ITA and AUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in TYR \"."
+    },
+    {
+        "daide": "PRP (SCD (ITA MAR SPA) (ENG BRE POR) (GER PAR BEL))",
+        "translation": "I propose arranging supply centre distribution as follows: ITA to have MAR and SPA , ENG to have BRE and POR , and GER to have PAR and BEL."
+    },
+    {
+        "daide": "YES (PRP (DMZ (ENG GER) (NTH)))",
+        "translation": "accepting \"I propose ENG and GER removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in NTH \"."
+    },
+    {
+        "daide": "PRP (NOT (ALY (ITA GER) VSS (ENG)))",
+        "translation": "I propose not an ally of ITA and GER against ENG."
+    },
+    {
+        "daide": "PRP (ALY (AUS ENG) VSS (GER))",
+        "translation": "I propose an ally of AUS and ENG against GER."
+    },
+    {
+        "daide": "PRP (ALY (ENG ITA) VSS (GER))",
+        "translation": "I propose an ally of ENG and ITA against GER."
+    },
+    {
+        "daide": "YES (PRP (SCD (ENG BRE POR) (ITA MAR SPA) (GER PAR BEL)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: ENG to have BRE and POR , ITA to have MAR and SPA , and GER to have PAR and BEL \"."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((ITA FLT NAP) BLD)))",
+        "translation": "I propose not an order building ITA's fleet in NAP."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((TUR FLT ANK) BLD)))",
+        "translation": "I propose not an order building TUR's fleet in ANK."
+    },
+    {
+        "daide": "PRP (XDO ((TUR AMY ANK) BLD))",
+        "translation": "I propose an order building TUR's army in ANK."
+    },
+    {
+        "daide": "PRP (XDO ((TUR AMY SMY) BLD))",
+        "translation": "I propose an order building TUR's army in SMY."
+    },
+    {
+        "daide": "PRP (ALY (TUR ITA ENG) VSS (GER))",
+        "translation": "I propose an ally of TUR, ITA, and ENG against GER."
+    },
+    {
+        "daide": "PRP (PCE (GER ENG FRA))",
+        "translation": "I propose peace between GER, ENG, and FRA."
+    },
+    {
+        "daide": "PRP (XDO ((GER AMY MUN) MTO RUH))",
+        "translation": "I propose an order moving GER's army in MUN to RUH."
+    },
+    {
+        "daide": "PRP (AND (XDO ((GER AMY MUN) BLD)) (XDO ((GER FLT KIE) BLD)))",
+        "translation": "I propose an order building GER's army in MUN and an order building GER's fleet in KIE."
+    },
+    {
+        "daide": "PRP (AND (XDO ((AUS FLT TRI) BLD)) (XDO ((AUS AMY VIE) BLD)))",
+        "translation": "I propose an order building AUS's fleet in TRI and an order building AUS's army in VIE."
+    },
+    {
+        "daide": "PRP (XDO ((GER FLT SKA) MTO NTH))",
+        "translation": "I propose an order moving GER's fleet in SKA to NTH."
+    },
+    {
+        "daide": "PRP (XDO ((GER FLT DEN) MTO NTH))",
+        "translation": "I propose an order moving GER's fleet in DEN to NTH."
+    },
+    {
+        "daide": "REJ (PRP (SCD (GER NWY)))",
+        "translation": "rejecting \"I propose arranging supply centre distribution as follows: GER to have NWY \"."
+    },
+    {
+        "daide": "PRP (XDO ((RUS AMY PRU) REM))",
+        "translation": "I propose an order removing RUS's army in PRU."
+    },
+    {
+        "daide": "PRP (SCD (GER SWE))",
+        "translation": "I propose arranging supply centre distribution as follows: GER to have SWE."
+    },
+    {
+        "daide": "PRP (DMZ (GER ENG) (NTH))",
+        "translation": "I propose GER and ENG removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in NTH."
+    },
+    {
+        "daide": "YES (PRP (SCD (GER PAR)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: GER to have PAR \"."
+    },
+    {
+        "daide": "YES (PRP (SCD (GER PAR)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: GER to have PAR \"."
+    },
+    {
+        "daide": "PRP (ALY (ENG FRA) VSS (GER))",
+        "translation": "I propose an ally of ENG and FRA against GER."
+    },
+    {
+        "daide": "YES (PRP (ALY (ENG GER) VSS (AUS)))",
+        "translation": "accepting \"I propose an ally of ENG and GER against AUS \"."
+    },
+    {
+        "daide": "PRP (ALY (GER ENG) VSS (AUS))",
+        "translation": "I propose an ally of GER and ENG against AUS."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((ENG FLT LON) MTO ECH)))",
+        "translation": "I propose not an order moving ENG's fleet in LON to ECH."
+    },
+    {
+        "daide": "PRP (ALY (ENG GER) VSS (AUS))",
+        "translation": "I propose an ally of ENG and GER against AUS."
+    },
+    {
+        "daide": "PRP (XDO ((GER FLT SKA) MTO NTH))",
+        "translation": "I propose an order moving GER's fleet in SKA to NTH."
+    },
+    {
+        "daide": "YES (PRP (SCD (GER WAR)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: GER to have WAR \"."
+    },
+    {
+        "daide": "PRP (PCE (GER ENG))",
+        "translation": "I propose peace between GER and ENG."
+    },
+    {
+        "daide": "PRP (AND (XDO((GER AMY MUN) BLD)) (XDO ((GER AMY BER) BLD)))",
+        "translation": "I propose an order building GER's army in MUN and an order building GER's army in BER."
+    },
+    {
+        "daide": "PRP (XDO ((ENG AMY MOS) MTO UKR))",
+        "translation": "I propose an order moving ENG's army in MOS to UKR."
+    },
+    {
+        "daide": "PRP (AND (XDO ((GER AMY BUR) MTO MUN)) (XDO ((GER AMY WAR) MTO UKR)))",
+        "translation": "I propose an order moving GER's army in BUR to MUN and an order moving GER's army in WAR to UKR."
+    },
+    {
+        "daide": "PRP (SCD (ENG PAR))",
+        "translation": "I propose arranging supply centre distribution as follows: ENG to have PAR."
+    },
+    {
+        "daide": "PRP (XDO ((RUS AMY PRU) REM))",
+        "translation": "I propose an order removing RUS's army in PRU."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((FRA AMY SPA) MTO MAR)))",
+        "translation": "I propose not an order moving FRA's army in SPA to MAR."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((ITA FLT NAP) MTO ION)))",
+        "translation": "I propose not an order moving ITA's fleet in NAP to ION."
+    },
+    {
+        "daide": "PRP (ALY (GER TUR FRA RUS ENG ITA) VSS (AUS))",
+        "translation": "I propose an ally of GER, TUR, FRA, RUS, ENG, and ITA against AUS."
+    },
+    {
+        "daide": "PRP (SCD (GER SER) (TUR GRE))",
+        "translation": "I propose arranging supply centre distribution as follows: GER to have SER and TUR to have GRE."
+    },
+    {
+        "daide": "PRP (PCE (GER TUR))",
+        "translation": "I propose peace between GER and TUR."
+    },
+    {
+        "daide": "PRP (XDO ((GER AMY MUN) MTO BUR))",
+        "translation": "I propose an order moving GER's army in MUN to BUR."
+    },
+    {
+        "daide": "PRP (ALY (GER ITA AUS) VSS (RUS TUR))",
+        "translation": "I propose an ally of GER, ITA, and AUS against RUS and TUR."
+    },
+    {
+        "daide": "PRP (ALY (ITA AUS GER) VSS (RUS TUR))",
+        "translation": "I propose an ally of ITA, AUS, and GER against RUS and TUR."
+    },
+    {
+        "daide": "PRP (AND (XDO ((ITA FLT ALB) SUP (ITA FLT VEN) MTO TRI)) (XDO ((ITA AMY APU) MTO VEN)))",
+        "translation": "I propose an order using ITA's fleet in ALB to support ITA's fleet in VEN moving into TRI and an order moving ITA's army in APU to VEN."
+    },
+    {
+        "daide": "PRP (XDO ((GER AMY TYR) SUP (GER AMY APU) MTO VEN))",
+        "translation": "I propose an order using GER's army in TYR to support GER's army in APU moving into VEN."
+    },
+    {
+        "daide": "YES (PRP (PCE (AUS ITA)))",
+        "translation": "accepting \"I propose peace between AUS and ITA \"."
+    },
+    {
+        "daide": "PRP (AND (XDO ((AUS AMY BUD) MTO SER)) (XDO ((AUS AMY VIE) MTO GAL)))",
+        "translation": "I propose an order moving AUS's army in BUD to SER and an order moving AUS's army in VIE to GAL."
+    },
+    {
+        "daide": "YES (PRP (PCE (AUS ITA)))",
+        "translation": "accepting \"I propose peace between AUS and ITA \"."
+    },
+    {
+        "daide": "YES (PRP (ALY (ITA AUS GER) VSS (TUR)))",
+        "translation": "accepting \"I propose an ally of ITA, AUS, and GER against TUR \"."
+    },
+    {
+        "daide": "PRP (XDO ((FRA FLT MAR) BLD))",
+        "translation": "I propose an order building FRA's fleet in MAR."
+    },
+    {
+        "daide": "PRP (XDO ((AUS AMY SER) MTO BUL))",
+        "translation": "I propose an order moving AUS's army in SER to BUL."
+    },
+    {
+        "daide": "PRP (ALY (FRA GER) VSS (ENG))",
+        "translation": "I propose an ally of FRA and GER against ENG."
+    },
+    {
+        "daide": "YES (PRP (PCE (AUS ITA)))",
+        "translation": "accepting \"I propose peace between AUS and ITA \"."
+    },
+    {
+        "daide": "PRP (ALY (ENG GER) VSS (FRA))",
+        "translation": "I propose an ally of ENG and GER against FRA."
+    },
+    {
+        "daide": "PRP (XDO ((FRA FLT MAR) BLD))",
+        "translation": "I propose an order building FRA's fleet in MAR."
+    },
+    {
+        "daide": "YES (PRP (XDO ((ITA FLT ROM) BLD)))",
+        "translation": "accepting \"I propose an order building ITA's fleet in ROM \"."
+    },
+    {
+        "daide": "PRP (XDO ((TUR AMY CON) BLD))",
+        "translation": "I propose an order building TUR's army in CON."
+    },
+    {
+        "daide": "PRP (XDO ((ITA AMY VEN) BLD))",
+        "translation": "I propose an order building ITA's army in VEN."
+    },
+    {
+        "daide": "PRP (XDO ((TUR AMY CON) BLD))",
+        "translation": "I propose an order building TUR's army in CON."
+    },
+    {
+        "daide": "PRP (NOT (XDO ((TUR AMY CON) BLD)))",
+        "translation": "I propose not an order building TUR's army in CON."
+    },
+    {
+        "daide": "PRP (AND (XDO ((ITA AMY VEN) SUP (ITA FLT ALB) MTO TRI)) (XDO ((ITA FLT ION) CVY (ITA AMY NAP) CTO ALB)))",
+        "translation": "I propose an order using ITA's army in VEN to support ITA's fleet in ALB moving into TRI and an order using ITA's fleet in ION to convoy ITA's army in NAP into ALB."
+    },
+    {
+        "daide": "PRP (ALY (ITA TUR) VSS (GER))",
+        "translation": "I propose an ally of ITA and TUR against GER."
+    },
+    {
+        "daide": "PRP (XDO ((TUR AMY RUM) MTO GAL))",
+        "translation": "I propose an order moving TUR's army in RUM to GAL."
+    },
+    {
+        "daide": "PRP (XDO ((TUR FLT AEG) MTO ION))",
+        "translation": "I propose an order moving TUR's fleet in AEG to ION."
+    },
+    {
+        "daide": "REJ (PRP (XDO ((TUR FLT AEG) MTO ION)))",
+        "translation": "rejecting \"I propose an order moving TUR's fleet in AEG to ION \"."
+    },
+    {
+        "daide": "PRP (DMZ (ITA FRA) (MAR TYR))",
+        "translation": "I propose ITA and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in MAR and TYR."
+    },
+    {
+        "daide": "PRP (XDO ((FRA FLT MAR) BLD))",
+        "translation": "I propose an order building FRA's fleet in MAR."
+    },
+    {
+        "daide": "PRP (DMZ (ITA FRA) (LYO TYS))",
+        "translation": "I propose ITA and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in LYO and TYS."
+    },
+    {
+        "daide": "PRP (SCD (FRA VEN))",
+        "translation": "I propose arranging supply centre distribution as follows: FRA to have VEN."
+    },
+    {
+        "daide": "PRP (AND (SCD (ITA VEN)) (ALY (ITA FRA) VSS (GER)))",
+        "translation": "I propose arranging supply centre distribution as follows: ITA to have VEN and an ally of ITA and FRA against GER."
+    },
+    {
+        "daide": "PRP (XDO ((TUR FLT SMY) BLD))",
+        "translation": "I propose an order building TUR's fleet in SMY."
+    },
+    {
+        "daide": "YES (PRP (SCD (AUS WAR)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: AUS to have WAR \"."
+    },
+    {
+        "daide": "YES (PRP (SCD (AUS MOS RUM SEV) (GER STP SWE)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: AUS to have MOS, RUM, and SEV and GER to have STP and SWE \"."
+    },
+    {
+        "daide": "YES (PRP (SCD (AUS WAR)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: AUS to have WAR \"."
+    },
+    {
+        "daide": "YES (PRP (SCD (AUS WAR)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: AUS to have WAR \"."
+    },
+    {
+        "daide": "PRP (ALY (GER AUS) VSS (ITA))",
+        "translation": "I propose an ally of GER and AUS against ITA."
+    },
+    {
+        "daide": "PRP (SCD (ENG STP))",
+        "translation": "I propose arranging supply centre distribution as follows: ENG to have STP."
+    },
+    {
+        "daide": "PRP (DMZ (GER RUS) (SIL PRU BOH))",
+        "translation": "I propose GER and RUS removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in SIL, PRU, and BOH."
+    },
+    {
+        "daide": "PRP (ALY (ENG GER) VSS (FRA))",
+        "translation": "I propose an ally of ENG and GER against FRA."
+    },
+    {
+        "daide": "PRP (ALY (FRA GER) VSS (ENG))",
+        "translation": "I propose an ally of FRA and GER against ENG."
+    },
+    {
+        "daide": "PRP (XDO ((FRA FLT ECH) MTO BEL))",
+        "translation": "I propose an order moving FRA's fleet in ECH to BEL."
+    },
+    {
+        "daide": "PRP (AND (XDO ((FRA FLT BRE) BLD)) (XDO ((GER FLT KIE) BLD)))",
+        "translation": "I propose an order building FRA's fleet in BRE and an order building GER's fleet in KIE."
+    },
+    {
+        "daide": "PRP (XDO ((GER AMY MUN) BLD))",
+        "translation": "I propose an order building GER's army in MUN."
+    },
+    {
+        "daide": "YES (PRP (XDO ((FRA AMY PAR) BLD)))",
+        "translation": "accepting \"I propose an order building FRA's army in PAR \"."
+    },
+    {
+        "daide": "YES (PRP (SCD (GER BEL)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: GER to have BEL \"."
+    },
+    {
+        "daide": "PRP (ALY (ENG AUS) VSS (GER))",
+        "translation": "I propose an ally of ENG and AUS against GER."
+    },
+    {
+        "daide": "PRP (XDO ((AUS AMY SER) MTO RUM))",
+        "translation": "I propose an order moving AUS's army in SER to RUM."
+    },
+    {
+        "daide": "YES (PRP (SCD (AUS RUM)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: AUS to have RUM \"."
+    },
+    {
+        "daide": "PRP (SCD (AUS SER) (TUR GRE))",
+        "translation": "I propose arranging supply centre distribution as follows: AUS to have SER and TUR to have GRE."
+    },
+    {
+        "daide": "PRP (ALY (TUR AUS) VSS (RUS))",
+        "translation": "I propose an ally of TUR and AUS against RUS."
+    },
+    {
+        "daide": "PRP (SCD (TUR GRE))",
+        "translation": "I propose arranging supply centre distribution as follows: TUR to have GRE."
+    },
+    {
+        "daide": "PRP (SCD (TUR VEN ROM NAP) (AUS VEN ROM NAP))",
+        "translation": "I propose arranging supply centre distribution as follows: TUR to have VEN, ROM, and NAP and AUS to have VEN, ROM, and NAP."
+    },
+    {
+        "daide": "PRP (SCD (TUR SEV) (AUS MOS STP WAR))",
+        "translation": "I propose arranging supply centre distribution as follows: TUR to have SEV and AUS to have MOS, STP, and WAR."
+    },
+    {
+        "daide": "PRP (XDO ((AUS AMY SER) MTO RUM))",
+        "translation": "I propose an order moving AUS's army in SER to RUM."
+    },
+    {
+        "daide": "PRP (SCD (TUR MOS STP WAR SEV))",
+        "translation": "I propose arranging supply centre distribution as follows: TUR to have MOS, STP, WAR, and SEV."
+    },
+    {
+        "daide": "PRP (DMZ (FRA ITA) (PIE LYO WES TYS))",
+        "translation": "I propose FRA and ITA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in PIE, LYO, WES, and TYS."
+    },
+    {
+        "daide": "PRP (XDO ((AUS AMY SER) MTO BUD))",
+        "translation": "I propose an order moving AUS's army in SER to BUD."
+    },
+    {
+        "daide": "PRP (SCD (TUR SEV))",
+        "translation": "I propose arranging supply centre distribution as follows: TUR to have SEV."
+    },
+    {
+        "daide": "PRP (XDO ((AUS AMY GAL) MTO MOS))",
+        "translation": "I propose an order moving AUS's army in GAL to MOS."
+    },
+    {
+        "daide": "PRP (SCD (TUR SEV))",
+        "translation": "I propose arranging supply centre distribution as follows: TUR to have SEV."
+    },
+    {
+        "daide": "PRP (ALY (FRA AUS) VSS (ITA))",
+        "translation": "I propose an ally of FRA and AUS against ITA."
+    },
+    {
+        "daide": "REJ (PRP (ALY (AUS FRA) VSS (ITA)))",
+        "translation": "rejecting \"I propose an ally of AUS and FRA against ITA \"."
+    },
+    {
+        "daide": "PRP (ALY (FRA GER) VSS (ENG))",
+        "translation": "I propose an ally of FRA and GER against ENG."
+    },
+    {
+        "daide": "PRP (ALY (FRA AUS) VSS (ITA))",
+        "translation": "I propose an ally of FRA and AUS against ITA."
+    },
+    {
+        "daide": "YES (PRP (ALY (FRA AUS) VSS (ITA)))",
+        "translation": "accepting \"I propose an ally of FRA and AUS against ITA \"."
+    },
+    {
+        "daide": "PRP (ALY (FRA AUS TUR) VSS (GER))",
+        "translation": "I propose an ally of FRA, AUS, and TUR against GER."
+    },
+    {
+        "daide": "PRP (ALY (GER FRA) VSS (ENG))",
+        "translation": "I propose an ally of GER and FRA against ENG."
+    },
+    {
+        "daide": "PRP (ALY (ENG RUS) VSS (GER))",
+        "translation": "I propose an ally of ENG and RUS against GER."
+    },
+    {
+        "daide": "YES (PRP (ALY (RUS ENG) VSS (GER FRA)))",
+        "translation": "accepting \"I propose an ally of RUS and ENG against GER and FRA \"."
+    },
+    {
+        "daide": "PRP (SCD (TUR RUM))",
+        "translation": "I propose arranging supply centre distribution as follows: TUR to have RUM."
+    },
+    {
+        "daide": "YES (PRP (SCD (TUR RUM)))",
+        "translation": "accepting \"I propose arranging supply centre distribution as follows: TUR to have RUM \"."
+    },
+    {
+        "daide": "PRP (AND (ALY (FRA ENG) VSS (GER)) (DMZ (FRA ENG) (ECH)))",
+        "translation": "I propose an ally of FRA and ENG against GER and FRA and ENG removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in ECH."
+    },
+    {
+        "daide": "YES (PRP (AND (ALY (ENG FRA) VSS (GER)) (DMZ (ENG FRA) (ECH))))",
+        "translation": "accepting \"I propose an ally of ENG and FRA against GER and ENG and FRA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in ECH \"."
+    },
+    {
+        "daide": "PRP (ALY (GER AUS ITA) VSS (FRA RUS))",
+        "translation": "I propose an ally of GER, AUS, and ITA against FRA and RUS."
+    },
+    {
+        "daide": "PRP (ALY (GER AUS ITA) VSS (FRA RUS))",
+        "translation": "I propose an ally of GER, AUS, and ITA against FRA and RUS."
+    },
+    {
+        "daide": "ITA FLT VEN",
+        "translation": "ITA's fleet in VEN."
+    },
+    {
+        "daide": "PRP (XDO ((FRA FLT (SPA NCS)) MTO MAO))",
+        "translation": "I propose an order moving FRA's fleet in (SPA NCS) to MAO."
+    },
+    {
+        "daide": "PRP (XDO ((RUS AMY MOS) BLD))",
+        "translation": "I propose an order building RUS's army in MOS."
+    },
+    {
+        "daide": "PRP (PCE (ENG FRA GER))",
+        "translation": "I propose peace between ENG, FRA, and GER."
+    },
+    {
+        "daide": "YES (PRP (PCE (ENG FRA GER)))",
+        "translation": "accepting \"I propose peace between ENG, FRA, and GER \"."
+    },
+    {
+        "daide": "PRP (XDO ((ITA AMY GRE) RTO ALB))",
+        "translation": "I propose an order retreating ITA's army in GRE to ALB."
+    },
+    {
+        "daide": "PRP (XDO ((FRA FLT ECH) SUP (FRA AMY BEL)))",
+        "translation": "I propose an order using FRA's fleet in ECH to support FRA's army in BEL."
+    },
+    {
+        "daide": "PRP (DMZ (RUS GER) (SIL))",
+        "translation": "I propose RUS and GER removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in SIL."
+    },
+    {
+        "daide": "YES (PRP (PCE (AUS TUR)))",
+        "translation": "accepting \"I propose peace between AUS and TUR \"."
+    },
+    {
+        "daide": "PRP (DMZ (FRA ITA) (PIE WES))",
+        "translation": "I propose FRA and ITA removing all units from, and not ordering to, supporting to, convoying to, retreating to, or building any units in PIE and WES."
+    }
+]
