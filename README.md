@@ -79,27 +79,32 @@ After each pull it's recommended to run `make` to re-compile internal C++ and pr
 
 ### Run CICERO on TACC with Mila engine
 
-1. Niall has provided us a cicero container, models and agents in `/corral/projects/DARPA-SHADE/Shared/cicero`
-2. Copy everything in there to your path e.g. my path is `/work/08801/wwongkam/ls6/CICERO`
-3. go to your work path, mine is `/work/08801/wwongkam/ls6/` , then `git clone https://github.com/ALLAN-DIP/diplomacy_cicero.git`
-4. create game on `http://shade-dev.tacc.utexas.edu:3000/` using any account name and password to get `GAME_ID`. Only one player can be a cicero bot.
-5. let's start interactive session on ls6; run `idev -t 12:00:00 -p gpu-a100`
-6. `module load tacc-singularity`
-7. Please replace `GAME_ID`/`POWER`/`outdir` then run `export GAME_COMMAND="python fairdiplomacy_external/mila_api.py --game_id wwongkamjan_1676854720105 --host shade.tacc.utexas.edu --power AUSTRIA --outdir /work/08801/wwongkam/ls6/ALLAN/diplomacy_cicero/fairdiplomacy_external/out"`
-8. Please replace to your local path to copy a model to diplomacy_cicero repo; run `cp /corral/projects/DARPA-SHADE/Shared/UMD/pytorch_model.bin /work/08801/wwongkam/ls6/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/`
-9. then go to path in (2), e.g. `cd /work/08801/wwongkam/ls6/CICERO/cicero`
-10. run `singularity run  --nv \
-  	--bind /work/08801/wwongkam/ls6/ALLAN/diplomacy_cicero/fairdiplomacy/agents/:/diplomacy_cicero/fairdiplomacy/agents \
-	--bind /work/08801/wwongkam/ls6/ALLAN/diplomacy_cicero/fairdiplomacy_external:/diplomacy_cicero/fairdiplomacy_external \
-	--bind /work/08801/wwongkam/ls6/ALLAN/diplomacy_cicero/fairdiplomacy/AMR/:/diplomacy_cicero/fairdiplomacy/AMR/ \
-	--bind pwd/agents:/diplomacy_cicero/conf/common/agents \
-	--bind pwd/models:/diplomacy_cicero/models \
-	--bind pwd/gpt2:/usr/local/lib/python3.7/site-packages/data/gpt2 \
-	--pwd /diplomacy_cicero cicero_latest.sif`
-11. run `pip install ujson`
-12. run `pip install git+https://github.com/SiddarGu/daidepp.git`
-13. run `pip uninstall diplomacy` and then `pip install git+https://github.com/SHADE-AI/diplomacy.git@intent_log`
-14. run `$GAME_COMMAND`
+```
+# We assume that $WORK is your work path
+
+module load tacc-singularity
+git clone --recursive https://github.com/ALLAN-DIP/diplomacy_cicero.git
+
+cp -r /corral/projects/DARPA-SHADE/Shared/cicero "$WORK"
+cp /corral/projects/DARPA-SHADE/Shared/UMD/pytorch_model.bin "$WORK"/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/
+export CICERO=$WORK/cicero
+
+cd "$CICERO"
+singularity run  --nv \
+  --bind "$WORK"/diplomacy_cicero/fairdiplomacy/agents/:/diplomacy_cicero/fairdiplomacy/agent \
+  --bind "$WORK"/diplomacy_cicero/fairdiplomacy_external:/diplomacy_cicero/fairdiplomacy_external \
+  --bind "$WORK"/diplomacy_cicero/fairdiplomacy/AMR/:/diplomacy_cicero/fairdiplomacy/AMR/ \
+  --bind "$CICERO"/agents:/diplomacy_cicero/conf/common/agents \
+  --bind "$CICERO"/models:/diplomacy_cicero/models \
+  --bind "$CICERO"/gpt2:/usr/local/lib/python3.7/site-packages/data/gpt2 \
+  --pwd /diplomacy_cicero cicero_latest.sif
+
+pip install ujson
+pip install git+https://github.com/SiddarGu/daidepp.git
+
+export GAME_COMMAND="python fairdiplomacy_external/mila_api.py --game_id GAME_ID --host HOST --power POWER --outdir $WORK/diplomacy_cicero/fairdiplomacy_external/out"
+$GAME_COMMAND
+```
 
 ### Downloading model files
 
