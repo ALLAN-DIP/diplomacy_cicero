@@ -85,11 +85,11 @@ After each pull it's recommended to run `make` to re-compile internal C++ and pr
 module load tacc-singularity
 git clone --recursive https://github.com/ALLAN-DIP/diplomacy_cicero.git
 
-cp -r /corral/projects/DARPA-SHADE/Shared/cicero "$WORK"
+cp -r /corral/projects/DARPA-SHADE/Shared/cicero $WORK
 cp /corral/projects/DARPA-SHADE/Shared/UMD/pytorch_model.bin "$WORK"/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/
 export CICERO=$WORK/cicero
 
-cd "$CICERO"
+cd $CICERO
 singularity run  --nv \
   --bind "$WORK"/diplomacy_cicero/fairdiplomacy/agents/:/diplomacy_cicero/fairdiplomacy/agent \
   --bind "$WORK"/diplomacy_cicero/fairdiplomacy_external:/diplomacy_cicero/fairdiplomacy_external \

@@ -584,9 +584,8 @@ class MessageFiltering:
         - game: game object
         - pseudo_orders: Joint action used to condition the dialogue model
         """
-        if self.pseudo_orders_correspondence_threshold is None:
-            return True, {}
-
+        pseudo_orders_correspondence_threshold = -5e-3
+        
         if not [m for p in game.get_all_phases() for m in p.messages.values()]:
             # If there are no messages so far this game, bail
             # This is because the "before" state will assume a no-press game which
@@ -635,11 +634,17 @@ class MessageFiltering:
             "before_prob": before_prob,
             "after_prob": after_prob,
             "diff": diff,
-            "thresh": self.pseudo_orders_correspondence_threshold,
+            "thresh": pseudo_orders_correspondence_threshold,
             "pseudo_orders": sender_pseudo,
         }
 
-        corresponds_to_pseudo = diff >= self.pseudo_orders_correspondence_threshold
+        corresponds_to_pseudo = diff >= pseudo_orders_correspondence_threshold
+        print(f'place one in message_editing.py message: {msg} and deceptive info {extra_info}')
+        print(f'self variable {self.pseudo_orders_correspondence_threshold}')
+        if self.pseudo_orders_correspondence_threshold == -1.0:
+            print(f'place two in message_editing.py message: {msg} and deceptive info {extra_info}')
+            return True, extra_info
+
         return corresponds_to_pseudo, extra_info
 
     def _edit_newlines(self, msg_txt: str) -> str:

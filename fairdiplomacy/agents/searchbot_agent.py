@@ -1173,7 +1173,7 @@ class SearchBotAgent(BaseSearchAgent):
                     )
                     meta_annotations.add_filtered_msg(data, msg_dict["time_sent"])
                     meta_annotations.after_message_generation_failed(bad_tags=[TOKEN_DETAILS_TAG])
-
+        self.recent_pseudo_orders = pseudo_orders
         return selected_msg_dict
 
     def _rank_candidate_messages(
@@ -1365,6 +1365,22 @@ class SearchBotAgent(BaseSearchAgent):
 
         timings.stop()
         timings.pprint(logging.getLogger("timings").info)
+
+        if maybe_msg_dict is not None and 'message' in maybe_msg_dict:
+            with timings.create_subcontext("po") as subtimings:
+                pseudo_orders = self.get_pseudo_orders(
+                        game, power=power, state=state, recipient=recipient, timings=subtimings,
+                    )
+            (corresponds_to_pseudo, extra_corr_info,) = self.message_handler.message_filterer._corresponds_to_pseudo_orders(
+                        maybe_msg_dict, game, pseudo_orders,
+                    )
+            if 'diff' in extra_corr_info:
+                print(f'in searchbot_agent.py message: {maybe_msg_dict} and deceptive info: {extra_corr_info}')
+                if extra_corr_info['diff'] >=extra_corr_info['thresh']:
+                    maybe_msg_dict['deceptive'] = f"A truth to Cicero: {maybe_msg_dict['message']}"
+                else:
+                    maybe_msg_dict['deceptive'] = f"A lie to Cicero: {maybe_msg_dict['message']}"
+
         return maybe_msg_dict
 
     def _get_phase_pseudo_orders(
