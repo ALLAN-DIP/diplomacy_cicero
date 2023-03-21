@@ -341,11 +341,7 @@ class ParlaiMessageHandler:
 
         self.binarize_sleep_times_in_5m_games = cfg.binarize_sleep_times_in_5m_games
         self.limit_consecutive_outbound_messages = cfg.limit_consecutive_outbound_messages
-<<<<<<< HEAD
-        # self.deception = cfg.deception if cfg.deception
-=======
         self.deception_in_parlai = False
->>>>>>> fca1f2e9865e08656a1ac25172241f0311ec9033
 
     def expects_pseudo_orders(self) -> bool:
         """Does any module expect pseudo orders?"""
@@ -627,13 +623,8 @@ class ParlaiMessageHandler:
 
             logging.info(f"Pseudo orders for {power}: {pseudo_orders}")
             meta_annotations.add_pseudo_orders_next_msg(pseudo_orders)
-<<<<<<< HEAD
-            # if self.deception:
-            if game.current_short_phase[-1]=='M':
-=======
 
             if game.current_short_phase[-1]=='M' and self.deception_in_parlai:
->>>>>>> fca1f2e9865e08656a1ac25172241f0311ec9033
                 self.update_deceive_orders(game, power, pseudo_orders)
                 deceive_orders = self.get_deceive_orders()
                 self.model_dialogue.update_pseudo_orders(
