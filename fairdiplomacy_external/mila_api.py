@@ -96,7 +96,7 @@ from daidepp.utils import pre_process, gen_English, post_process, is_daide
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
-DEFAULT_DEADLINE = 4
+DEFAULT_DEADLINE = 7
 
 import json
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
@@ -113,7 +113,7 @@ possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"
 
 class milaWrapper:
 
-    def __init__(self, is_daide):
+    def __init__(self, is_deceptive):
         self.game: NetworkGame = None
         self.dipcc_game: Game = None
         self.prev_state = 0                                         # number of number received messages in the current phase
@@ -126,9 +126,12 @@ class milaWrapper:
         self.sent_FCT = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
-        self.daide = is_daide
+        self.deceptive = is_deceptive
         
-        agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
+        if self.deceptive:
+            agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero_lie.prototxt')
+        else:
+            agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
@@ -139,7 +142,7 @@ class milaWrapper:
         port: int,
         game_id: str,
         power_name: str,
-        human_game: bool,
+        game_type: int,
         gamedir: Path,
     ) -> None:
         
@@ -217,20 +220,41 @@ class milaWrapper:
                         await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
                         await self.send_log(f'My (internal) response is: {msg["message"]}') 
 
-                        if human_game:
+                        if game_type==0:
+                            if len(list_msg)>0:
+                                for daide_msg in list_msg:
+                                    await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
+                                self.send_message(msg, 'dipcc')    
+                            else:
+                                await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+
+                            for msg in list_msg:
+                                self.send_message(msg, 'mila')
+
+                        elif game_type==1:
                             self.send_message(msg, 'dipcc')
                             self.send_message(msg, 'mila')
-                        
-                        if len(list_msg)>0:
                             for daide_msg in list_msg:
-                                await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
-                            if not human_game:
-                                self.send_message(msg, 'dipcc')    
-                        else:
-                            await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                                await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')    
+                            else:
+                                await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
 
-                        for msg in list_msg:
+                            for msg in list_msg:
+                                self.send_message(msg, 'mila')
+
+                        elif game_type==2:
+                            self.send_message(msg, 'dipcc')
                             self.send_message(msg, 'mila')
+
+                            if 'deceptive' in msg:
+                                await self.send_log(msg['deceptive'])
+                                print(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
+                            
+                            for daide_msg in list_msg:
+                                await self.send_log(f'My DAIDE response is: {daide_msg["message"]}')    
+                            else:
+                                await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                                
                             
                     await asyncio.sleep(0.25)
         
@@ -405,6 +429,7 @@ class milaWrapper:
                     sen_length = len(i)
                     if sen_length == 11:
                         string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') MTO '+i[8:11]+'))'
+                        has_FCT_order = True
                     elif sen_length == 7:
                         if i[6] == 'H':
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') HLD))'
@@ -412,15 +437,17 @@ class milaWrapper:
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') BLD))'
                         elif i[6] == 'R':
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') REM))'
+                        has_FCT_order = True
                     elif sen_length == 19:
                         if i[6] =='S':
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') SUP ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') MTO '+i[16:19]+'))'
                         elif i[6] == 'C':
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+'))'
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')))'
+                        has_FCT_order = True
             else:
             #PRP for recipient
-                has_PRP_order = True
+                # has_PRP_order = True
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
@@ -846,10 +873,10 @@ def main() -> None:
         help="power name",
     )
     parser.add_argument(
-        "--human_game",
-        action="store_true", 
-        default=False,
-        help="whether this is human game",
+        "--game_type",
+        type=int, 
+        default=0,
+        help="0: AI-only game, 1: Human and AI game, 2: Human-only game",
     )
     # parser.add_argument(
     #     "--agent",
@@ -859,10 +886,10 @@ def main() -> None:
     #     help="path to prototxt with agent's configurations (default: %(default)s)",
     # )
     parser.add_argument(
-        "--daide", 
-        type=bool, 
-        default= True, 
-        help="Is Cicero a daide speaker or no?",
+        "--deceptive",
+        default= False, 
+        action="store_true",
+        help="Is Cicero being deceptive? -- removing PO correspondence filter from message module?",
     )
     parser.add_argument(
         "--outdir", type=Path, help="output directory for game json to be stored"
@@ -873,9 +900,9 @@ def main() -> None:
     port: int = args.port
     game_id: str = args.game_id
     power: str = args.power
-    daide: bool = args.daide
+    deceptive: bool = args.deceptive
     outdir: Optional[Path] = args.outdir
-    human_game : bool = args.human_game
+    game_type : int = args.game_type
 
     print(f"settings:")
     print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
@@ -883,7 +910,7 @@ def main() -> None:
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
 
-    mila = milaWrapper(is_daide=daide)
+    mila = milaWrapper(is_deceptive=deceptive)
 
     asyncio.run(
         mila.play_mila(
@@ -891,7 +918,7 @@ def main() -> None:
             port=port,
             game_id=game_id,
             power_name=power,
-            human_game=human_game,
+            game_type=game_type,
             gamedir=outdir,
         )
     )
