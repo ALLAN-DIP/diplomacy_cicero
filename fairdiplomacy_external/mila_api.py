@@ -130,6 +130,7 @@ class milaWrapper:
         
         if self.deceptive:
             agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero_lie.prototxt')
+            print('CICERO deceptive')
         else:
             agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")

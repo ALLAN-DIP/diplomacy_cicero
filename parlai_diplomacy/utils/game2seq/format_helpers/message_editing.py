@@ -584,7 +584,8 @@ class MessageFiltering:
         - game: game object
         - pseudo_orders: Joint action used to condition the dialogue model
         """
-        pseudo_orders_correspondence_threshold = self.pseudo_orders_correspondence_threshold if self.pseudo_orders_correspondence_threshold else -5e-3
+        pseudo_orders_correspondence_threshold = -5e-3
+        print(f'pseudo_orders_correspondence_threshold : {pseudo_orders_correspondence_threshold:.4g}')
         if not [m for p in game.get_all_phases() for m in p.messages.values()]:
             # If there are no messages so far this game, bail
             # This is because the "before" state will assume a no-press game which

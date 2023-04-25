@@ -1366,18 +1366,17 @@ class SearchBotAgent(BaseSearchAgent):
         timings.stop()
         timings.pprint(logging.getLogger("timings").info)
 
-        if 'message' in maybe_msg_dict:
-            print('go through if')
+        if maybe_msg_dict is not None and 'message' in maybe_msg_dict:
             pseudo_orders = self.message_handler._update_pseudo_orders(game, power, recipient, pseudo_orders)
             (corresponds_to_pseudo, extra_corr_info,) = self.message_handler.message_filterer._corresponds_to_pseudo_orders(
                         maybe_msg_dict, game, pseudo_orders,
                     )
-            print(f'get extra corr info: {extra_corr_info}')
             if 'diff' in extra_corr_info:
+                print(f'message and deceptive info {extra_corr_info}')
                 if extra_corr_info['diff'] >=extra_corr_info['thresh']:
-                    maybe_msg_dict['deceptive'] = f"A lie to Cicero: {maybe_msg_dict['message']}"
-                else:
                     maybe_msg_dict['deceptive'] = f"A truth to Cicero: {maybe_msg_dict['message']}"
+                else:
+                    maybe_msg_dict['deceptive'] = f"A lie to Cicero: {maybe_msg_dict['message']}"
 
         return maybe_msg_dict
 
