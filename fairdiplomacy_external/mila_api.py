@@ -96,7 +96,7 @@ from daidepp.utils import pre_process, gen_English, post_process, is_daide
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
-DEFAULT_DEADLINE = 7
+DEFAULT_DEADLINE = 5
 
 import json
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
@@ -126,6 +126,7 @@ class milaWrapper:
         self.sent_FCT = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
+        self.last_comm_intent={'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None,'final':None}
         self.deceptive = is_deceptive
         
         if self.deceptive:
@@ -133,6 +134,7 @@ class milaWrapper:
             print('CICERO deceptive')
         else:
             agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
+            print('Cicero non-deceptive')
         print(f"successfully load cicero config")
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
@@ -146,7 +148,8 @@ class milaWrapper:
         game_type: int,
         gamedir: Path,
     ) -> None:
-        
+
+        self.power_name = power_name
         print(f"Antony joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
         channel = await connection.authenticate(
@@ -166,7 +169,7 @@ class milaWrapper:
         print(f"Started dipcc game")
 
         self.player = Player(self.agent, power_name)
-
+        
         num_beams   = 4
         batch_size  = 16
         device = 'cuda:0'
@@ -174,7 +177,7 @@ class milaWrapper:
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
 
-        while not self.game.is_game_done:
+        while not (self.game.is_game_done or self.game.get_current_phase() == "S1920M"):
             self.phase_start_time = time.time()
             self.dipcc_current_phase = self.game.get_current_phase()
 
@@ -190,17 +193,18 @@ class milaWrapper:
                         await self.update_press_dipcc_game(power_name)
                     # reply/gen new message
                     msg = self.generate_message(power_name)
+                    print(f'msg from cicero to dipcc {msg}')
                     
                     if msg is not None:
                         draw_token_message = self.is_draw_token_message(msg,power_name)
                         proposal_response = self.check_PRP(msg,power_name)
 
                     # send message in dipcc and Mila
-                    if msg is not None and not proposal_response and not draw_token_message:
+                    if msg is not None and not proposal_response and not draw_token_message and msg['recipient'] not in self.game.powers:
                         recipient_power = msg['recipient']
                         power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
                             self.dipcc_game, self.player.power, True, True, recipient_power) 
-                        
+
                         power_po = power_pseudo[self.dipcc_current_phase]
                         for power in power_po.keys():
                             if power == power_name:
@@ -216,12 +220,16 @@ class milaWrapper:
                             self_pseudo_log = f'After I got the message from {recipient_power}, I intend to do: {self_po}'
                             await self.send_log(self_pseudo_log) 
 
-                        list_msg = self.to_daide_msg(msg)
+                        
 
                         await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
                         await self.send_log(f'My (internal) response is: {msg["message"]}') 
 
+                        # keep track of intent that we talked to each recipient
+                        self.set_comm_intent(recipient_power, power_po)
+
                         if game_type==0:
+                            list_msg = self.to_daide_msg(msg)
                             if len(list_msg)>0:
                                 for daide_msg in list_msg:
                                     await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
@@ -233,6 +241,7 @@ class milaWrapper:
                                 self.send_message(msg, 'mila')
 
                         elif game_type==1:
+                            list_msg = self.to_daide_msg(msg)
                             self.send_message(msg, 'dipcc')
                             self.send_message(msg, 'mila')
                             for daide_msg in list_msg:
@@ -251,10 +260,10 @@ class milaWrapper:
                                 await self.send_log(msg['deceptive'])
                                 print(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
                             
-                            for daide_msg in list_msg:
-                                await self.send_log(f'My DAIDE response is: {daide_msg["message"]}')    
-                            else:
-                                await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                            # for daide_msg in list_msg:
+                            #     await self.send_log(f'My DAIDE response is: {daide_msg["message"]}')    
+                            # else:
+                            #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
                                 
                             
                     await asyncio.sleep(0.25)
@@ -264,9 +273,13 @@ class milaWrapper:
                     print(f"Submit orders in {self.dipcc_current_phase}")
                     agent_orders = self.player.get_orders(self.dipcc_game)
 
+                    # keep track of our final order
+                    self.set_comm_intent('final', agent_orders)
+                    await self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
+
                     # set order in Mila
                     self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
-                
+
                 # wait until the phase changed
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
                 while not self.has_phase_changed():
@@ -286,7 +299,15 @@ class milaWrapper:
             )
             file.write("\n")
 
+    def reset_comm_intent(self):
+        self.last_comm_intent={'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None,'final':None}
+        
+    def get_comm_intent(self):
+        return self.last_comm_intent
 
+    def set_comm_intent(self, recipient, pseudo_orders):
+        self.last_comm_intent[recipient] = pseudo_orders
+        
     def check_PRP(self,msg,power_name):
         phase_messages = self.get_messages(
                         messages=self.game.messages, power=power_name
@@ -330,6 +351,13 @@ class milaWrapper:
         if UNDRAW_VOTE_TOKEN in msg['message']:
             self.game.powers[power_name].vote = strings.NO
             return True
+        if DATASET_DRAW_MESSAGE in msg['message']:
+            self.game.powers[power_name].vote = strings.YES
+            return True
+        if DATASET_NODRAW_MESSAGE in msg['message']:
+            self.game.powers[power_name].vote = strings.YES
+            return True
+        
         return False
 
     def to_daide_msg(self, msg: MessageDict):
@@ -425,7 +453,7 @@ class milaWrapper:
         for country in current_phase_code.keys():
             if country == message["sender"]:
             #FCT for sender
-                has_FCT_order = True
+                # has_FCT_order = True
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
@@ -519,6 +547,7 @@ class milaWrapper:
         self.sent_FCT = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
+        self.reset_comm_intent()
 
     def has_phase_changed(self)->bool:
         """ 
@@ -598,6 +627,7 @@ class milaWrapper:
 
         # update message in dipcc game
         for timesent, message in phase_messages.items():
+            print(f'message from mila to dipcc {message}')
             if int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]):
 
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
@@ -809,8 +839,10 @@ class milaWrapper:
                 # and don't add it to the dipcc game.
                 # If it has at least one part that contains anything other than three upper letters,
                 # then just keep message body as original
-                if message.recipient == 'GLOBAL':
+                if message.recipient not in self.game.powers:
                     continue
+                # print(f'load message from mila to dipcc {message}')
+
                 if is_daide(message.message):
                     pre_processed = pre_process(message.message)
                     generated_English = gen_English(pre_processed, message.recipient, message.sender)
