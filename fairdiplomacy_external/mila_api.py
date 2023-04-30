@@ -177,7 +177,7 @@ class milaWrapper:
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
 
-        while not (self.game.is_game_done or self.game.get_current_phase() == "S1920M"):
+        while not (self.game.is_game_done or self.game.get_current_phase() == "S1915M"):
             self.phase_start_time = time.time()
             self.dipcc_current_phase = self.game.get_current_phase()
 
@@ -200,7 +200,7 @@ class milaWrapper:
                         proposal_response = self.check_PRP(msg,power_name)
 
                     # send message in dipcc and Mila
-                    if msg is not None and not proposal_response and not draw_token_message and msg['recipient'] not in self.game.powers:
+                    if msg is not None and not proposal_response and not draw_token_message and msg['recipient'] in self.game.powers:
                         recipient_power = msg['recipient']
                         power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
                             self.dipcc_game, self.player.power, True, True, recipient_power) 
