@@ -152,8 +152,9 @@ class milaWrapper:
         self.power_name = power_name
         print(f"Antony joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
+        dec = 'Deceptive_' if self.deceptive else ''
         channel = await connection.authenticate(
-            f"Antony_{power_name}", "password"
+            f"{dec}Antony_{power_name}", "password"
         )
         self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
 
