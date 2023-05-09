@@ -180,7 +180,14 @@ class milaWrapper:
 
         while not (self.game.is_game_done or self.game.get_current_phase() == "S1915M"):
             self.phase_start_time = time.time()
-            self.dipcc_current_phase = self.game.get_current_phase()
+            self.dipcc_current_phase = self.dipcc_game.get_current_phase()
+
+            # fix issue that there is a chance where retreat phase appears in dipcc but not mila 
+            while self.has_phase_changed():
+                await self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
+                agent_orders = self.player.get_orders(self.dipcc_game)
+                self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
+                self.dipcc_current_phase = self.dipcc_game.get_current_phase()
 
             # While agent is not eliminated
             if not self.game.powers[power_name].is_eliminated():
@@ -270,9 +277,30 @@ class milaWrapper:
                     await asyncio.sleep(0.25)
         
                 # ORDER
+
                 if not self.has_phase_changed():
                     print(f"Submit orders in {self.dipcc_current_phase}")
                     agent_orders = self.player.get_orders(self.dipcc_game)
+                    incorrect_order = True
+                    possible_orders = self.dipcc_game.get_all_possible_orders()
+
+                    while incorrect_order:
+                        all_correct = True
+                        for order in agent_orders:
+                            order_token = order.split(' ')
+                            unit_loc = order_token[1]
+                            is_correct = order in possible_orders[unit_loc]
+                            all_correct = all_correct and is_correct
+                            print(f'{order} is correct: {is_correct}')
+                                
+                        if (self.game.get_current_phase().endswith('M') and len(agent_orders)>0 and all_correct) or \
+                        (self.game.get_current_phase().endswith('R') and len(agent_orders)>=0 and all_correct) or \
+                        (self.game.get_current_phase().endswith('A') and len(agent_orders)>=0 and all_correct):
+                            incorrect_order = False
+                        else:
+                            print(f'submitting impossible orders: {agent_orders} to {self.dipcc_current_phase}')
+                            await self.send_log(f'submitting impossible orders: {agent_orders} to {self.dipcc_current_phase}') 
+                            agent_orders = self.player.get_orders(self.dipcc_game)
 
                     # keep track of our final order
                     self.set_comm_intent('final', agent_orders)
@@ -554,7 +582,7 @@ class milaWrapper:
         """ 
         check game phase 
         """
-        return self.dipcc_current_phase != self.game.get_current_phase()
+        return self.dipcc_game.get_current_phase() != self.game.get_current_phase()
 
     def has_state_changed(self, power_name)->bool:
         """ 
@@ -596,7 +624,7 @@ class milaWrapper:
         current_time = time.time()
 
         # PRESS allows in movement phase (ONLY)
-        if not self.game.get_current_phase().endswith("M"):
+        if not self.dipcc_game.get_current_phase().endswith("M"):
             return True
         if self.has_phase_changed():
             return True
