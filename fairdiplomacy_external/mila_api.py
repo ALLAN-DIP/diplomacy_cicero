@@ -91,7 +91,7 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
-from daidepp.utils import pre_process, gen_English, post_process, is_daide
+from daidepp.utils import pre_process, gen_English, post_process, is_daide,create_daide_grammar
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -127,7 +127,7 @@ class milaWrapper:
         self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
         self.daide = is_daide
-        
+        self.grammar = create_daide_grammar(level=130, allow_just_arrangement=True, string_type='all')
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
 
@@ -308,7 +308,7 @@ class milaWrapper:
         return False
 
     def to_daide_msg(self, msg: MessageDict):
-        print('-----------------------')
+        print('------------RRR-----------')
         print(f'Parsing {msg} to DAIDE')
 
         try:
@@ -323,14 +323,12 @@ class milaWrapper:
         if pseudo_orders is None or msg['sender'] not in pseudo_orders[self.dipcc_current_phase] or msg['recipient'] not in pseudo_orders[self.dipcc_current_phase]:
             return list_msg
 
-        if daide_status == 'Full-DAIDE' and (daide_s == 'PRP (ORR )' or daide_s== 'FCT (ORR )'): 
-            daide_status = 'Partial-DAIDE'
-
+        # I changed the rule of Full-DAIDE, it passes the daidepp checker now so we no longer to check fulldaide and remove additonal ORR here
         if daide_status == 'Full-DAIDE':
             print(daide_status)
             print(daide_s)
-            daide_s = self.check_fulldaide(daide_s)
-            daide_s = self.remove_ORR(daide_s)
+            # daide_s = self.check_fulldaide(daide_s)
+            # daide_s = self.remove_ORR(daide_s)
             daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
             list_msg.append(daide_msg)
         elif daide_status == 'Partial-DAIDE' or daide_status == 'Para-DAIDE':
@@ -338,6 +336,8 @@ class milaWrapper:
             FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
+            PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
+            FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
             
             if FCT_DAIDE is not None:
                 FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
@@ -453,7 +453,8 @@ class milaWrapper:
         return string1,string2
 
     def eng_to_daide(self,message:MessageDict,inference):
-        gen_graphs = inference.parse_sents([message["sender"]+' send to '+message["recipient"]+' that '+message["message"]], disable_progress=False)
+        print('---------------------------')
+        gen_graphs = inference.parse_sents([message["sender"].capitalize()+' send to '+message["recipient"].capitalize()+' that '+message["message"]], disable_progress=False)
         for graph in gen_graphs:
             amr = AMR()
             amr_node, s, error_list, snt_id, snt, amr_s = amr.string_to_amr(graph)
@@ -467,15 +468,22 @@ class milaWrapper:
                 daide_s, warnings = '', []
             else:
                 daide_s, warnings = amr.amr_to_daide()
+            try:
+                parse_tree = self.grammar.parse(daide_s)
+                Full = True
+            except:
+                Full = False
             if regex.search(r'[A-Z]{3}', daide_s):
                 if regex.search(r'[a-z]', daide_s):
                     daide_status = 'Partial-DAIDE'
-                elif warnings:
+                elif Full == False:
                     daide_status = 'Para-DAIDE'
                 else:
                     daide_status = 'Full-DAIDE'
             else:
                 daide_status = 'No-DAIDE'
+
+
 
             return daide_status,daide_s
 
