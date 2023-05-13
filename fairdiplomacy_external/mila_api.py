@@ -139,6 +139,7 @@ class milaWrapper:
         port: int,
         game_id: str,
         power_name: str,
+        human_game: bool,
         gamedir: Path,
     ) -> None:
         
@@ -216,11 +217,15 @@ class milaWrapper:
                         await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
                         await self.send_log(f'My (internal) response is: {msg["message"]}') 
 
+                        if human_game:
+                            self.send_message(msg, 'dipcc')
+                            self.send_message(msg, 'mila')
+                        
                         if len(list_msg)>0:
                             for daide_msg in list_msg:
-                                await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}') 
-
-                            self.send_message(msg, 'dipcc')
+                                await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
+                            if not human_game:
+                                self.send_message(msg, 'dipcc')    
                         else:
                             await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
 
@@ -845,6 +850,12 @@ def main() -> None:
         required=True,
         help="power name",
     )
+    parser.add_argument(
+        "--human_game",
+        action="store_true", 
+        default=False,
+        help="whether this is human game",
+    )
     # parser.add_argument(
     #     "--agent",
     #     type=Path,
@@ -869,6 +880,7 @@ def main() -> None:
     power: str = args.power
     daide: bool = args.daide
     outdir: Optional[Path] = args.outdir
+    human_game : bool = args.human_game
 
     print(f"settings:")
     print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
@@ -884,6 +896,7 @@ def main() -> None:
             port=port,
             game_id=game_id,
             power_name=power,
+            human_game=human_game,
             gamedir=outdir,
         )
     )
