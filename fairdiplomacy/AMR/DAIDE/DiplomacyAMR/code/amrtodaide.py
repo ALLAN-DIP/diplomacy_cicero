@@ -68,6 +68,8 @@ class AMR:
                 break
             pre, var, post = m3.group(1, 2, 3)
             value = d.get(var)
+            print(value)
+            print(amr_node.concept)
             if value is None:
                 value = '$' + var
             elif ' ' in value \
