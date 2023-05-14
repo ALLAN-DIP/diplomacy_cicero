@@ -51,7 +51,7 @@
       "corpus_dir": "amrlib/data/tdata_xfm/",
       "custom_save_checkpoint": true,
       "eval_batch_size": 32,
-      "eval_fn": "test.txt.nowiki",
+      "eval_fn": "dev.txt.nowiki",
       "eval_num_beams": 1,
       "first_eval_epoch": 1,
       "max_in_len": 1024,
