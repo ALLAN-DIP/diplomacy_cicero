@@ -336,8 +336,6 @@ class milaWrapper:
             FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
-            PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
-            FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
             
             if FCT_DAIDE is not None:
                 FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
