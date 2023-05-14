@@ -400,27 +400,31 @@ class milaWrapper:
         for country in current_phase_code.keys():
             if country == message["sender"]:
             #FCT for sender
-                has_FCT_order = True
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
                         string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') MTO '+i[8:11]+'))'
+                        has_FCT_order = True
                     elif sen_length == 7:
                         if i[6] == 'H':
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') HLD))'
+                            has_FCT_order = True
                         elif i[6] == 'B':
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') BLD))'
+                            has_FCT_order = True
                         elif i[6] == 'R':
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') REM))'
+                            has_FCT_order = True
                     elif sen_length == 19:
                         if i[6] =='S':
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') SUP ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') MTO '+i[16:19]+'))'
+                            has_FCT_order = True
                         elif i[6] == 'C':
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[0]]+' '+i[2:5]+') CVY ('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+'))'
                             string1 += ' (XDO (('+power_dict[country]+' '+af_dict[i[8]]+' '+i[10:13]+') CTO '+i[16:19]+' VIA ('+i[2:5]+')))'
+                            has_FCT_order = True
             else:
             #PRP for recipient
-                has_PRP_order = True
                 for i in current_phase_code[country]:
                     sen_length = len(i)
                     if sen_length == 11:
