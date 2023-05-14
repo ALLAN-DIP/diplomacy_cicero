@@ -14,6 +14,7 @@ import re
 import regex
 import sys
 from typing import Optional, Tuple, Union
+from daidepp.utils import pre_process,is_daide,create_daide_grammar
 
 data_dir = Path(__file__).parent.parent / 'data'
 data_dir_path = str(data_dir.resolve())
@@ -61,8 +62,6 @@ class AMR:
     def match_map(self, amr_node, d: dict, s: str):
         #while m3 := re.match(r'(.*?)\$([a-z][a-z0-9]*)(?![a-z0-9])(.*)$', s):
         # print(amr_node.concept)
-        print(d)
-        print(s)
         while True:
             m3 = re.match(r'(.*?)\$([a-z][a-z0-9]*)(?![a-z0-9])(.*)$', s)
             if not m3:
@@ -76,13 +75,26 @@ class AMR:
             elif ' ' in value \
                     and (not (has_matching_outer_parentheses(value))) \
                     and (not (pre.endswith('(') and post.startswith(')'))) \
-                    and amr_node.concept != 'attack-01' and amr_node.concept != 'have-03':
+                    and amr_node.concept != 'have-03' \
+                    and amr_node.concept != 'attack-01' :
                 value = '(' + value + ')'
             s = pre + value + post
+        matches = re.findall(r'\b[A-Z]{3}\b', s)
+        # print(s.split()[0])
+        if s.split()[0] == 'ALY_NOVSS':
+            print('yes')
+            countries = ['AUS','TUR','RUS','GER','ITA','ENG','FRA']
+            excluded_countries = [country for country in countries if country not in matches]
+            combined_string = ' '.join(excluded_countries)
+            s = s.replace('ALY_NOVSS','ALY')+' VSS ('+combined_string+')'
         # print(s)
-        if amr_node.concept == 'attack-01' and self.sub_amr_node_by_role(amr_node, ['polarity']) != '-':
+        if amr_node.concept == 'attack-01' and self.sub_amr_node_by_role(amr_node, ['polarity']) != '-' and [tpl[1] for tpl in amr_node.subs if tpl[0] == 'ARG1'][0].concept != 'province':
             s = f'NOT ({s})'
-        if self.sub_amr_node_by_role(amr_node, ['polarity']) == '-' and amr_node.concept != 'attack-01':
+        if self.sub_amr_node_by_role(amr_node, ['polarity']) == '-' and amr_node.concept == 'expect-01':
+            #s = f'NOT ({s})'
+            h = re.search(r'\((.*?)\)', s).group(0)
+            s = f'{s.split()[0]} (NOT {h})'
+        elif self.sub_amr_node_by_role(amr_node, ['polarity']) == '-' and amr_node.concept != 'attack-01':
             s = f'NOT ({s})'
         if self.amr_has_unknown_sub(amr_node):
             d['warnings'] = self.extend_new_warnings(d.get('warnings', []), ['includes question'])
@@ -410,11 +422,11 @@ class AMR:
                 warnings = self.extend_new_warnings(warnings, sub_warnings)
                 if daide_element:
                     if ' ' in daide_element and not has_matching_outer_parentheses(daide_element):
-                        print(daide_element)
                         daide_element = '(' + daide_element + ')'
                     daide_elements.append(daide_element)
                     i += 1
-            if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','attack-01','have-03']):
+            #if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','attack-01','have-03']):
+            if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','have-03','attack-01']):
                 return ' '.join(daide_elements), warnings
             else:
                 return f"AND {' '.join(daide_elements)}", warnings
@@ -467,7 +479,7 @@ class AMR:
             self.add_warning_to_match_dict(d, 'ALY without VSS')
             if top:
                 self.add_warning_to_match_dict(d, 'ALY at top level')
-            return self.match_map(amr_node, d, 'ALY ($allies)')
+            return self.match_map(amr_node, d, 'ALY_NOVSS ($allies)')
 
 
 
@@ -532,43 +544,73 @@ class AMR:
                 self.add_warning_to_match_dict(d, 'RTO at top level')
             return self.match_map(amr_node, d, '$unit RTO $destination')
 
-        # d = self.match_for_daide(amr_node, '(have-03 :ARG0 $owner(country) :ARG1 $province(province))')
-        # if d and self.ancestor_is_in_concepts(amr_node, ['propose-01', 'agree-01']):
-        #     return self.match_map(amr_node, d, 'SCD ($owner $province)')
-
         d = self.match_for_daide(amr_node, '(have-03 :ARG0 $owner(country) :ARG1 $province)')
-        if d :
-            return self.match_map(amr_node, d, 'SCD ($owner $province)')
+        if d:
+            if self.ancestor_is_in_concepts(amr_node, ['propose-01', 'agree-01','possible-01','expect-01']):
+                return self.match_map(amr_node, d, 'SCD ($owner $province)')
+            else:
+                return self.match_map(amr_node, d, 'PRP (SCD ($owner $province))')
+
+        # d = self.match_for_daide(amr_node, '(have-03 :ARG0 $owner(country) :ARG1 $province)')
+        # if d :
+        #     return self.match_map(amr_node, d, 'SCD ($owner $province)')
 
 
 
         d = self.match_for_daide(amr_node, '(betray-01 :ARG0 $owner1(country) :ARG1 $owner2(country))')
         if d :
-            return self.match_map(amr_node, d, 'FCT (NOT (PCE ($owner1 $owner2)))')
-        d = self.match_for_daide(amr_node, '(attack-01 :ARG0 $owner1(country) :ARG1 $owner2(country))')
-        if d :
-            return self.match_map(amr_node, d, 'PCE ($owner1 $owner2)')
+            if self.ancestor_is_in_concepts(amr_node, ['possible-01','propose-01','agree-01','expect-01']):
+                return self.match_map(amr_node, d, 'NOT (PCE ($owner1 $owner2))')
+            else:
+                return self.match_map(amr_node, d, 'FCT (NOT (PCE ($owner1 $owner2)))')
+        # d = self.match_for_daide(amr_node, '(attack-01 :ARG0 $owner1(country) :ARG1 $owner2(country))')
+        # if d :
+        #     return self.match_map(amr_node, d, 'PCE ($owner1 $owner2)')
 
-        d = self.match_for_daide(amr_node, '(attack-01 :ARG0 $allies :ARG1 $ennemies)')
-        if d :
-            return self.match_map(amr_node, d, 'PCE ($allies $ennemies)')
 
         d = self.match_for_daide(amr_node, '(trust-01 :ARG0 $owner1(country) :ARG2 $owner2(country))')
         if d :
-            s = self.match_map(amr_node, d, 'ALY ($owner1 $owner2)')
-            #s[0] ='FCT ('+s[0]+')'
-            return s
+            if self.ancestor_is_in_concepts(amr_node, ['possible-01','propose-01','agree-01','expect-01']):
+                return self.match_map(amr_node, d, 'ALY_NOVSS ($owner1 $owner2)')
+            else:
+                s = self.match_map(amr_node, d, 'ALY_NOVSS ($owner1 $owner2)')
+                s = ('FCT ('+s[0]+')',s[1])
+                return s
+        
+        d = self.match_for_daide(amr_node, '(expect-01 :ARG1 $proposal(build-01|hold-03|move-01|remove-01'
+                                               '|retreat-01|support-01|transport-01))')
+        if d :
+            return self.match_map(amr_node, d, 'THK (XDO ($proposal))')
+
         d = self.match_for_daide(amr_node, '(expect-01 :ARG1 $thoughts)')
         if d :
             return self.match_map(amr_node, d, 'THK $thoughts')
+
+        d = self.match_for_daide(amr_node, '(possible-01 :ARG1 $proposal(build-01|hold-03|move-01|remove-01'
+                                               '|retreat-01|support-01|transport-01))')
+        if d :
+            return self.match_map(amr_node, d, 'THK (XDO ($proposal))')
+
         d = self.match_for_daide(amr_node, '(possible-01 :ARG1 $thoughts)')
         if d :
             return self.match_map(amr_node, d, 'THK $thoughts')
-
-
-
-
-
+        
+        # d = self.match_for_daide(amr_node, '(attack-01 :ARG0 $unit :ARG1 $province)')
+        # if d:
+        #     print('yes1')
+        #     if top:
+        #         self.add_warning_to_match_dict(d, 'MTO at top level')
+        #     return self.match_map(amr_node, d, '$unit MTO $province')
+        
+        d = self.match_for_daide(amr_node, '(attack-01 :ARG0 $allies :ARG1 $ennemies)')
+        if d:
+            value = [tpl[1] for tpl in amr_node.subs if tpl[0] == 'ARG1']
+            if value[0].concept == 'province':
+                return self.match_map(amr_node, d, '$allies MTO $ennemies')
+            elif self.ancestor_is_in_concepts(amr_node, ['possible-01','propose-01','agree-01','expect-01']):
+                return self.match_map(amr_node, d, 'PCE ($allies $ennemies)')
+            else:
+                return self.match_map(amr_node, d, 'PRP (PCE ($allies $ennemies))')
 
 
         d = self.match_for_daide(amr_node, '(peace :op1 $c1(country) :op2 $c2(country) :op3 $c3(country))')
@@ -665,6 +707,7 @@ def main():
     amrs, snt_ids, snts, errors, amr_strings \
         = AMR.file_to_amrs(args.input, args.max)
     out = args.output
+    grammar = create_daide_grammar(level=130, allow_just_arrangement=True, string_type='all')
     for amr, snt_id, snt, error_list, amr_s in zip(amrs, snt_ids, snts, errors, amr_strings):
         n_amrs += 1
         daide_problematic = False
@@ -702,10 +745,17 @@ def main():
                 show_daide_in_dev_mode = False
             if re.search('[a-z]', daide_s):
                 daide_problematic = True
+        try:
+            parse_tree = grammar.parse(daide_s)
+            Full = True
+            #print('True')
+        except:
+            Full = False
+            #print('False')
         if regex.search(r'[A-Z]{3}', daide_s):
             if regex.search(r'[a-z]', daide_s):
                 daide_status = 'Partial-DAIDE'
-            elif warnings:
+            elif Full !=True:
                 daide_status = 'Para-DAIDE'
             else:
                 daide_status = 'Full-DAIDE'
