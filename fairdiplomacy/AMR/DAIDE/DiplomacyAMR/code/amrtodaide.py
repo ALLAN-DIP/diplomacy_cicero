@@ -707,7 +707,7 @@ def main():
     amrs, snt_ids, snts, errors, amr_strings \
         = AMR.file_to_amrs(args.input, args.max)
     out = args.output
-    grammar = create_daide_grammar(level=130, allow_just_arrangement=True, string_type='all')
+    grammar = create_daide_grammar(level=130, allow_just_arrangement=False)
     for amr, snt_id, snt, error_list, amr_s in zip(amrs, snt_ids, snts, errors, amr_strings):
         n_amrs += 1
         daide_problematic = False
@@ -755,7 +755,7 @@ def main():
         if regex.search(r'[A-Z]{3}', daide_s):
             if regex.search(r'[a-z]', daide_s):
                 daide_status = 'Partial-DAIDE'
-            elif Full !=True:
+            elif Full ==False:
                 daide_status = 'Para-DAIDE'
             else:
                 daide_status = 'Full-DAIDE'
