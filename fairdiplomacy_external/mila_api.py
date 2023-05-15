@@ -186,10 +186,6 @@ class milaWrapper:
             while self.has_phase_changed():
                 await self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
                 agent_orders = self.player.get_orders(self.dipcc_game)
-                if not agent_orders:
-                    agent_orders = []
-                else:
-                    agent_orders = [order for order in agent_orders]
                 self.dipcc_game.set_orders(power_name, agent_orders)
                 self.dipcc_game.process()
                 self.dipcc_current_phase = self.dipcc_game.get_current_phase()
