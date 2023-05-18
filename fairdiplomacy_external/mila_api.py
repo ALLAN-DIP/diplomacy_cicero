@@ -173,9 +173,11 @@ class milaWrapper:
         
         num_beams   = 4
         batch_size  = 16
-        device = 'cuda:0'
-        model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
-        self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
+
+        if game_type !=2:
+            device = 'cuda:0'
+            model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
+            self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
 
         while not (self.game.is_game_done or self.game.get_current_phase() == "S1915M"):
@@ -228,8 +230,6 @@ class milaWrapper:
                         else:
                             self_pseudo_log = f'After I got the message from {recipient_power}, I intend to do: {self_po}'
                             await self.send_log(self_pseudo_log) 
-
-                        
 
                         await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
                         await self.send_log(f'My (internal) response is: {msg["message"]}') 
@@ -843,7 +843,7 @@ class milaWrapper:
         if deadline ==0:
             deadline = DEFAULT_DEADLINE
         else:
-            deadline = int(ceil(deadline/60))
+            deadline = int(math.ceil(deadline/60))
         
         game = Game()
 
