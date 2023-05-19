@@ -127,7 +127,7 @@ class milaWrapper:
         self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
         self.daide = is_daide
-        self.grammar = create_daide_grammar(level=130, allow_just_arrangement=True, string_type='all')
+        self.grammar = create_daide_grammar(level=130)
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
 
