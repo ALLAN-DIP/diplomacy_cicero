@@ -148,7 +148,7 @@ class milaWrapper:
         channel = await connection.authenticate(
             f"Antony_{power_name}", "password"
         )
-        self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
+        self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name, player_type=strings.PRESS_BOT)
 
         # Wait while game is still being formed
         print(f"Waiting for game to start")
@@ -171,15 +171,27 @@ class milaWrapper:
         
 
         while not self.game.is_game_done:
-            self.phase_start_time = time.time()
             self.dipcc_current_phase = self.game.get_current_phase()
 
             # While agent is not eliminated
             if not self.game.powers[power_name].is_eliminated():
                 logging.info(f"Press in {self.dipcc_current_phase}")
                 self.sent_self_intent = False
+                all_powers_ready = True
                 # PRESS
                 while not self.get_should_stop():
+                    await game.set_comm_status(power_name=power_name, comm_status=strings.READY)
+
+                    for p in game.powers.values():
+                        if (p.comm_status == strings.READY and p.player_type == strings.PRESS_BOT) or (p.is_eliminated() or p.strings.NO_PRESS_BOT):
+                            continue
+                        all_powers_ready = False
+
+                    if not all_powers_ready:
+                        continue
+
+                    self.phase_start_time = time.time()
+                    
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
                         # update press in dipcc
