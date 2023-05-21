@@ -177,74 +177,75 @@ class milaWrapper:
             if not self.game.powers[power_name].is_eliminated():
                 logging.info(f"Press in {self.dipcc_current_phase}")
                 self.sent_self_intent = False
-                all_powers_ready = True
-                await self.game.set_comm_status(power_name=power_name, comm_status=strings.READY)
-                for p in self.game.powers.values():
-                    if p.player_type == 'none':
+                if self.game.get_current_phase().endswith("M"):
+                    all_powers_ready = True
+                    await self.game.set_comm_status(power_name=power_name, comm_status=strings.READY)
+                    for p in self.game.powers.values():
+                        if p.player_type == 'none':
                             continue
-                    elif (p.comm_status == strings.READY and p.player_type == strings.PRESS_BOT) or (p.is_eliminated() or p.player_type == strings.NO_PRESS_BOT):
+                        elif (p.comm_status == strings.READY and p.player_type == strings.PRESS_BOT) or (p.is_eliminated() or p.player_type == strings.NO_PRESS_BOT):
                             continue
-                    all_powers_ready = False
-                if not all_powers_ready:
-                    continue
-                self.phase_start_time = time.time()
+                        all_powers_ready = False
+                    if not all_powers_ready:
+                        continue
+                    self.phase_start_time = time.time()
 
-                # PRESS
-                while not self.get_should_stop():
+                    # PRESS
+                    while not self.get_should_stop():
 
-                    # if there is new message incoming
-                    if self.has_state_changed(power_name):
-                        # update press in dipcc
-                        await self.update_press_dipcc_game(power_name)
-                    # reply/gen new message
-                    msg = self.generate_message(power_name)
-                    
-                    if msg is not None:
-                        draw_token_message = self.is_draw_token_message(msg,power_name)
-                        proposal_response = self.check_PRP(msg,power_name)
-
-                    # send message in dipcc and Mila
-                    if msg is not None and not proposal_response and not draw_token_message:
-                        recipient_power = msg['recipient']
-                        power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
-                            self.dipcc_game, self.player.power, True, True, recipient_power) 
+                        # if there is new message incoming
+                        if self.has_state_changed(power_name):
+                            # update press in dipcc
+                            await self.update_press_dipcc_game(power_name)
+                        # reply/gen new message
+                        msg = self.generate_message(power_name)
                         
-                        power_po = power_pseudo[self.dipcc_current_phase]
-                        for power in power_po.keys():
-                            if power == power_name:
-                                self_po = power_po[power]
-                            else:
-                                recp_po = power_po[power]
-                        
-                        if not self.sent_self_intent:
-                            self_pseudo_log = f'At the start of this phase, I intend to do: {self_po}'
-                            await self.send_log(self_pseudo_log) 
-                            self.sent_self_intent = True
-                        else:
-                            self_pseudo_log = f'After I got the message from {recipient_power}, I intend to do: {self_po}'
-                            await self.send_log(self_pseudo_log) 
+                        if msg is not None:
+                            draw_token_message = self.is_draw_token_message(msg,power_name)
+                            proposal_response = self.check_PRP(msg,power_name)
 
-                        list_msg = self.to_daide_msg(msg)
-
-                        await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
-                        await self.send_log(f'My (internal) response is: {msg["message"]}') 
-
-                        if human_game:
-                            self.send_message(msg, 'dipcc')
-                            self.send_message(msg, 'mila')
-                        
-                        if len(list_msg)>0:
-                            for daide_msg in list_msg:
-                                await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
-                            if not human_game:
-                                self.send_message(msg, 'dipcc')    
-                        else:
-                            await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
-
-                        for msg in list_msg:
-                            self.send_message(msg, 'mila')
+                        # send message in dipcc and Mila
+                        if msg is not None and not proposal_response and not draw_token_message:
+                            recipient_power = msg['recipient']
+                            power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
+                                self.dipcc_game, self.player.power, True, True, recipient_power) 
                             
-                    await asyncio.sleep(0.25)
+                            power_po = power_pseudo[self.dipcc_current_phase]
+                            for power in power_po.keys():
+                                if power == power_name:
+                                    self_po = power_po[power]
+                                else:
+                                    recp_po = power_po[power]
+                            
+                            if not self.sent_self_intent:
+                                self_pseudo_log = f'At the start of this phase, I intend to do: {self_po}'
+                                await self.send_log(self_pseudo_log) 
+                                self.sent_self_intent = True
+                            else:
+                                self_pseudo_log = f'After I got the message from {recipient_power}, I intend to do: {self_po}'
+                                await self.send_log(self_pseudo_log) 
+
+                            list_msg = self.to_daide_msg(msg)
+
+                            await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
+                            await self.send_log(f'My (internal) response is: {msg["message"]}') 
+
+                            if human_game:
+                                self.send_message(msg, 'dipcc')
+                                self.send_message(msg, 'mila')
+                            
+                            if len(list_msg)>0:
+                                for daide_msg in list_msg:
+                                    await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
+                                if not human_game:
+                                    self.send_message(msg, 'dipcc')    
+                            else:
+                                await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+
+                            for msg in list_msg:
+                                self.send_message(msg, 'mila')
+                                
+                        await asyncio.sleep(0.25)
         
                 # ORDER
                 if not self.has_phase_changed():
