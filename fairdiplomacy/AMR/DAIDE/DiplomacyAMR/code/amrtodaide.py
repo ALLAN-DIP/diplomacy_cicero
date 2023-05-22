@@ -78,11 +78,11 @@ class AMR:
             s = pre + value + post
         countries = ['AUS','TUR','RUS','GER','ITA','ENG','FRA']
         matches = re.findall(r'\b[A-Z]{3}\b', s)
-
+        s = 'PCE (ENG AUS ENG ITA AUS)'
         tokens = re.findall(r"(?=("+'|'.join(countries)+r"))", s)
         new_string1 = f"({' '.join(tokens)})"
         current_order = sorted(re.findall(r"(?=("+'|'.join(countries)+r"))", s))
-        new_string2 = f"({' '.join(current_order)})"
+        new_string2 = f"({' '.join(set(current_order))})"
         s = s.replace(new_string1,new_string2)
 
         # print(s.split()[0])
@@ -410,11 +410,9 @@ class AMR:
         :return: Arrangement object.
         """
         arrangements = sorted(set(arrangements))
-        print(arrangements)
         if len(arrangements) > 1:
             return f"AND {' '.join(arrangements)}"
         else:
-            print(arrangements[0])
             return arrangements[0][1:-1]
 
     #def amr_to_daide(self, amr_node: AMRnode = None, top: bool = True) -> Tuple[str, list[str]]:
@@ -449,9 +447,7 @@ class AMR:
             if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','have-03','attack-01']):
                 return ' '.join(daide_elements), warnings
             else:
-                print(daide_elements)
                 result = self.optional_AND(daide_elements)
-                print(result)
                 return result, warnings
         d = self.match_for_daide(amr_node,
                                      '($utype(army|fleet) :mod $power(country) :location $location(sea|province))')
