@@ -61,15 +61,12 @@ class AMR:
 
     def match_map(self, amr_node, d: dict, s: str):
         #while m3 := re.match(r'(.*?)\$([a-z][a-z0-9]*)(?![a-z0-9])(.*)$', s):
-        # print(amr_node.concept)
         while True:
             m3 = re.match(r'(.*?)\$([a-z][a-z0-9]*)(?![a-z0-9])(.*)$', s)
             if not m3:
                 break
             pre, var, post = m3.group(1, 2, 3)
             value = d.get(var)
-            print(value)
-            print(amr_node.concept)
             if value is None:
                 value = '$' + var
             elif ' ' in value \
@@ -79,11 +76,18 @@ class AMR:
                     and amr_node.concept != 'attack-01' :
                 value = '(' + value + ')'
             s = pre + value + post
+        countries = ['AUS','TUR','RUS','GER','ITA','ENG','FRA']
         matches = re.findall(r'\b[A-Z]{3}\b', s)
+
+        tokens = re.findall(r"(?=("+'|'.join(countries)+r"))", s)
+        new_string1 = f"({' '.join(tokens)})"
+        current_order = sorted(re.findall(r"(?=("+'|'.join(countries)+r"))", s))
+        new_string2 = f"({' '.join(current_order)})"
+        s = s.replace(new_string1,new_string2)
+
         # print(s.split()[0])
         if s.split()[0] == 'ALY_NOVSS':
             print('yes')
-            countries = ['AUS','TUR','RUS','GER','ITA','ENG','FRA']
             excluded_countries = [country for country in countries if country not in matches]
             combined_string = ' '.join(excluded_countries)
             s = s.replace('ALY_NOVSS','ALY')+' VSS ('+combined_string+')'
@@ -397,6 +401,22 @@ class AMR:
     def add_warning_to_match_dict(self, match_dict, warning):
         match_dict['warnings'] = self.extend_new_warnings(match_dict.get('warnings', []), [warning])
 
+
+
+    def optional_AND(self,arrangements):
+        """Wraps a list of arrangements in an `AND`.
+        If the list has a single element, return that element instead.
+        :param arrangements: List of arrangements.
+        :return: Arrangement object.
+        """
+        arrangements = sorted(set(arrangements))
+        print(arrangements)
+        if len(arrangements) > 1:
+            return f"AND {' '.join(arrangements)}"
+        else:
+            print(arrangements[0])
+            return arrangements[0][1:-1]
+
     #def amr_to_daide(self, amr_node: AMRnode = None, top: bool = True) -> Tuple[str, list[str]]:
     def amr_to_daide(self, amr_node: AMRnode = None, top: bool = True):
         # returns pair of (daide_element, warnings)
@@ -429,7 +449,10 @@ class AMR:
             if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','have-03','attack-01']):
                 return ' '.join(daide_elements), warnings
             else:
-                return f"AND {' '.join(daide_elements)}", warnings
+                print(daide_elements)
+                result = self.optional_AND(daide_elements)
+                print(result)
+                return result, warnings
         d = self.match_for_daide(amr_node,
                                      '($utype(army|fleet) :mod $power(country) :location $location(sea|province))')
         # if d := self.match_for_daide(amr_node,
@@ -475,7 +498,7 @@ class AMR:
 
         d = self.match_for_daide(amr_node, '(ally-01 :ARG1 $allies)')
         if d :
-            # print('yes')
+            print('yes')
             self.add_warning_to_match_dict(d, 'ALY without VSS')
             if top:
                 self.add_warning_to_match_dict(d, 'ALY at top level')
