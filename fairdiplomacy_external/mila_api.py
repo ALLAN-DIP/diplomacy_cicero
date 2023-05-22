@@ -173,16 +173,22 @@ class milaWrapper:
         while not self.game.is_game_done:
             self.dipcc_current_phase = self.game.get_current_phase()
 
-            # While agent is not eliminated
+            # While agent is not eliminated: do PRESS and ORDER
             if not self.game.powers[power_name].is_eliminated():
-                logging.info(f"Press in {self.dipcc_current_phase}")
-                self.sent_self_intent = False
+
+                # PRESS allows in movement phase
                 if self.game.get_current_phase().endswith("M"):
+                    self.sent_self_intent = False
+                    logging.info(f"Press in {self.dipcc_current_phase}")
                     all_powers_ready = True
                     await self.game.set_comm_status(power_name=power_name, comm_status=strings.READY)
+                    print(f"Antony_{power_name} is ready for communication")
+
                     for p in self.game.powers.values():
+                        # if DUMMY
                         if p.player_type == 'none':
                             continue
+                        # if PRESS_BOT and READY or NO_PRESS_BOT or eliminated
                         elif (p.comm_status == strings.READY and p.player_type == strings.PRESS_BOT) or (p.is_eliminated() or p.player_type == strings.NO_PRESS_BOT):
                             continue
                         all_powers_ready = False
@@ -560,9 +566,6 @@ class milaWrapper:
 
         current_time = time.time()
 
-        # PRESS allows in movement phase (ONLY)
-        if not self.game.get_current_phase().endswith("M"):
-            return True
         if self.has_phase_changed():
             return True
         if current_time - self.phase_start_time >= close_to_deadline:
