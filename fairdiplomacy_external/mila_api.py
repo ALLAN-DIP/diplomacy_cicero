@@ -171,7 +171,15 @@ class milaWrapper:
         
 
         while not self.game.is_game_done:
-            self.dipcc_current_phase = self.game.get_current_phase()
+            self.dipcc_current_phase = self.dipcc_game.get_current_phase()
+
+            # fix issue that there is a chance where retreat phase appears in dipcc but not mila 
+            while self.has_phase_changed():
+                await self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
+                agent_orders = self.player.get_orders(self.dipcc_game)
+                self.dipcc_game.set_orders(power_name, agent_orders)
+                self.dipcc_game.process()
+                self.dipcc_current_phase = self.dipcc_game.get_current_phase()
 
             # While agent is not eliminated: do PRESS and ORDER
             if not self.game.powers[power_name].is_eliminated():
@@ -180,6 +188,7 @@ class milaWrapper:
                 if self.game.get_current_phase().endswith("M"):
                     self.sent_self_intent = False
                     logging.info(f"Press in {self.dipcc_current_phase}")
+                    
                     all_powers_ready = True
                     await self.game.set_comm_status(power_name=power_name, comm_status=strings.READY)
                     print(f"Antony_{power_name} is ready for communication")
@@ -195,6 +204,7 @@ class milaWrapper:
                     if not all_powers_ready:
                         continue
                     self.phase_start_time = time.time()
+                    print(f"Antony_{power_name} start time for press")
 
                     # PRESS
                     while not self.get_should_stop():
