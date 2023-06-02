@@ -78,7 +78,7 @@ class AMR:
             s = pre + value + post
         countries = ['AUS','TUR','RUS','GER','ITA','ENG','FRA']
         matches = re.findall(r'\b[A-Z]{3}\b', s)
-        s = 'PCE (ENG AUS ENG ITA AUS)'
+        #s = 'PCE (ENG AUS ENG ITA AUS)'
         tokens = re.findall(r"(?=("+'|'.join(countries)+r"))", s)
         new_string1 = f"({' '.join(tokens)})"
         current_order = sorted(re.findall(r"(?=("+'|'.join(countries)+r"))", s))
@@ -87,7 +87,6 @@ class AMR:
 
         # print(s.split()[0])
         if s.split()[0] == 'ALY_NOVSS':
-            print('yes')
             excluded_countries = [country for country in countries if country not in matches]
             combined_string = ' '.join(excluded_countries)
             s = s.replace('ALY_NOVSS','ALY')+' VSS ('+combined_string+')'
@@ -726,7 +725,7 @@ def main():
     amrs, snt_ids, snts, errors, amr_strings \
         = AMR.file_to_amrs(args.input, args.max)
     out = args.output
-    grammar = create_daide_grammar(level=130, allow_just_arrangement=True, string_type='all')
+    grammar = create_daide_grammar(level=130)
     for amr, snt_id, snt, error_list, amr_s in zip(amrs, snt_ids, snts, errors, amr_strings):
         n_amrs += 1
         daide_problematic = False
