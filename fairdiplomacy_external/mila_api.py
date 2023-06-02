@@ -789,6 +789,7 @@ class milaWrapper:
         deadline = self.game.deadline
 
         if deadline ==0:
+            print('-----yes----')
             deadline = DEFAULT_DEADLINE
         else:
             deadline = int(math.ceil(deadline/60))
