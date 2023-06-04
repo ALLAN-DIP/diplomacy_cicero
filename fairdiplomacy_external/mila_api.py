@@ -378,24 +378,10 @@ class milaWrapper:
                 if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
                     list_msg.append(prp_msg)
                     self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
-
-        # elif daide_status == 'Para-DAIDE':
-        #     current_phase_code = pseudo_orders[msg["phase"]]
-        #     PRP_DAIDE,FCT_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
-        #     print(daide_status)
-        #     print(daide_s)
-        #     fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
-        #     prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
-
-        #     if fct_msg['message'] not in self.sent_FCT:
-        #         list_msg.append(fct_msg)
-        #         self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
-        #     if prp_msg['message'] not in self.sent_PRP:
-        #         list_msg.append(prp_msg)
-        #         self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
-        # else:
-        #     print(daide_status)
-        #     print(daide_s)
+        else:
+            print(daide_status)
+            print(daide_s)
+            self.add_openning_message(msg, list_msg)
 
         return list_msg
 
@@ -514,9 +500,38 @@ class milaWrapper:
             else:
                 daide_status = 'No-DAIDE'
 
-
-
             return daide_status,daide_s
+
+    def add_openning_message(self, msg, list_msg):
+
+        # if this is the first phase
+        if self.game.get_current_phase() == "S1901M":
+            possible_alliance_proposal = {message["sender"][0]+message["recipient"][0], message["recipient"][0]+message["sender"][0], message["sender"][0]+'/'+message["recipient"][0],message["recipient"][0]+'/'+message["sender"][0]}
+            possible_alliance_name = {'juggernaut', 'wintergreen', 'lepanto'}
+            other_powers = [p if p != message["sender"] and p != message["recipient"] for p in power_dict]
+            other_powers = ' '.join(other_powers)
+
+            if any(item in message['message'] for item in possible_alliance_proposal):
+                prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS ({other_powers}))'
+                list_msg.append(prop_string)
+                return
+
+            if 'juggernaut' in message['message'].lower() and (message["sender"] in ['RUSSIA', 'TURKEY'] or message["recipient"] in ['RUSSIA', 'TURKEY']):
+                prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS ({other_powers}))'
+                list_msg.append(prop_string)
+                return
+
+            if 'wintergreen' in message['message'].lower() and (message["sender"] in ['RUSSIA', 'ITALY'] or message["recipient"] in ['RUSSIA', 'ITALY']):
+                prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS ({other_powers}))'
+                list_msg.append(prop_string)
+                return
+
+            if 'lepanto' in message['message'].lower() and (message["sender"] in ['AUSTRIA', 'ITALY'] or message["recipient"] in ['AUSTRIA', 'ITALY']):
+                prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS (TUR))'
+                list_msg.append(prop_string)
+                return
+        return
+
 
     def init_phase(self):
         """     
