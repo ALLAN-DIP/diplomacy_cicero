@@ -170,11 +170,12 @@ class milaWrapper:
         print(f"Started dipcc game")
 
         self.player = Player(self.agent, power_name)
+        self.game_type = game_type
         
         num_beams   = 4
         batch_size  = 16
 
-        if game_type !=2:
+        if self.game_type !=2:
             device = 'cuda:0'
             model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
             self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
@@ -198,13 +199,17 @@ class milaWrapper:
                 self.sent_self_intent = False
                 # PRESS
                 while not self.get_should_stop():
+                    msg=None
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
                         # update press in dipcc
                         await self.update_press_dipcc_game(power_name)
+
+                    # if not a silent agent
+                    if self.game_type!=3:
                     # reply/gen new message
-                    msg = self.generate_message(power_name)
-                    print(f'msg from cicero to dipcc {msg}')
+                        msg = self.generate_message(power_name)
+                        print(f'msg from cicero to dipcc {msg}')
                     
                     if msg is not None:
                         draw_token_message = self.is_draw_token_message(msg,power_name)
@@ -237,7 +242,7 @@ class milaWrapper:
                         # keep track of intent that we talked to each recipient
                         self.set_comm_intent(recipient_power, power_po)
 
-                        if game_type==0:
+                        if self.game_type==0:
                             list_msg = self.to_daide_msg(msg)
                             if len(list_msg)>0:
                                 for daide_msg in list_msg:
@@ -249,7 +254,7 @@ class milaWrapper:
                             for msg in list_msg:
                                 self.send_message(msg, 'mila')
 
-                        elif game_type==1:
+                        elif self.game_type==1:
                             list_msg = self.to_daide_msg(msg)
                             self.send_message(msg, 'dipcc')
                             self.send_message(msg, 'mila')
@@ -261,7 +266,7 @@ class milaWrapper:
                             for msg in list_msg:
                                 self.send_message(msg, 'mila')
 
-                        elif game_type==2:
+                        elif self.game_type==2:
                             self.send_message(msg, 'dipcc')
                             self.send_message(msg, 'mila')
 
@@ -274,7 +279,6 @@ class milaWrapper:
                             # else:
                             #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
                                 
-                            
                     await asyncio.sleep(0.25)
         
                 # ORDER
@@ -294,7 +298,7 @@ class milaWrapper:
                             all_correct = all_correct and is_correct
                             print(f'{order} is correct: {is_correct}')
                                 
-                        if (self.game.get_current_phase().endswith('M') and len(agent_orders)>0 and all_correct) or \
+                        if (self.game.get_current_phase().endswith('M') and len(agent_orders)>=0 and all_correct) or \
                         (self.game.get_current_phase().endswith('R') and len(agent_orders)>=0 and all_correct) or \
                         (self.game.get_current_phase().endswith('A') and len(agent_orders)>=0 and all_correct):
                             incorrect_order = False
