@@ -75,7 +75,8 @@ class AMR:
                     and (not (pre.endswith('(') and post.startswith(')'))) \
                     and amr_node.concept != 'have-03' \
                     and amr_node.concept != 'attack-01' \
-                    and amr_node.concept != 'support-01' :
+                    and amr_node.concept != 'support-01' \
+                    and amr_node.concept != 'move-01' :
                 value = '(' + value + ')'
             s = pre + value + post
         matches = re.findall(r'\b[A-Z]{3}\b', s)
@@ -426,7 +427,7 @@ class AMR:
         if entity_name and daide_id:
             return daide_id, warnings
         concept = amr_node.concept
-        if concept == 'and':
+        if concept == 'and' or concept == 'or':
             daide_elements = []
             i = 1
             while True:
@@ -442,7 +443,7 @@ class AMR:
                     daide_elements.append(daide_element)
                     i += 1
             #if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','attack-01','have-03']):
-            if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','have-03','attack-01']):
+            if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','have-03','attack-01','move-01']):
                 return ' '.join(daide_elements), warnings
             else:
                 result = self.optional_AND(daide_elements)
@@ -475,7 +476,12 @@ class AMR:
                     if self.ancestor_is_in_concepts(amr_node, ['possible-01','propose-01','agree-01','expect-01']):
                         return self.match_map(amr_node, d, 'SCD ($unit $destination)')
                     else:
-                        return self.match_map(amr_node, d, 'PRP (SCD ($unit $destination))')
+                        s = self.match_map(amr_node, d, 'SCD ($unit $destination)')
+                        s_list = list(s)
+                        s_list[0] = 'PRP (' + s_list[0] + ')'
+                        s_modified = tuple(s_list)
+                        return s_modified
+                        #return self.match_map(amr_node, d, 'PRP (SCD ($unit $destination))')
 
 
 
@@ -507,12 +513,18 @@ class AMR:
                 return self.match_map(amr_node, d, '$supportee')
             else:
                 return self.match_map(amr_node, d, 'XDO ($supporter SUP $supportee)')
+
+
+
         d = self.match_for_daide(amr_node, '(ally-01 :ARG1 $allies :ARG2 $countries :ARG3 $ennemies)')
         if d :
             ennemies = d.get('ennemies', '')
+            print(ennemies)
+            ennemies_list = ennemies.split()
             if top:
                 self.add_warning_to_match_dict(d, 'ALY at top level')
-            if ennemies in self.countries:
+            if all(country in self.countries for country in ennemies_list):
+            # if ennemies in self.countries:
                 if self.ancestor_is_in_concepts(amr_node, ['possible-01','propose-01','agree-01','expect-01']):
                     return self.match_map(amr_node, d, 'ALY ($allies $countries) VSS ($ennemies)')
                 else:
@@ -549,9 +561,11 @@ class AMR:
         d = self.match_for_daide(amr_node, '(ally-01 :ARG1 $allies :ARG3 $ennemies)')
         if d :
             ennemies = d.get('ennemies', '')
+            print(ennemies)
+            ennemies_list = ennemies.split()
             if top:
                 self.add_warning_to_match_dict(d, 'ALY at top level')
-            if ennemies in self.countries:
+            if all(country in self.countries for country in ennemies_list):
                 if self.ancestor_is_in_concepts(amr_node, ['possible-01','propose-01','agree-01','expect-01']):
                     return self.match_map(amr_node, d, 'ALY ($allies) VSS ($ennemies)')
                 else:
