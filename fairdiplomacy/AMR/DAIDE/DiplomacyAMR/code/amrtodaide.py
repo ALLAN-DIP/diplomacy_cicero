@@ -426,7 +426,6 @@ class AMR:
         if entity_name and daide_id:
             return daide_id, warnings
         concept = amr_node.concept
-        print(concept)
         if concept == 'and':
             daide_elements = []
             i = 1
@@ -465,19 +464,14 @@ class AMR:
         d = self.match_for_daide(amr_node, '(move-01 :ARG1 $unit :ARG2 $destination)')
         if d:
             unit = d.get('unit', '')
-            print(unit)
             if top:
                 self.add_warning_to_match_dict(d, 'MTO at top level')
             if re.match(r'^\([A-Z]{3} (?:AMY|FLT) ', unit):
-                print('yes')
                 return self.match_map(amr_node, d, 'XDO ($unit MTO $destination)')
             else:
-                print('no')
                 match = re.findall(r'\b[A-Z]{3}\b', unit)
-                print(match)
                 if match:
                     d['unit'] = match[0]
-                    print(d['unit'])
                     if self.ancestor_is_in_concepts(amr_node, ['possible-01','propose-01','agree-01','expect-01']):
                         return self.match_map(amr_node, d, 'SCD ($unit $destination)')
                     else:
@@ -503,8 +497,6 @@ class AMR:
         if d :
             supporter = d.get('supporter', '')
             supportee = d.get('supportee', '')
-            print(supporter)
-            print(supportee)
             if not re.match(r'^\([A-Z]{3} (?:AMY|FLT) ', supporter):
                 self.add_warning_to_match_dict(d, f"SUP supporter must be a specific unit, not {supporter}")
             if not re.match(r'^\([A-Z]{3} (?:AMY|FLT) ', supportee):
@@ -557,7 +549,6 @@ class AMR:
         d = self.match_for_daide(amr_node, '(ally-01 :ARG1 $allies :ARG3 $ennemies)')
         if d :
             ennemies = d.get('ennemies', '')
-            print(ennemies)
             if top:
                 self.add_warning_to_match_dict(d, 'ALY at top level')
             if ennemies in self.countries:
