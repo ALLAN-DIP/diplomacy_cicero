@@ -443,6 +443,7 @@ class AMR:
                     daide_elements.append(daide_element)
                     i += 1
             #if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','attack-01','have-03']):
+            print(daide_elements)
             if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','have-03','attack-01','move-01']):
                 return ' '.join(daide_elements), warnings
             else:
@@ -883,7 +884,7 @@ def main():
         if regex.search(r'[A-Z]{3}', daide_s):
             if regex.search(r'[a-z]', daide_s):
                 daide_status = 'Partial-DAIDE'
-            elif Full !=True:
+            elif Full == False:
                 daide_status = 'Para-DAIDE'
             else:
                 daide_status = 'Full-DAIDE'

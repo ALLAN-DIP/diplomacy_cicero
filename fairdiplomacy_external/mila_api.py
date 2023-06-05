@@ -218,10 +218,11 @@ class milaWrapper:
                         
                         if msg is not None:
                             draw_token_message = self.is_draw_token_message(msg,power_name)
-                            proposal_response = self.check_PRP(msg,power_name)
+                            #proposal_response = self.check_PRP(msg,power_name)
 
                         # send message in dipcc and Mila
-                        if msg is not None and not proposal_response and not draw_token_message:
+                        #if msg is not None and not proposal_response and not draw_token_message:
+                        if msg is not None and not draw_token_message:
                             recipient_power = msg['recipient']
                             power_pseudo = self.player.state.pseudo_orders_cache.maybe_get(
                                 self.dipcc_game, self.player.power, True, True, recipient_power) 
@@ -241,7 +242,7 @@ class milaWrapper:
                                 self_pseudo_log = f'After I got the message from {recipient_power}, I intend to do: {self_po}'
                                 await self.send_log(self_pseudo_log) 
 
-                            list_msg = self.to_daide_msg(msg)
+                            list_msg = self.to_daide_msg(msg,power_name)
 
                             await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
                             await self.send_log(f'My (internal) response is: {msg["message"]}') 
@@ -291,7 +292,7 @@ class milaWrapper:
             file.write("\n")
 
 
-    def check_PRP(self,msg,power_name):
+    def check_PRP(self,msg,power_name,response):
         phase_messages = self.get_messages(
                         messages=self.game.messages, power=power_name
                     )
@@ -304,28 +305,35 @@ class milaWrapper:
                             dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
                             if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
                                 most_recent[message.sender] = dipcc_timesent
-                            result = self.reply_to_proposal(message.message,msg)
+                            if response == True:
+                                result = 'YES ('+message.message+')'
+                            elif response == False:
+                                result = 'REJ ('+message.message+')'
+                            else:
+                                result = None
+                                #result = self.reply_to_proposal(message.message,msg)
                             if result is not None:
-                                msg['message'] = result
-                                self.send_message(msg, 'mila')
+                                #msg['message'] = result
+                                #self.send_message(msg, 'mila')
                                 self.last_PRP_review_timestamp = most_recent
-                                return True
+                                return result
+                                #return True
             else:
                 continue
-        return False
+        #return False
 
-    def reply_to_proposal(self, proposal, cicero_response):
-        # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
-        # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
-        # return YES/REJ DAIDE response.
-        positive_reply = 'YES ('
-        negative_reply = 'REJ ('
-        # if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
-        #     return negative_reply+proposal+')'
-        if any(item in cicero_response['message'] for item in possible_positive_response):
-            return positive_reply+proposal+')'
-        else:
-            return negative_reply+proposal+')'
+    # def reply_to_proposal(self, proposal, cicero_response):
+    #     # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
+    #     # cicero_response: Generated CICERO ENG sentences, for example TURKEY-RUSSIA here
+    #     # return YES/REJ DAIDE response.
+    #     positive_reply = 'YES ('
+    #     negative_reply = 'REJ ('
+    #     # if any(item in cicero_response['message'] for item in ["reject","Idk","idk","do not agree","don't agree","refuse","rejection","not",'rather']):
+    #     #     return negative_reply+proposal+')'
+    #     if any(item in cicero_response['message'] for item in possible_positive_response):
+    #         return positive_reply+proposal+')'
+    #     else:
+    #         return negative_reply+proposal+')'
 
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:
@@ -336,7 +344,25 @@ class milaWrapper:
             return True
         return False
 
-    def to_daide_msg(self, msg: MessageDict):
+    def divide_sentences(self,sentence):
+        if sentence.startswith('AND '):
+            sentence = sentence[5:-1]
+            list1 = sentence.split(') (')
+            return list1
+        elif sentence.startswith('PRP (AND '):
+            sentence = sentence[10:-2]
+            list1 = sentence.split(') (')
+            for i in range(len(list1)):
+                list1[i] = 'PRP ('+list1[i]+')'
+            return list1
+        elif sentence.startswith('THK (AND '):
+            sentence = sentence[10:-2]
+            list1 = sentence.split(') (')
+            for i in range(len(list1)):
+                list1[i] = 'THK ('+list1[i]+')'
+            return list1
+
+    def to_daide_msg(self, msg: MessageDict,power_name:str):
         print('------------RRR-----------')
         print(f'Parsing {msg} to DAIDE')
 
@@ -361,23 +387,44 @@ class milaWrapper:
             daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
             list_msg.append(daide_msg)
         elif daide_status == 'Partial-DAIDE' or daide_status == 'Para-DAIDE':
-            current_phase_code = pseudo_orders[msg["phase"]]
-            FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             print(daide_status)
             print(daide_s)
-            
-            if FCT_DAIDE is not None:
-                FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
-                fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
-                if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
-                    list_msg.append(fct_msg)
-                    self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
-            if PRP_DAIDE is not None:
-                PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
-                prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
-                if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
-                    list_msg.append(prp_msg)
-                    self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
+            if 'NOT (YES' in daide_s or 'REJ' in daide_s:
+                #reject
+                daide_s = self.check_PRP(msg,power_name,False)
+                if daide_s is not None:
+                    daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
+                    list_msg.append(daide_msg)
+            elif 'YES_LAST' in daide_s or 'YES' in daide_s:
+                #agree
+                daide_s = self.check_PRP(msg,power_name,True)
+                if daide_s is not None:
+                    daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
+                    list_msg.append(daide_msg)
+            else:
+                daide_list = self.divide_sentences(daide_s)
+                if daide_list:
+                    for i in daide_list:
+                        daide_status = self.check_valid(i)
+                        if daide_status == 'Full-DAIDE':
+                            daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': i}
+                            list_msg.append(daide_msg)
+                else:
+                    current_phase_code = pseudo_orders[msg["phase"]]
+                    FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
+                    
+                    if FCT_DAIDE is not None:
+                        FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
+                        fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
+                        if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
+                            list_msg.append(fct_msg)
+                            self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
+                    if PRP_DAIDE is not None:
+                        PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
+                        prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
+                        if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
+                            list_msg.append(prp_msg)
+                            self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
         else:
             print(daide_status)
             print(daide_s)
@@ -469,6 +516,24 @@ class milaWrapper:
             string2 = None
         return string1,string2
 
+
+    def check_valid(self, daide_sentence):
+        try:
+            parse_tree = self.grammar.parse(daide_sentence)
+            Full = True
+        except:
+            Full = False
+        if regex.search(r'[A-Z]{3}', daide_sentence):
+            if regex.search(r'[a-z]', daide_sentence):
+                daide_status = 'Partial-DAIDE'
+            elif Full == False:
+                daide_status = 'Para-DAIDE'
+            else:
+                daide_status = 'Full-DAIDE'
+        else:
+            daide_status = 'No-DAIDE'
+        return daide_status
+
     def eng_to_daide(self,message:MessageDict,inference):
         print('---------------------------')
         gen_graphs = inference.parse_sents([message["sender"].capitalize()+' send to '+message["recipient"].capitalize()+' that '+message["message"]], disable_progress=False)
@@ -485,50 +550,54 @@ class milaWrapper:
                 daide_s, warnings = '', []
             else:
                 daide_s, warnings = amr.amr_to_daide()
-            try:
-                parse_tree = self.grammar.parse(daide_s)
-                Full = True
-            except:
-                Full = False
-            if regex.search(r'[A-Z]{3}', daide_s):
-                if regex.search(r'[a-z]', daide_s):
-                    daide_status = 'Partial-DAIDE'
-                elif Full == False:
-                    daide_status = 'Para-DAIDE'
-                else:
-                    daide_status = 'Full-DAIDE'
-            else:
-                daide_status = 'No-DAIDE'
-
+            # try:
+            #     parse_tree = self.grammar.parse(daide_s)
+            #     Full = True
+            # except:
+            #     Full = False
+            # if regex.search(r'[A-Z]{3}', daide_s):
+            #     if regex.search(r'[a-z]', daide_s):
+            #         daide_status = 'Partial-DAIDE'
+            #     elif Full == False:
+            #         daide_status = 'Para-DAIDE'
+            #     else:
+            #         daide_status = 'Full-DAIDE'
+            # else:
+            #     daide_status = 'No-DAIDE'
+            daide_status = self.check_valid(daide_s)
             return daide_status,daide_s
 
-    def add_openning_message(self, msg, list_msg):
+    def add_openning_message(self, message:MessageDict, list_msg):
 
         # if this is the first phase
         if self.game.get_current_phase() == "S1901M":
             possible_alliance_proposal = {message["sender"][0]+message["recipient"][0], message["recipient"][0]+message["sender"][0], message["sender"][0]+'/'+message["recipient"][0],message["recipient"][0]+'/'+message["sender"][0]}
             possible_alliance_name = {'juggernaut', 'wintergreen', 'lepanto'}
-            other_powers = [p if p != message["sender"] and p != message["recipient"] for p in power_dict]
+            other_powers = [p for p in power_dict if p != message["sender"] and p != message["recipient"]]
             other_powers = ' '.join(other_powers)
 
             if any(item in message['message'] for item in possible_alliance_proposal):
                 prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS ({other_powers}))'
-                list_msg.append(prop_string)
+                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string}
+                list_msg.append(daide_msg)
                 return
 
             if 'juggernaut' in message['message'].lower() and (message["sender"] in ['RUSSIA', 'TURKEY'] or message["recipient"] in ['RUSSIA', 'TURKEY']):
                 prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS ({other_powers}))'
-                list_msg.append(prop_string)
+                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string}
+                list_msg.append(daide_msg)
                 return
 
             if 'wintergreen' in message['message'].lower() and (message["sender"] in ['RUSSIA', 'ITALY'] or message["recipient"] in ['RUSSIA', 'ITALY']):
                 prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS ({other_powers}))'
-                list_msg.append(prop_string)
+                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string}
+                list_msg.append(daide_msg)
                 return
 
             if 'lepanto' in message['message'].lower() and (message["sender"] in ['AUSTRIA', 'ITALY'] or message["recipient"] in ['AUSTRIA', 'ITALY']):
                 prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS (TUR))'
-                list_msg.append(prop_string)
+                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string}
+                list_msg.append(daide_msg)
                 return
         return
 
