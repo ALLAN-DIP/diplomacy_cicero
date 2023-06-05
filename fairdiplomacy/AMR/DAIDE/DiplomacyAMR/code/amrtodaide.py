@@ -443,8 +443,6 @@ class AMR:
                     daide_elements.append(daide_element)
                     i += 1
             #if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','attack-01','have-03']):
-            print(daide_elements)
-            print(sorted(daide_elements))
             if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','have-03','attack-01','move-01']):
                 return ' '.join(sorted(daide_elements)), warnings
             else:
