@@ -408,7 +408,7 @@ class AMR:
         :param arrangements: List of arrangements.
         :return: Arrangement object.
         """
-        arrangements = sorted(set(arrangements))
+        arrangements = sorted(set(arrangements), key=str)
         if len(arrangements) > 1:
             return f"AND {' '.join(arrangements)}"
         else:
@@ -444,10 +444,11 @@ class AMR:
                     i += 1
             #if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','attack-01','have-03']):
             print(daide_elements)
+            print(sorted(daide_elements))
             if self.parent_is_in_concepts(amr_node, ['ally-01', 'demilitarize-01','have-03','attack-01','move-01']):
-                return ' '.join(daide_elements), warnings
+                return ' '.join(sorted(daide_elements)), warnings
             else:
-                result = self.optional_AND(daide_elements)
+                result = self.optional_AND(sorted(daide_elements))
                 return result, warnings
 
         
@@ -561,6 +562,7 @@ class AMR:
 
         d = self.match_for_daide(amr_node, '(ally-01 :ARG1 $allies :ARG3 $ennemies)')
         if d :
+            print(d)
             ennemies = d.get('ennemies', '')
             print(ennemies)
             ennemies_list = ennemies.split()
