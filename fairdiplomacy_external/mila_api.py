@@ -573,7 +573,7 @@ class milaWrapper:
         if self.game.get_current_phase() == "S1901M":
             possible_alliance_proposal = {message["sender"][0]+message["recipient"][0], message["recipient"][0]+message["sender"][0], message["sender"][0]+'/'+message["recipient"][0],message["recipient"][0]+'/'+message["sender"][0]}
             possible_alliance_name = {'juggernaut', 'wintergreen', 'lepanto'}
-            other_powers = [p for p in power_dict if p != message["sender"] and p != message["recipient"]]
+            other_powers = [power_dict[p] for p in power_dict if p != message["sender"] and p != message["recipient"]]
             other_powers = ' '.join(other_powers)
 
             if any(item in message['message'] for item in possible_alliance_proposal):
@@ -705,7 +705,12 @@ class milaWrapper:
 
                 if is_daide(message.message):
                     pre_processed = pre_process(message.message)
-                    generated_English = gen_English(pre_processed, message.recipient, message.sender)
+                    try:
+                        generated_English = gen_English(pre_processed, message.recipient, message.sender)
+                    except:
+                        print(f"Fail to translate the message into the English, from {message.sender}: {message.message}")
+                        await self.send_log(f"Fail to translate the message into the English, from {message.sender}: {message.message}") 
+                        return
 
                     # if the message is invalid daide, send an error to paquette global
                     if generated_English.startswith("ERROR"):
