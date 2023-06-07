@@ -194,7 +194,9 @@ class milaWrapper:
                     print(f"Antony_{power_name} is ready for communication")
 
                     for p in self.game.powers.values():
-                        # if DUMMY
+                        print(p)
+                        print(p.player_type)
+                        print(p.comm_status)
                         if p.player_type == 'none':
                             continue
                         # if PRESS_BOT and READY or NO_PRESS_BOT or eliminated
