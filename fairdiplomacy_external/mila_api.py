@@ -709,8 +709,12 @@ class milaWrapper:
 
                 if is_daide(message.message):
                     pre_processed = pre_process(message.message)
-                    generated_English = gen_English(pre_processed, message.recipient, message.sender)
-
+                    try:
+                        generated_English = gen_English(pre_processed, message.recipient, message.sender)
+                    except:
+                        print(f"Fail to translate the message into the English, from {message.sender}: {message.message}")
+                        await self.send_log(f"Fail to translate the message into the English, from {message.sender}: {message.message}") 
+                        return
                     # if the message is invalid daide, send an error to paquette global
                     if generated_English.startswith("ERROR"):
                         self.game.add_message(Message(
