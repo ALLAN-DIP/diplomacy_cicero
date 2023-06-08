@@ -91,6 +91,7 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
+from diplomacy.utils.constants import OrderSettings, DEFAULT_GAME_RULES
 from daidepp.utils import pre_process, gen_English, post_process, is_daide,create_daide_grammar
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
@@ -200,10 +201,11 @@ class milaWrapper:
                         if p.player_type == 'none':
                             continue
                         # if PRESS_BOT and READY or NO_PRESS_BOT or eliminated
-                        elif (p.comm_status == strings.READY and p.player_type == strings.PRESS_BOT) or (p.is_eliminated() or p.player_type == strings.NO_PRESS_BOT):
+                        elif ((p.comm_status == strings.READY or p.order_is_set == OrderSettings.ORDER_SET or p.order_is_set == OrderSettings.ORDER_SET_EMPTY) and p.player_type == strings.PRESS_BOT) or (p.is_eliminated() or p.player_type == strings.NO_PRESS_BOT):
                             continue
                         all_powers_ready = False
                     if not all_powers_ready:
+                        await asyncio.sleep(1) 
                         continue
                     self.phase_start_time = time.time()
                     print(f"Antony_{power_name} start time for press")
