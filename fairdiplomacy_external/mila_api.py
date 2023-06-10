@@ -91,7 +91,7 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
-from daidepp.utils import pre_process, gen_English, post_process, is_daide,create_daide_grammar
+from daide2eng.utils import pre_process, gen_English, post_process, is_daide,create_daide_grammar
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -598,7 +598,7 @@ class milaWrapper:
                     generated_English = gen_English(pre_processed, message.recipient, message.sender)
 
                     # if the message is invalid daide, send an error to paquette global
-                    if generated_English.startswith("ERROR"):
+                    if generated_English.startswith("ERROR") or generated_English.startswith("Exception"):
                         self.game.add_message(Message(
                             sender=message.sender,
                             recipient=message.recipient,
