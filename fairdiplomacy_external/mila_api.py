@@ -111,7 +111,8 @@ from amrlib.models.parse_xfm.inference import Inference
 power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
 af_dict = {'A':'AMY','F':'FLT'}
 possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive','sure','Alright','yes','yep','Awesome','Done','Works for me','Will do','Perfect','I agree','Fine','Agreed','yup','Absolutely','Understood','That\'s the plan','Deal']
-player_type_exception = [strings.NO_PRESS_BOT, strings.HUMAN]
+player_type_exception = [strings.NO_PRESS_BOT]
+player_type_READY = [strings.PRESS_BOT, strings.HUMAN]
 class milaWrapper:
 
     def __init__(self, is_daide):
@@ -198,10 +199,10 @@ class milaWrapper:
                         print(p)
                         print(p.player_type)
                         print(p.comm_status)
-                        if p.player_type == 'none':
+                        if p.player_type == 'none' or p.is_eliminated() or p.player_type in player_type_exception:
                             continue
                         # if PRESS_BOT and READY or NO_PRESS_BOT or eliminated
-                        elif ((p.comm_status == strings.READY or p.order_is_set == OrderSettings.ORDER_SET or p.order_is_set == OrderSettings.ORDER_SET_EMPTY) and p.player_type == strings.PRESS_BOT) or (p.is_eliminated() or p.player_type in player_type_exception):
+                        elif (p.comm_status == strings.READY or p.order_is_set == OrderSettings.ORDER_SET or p.order_is_set == OrderSettings.ORDER_SET_EMPTY) and p.player_type in player_type_READY:
                             continue
                         all_powers_ready = False
                     if not all_powers_ready:
