@@ -580,7 +580,7 @@ class milaWrapper:
         if self.game.get_current_phase() == "S1901M":
             possible_alliance_proposal = {message["sender"][0]+message["recipient"][0], message["recipient"][0]+message["sender"][0], message["sender"][0]+'/'+message["recipient"][0],message["recipient"][0]+'/'+message["sender"][0]}
             possible_alliance_name = {'juggernaut', 'wintergreen', 'lepanto'}
-            other_powers = [p for p in power_dict if p != message["sender"] and p != message["recipient"]]
+            other_powers = [power_dict[p] for p in power_dict if p != message["sender"] and p != message["recipient"]]
             other_powers = ' '.join(other_powers)
 
             if any(item in message['message'] for item in possible_alliance_proposal):
