@@ -734,7 +734,7 @@ class milaWrapper:
 
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
-                        message_to_send = post_process(generated_English, message.recipient, message.sender)
+                        message_to_send = post_process(generated_English, message.recipient, message.sender, make_natural=True)
                         self.dipcc_game.add_message(
                             message.sender,
                             message.recipient,
@@ -920,10 +920,10 @@ class milaWrapper:
                     generated_English = gen_English(pre_processed, message.recipient, message.sender)
 
                     # if the message is invalid daide, send an error to paquette global; do nothing
-                    if not generated_English.startswith("ERROR"):
+                    if generated_English.startswith("ERROR") or generated_English.startswith("Exception"):
                     # if the message is valid daide, process and send it to dipcc recipient
 
-                        message_to_send = post_process(generated_English, message.recipient, message.sender)
+                        message_to_send = post_process(generated_English, message.recipient, message.sender, make_natural=True)
                         
                         dipcc_game.add_message(
                             message.sender,
