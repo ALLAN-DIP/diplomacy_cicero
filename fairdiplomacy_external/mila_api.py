@@ -542,7 +542,9 @@ class milaWrapper:
         print('---------------------------')
         #gen_graphs = inference.parse_sents([message["sender"].capitalize()+' send to '+message["recipient"].capitalize()+' that '+message["message"]], disable_progress=False)
         gen_graphs = inference.parse_sents(['SEN'+' send to '+'REC'+' that '+message["message"]], disable_progress=False)
+        print(gen_graphs)
         gen_graphs = gen_graphs.replace('SEN',message["sender"].capitalize()).replace('REC',message["recipient"].capitalize())
+        print(gen_graphs)
         for graph in gen_graphs:
             amr = AMR()
             amr_node, s, error_list, snt_id, snt, amr_s = amr.string_to_amr(graph)
