@@ -91,7 +91,7 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
-from daide2eng.utils import gen_English, create_daide_grammar
+from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
