@@ -712,9 +712,8 @@ class milaWrapper:
                 # then just keep message body as original
 
                 if is_daide(message.message):
-                    pre_processed = pre_process(message.message)
                     try:
-                        generated_English = gen_English(pre_processed, message.recipient, message.sender)
+                        generated_English = gen_English(message.message, message.recipient, message.sender)
                     except:
                         print(f"Fail to translate the message into the English, from {message.sender}: {message.message}")
                         await self.send_log(f"Fail to translate the message into the English, from {message.sender}: {message.message}") 
@@ -916,8 +915,7 @@ class milaWrapper:
                 if message.recipient == 'GLOBAL':
                     continue
                 if is_daide(message.message):
-                    pre_processed = pre_process(message.message)
-                    generated_English = gen_English(pre_processed, message.recipient, message.sender)
+                    generated_English = gen_English(message.message, message.recipient, message.sender)
 
                     # if the message is invalid daide, send an error to paquette global; do nothing
                     if generated_English.startswith("ERROR") or generated_English.startswith("Exception"):
