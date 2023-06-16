@@ -92,7 +92,7 @@ from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
 from diplomacy.utils.constants import OrderSettings, DEFAULT_GAME_RULES
-from daidepp.utils import pre_process, gen_English, post_process, is_daide,create_daide_grammar
+from daide2eng.utils import pre_process, gen_English, post_process, is_daide,create_daide_grammar
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -111,7 +111,8 @@ from amrlib.models.parse_xfm.inference import Inference
 power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
 af_dict = {'A':'AMY','F':'FLT'}
 possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive','sure','Alright','yes','yep','Awesome','Done','Works for me','Will do','Perfect','I agree','Fine','Agreed','yup','Absolutely','Understood','That\'s the plan','Deal']
-player_type_exception = [strings.NO_PRESS_BOT, strings.HUMAN]
+player_type_exception = [strings.NO_PRESS_BOT]
+player_type_READY = [strings.PRESS_BOT, strings.HUMAN]
 class milaWrapper:
 
     def __init__(self, is_daide):
@@ -198,10 +199,10 @@ class milaWrapper:
                         print(p)
                         print(p.player_type)
                         print(p.comm_status)
-                        if p.player_type == 'none':
+                        if p.player_type == 'none' or p.is_eliminated() or p.player_type in player_type_exception:
                             continue
                         # if PRESS_BOT and READY or NO_PRESS_BOT or eliminated
-                        elif ((p.comm_status == strings.READY or p.order_is_set == OrderSettings.ORDER_SET or p.order_is_set == OrderSettings.ORDER_SET_EMPTY) and p.player_type == strings.PRESS_BOT) or (p.is_eliminated() or p.player_type in player_type_exception):
+                        elif (p.comm_status == strings.READY or p.order_is_set == OrderSettings.ORDER_SET or p.order_is_set == OrderSettings.ORDER_SET_EMPTY) and p.player_type in player_type_READY:
                             continue
                         all_powers_ready = False
                     if not all_powers_ready:
@@ -580,7 +581,7 @@ class milaWrapper:
         if self.game.get_current_phase() == "S1901M":
             possible_alliance_proposal = {message["sender"][0]+message["recipient"][0], message["recipient"][0]+message["sender"][0], message["sender"][0]+'/'+message["recipient"][0],message["recipient"][0]+'/'+message["sender"][0]}
             possible_alliance_name = {'juggernaut', 'wintergreen', 'lepanto'}
-            other_powers = [p for p in power_dict if p != message["sender"] and p != message["recipient"]]
+            other_powers = [power_dict[p] for p in power_dict if p != message["sender"] and p != message["recipient"]]
             other_powers = ' '.join(other_powers)
 
             if any(item in message['message'] for item in possible_alliance_proposal):
@@ -719,7 +720,7 @@ class milaWrapper:
                         await self.send_log(f"Fail to translate the message into the English, from {message.sender}: {message.message}") 
                         return
                     # if the message is invalid daide, send an error to paquette global
-                    if generated_English.startswith("ERROR"):
+                    if generated_English.startswith("ERROR") or generated_English.startswith("Exception"):
                         self.game.add_message(Message(
                             sender=message.sender,
                             recipient=message.recipient,
@@ -734,7 +735,7 @@ class milaWrapper:
 
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
-                        message_to_send = post_process(generated_English, message.recipient, message.sender)
+                        message_to_send = post_process(generated_English, message.recipient, message.sender, make_natural=True)
                         self.dipcc_game.add_message(
                             message.sender,
                             message.recipient,
@@ -920,10 +921,10 @@ class milaWrapper:
                     generated_English = gen_English(pre_processed, message.recipient, message.sender)
 
                     # if the message is invalid daide, send an error to paquette global; do nothing
-                    if not generated_English.startswith("ERROR"):
+                    if generated_English.startswith("ERROR") or generated_English.startswith("Exception"):
                     # if the message is valid daide, process and send it to dipcc recipient
 
-                        message_to_send = post_process(generated_English, message.recipient, message.sender)
+                        message_to_send = post_process(generated_English, message.recipient, message.sender, make_natural=True)
                         
                         dipcc_game.add_message(
                             message.sender,
