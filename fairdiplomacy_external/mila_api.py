@@ -742,7 +742,7 @@ class milaWrapper:
                             increment_on_collision=True)
                         
                         await self.send_log(f"I got this message from {message.sender}: {message.message}") 
-                        await self.send_log(f"Translated into the English, that is: {message_to_send}") 
+                        await self.send_log(f"Translated into the English, that is: {generated_English}") 
 
                         # print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message_to_send}')
 
