@@ -171,8 +171,7 @@ class milaWrapper:
         model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
-
-        while not self.game.is_game_done:
+        while not self.game.is_game_done or not self.game.get_current_phase() == "S1911M":
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()
 
             # fix issue that there is a chance where retreat phase appears in dipcc but not mila 
