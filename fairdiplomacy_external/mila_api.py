@@ -135,15 +135,14 @@ class milaWrapper:
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
-    async def play_mila(
-        self,
-        hostname: str,
-        port: int,
-        game_id: str,
-        power_name: str,
-        human_game: bool,
-        gamedir: Path,
-    ) -> None:
+    async def play_mila(self, args) -> None:
+        hostname = args.hostname
+        port = args.port
+        game_id = args.game_id
+        power_name = args.power_name
+        human_game = args.human_game
+        gamedir = args.gamedir
+        silent = args.silent
         
         print(f"Antony joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
@@ -211,7 +210,7 @@ class milaWrapper:
                     print(f"Antony_{power_name} start time for press")
 
                     # PRESS
-                    while not self.get_should_stop():
+                    while not self.get_should_stop() and not silent:
 
                         # if there is new message incoming
                         if self.has_state_changed(power_name):
@@ -996,7 +995,12 @@ def main() -> None:
     parser.add_argument(
         "--outdir", type=Path, help="output directory for game json to be stored"
     )
-    
+    parser.add_argument(
+        "--silent", 
+        action="store_true", 
+        default=False, 
+        help="Is Antony silent?",
+    )
     args = parser.parse_args()
     host: str = args.host
     port: int = args.port
@@ -1005,6 +1009,7 @@ def main() -> None:
     daide: bool = args.daide
     outdir: Optional[Path] = args.outdir
     human_game : bool = args.human_game
+    silent : bool = args.silent
 
     print(f"settings:")
     print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
@@ -1015,14 +1020,7 @@ def main() -> None:
     mila = milaWrapper(is_daide=daide)
 
     asyncio.run(
-        mila.play_mila(
-            hostname=host,
-            port=port,
-            game_id=game_id,
-            power_name=power,
-            human_game=human_game,
-            gamedir=outdir,
-        )
+        mila.play_mila(args)
     )
 
 async def test_mila_function():
