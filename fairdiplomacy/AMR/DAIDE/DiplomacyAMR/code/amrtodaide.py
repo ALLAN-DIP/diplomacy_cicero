@@ -672,7 +672,11 @@ class AMR:
             if self.ancestor_is_in_concepts(amr_node, ['propose-01', 'agree-01','possible-01','expect-01']):
                 return self.match_map(amr_node, d, 'SCD ($owner $province)')
             else:
-                return self.match_map(amr_node, d, 'PRP (SCD ($owner $province))')
+                s = self.match_map(amr_node, d, 'SCD ($owner $province)')
+                s_list = list(s)
+                s_list[0] = 'PRP (' + s_list[0] + ')'
+                s_modified = tuple(s_list)
+                return s_modified
 
         # d = self.match_for_daide(amr_node, '(have-03 :ARG0 $owner(country) :ARG1 $province)')
         # if d :

@@ -258,7 +258,8 @@ class milaWrapper:
                             
                             if len(list_msg)>0:
                                 for daide_msg in list_msg:
-                                    await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
+                                    await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')
+                                    await self.send_log(f'My external DAIDE response status is: {daide_msg["daide_status"]}')   
                                 if not human_game:
                                     self.send_message(msg, 'dipcc')    
                             else:
@@ -368,7 +369,7 @@ class milaWrapper:
             return list1
 
     def to_daide_msg(self, msg: MessageDict,power_name:str):
-        print('------------RRR-----------')
+        print('-------------------------')
         print(f'Parsing {msg} to DAIDE')
 
         try:
@@ -389,7 +390,7 @@ class milaWrapper:
             print(daide_s)
             # daide_s = self.check_fulldaide(daide_s)
             # daide_s = self.remove_ORR(daide_s)
-            daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
+            daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s,'daide_status':daide_status}
             list_msg.append(daide_msg)
         elif daide_status == 'Partial-DAIDE' or daide_status == 'Para-DAIDE':
             print(daide_status)
@@ -398,13 +399,13 @@ class milaWrapper:
                 #reject
                 daide_s = self.check_PRP(msg,power_name,False)
                 if daide_s is not None:
-                    daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
+                    daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s,'daide_status':daide_status}
                     list_msg.append(daide_msg)
             elif 'YES_LAST' in daide_s or 'YES' in daide_s:
                 #agree
                 daide_s = self.check_PRP(msg,power_name,True)
                 if daide_s is not None:
-                    daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s}
+                    daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s,'daide_status':daide_status}
                     list_msg.append(daide_msg)
             else:
                 daide_list = self.divide_sentences(daide_s)
@@ -412,7 +413,7 @@ class milaWrapper:
                     for i in daide_list:
                         daide_status = self.check_valid(i)
                         if daide_status == 'Full-DAIDE':
-                            daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': i}
+                            daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': i,'daide_status':'daide-split'}
                             list_msg.append(daide_msg)
                 else:
                     current_phase_code = pseudo_orders[msg["phase"]]
@@ -420,13 +421,13 @@ class milaWrapper:
                     
                     if FCT_DAIDE is not None:
                         FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
-                        fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE}
+                        fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE,'daide_status':'fall_back'}
                         if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
                             list_msg.append(fct_msg)
                             self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
                     if PRP_DAIDE is not None:
                         PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
-                        prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE}
+                        prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE,'daide_status':'fall_back'}
                         if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
                             list_msg.append(prp_msg)
                             self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
@@ -586,25 +587,25 @@ class milaWrapper:
 
             if any(item in message['message'] for item in possible_alliance_proposal):
                 prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS ({other_powers}))'
-                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string}
+                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string,'daide_status':'open_message'}
                 list_msg.append(daide_msg)
                 return
 
             if 'juggernaut' in message['message'].lower() and (message["sender"] in ['RUSSIA', 'TURKEY'] or message["recipient"] in ['RUSSIA', 'TURKEY']):
                 prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS ({other_powers}))'
-                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string}
+                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string,'daide_status':'open_message'}
                 list_msg.append(daide_msg)
                 return
 
             if 'wintergreen' in message['message'].lower() and (message["sender"] in ['RUSSIA', 'ITALY'] or message["recipient"] in ['RUSSIA', 'ITALY']):
                 prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS ({other_powers}))'
-                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string}
+                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string,'daide_status':'open_message'}
                 list_msg.append(daide_msg)
                 return
 
             if 'lepanto' in message['message'].lower() and (message["sender"] in ['AUSTRIA', 'ITALY'] or message["recipient"] in ['AUSTRIA', 'ITALY']):
                 prop_string = f'PRP (ALY ({power_dict[message["sender"]]} {power_dict[message["recipient"]]}) VSS (TUR))'
-                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string}
+                daide_msg = {'sender': message['sender'] ,'recipient': message['recipient'], 'message': prop_string,'daide_status':'open_message'}
                 list_msg.append(daide_msg)
                 return
         return
