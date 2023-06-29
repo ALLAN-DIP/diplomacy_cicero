@@ -168,10 +168,11 @@ class milaWrapper:
         num_beams   = 4
         batch_size  = 16
         device = 'cuda:0'
-        model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
+        model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-18849/'
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
-        while not self.game.is_game_done or not self.game.get_current_phase() == "S1911M":
+
+        while not self.game.is_game_done and not self.game.get_current_phase() == "S1911M":
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()
 
             # fix issue that there is a chance where retreat phase appears in dipcc but not mila 
@@ -541,11 +542,12 @@ class milaWrapper:
 
     def eng_to_daide(self,message:MessageDict,inference):
         print('---------------------------')
-        #gen_graphs = inference.parse_sents([message["sender"].capitalize()+' send to '+message["recipient"].capitalize()+' that '+message["message"]], disable_progress=False)
-        gen_graphs = inference.parse_sents(['SEN'+' send to '+'REC'+' that '+message["message"]], disable_progress=False)
+        #gen_graphs = inference.parse_sents([message["message"]], disable_progress=False)
+        gen_graphs = inference.parse_sents([message["sender"].capitalize()+' send to '+message["recipient"].capitalize()+' that '+message["message"]], disable_progress=False)
+        #gen_graphs = inference.parse_sents(['SEN'+' send to '+'REC'+' that '+message["message"]], disable_progress=False)
         for graph in gen_graphs:
             print(graph)
-            graph = graph.replace('SEN',message["sender"].capitalize()).replace('REC',message["recipient"].capitalize())
+            #graph = graph.replace('SEN',message["sender"].capitalize()).replace('REC',message["recipient"].capitalize())
             amr = AMR()
             amr_node, s, error_list, snt_id, snt, amr_s = amr.string_to_amr(graph)
             if amr_node:
