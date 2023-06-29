@@ -136,12 +136,12 @@ class milaWrapper:
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
     async def play_mila(self, args) -> None:
-        hostname = args.hostname
+        hostname = args.host
         port = args.port
         game_id = args.game_id
-        power_name = args.power_name
+        power_name = args.power
         human_game = args.human_game
-        gamedir = args.gamedir
+        gamedir = args.outdir
         silent = args.silent
         
         print(f"Antony joining game: {game_id} as {power_name}")
