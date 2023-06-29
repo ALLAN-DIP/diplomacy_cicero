@@ -135,15 +135,15 @@ class milaWrapper:
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
-    async def play_mila(
-        self,
-        hostname: str,
-        port: int,
-        game_id: str,
-        power_name: str,
-        human_game: bool,
-        gamedir: Path,
-    ) -> None:
+    async def play_mila(self, args) -> None:
+        hostname = args.host
+        port = args.port
+        game_id = args.game_id
+        power_name = args.power
+        human_game = args.human_game
+        gamedir = args.outdir
+        silent = args.silent
+        self.daide_fallback = args.daide_fallback
         
         print(f"Antony joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
@@ -171,7 +171,6 @@ class milaWrapper:
         model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-18849/'
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
-
         while not self.game.is_game_done and not self.game.get_current_phase() == "S1911M":
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()
 
@@ -212,7 +211,7 @@ class milaWrapper:
                     print(f"Antony_{power_name} start time for press")
 
                     # PRESS
-                    while not self.get_should_stop():
+                    while not self.get_should_stop() and not silent:
 
                         # if there is new message incoming
                         if self.has_state_changed(power_name):
@@ -372,17 +371,40 @@ class milaWrapper:
         print('-------------------------')
         print(f'Parsing {msg} to DAIDE')
 
+        pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
+                self.dipcc_game, self.player.power, True, True, msg['recipient']
+            ) 
+
+        list_msg = []
+
+        if pseudo_orders is None or msg['sender'] not in pseudo_orders[self.dipcc_current_phase] or msg['recipient'] not in pseudo_orders[self.dipcc_current_phase]:
+            return list_msg
+
+        if self.daide_fallback:
+            current_phase_code = pseudo_orders[msg["phase"]]
+            FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
+            
+            if FCT_DAIDE is not None:
+                FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
+                fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE,'daide_status':'fall_back'}
+                if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
+                    list_msg.append(fct_msg)
+                    self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
+            if PRP_DAIDE is not None:
+                PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
+                prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE,'daide_status':'fall_back'}
+                if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
+                    list_msg.append(prp_msg)
+                    self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
+
+            return list_msg
+
         try:
             daide_status,daide_s = self.eng_to_daide(msg, self.inference)
         except:
             daide_status,daide_s = 'NO-DAIDE',''
         # if isinstance(self.player.state, SearchBotAgentState):
-        pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
-                self.dipcc_game, self.player.power, True, True, msg['recipient']
-            ) 
-        list_msg = []
-        if pseudo_orders is None or msg['sender'] not in pseudo_orders[self.dipcc_current_phase] or msg['recipient'] not in pseudo_orders[self.dipcc_current_phase]:
-            return list_msg
+
 
         # I changed the rule of Full-DAIDE, it passes the daidepp checker now so we no longer to check fulldaide and remove additonal ORR here
         if daide_status == 'Full-DAIDE':
@@ -998,7 +1020,18 @@ def main() -> None:
     parser.add_argument(
         "--outdir", type=Path, help="output directory for game json to be stored"
     )
-    
+    parser.add_argument(
+        "--silent", 
+        action="store_true", 
+        default=False, 
+        help="Is Antony silent?",
+    )
+    parser.add_argument(
+        "--daide_fallback", 
+        action="store_true", 
+        default=False, 
+        help="Will you skip AMR->DAIDE parser and generate DAIDE with fallback only?",
+    )
     args = parser.parse_args()
     host: str = args.host
     port: int = args.port
@@ -1007,6 +1040,8 @@ def main() -> None:
     daide: bool = args.daide
     outdir: Optional[Path] = args.outdir
     human_game : bool = args.human_game
+    silent : bool = args.silent
+    daide_fallback : bool = args.daide_fallback
 
     print(f"settings:")
     print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
@@ -1017,14 +1052,7 @@ def main() -> None:
     mila = milaWrapper(is_daide=daide)
 
     asyncio.run(
-        mila.play_mila(
-            hostname=host,
-            port=port,
-            game_id=game_id,
-            power_name=power,
-            human_game=human_game,
-            gamedir=outdir,
-        )
+        mila.play_mila(args)
     )
 
 async def test_mila_function():
