@@ -144,6 +144,7 @@ class milaWrapper:
         gamedir = args.outdir
         silent = args.silent
         self.daide_fallback = args.daide_fallback
+        self.model = args.model
         
         print(f"Antony joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
@@ -168,7 +169,14 @@ class milaWrapper:
         num_beams   = 4
         batch_size  = 16
         device = 'cuda:0'
-        model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
+        if self.model == 'best_model':
+            model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/best_model/'
+        elif self.model = 'baseline_model':
+            model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/baseline/'
+        elif self.model = 'dipdata_model':
+            model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/dipdata/'
+        elif self.model = 'improvement1_model':
+            model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/improvement1/'
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
         while not self.game.is_game_done and not self.game.get_current_phase() == "S1911M":
@@ -564,12 +572,18 @@ class milaWrapper:
 
     def eng_to_daide(self,message:MessageDict,inference):
         print('---------------------------')
-        #gen_graphs = inference.parse_sents([message["message"]], disable_progress=False)
-        #gen_graphs = inference.parse_sents([message["sender"].capitalize()+' send to '+message["recipient"].capitalize()+' that '+message["message"]], disable_progress=False)
-        gen_graphs = inference.parse_sents(['SEN'+' send to '+'REC'+' that '+message["message"]], disable_progress=False)
+        if self.model == 'best_model':
+            gen_graphs = inference.parse_sents(['SEN'+' send to '+'REC'+' that '+message["message"]], disable_progress=False)
+        elif self.model = 'baseline_model':
+            gen_graphs = inference.parse_sents([message["message"]], disable_progress=False)
+        elif self.model = 'dipdata_model':
+            gen_graphs = inference.parse_sents([message["message"]], disable_progress=False)
+        elif self.model = 'improvement1_model':
+            gen_graphs = inference.parse_sents([message["sender"].capitalize()+' send to '+message["recipient"].capitalize()+' that '+message["message"]], disable_progress=False)
         for graph in gen_graphs:
             print(graph)
-            graph = graph.replace('SEN',message["sender"].capitalize()).replace('REC',message["recipient"].capitalize())
+            if self.model == 'best_model':
+                graph = graph.replace('SEN',message["sender"].capitalize()).replace('REC',message["recipient"].capitalize())
             amr = AMR()
             amr_node, s, error_list, snt_id, snt, amr_s = amr.string_to_amr(graph)
             if amr_node:
@@ -1032,6 +1046,14 @@ def main() -> None:
         default=False, 
         help="Will you skip AMR->DAIDE parser and generate DAIDE with fallback only?",
     )
+
+    parser.add_argument(
+        "--model", 
+        type=str,
+        default="best_model",
+        help="choose model version for experiments from baseline_model, dipdata_model, improvement1_model, best_model.",
+    )
+
     args = parser.parse_args()
     host: str = args.host
     port: int = args.port
@@ -1042,7 +1064,7 @@ def main() -> None:
     human_game : bool = args.human_game
     silent : bool = args.silent
     daide_fallback : bool = args.daide_fallback
-
+    model : bool = args.model
     print(f"settings:")
     print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
 
