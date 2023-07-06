@@ -171,11 +171,11 @@ class milaWrapper:
         device = 'cuda:0'
         if self.model == 'best_model':
             model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/best_model/'
-        elif self.model = 'baseline_model':
+        elif self.model == 'baseline_model':
             model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/baseline/'
-        elif self.model = 'dipdata_model':
+        elif self.model == 'dipdata_model':
             model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/dipdata/'
-        elif self.model = 'improvement1_model':
+        elif self.model == 'improvement1_model':
             model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/improvement1/'
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
@@ -574,11 +574,11 @@ class milaWrapper:
         print('---------------------------')
         if self.model == 'best_model':
             gen_graphs = inference.parse_sents(['SEN'+' send to '+'REC'+' that '+message["message"]], disable_progress=False)
-        elif self.model = 'baseline_model':
+        elif self.model == 'baseline_model':
             gen_graphs = inference.parse_sents([message["message"]], disable_progress=False)
-        elif self.model = 'dipdata_model':
+        elif self.model == 'dipdata_model':
             gen_graphs = inference.parse_sents([message["message"]], disable_progress=False)
-        elif self.model = 'improvement1_model':
+        elif self.model == 'improvement1_model':
             gen_graphs = inference.parse_sents([message["sender"].capitalize()+' send to '+message["recipient"].capitalize()+' that '+message["message"]], disable_progress=False)
         for graph in gen_graphs:
             print(graph)
