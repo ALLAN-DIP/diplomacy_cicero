@@ -91,7 +91,7 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
-from daidepp.utils import pre_process, gen_English, post_process, is_daide
+from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -150,7 +150,7 @@ class milaWrapper:
     ) -> None:
 
         self.power_name = power_name
-        print(f"Antony joining game: {game_id} as {power_name}")
+        print(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
         dec = 'Deceptive_' if self.deceptive else ''
         channel = await connection.authenticate(
@@ -181,7 +181,7 @@ class milaWrapper:
             self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
 
-        while not (self.game.is_game_done or self.game.get_current_phase() == "S1915M"):
+        while not self.game.is_game_done:
             self.phase_start_time = time.time()
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()
 
@@ -197,6 +197,10 @@ class milaWrapper:
             if not self.game.powers[power_name].is_eliminated():
                 logging.info(f"Press in {self.dipcc_current_phase}")
                 self.sent_self_intent = False
+                
+                # set wait to True: to avoid being skipped in R/A phase
+                self.game.set_wait(power_name, wait=True)
+
                 # PRESS
                 while not self.get_should_stop():
                     msg=None
@@ -676,11 +680,15 @@ class milaWrapper:
                 # then just keep message body as original
 
                 if is_daide(message.message):
-                    pre_processed = pre_process(message.message)
-                    generated_English = gen_English(pre_processed, message.recipient, message.sender)
+                    try:
+                        generated_English = gen_English(message.message, message.recipient, message.sender)
+                    except:
+                        print(f"Fail to translate the message into the English, from {message.sender}: {message.message}")
+                        await self.send_log(f"Fail to translate the message into the English, from {message.sender}: {message.message}") 
+                        return
 
                     # if the message is invalid daide, send an error to paquette global
-                    if generated_English.startswith("ERROR"):
+                    if generated_English.startswith("ERROR") or generated_English.startswith("Exception"):
                         self.game.add_message(Message(
                             sender=message.sender,
                             recipient=message.recipient,
@@ -695,7 +703,6 @@ class milaWrapper:
 
                     # if the message is valid daide, process and send it to dipcc recipient
                     else:
-                        message_to_send = post_process(generated_English, message.recipient, message.sender)
                         self.dipcc_game.add_message(
                             message.sender,
                             message.recipient,
@@ -704,7 +711,7 @@ class milaWrapper:
                             increment_on_collision=True)
                         
                         await self.send_log(f"I got this message from {message.sender}: {message.message}") 
-                        await self.send_log(f"Translated into the English, that is: {message_to_send}") 
+                        await self.send_log(f"Translated into the English, that is: {generated_English}") 
 
                         # print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message_to_send}')
 
@@ -878,14 +885,11 @@ class milaWrapper:
                 # print(f'load message from mila to dipcc {message}')
 
                 if is_daide(message.message):
-                    pre_processed = pre_process(message.message)
-                    generated_English = gen_English(pre_processed, message.recipient, message.sender)
+                    generated_English = gen_English(message.message, message.recipient, message.sender)
 
                     # if the message is invalid daide, send an error to paquette global; do nothing
-                    if not generated_English.startswith("ERROR"):
+                    if generated_English.startswith("ERROR") or generated_English.startswith("Exception"):
                     # if the message is valid daide, process and send it to dipcc recipient
-
-                        message_to_send = post_process(generated_English, message.recipient, message.sender)
                         
                         dipcc_game.add_message(
                             message.sender,
