@@ -625,12 +625,14 @@ class milaWrapper:
         deadline = self.game.deadline
         if deadline ==0:
             deadline = DEFAULT_DEADLINE*60
-        close_to_deadline = deadline - 15
         no_message_second = 30
+        close_to_deadline = deadline - no_message_second
 
         assert close_to_deadline > 0, "Press period is less than zero"
 
         current_time = time.time()
+
+        print(f' have been playing for {current_time - self.phase_start_time}')
 
         # PRESS allows in movement phase (ONLY)
         if not self.dipcc_game.get_current_phase().endswith("M"):
