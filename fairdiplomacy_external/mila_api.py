@@ -708,7 +708,7 @@ class milaWrapper:
                         self.dipcc_game.add_message(
                             message.sender,
                             message.recipient,
-                            message_to_send,
+                            generated_English,
                             time_sent=dipcc_timesent,
                             increment_on_collision=True)
                         
