@@ -154,9 +154,12 @@ class milaWrapper:
         connection = await connect(hostname, port)
         dec = 'Deceptive_' if self.deceptive else ''
         channel = await connection.authenticate(
-            f"{dec}Antony_{power_name}", "password"
+            f"{dec}cicero_{power_name}", "password"
         )
         self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
+
+        schedule = await self.game.query_schedule()
+        self.scheduler_event = schedule.schedule
 
         # Wait while game is still being formed
         print(f"Waiting for game to start")
@@ -625,14 +628,18 @@ class milaWrapper:
         deadline = self.game.deadline
         if deadline ==0:
             deadline = DEFAULT_DEADLINE*60
-        no_message_second = 30
+
+        server_end = self.scheduler_event.time_added + self.scheduler_event.delay
+        server_remaining = server_end - scheduler_event.current_time
+        deadline_timer = server_remaining * scheduler_event.time_unit
+        print(f'remaining time to play: {deadline_timer}')
+
+        no_message_second = 15
         close_to_deadline = deadline - no_message_second
 
         assert close_to_deadline > 0, "Press period is less than zero"
 
         current_time = time.time()
-
-        print(f' have been playing for {current_time - self.phase_start_time}')
 
         # PRESS allows in movement phase (ONLY)
         if not self.dipcc_game.get_current_phase().endswith("M"):
@@ -641,6 +648,8 @@ class milaWrapper:
             return True
         if current_time - self.phase_start_time >= close_to_deadline:
             return True   
+        if deadline_timer <= no_message_second:
+            return True
         if self.last_received_message_time != 0 and current_time - self.last_received_message_time >=no_message_second:
             print(f'no incoming message for {current_time - self.last_received_message_time} seconds')
             return True
