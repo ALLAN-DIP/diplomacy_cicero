@@ -169,6 +169,7 @@ class milaWrapper:
         num_beams   = 4
         batch_size  = 16
         device = 'cuda:0'
+        
         if self.model == 'best_model':
             model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/best_model/'
         elif self.model == 'baseline_model':
