@@ -158,9 +158,6 @@ class milaWrapper:
         )
         self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
 
-        schedule = await self.game.query_schedule()
-        self.scheduler_event = schedule.schedule
-
         # Wait while game is still being formed
         print(f"Waiting for game to start")
         while self.game.is_game_forming:
@@ -205,7 +202,8 @@ class milaWrapper:
                 self.game.set_wait(power_name, wait=True)
 
                 # PRESS
-                while not self.get_should_stop():
+                should_stop = await self.get_should_stop()
+                while not should_stop:
                     msg=None
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
@@ -287,6 +285,7 @@ class milaWrapper:
                             #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
                                 
                     await asyncio.sleep(0.25)
+                    should_stop = await self.get_should_stop()
         
                 # ORDER
 
@@ -618,7 +617,7 @@ class milaWrapper:
 
         return has_state_changed
 
-    def get_should_stop(self)->bool:
+    async def get_should_stop(self)->bool:
         """ 
         stop when:
         1. close to deadline! (make sure that we have enough time to submit order)
@@ -629,12 +628,14 @@ class milaWrapper:
         if deadline ==0:
             deadline = DEFAULT_DEADLINE*60
 
+        schedule = await self.game.query_schedule()
+        self.scheduler_event = schedule.schedule
         server_end = self.scheduler_event.time_added + self.scheduler_event.delay
-        server_remaining = server_end - scheduler_event.current_time
-        deadline_timer = server_remaining * scheduler_event.time_unit
+        server_remaining = server_end - self.scheduler_event.current_time
+        deadline_timer = server_remaining * self.scheduler_event.time_unit
         print(f'remaining time to play: {deadline_timer}')
 
-        no_message_second = 15
+        no_message_second = 35
         close_to_deadline = deadline - no_message_second
 
         assert close_to_deadline > 0, "Press period is less than zero"
