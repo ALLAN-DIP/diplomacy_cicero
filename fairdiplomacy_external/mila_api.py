@@ -187,7 +187,7 @@ class milaWrapper:
 
             # fix issue that there is a chance where retreat phase appears in dipcc but not mila 
             while self.has_phase_changed():
-                await self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
+                self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
                 agent_orders = self.player.get_orders(self.dipcc_game)
                 self.dipcc_game.set_orders(power_name, agent_orders)
                 self.dipcc_game.process()
@@ -216,7 +216,7 @@ class milaWrapper:
                         msg = self.generate_message(power_name)
                         print(f'msg from cicero to dipcc {msg}')
                     
-                    if msg is not None:
+                    if msg is not None and self.game_type<2:
                         draw_token_message = self.is_draw_token_message(msg,power_name)
                         proposal_response = self.check_PRP(msg,power_name)
 
@@ -235,14 +235,14 @@ class milaWrapper:
                         
                         if not self.sent_self_intent:
                             self_pseudo_log = f'At the start of this phase, I intend to do: {self_po}'
-                            await self.send_log(self_pseudo_log) 
+                            self.send_log(self_pseudo_log) 
                             self.sent_self_intent = True
                         else:
                             self_pseudo_log = f'After I got the message from {recipient_power}, I intend to do: {self_po}'
-                            await self.send_log(self_pseudo_log) 
+                            self.send_log(self_pseudo_log) 
 
-                        await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
-                        await self.send_log(f'My (internal) response is: {msg["message"]}') 
+                        self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
+                        self.send_log(f'My (internal) response is: {msg["message"]}') 
 
                         # keep track of intent that we talked to each recipient
                         self.set_comm_intent(recipient_power, power_po)
@@ -251,10 +251,10 @@ class milaWrapper:
                             list_msg = self.to_daide_msg(msg)
                             if len(list_msg)>0:
                                 for daide_msg in list_msg:
-                                    await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
+                                    self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
                                 self.send_message(msg, 'dipcc')    
                             else:
-                                await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                                self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
 
                             for msg in list_msg:
                                 self.send_message(msg, 'mila')
@@ -264,9 +264,9 @@ class milaWrapper:
                             self.send_message(msg, 'dipcc')
                             self.send_message(msg, 'mila')
                             for daide_msg in list_msg:
-                                await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')    
+                                self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')    
                             else:
-                                await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                                self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
 
                             for msg in list_msg:
                                 self.send_message(msg, 'mila')
@@ -276,7 +276,7 @@ class milaWrapper:
                             self.send_message(msg, 'mila')
 
                             if 'deceptive' in msg:
-                                await self.send_log(msg['deceptive'])
+                                self.send_log(msg['deceptive'])
                                 print(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
                             
                             # for daide_msg in list_msg:
@@ -284,38 +284,38 @@ class milaWrapper:
                             # else:
                             #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
                                 
-                    await asyncio.sleep(0.25)
                     should_stop = await self.get_should_stop()
+                    await asyncio.sleep(0.25)
         
                 # ORDER
 
                 if not self.has_phase_changed():
                     print(f"Submit orders in {self.dipcc_current_phase}")
                     agent_orders = self.player.get_orders(self.dipcc_game)
-                    incorrect_order = True
-                    possible_orders = self.dipcc_game.get_all_possible_orders()
+                    # incorrect_order = True
+                    # possible_orders = self.dipcc_game.get_all_possible_orders()
 
-                    while incorrect_order:
-                        all_correct = True
-                        for order in agent_orders:
-                            order_token = order.split(' ')
-                            unit_loc = order_token[1]
-                            is_correct = order in possible_orders[unit_loc]
-                            all_correct = all_correct and is_correct
-                            print(f'{order} is correct: {is_correct}')
+                    # while incorrect_order:
+                    #     all_correct = True
+                    #     for order in agent_orders:
+                    #         order_token = order.split(' ')
+                    #         unit_loc = order_token[1]
+                    #         is_correct = order in possible_orders[unit_loc]
+                    #         all_correct = all_correct and is_correct
+                    #         print(f'{order} is correct: {is_correct}')
                                 
-                        if (self.game.get_current_phase().endswith('M') and len(agent_orders)>=0 and all_correct) or \
-                        (self.game.get_current_phase().endswith('R') and len(agent_orders)>=0 and all_correct) or \
-                        (self.game.get_current_phase().endswith('A') and len(agent_orders)>=0 and all_correct):
-                            incorrect_order = False
-                        else:
-                            print(f'submitting impossible orders: {agent_orders} to {self.dipcc_current_phase}')
-                            await self.send_log(f'submitting impossible orders: {agent_orders} to {self.dipcc_current_phase}') 
-                            agent_orders = self.player.get_orders(self.dipcc_game)
+                    #     if (self.game.get_current_phase().endswith('M') and len(agent_orders)>=0 and all_correct) or \
+                    #     (self.game.get_current_phase().endswith('R') and len(agent_orders)>=0 and all_correct) or \
+                    #     (self.game.get_current_phase().endswith('A') and len(agent_orders)>=0 and all_correct):
+                    #         incorrect_order = False
+                    #     else:
+                    #         print(f'submitting impossible orders: {agent_orders} to {self.dipcc_current_phase}')
+                    #         await self.send_log(f'submitting impossible orders: {agent_orders} to {self.dipcc_current_phase}') 
+                    #         agent_orders = self.player.get_orders(self.dipcc_game)
 
                     # keep track of our final order
                     self.set_comm_intent('final', agent_orders)
-                    await self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
+                    self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
 
                     # set order in Mila
                     self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
@@ -332,12 +332,12 @@ class milaWrapper:
                     self.update_and_process_dipcc_game()
                     self.init_phase()
                     print(f"Process to {self.game.get_current_phase()}")
-        
-        with open(gamedir / f"{power_name}_{game_id}_output.json", mode="w") as file:
-            json.dump(
-                to_saved_game_format(self.game), file, ensure_ascii=False, indent=2
-            )
-            file.write("\n")
+        if gamedir:
+            with open(gamedir / f"{power_name}_{game_id}_output.json", mode="w") as file:
+                json.dump(
+                    to_saved_game_format(self.game), file, ensure_ascii=False, indent=2
+                )
+                file.write("\n")
 
     def reset_comm_intent(self):
         self.last_comm_intent={'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None,'final':None}
@@ -635,7 +635,7 @@ class milaWrapper:
         deadline_timer = server_remaining * self.scheduler_event.time_unit
         print(f'remaining time to play: {deadline_timer}')
 
-        no_message_second = 35
+        no_message_second = 60
         close_to_deadline = deadline - no_message_second
 
         assert close_to_deadline > 0, "Press period is less than zero"
@@ -696,7 +696,7 @@ class milaWrapper:
                         generated_English = gen_English(message.message, message.recipient, message.sender)
                     except:
                         print(f"Fail to translate the message into the English, from {message.sender}: {message.message}")
-                        await self.send_log(f"Fail to translate the message into the English, from {message.sender}: {message.message}") 
+                        self.send_log(f"Fail to translate the message into the English, from {message.sender}: {message.message}") 
                         return
 
                     # if the message is invalid daide, send an error to paquette global
@@ -708,8 +708,8 @@ class milaWrapper:
                             phase=self.dipcc_current_phase,
                             time_sent=dipcc_timesent))
 
-                        await self.send_log(f"I got this message from {message.sender}: {message.message}") 
-                        await self.send_log(f"Fail to translate into the English") 
+                        self.send_log(f"I got this message from {message.sender}: {message.message}") 
+                        self.send_log(f"Fail to translate into the English") 
                         
                         # print(f'Error updating invalid daide from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}, an error message is sent to global')
 
@@ -722,8 +722,8 @@ class milaWrapper:
                             time_sent=dipcc_timesent,
                             increment_on_collision=True)
                         
-                        await self.send_log(f"I got this message from {message.sender}: {message.message}") 
-                        await self.send_log(f"Translated into the English, that is: {generated_English}") 
+                        self.send_log(f"I got this message from {message.sender}: {message.message}") 
+                        self.send_log(f"Translated into the English, that is: {generated_English}") 
 
                         # print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message_to_send}')
 
@@ -816,13 +816,13 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
-    async def send_log(self, log: str):
+    def send_log(self, log: str):
         """ 
         send log to mila games 
         """ 
 
         log_data = self.game.new_log_data(body=log)
-        await self.game.send_log_data(log=log_data)
+        self.game.send_log_data(log=log_data)
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
@@ -975,7 +975,7 @@ def main() -> None:
         help="Is Cicero being deceptive? -- removing PO correspondence filter from message module?",
     )
     parser.add_argument(
-        "--outdir", type=Path, help="output directory for game json to be stored"
+        "--outdir", default= "./fairdiplomacy_external", type=Path, help="output directory for game json to be stored"
     )
     
     args = parser.parse_args()
