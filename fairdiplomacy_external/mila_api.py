@@ -97,6 +97,7 @@ MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
 DEFAULT_DEADLINE = 5
+PRE_DEADLINE = 4
 
 import json
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
@@ -184,6 +185,7 @@ class milaWrapper:
         while not self.game.is_game_done:
             self.phase_start_time = time.time()
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()
+            self.presubmit = False
 
             # fix issue that there is a chance where retreat phase appears in dipcc but not mila 
             while self.has_phase_changed():
@@ -204,6 +206,15 @@ class milaWrapper:
                 # PRESS
                 should_stop = await self.get_should_stop()
                 while not should_stop:
+
+                    # if times almost up but still can do some press, let's presubmit order
+                    should_presubmit = await self.get_should_presubmit()
+                    if should_presubmit and not self.presubmit:
+                        self.presubmit = True
+                        print(f"Pre-submit orders in {self.dipcc_current_phase}")
+                        agent_orders = self.player.get_orders(self.dipcc_game)
+                        self.game.set_orders(power_name=power_name, orders=agent_orders, wait=True)
+
                     msg=None
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
@@ -216,7 +227,7 @@ class milaWrapper:
                         msg = self.generate_message(power_name)
                         print(f'msg from cicero to dipcc {msg}')
                     
-                    if msg is not None and self.game_type<2:
+                    if msg is not None:
                         draw_token_message = self.is_draw_token_message(msg,power_name)
                         proposal_response = self.check_PRP(msg,power_name)
 
@@ -324,7 +335,7 @@ class milaWrapper:
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
                 while not self.has_phase_changed():
                     print("", end=".")
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(1)
                 
                 # when the phase has changed, update submitted orders from Mila to dipcc
                 if self.has_phase_changed():
@@ -617,6 +628,21 @@ class milaWrapper:
 
         return has_state_changed
 
+    async def get_should_presubmit(self)->bool:
+        schedule = await self.game.query_schedule()
+        self.scheduler_event = schedule.schedule
+        server_end = self.scheduler_event.time_added + self.scheduler_event.delay
+        server_remaining = server_end - self.scheduler_event.current_time
+        deadline_timer = server_remaining * self.scheduler_event.time_unit
+
+        presubmit_second = 120
+
+        if deadline_timer <= presubmit_second:
+            print(f'time to presubmit order')
+            return True
+        return False
+
+
     async def get_should_stop(self)->bool:
         """ 
         stop when:
@@ -635,7 +661,7 @@ class milaWrapper:
         deadline_timer = server_remaining * self.scheduler_event.time_unit
         print(f'remaining time to play: {deadline_timer}')
 
-        no_message_second = 60
+        no_message_second = 45
         close_to_deadline = deadline - no_message_second
 
         assert close_to_deadline > 0, "Press period is less than zero"
