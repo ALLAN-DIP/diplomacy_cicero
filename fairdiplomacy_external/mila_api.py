@@ -204,16 +204,17 @@ class milaWrapper:
                 self.game.set_wait(power_name, wait=True)
 
                 # PRESS
+                has_deadline = self.game.deadline > 0 
                 should_stop = await self.get_should_stop()
-                while not should_stop:
-
-                    # if times almost up but still can do some press, let's presubmit order
-                    should_presubmit = await self.get_should_presubmit()
-                    if should_presubmit and not self.presubmit:
-                        self.presubmit = True
-                        print(f"Pre-submit orders in {self.dipcc_current_phase}")
-                        agent_orders = self.player.get_orders(self.dipcc_game)
-                        self.game.set_orders(power_name=power_name, orders=agent_orders, wait=True)
+                while not should_stop :
+                    if has_deadline:
+                        # if times almost up but still can do some press, let's presubmit order
+                        should_presubmit = await self.get_should_presubmit()
+                        if should_presubmit and not self.presubmit:
+                            self.presubmit = True
+                            print(f"Pre-submit orders in {self.dipcc_current_phase}")
+                            agent_orders = self.player.get_orders(self.dipcc_game)
+                            self.game.set_orders(power_name=power_name, orders=agent_orders, wait=True)
 
                     msg=None
                     # if there is new message incoming
@@ -649,19 +650,20 @@ class milaWrapper:
         1. close to deadline! (make sure that we have enough time to submit order)
         2. reuse stale pseudoorders
         """
-
+        no_message_second = 45
         deadline = self.game.deadline
-        if deadline ==0:
+        has_deadline = self.game.deadline > 0 
+        if has_deadline:
+            schedule = await self.game.query_schedule()
+            self.scheduler_event = schedule.schedule
+            server_end = self.scheduler_event.time_added + self.scheduler_event.delay
+            server_remaining = server_end - self.scheduler_event.current_time
+            deadline_timer = server_remaining * self.scheduler_event.time_unit
+            print(f'remaining time to play: {deadline_timer}')
+        else:
             deadline = DEFAULT_DEADLINE*60
 
-        schedule = await self.game.query_schedule()
-        self.scheduler_event = schedule.schedule
-        server_end = self.scheduler_event.time_added + self.scheduler_event.delay
-        server_remaining = server_end - self.scheduler_event.current_time
-        deadline_timer = server_remaining * self.scheduler_event.time_unit
-        print(f'remaining time to play: {deadline_timer}')
 
-        no_message_second = 45
         close_to_deadline = deadline - no_message_second
 
         assert close_to_deadline > 0, "Press period is less than zero"
@@ -675,7 +677,7 @@ class milaWrapper:
             return True
         if current_time - self.phase_start_time >= close_to_deadline:
             return True   
-        if deadline_timer <= no_message_second:
+        if has_deadline and deadline_timer <= no_message_second:
             return True
         if self.last_received_message_time != 0 and current_time - self.last_received_message_time >=no_message_second:
             print(f'no incoming message for {current_time - self.last_received_message_time} seconds')
