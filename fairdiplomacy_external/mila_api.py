@@ -336,7 +336,7 @@ class milaWrapper:
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
                 while not self.has_phase_changed():
                     print("", end=".")
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(0.5)
                 
                 # when the phase has changed, update submitted orders from Mila to dipcc
                 if self.has_phase_changed():
@@ -650,10 +650,20 @@ class milaWrapper:
         1. close to deadline! (make sure that we have enough time to submit order)
         2. reuse stale pseudoorders
         """
+        if self.has_phase_changed():
+            return True
+
         no_message_second = 45
         deadline = self.game.deadline
+        
+        close_to_deadline = deadline - no_message_second
+
+        assert close_to_deadline > 0, "Press period is less than zero"
+
+        current_time = time.time()
+
         has_deadline = self.game.deadline > 0 
-        if has_deadline:
+        if has_deadline and current_time - self.phase_start_time <= close_to_deadline:
             schedule = await self.game.query_schedule()
             self.scheduler_event = schedule.schedule
             server_end = self.scheduler_event.time_added + self.scheduler_event.delay
@@ -663,17 +673,8 @@ class milaWrapper:
         else:
             deadline = DEFAULT_DEADLINE*60
 
-
-        close_to_deadline = deadline - no_message_second
-
-        assert close_to_deadline > 0, "Press period is less than zero"
-
-        current_time = time.time()
-
         # PRESS allows in movement phase (ONLY)
         if not self.dipcc_game.get_current_phase().endswith("M"):
-            return True
-        if self.has_phase_changed():
             return True
         if current_time - self.phase_start_time >= close_to_deadline:
             return True   
