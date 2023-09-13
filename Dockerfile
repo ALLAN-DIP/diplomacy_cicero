@@ -36,6 +36,7 @@ RUN apt-get install --yes libffi-dev
 git clone --recursive https://github.com/ALLAN-DIP/diplomacy_cicero.git
 COPY diplomacy_cicero /diplomacy_cicero
 WORKDIR diplomacy_cicero
+RUN git checkout alex-dev
 
 
 # Apt installs
