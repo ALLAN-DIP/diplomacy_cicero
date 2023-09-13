@@ -33,9 +33,9 @@ RUN apt-get install --yes libffi-dev
 
 # Clone the repo with submodules:
 # RUN git clone --recursive git@github.com:facebookresearch/diplomacy_cicero.git diplomacy_cicero
-git clone --recursive https://github.com/ALLAN-DIP/diplomacy_cicero.git
-COPY diplomacy_cicero /diplomacy_cicero
-WORKDIR diplomacy_cicero
+RUN git clone --recursive https://github.com/ALLAN-DIP/diplomacy_cicero.git
+RUN mv diplomacy_cicero /diplomacy_cicero
+WORKDIR /diplomacy_cicero
 RUN git checkout alex-dev
 
 
@@ -48,7 +48,7 @@ RUN /bin/bash ~/miniconda.sh -b -u -p /usr/local
 
 # Install pytorch, pybind11
 # RUN conda install --yes pytorch torchvision torchaudio -c pytorch
-conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 -c pytorch
+RUN conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 -c pytorch
 RUN conda install --yes pybind11
 
 # Install go for boringssl in grpc
@@ -78,7 +78,7 @@ RUN pip install ujson
 RUN pip install git+https://git@github.com/SHADE-AI/diplomacy.git@comm_state
 RUN pip install git+https://github.com/SiddarGu/daidepp.git
 
-scp wwongkam@ls6.tacc.utexas.edu:/corral/projects/DARPA-SHADE/Shared/UMD/pytorch_model.bin .
+RUN scp wwongkam@ls6.tacc.utexas.edu:/corral/projects/DARPA-SHADE/Shared/UMD/pytorch_model.bin .
 
 # Make
 RUN make
