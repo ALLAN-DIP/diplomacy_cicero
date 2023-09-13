@@ -31,12 +31,8 @@ RUN apt-get update
 RUN apt-get install --yes llvm-11 llvm-11-dev libedit-dev
 RUN apt-get install --yes libffi-dev 
 
-# Clone the repo with submodules:
-# RUN git clone --recursive git@github.com:facebookresearch/diplomacy_cicero.git diplomacy_cicero
-RUN git clone --recursive https://github.com/ALLAN-DIP/diplomacy_cicero.git
-RUN mv diplomacy_cicero /diplomacy_cicero
+COPY . /diplomacy_cicero
 WORKDIR /diplomacy_cicero
-RUN git checkout alex-dev
 
 
 # Apt installs
