@@ -64,13 +64,14 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Local pip installs
-COPY thirdparty/ .
+COPY thirdparty/ thirdparty/
 RUN pip install -e ./thirdparty/github/fairinternal/postman/nest/
 
 # NOTE: Postman here links against pytorch for tensors, for this to work you may
 # need to separately have installed cuda 11 on your own.
 RUN ln -s /usr/local/cuda /usr/local/nvidia
 ENV Torch_DIR=/usr/local/lib/python3.7/site-packages/torch/share/cmake/Torch
+COPY .git/ .git/
 RUN pip install -e ./thirdparty/github/fairinternal/postman/postman/
 COPY . .
 RUN pip install -e . -vv
