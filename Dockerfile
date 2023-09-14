@@ -71,7 +71,7 @@ RUN pip install -e ./thirdparty/github/fairinternal/postman/nest/
 # need to separately have installed cuda 11 on your own.
 RUN ln -s /usr/local/cuda /usr/local/nvidia
 ENV Torch_DIR=/usr/local/lib/python3.7/site-packages/torch/share/cmake/Torch
-COPY .git/ .git/
+# COPY .git/ .git/
 RUN pip install -e ./thirdparty/github/fairinternal/postman/postman/
 COPY . .
 RUN pip install -e . -vv
