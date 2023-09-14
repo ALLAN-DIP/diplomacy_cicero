@@ -79,7 +79,7 @@ RUN pip install ujson
 RUN pip install git+https://git@github.com/SHADE-AI/diplomacy.git@comm_state
 RUN pip install git+https://github.com/SiddarGu/daidepp.git
 
-RUN scp wwongkam@ls6.tacc.utexas.edu:/corral/projects/DARPA-SHADE/Shared/UMD/pytorch_model.bin .
+# RUN scp wwongkam@ls6.tacc.utexas.edu:/corral/projects/DARPA-SHADE/Shared/UMD/best_model/pytorch_model.bin .
 
 # Make
 RUN make
