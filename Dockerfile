@@ -25,11 +25,11 @@ RUN apt-get install -y wget bzip2 ca-certificates curl git build-essential build
 clang-format-8 cmake autoconf libtool pkg-config libgoogle-glog-dev
 
 # found we needed these too
-RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-#RUN echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-11 main" | tee -a /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get install --yes llvm-11 llvm-11-dev libedit-dev
-RUN apt-get install --yes libffi-dev 
+#RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+##RUN echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-11 main" | tee -a /etc/apt/sources.list
+#RUN apt-get update
+#RUN apt-get install --yes llvm-11 llvm-11-dev libedit-dev
+#RUN apt-get install --yes libffi-dev 
 
 # Apt installs
 
@@ -51,7 +51,7 @@ RUN conda install --yes go protobuf==3.19.1
 
 # Install python requirements
 RUN pip install -U pip
-ENV LLVM_CONFIG=/usr/bin/llvm-config-11
+#ENV LLVM_CONFIG=/usr/bin/llvm-config-11
 #ENV CUDA_TOOLKIT_ROOT_DIR
 #ENV CUDA_NVCC_EXECUTABLE
 #ENV CUDA_INCLUDE_DIRS
