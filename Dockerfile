@@ -31,10 +31,6 @@ RUN apt-get update
 RUN apt-get install --yes llvm-11 llvm-11-dev libedit-dev
 RUN apt-get install --yes libffi-dev 
 
-COPY . /diplomacy_cicero
-WORKDIR /diplomacy_cicero
-
-
 # Apt installs
 
 # Install conda
@@ -59,6 +55,10 @@ ENV LLVM_CONFIG=/usr/bin/llvm-config-11
 #ENV CUDA_TOOLKIT_ROOT_DIR
 #ENV CUDA_NVCC_EXECUTABLE
 #ENV CUDA_INCLUDE_DIRS
+
+COPY . /diplomacy_cicero
+WORKDIR /diplomacy_cicero
+
 # don't forget to remove daidepp (the last line) and torch from requirements.txt 
 RUN pip install -r requirements.txt
 
