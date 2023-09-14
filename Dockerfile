@@ -56,13 +56,15 @@ RUN pip install -U pip
 #ENV CUDA_NVCC_EXECUTABLE
 #ENV CUDA_INCLUDE_DIRS
 
-COPY . /diplomacy_cicero
+# COPY . /diplomacy_cicero
 WORKDIR /diplomacy_cicero
 
 # don't forget to remove daidepp (the last line) and torch from requirements.txt 
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Local pip installs
+COPY thirdparty/ .
 RUN pip install -e ./thirdparty/github/fairinternal/postman/nest/
 
 # NOTE: Postman here links against pytorch for tensors, for this to work you may
@@ -70,6 +72,7 @@ RUN pip install -e ./thirdparty/github/fairinternal/postman/nest/
 RUN ln -s /usr/local/cuda /usr/local/nvidia
 ENV Torch_DIR=/usr/local/lib/python3.7/site-packages/torch/share/cmake/Torch
 RUN pip install -e ./thirdparty/github/fairinternal/postman/postman/
+COPY . .
 RUN pip install -e . -vv
 RUN pip install ujson
 RUN pip install git+https://git@github.com/SHADE-AI/diplomacy.git@comm_state
