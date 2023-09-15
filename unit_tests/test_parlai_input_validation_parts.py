@@ -62,7 +62,7 @@ class InputValidationPartsTests(unittest.TestCase):
             "F STP/NC B STP/NC",
         ]:
             self.assertRaises(
-                ValueError, R.validate, R.InputValidator([], "", {}, 2).ORDER, invalid_order
+                ValueError, R.validate, R.InputValidator([], "", {}, 2).ORDER, invalid_order, throw_on_failure=True
             )
 
     def test_message(self):
