@@ -128,6 +128,7 @@ class milaWrapper:
         self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
         self.last_comm_intent={'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None,'final':None}
+        self.prev_received_msg_time_sent = {'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None}
         self.deceptive = is_deceptive
         
         if self.deceptive:
@@ -249,12 +250,10 @@ class milaWrapper:
                             self_pseudo_log = f'At the start of this phase, I intend to do: {self_po}'
                             self.send_log(self_pseudo_log) 
                             self.sent_self_intent = True
-                        else:
-                            self_pseudo_log = f'After I got the message from {recipient_power}, I intend to do: {self_po}'
-                            self.send_log(self_pseudo_log) 
 
-                        self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
-                        self.send_log(f'My (internal) response is: {msg["message"]}') 
+                        self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg['recipient']]}) from {recipient_power}, I intend to do: {self_po}. \\
+                                        I expect {recipient_power} to do: {recp_po}. My (internal) response is: {msg["message"]}.'
+                        self.send_log(self_pseudo_log) 
 
                         # keep track of intent that we talked to each recipient
                         self.set_comm_intent(recipient_power, power_po)
@@ -707,6 +706,7 @@ class milaWrapper:
         # update message in dipcc game
         for timesent, message in phase_messages.items():
             print(f'message from mila to dipcc {message}')
+            self.prev_received_msg_time_sent[message.sender] = message.time_sent
             if int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]):
 
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
@@ -849,8 +849,9 @@ class milaWrapper:
         """ 
         send log to mila games 
         """ 
+        log_data = self.game.new_log_data(body=log, time_sent)
+        Log(phase=self.current_short_phase, sender=self.role, recipient=recipient, message=body)
 
-        log_data = self.game.new_log_data(body=log)
         self.game.send_log_data(log=log_data)
 
     def send_message(self, msg: MessageDict, engine: str):
