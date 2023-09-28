@@ -47,6 +47,3 @@ mypy-protobuf==2.10
 
 # temporary fix for https://github.com/aws/aws-sam-cli/issues/3661
 markupsafe==2.0.1
-
-# daide to english translation
-daidepp @ git@github.com:SiddarGu/daidepp.git
