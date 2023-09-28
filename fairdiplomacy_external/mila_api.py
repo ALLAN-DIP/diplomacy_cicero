@@ -251,8 +251,8 @@ class milaWrapper:
                             self.send_log(self_pseudo_log) 
                             self.sent_self_intent = True
 
-                        self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg['recipient']]}) from {recipient_power}, I intend to do: {self_po}. \\
-                                        I expect {recipient_power} to do: {recp_po}. My (internal) response is: {msg["message"]}.'
+                        self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}, I intend to do: {self_po}. \
+                                        I expect {recipient_power} to do: {recp_po}.'
                         self.send_log(self_pseudo_log) 
 
                         # keep track of intent that we talked to each recipient
@@ -657,7 +657,7 @@ class milaWrapper:
         
         close_to_deadline = deadline - no_message_second
 
-        assert close_to_deadline > 0, "Press period is less than zero"
+        assert close_to_deadline >= 0, "Press period is less than zero"
 
         current_time = time.time()
 
@@ -849,9 +849,7 @@ class milaWrapper:
         """ 
         send log to mila games 
         """ 
-        log_data = self.game.new_log_data(body=log, time_sent)
-        Log(phase=self.current_short_phase, sender=self.role, recipient=recipient, message=body)
-
+        log_data = self.game.new_log_data(body=log)
         self.game.send_log_data(log=log_data)
 
     def send_message(self, msg: MessageDict, engine: str):
