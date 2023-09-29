@@ -91,7 +91,7 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
-from daide2eng.utils import gen_English, create_daide_grammar, is_daide
+# from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -136,7 +136,7 @@ class milaWrapper:
             print('CICERO deceptive')
         else:
             agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
-            print('Cicero non-deceptive')
+            print('Cicero')
         print(f"successfully load cicero config")
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
