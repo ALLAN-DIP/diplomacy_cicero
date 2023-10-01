@@ -179,7 +179,7 @@ class milaWrapper:
             model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/improvement1/'
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
-        while not self.game.is_game_done and not self.game.get_current_phase() == "S1911M":
+        while not self.game.is_game_done:
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()
 
             # fix issue that there is a chance where retreat phase appears in dipcc but not mila 
@@ -203,9 +203,6 @@ class milaWrapper:
                     print(f"Antony_{power_name} is ready for communication")
 
                     for p in self.game.powers.values():
-                        print(p)
-                        print(p.player_type)
-                        print(p.comm_status)
                         if p.player_type == 'none' or p.is_eliminated() or p.player_type in player_type_exception:
                             continue
                         # if PRESS_BOT and READY or NO_PRESS_BOT or eliminated
@@ -445,26 +442,26 @@ class milaWrapper:
                         if daide_status == 'Full-DAIDE':
                             daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': i,'daide_status':'daide-split'}
                             list_msg.append(daide_msg)
-                else:
-                    current_phase_code = pseudo_orders[msg["phase"]]
-                    FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
+                # else:
+                #     current_phase_code = pseudo_orders[msg["phase"]]
+                #     FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
                     
-                    if FCT_DAIDE is not None:
-                        FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
-                        fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE,'daide_status':'fall_back'}
-                        if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
-                            list_msg.append(fct_msg)
-                            self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
-                    if PRP_DAIDE is not None:
-                        PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
-                        prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE,'daide_status':'fall_back'}
-                        if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
-                            list_msg.append(prp_msg)
-                            self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
+                #     if FCT_DAIDE is not None:
+                #         FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
+                #         fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE,'daide_status':'fall_back'}
+                #         if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
+                #             list_msg.append(fct_msg)
+                #             self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
+                #     if PRP_DAIDE is not None:
+                #         PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
+                #         prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE,'daide_status':'fall_back'}
+                #         if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
+                #             list_msg.append(prp_msg)
+                #             self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
         else:
             print(daide_status)
             print(daide_s)
-            self.add_openning_message(msg, list_msg)
+            # self.add_openning_message(msg, list_msg)
 
         return list_msg
 
