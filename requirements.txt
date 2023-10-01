@@ -49,4 +49,4 @@ mypy-protobuf==2.10
 markupsafe==2.0.1
 
 # daide to english translation
-daidepp @ git@github.com:SiddarGu/daidepp.git
+daide2eng @ git+https://github.com/SiddarGu/daidepp.git

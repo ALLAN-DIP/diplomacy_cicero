@@ -14,7 +14,7 @@ import re
 import regex
 import sys
 from typing import Optional, Tuple, Union
-from daidepp.utils import pre_process,is_daide,create_daide_grammar
+from daide2eng.utils import pre_process,is_daide,create_daide_grammar
 
 data_dir = Path(__file__).parent.parent / 'data'
 data_dir_path = str(data_dir.resolve())
