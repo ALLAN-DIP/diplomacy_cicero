@@ -85,6 +85,7 @@ import time
 import math
 from pathlib import Path
 from typing import Optional
+import concurrent.futures
 
 from diplomacy import connect
 from diplomacy import Message
@@ -203,9 +204,9 @@ class milaWrapper:
                     print(f"Antony_{power_name} is ready for communication")
 
                     for p in self.game.powers.values():
-                        print(p)
-                        print(p.player_type)
-                        print(p.comm_status)
+                        # print(p)
+                        # print(p.player_type)
+                        # print(p.comm_status)
                         if p.player_type == 'none' or p.is_eliminated() or p.player_type in player_type_exception:
                             continue
                         # if PRESS_BOT and READY or NO_PRESS_BOT or eliminated
@@ -879,7 +880,19 @@ class milaWrapper:
         """ 
 
         log_data = self.game.new_log_data(body=log)
-        await self.game.send_log_data(log=log_data)
+        max_retries = 3
+        retry_delay = 5
+        for attempt in range(max_retries + 1):
+            try:
+                await self.game.send_log_data(log=log_data)
+            except concurrent.futures._base.TimeoutError:
+                if attempt < max_retries:
+                    await asyncio.sleep(retry_delay)
+                else:
+                    raise Exception("Operation failed after all retry attempts")
+            else:
+                print("Operation completed successfully.")
+                break
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
@@ -1066,7 +1079,7 @@ def main() -> None:
     daide_fallback : bool = args.daide_fallback
     model : bool = args.model
     print(f"settings:")
-    print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
+    print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}, model: {model}")
 
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
