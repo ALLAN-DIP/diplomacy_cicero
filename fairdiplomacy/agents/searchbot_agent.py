@@ -1374,12 +1374,12 @@ class SearchBotAgent(BaseSearchAgent):
             (corresponds_to_pseudo, extra_corr_info,) = self.message_handler.message_filterer._corresponds_to_pseudo_orders(
                         maybe_msg_dict, game, pseudo_orders,
                     )
-            if 'diff' in extra_corr_info:
-                print(f'in searchbot_agent.py message: {maybe_msg_dict} and deceptive info: {extra_corr_info}')
-                if extra_corr_info['diff'] >=extra_corr_info['thresh']:
-                    maybe_msg_dict['deceptive'] = f"A truth to Cicero: {maybe_msg_dict['message']}"
-                else:
-                    maybe_msg_dict['deceptive'] = f"A lie to Cicero: {maybe_msg_dict['message']}"
+            # if 'diff' in extra_corr_info:
+            #     print(f'in searchbot_agent.py message: {maybe_msg_dict} and deceptive info: {extra_corr_info}')
+            #     if extra_corr_info['diff'] >=extra_corr_info['thresh']:
+            #         maybe_msg_dict['deceptive'] = f"A truth to Cicero: {maybe_msg_dict['message']}"
+            #     else:
+            #         maybe_msg_dict['deceptive'] = f"A lie to Cicero: {maybe_msg_dict['message']}"
 
         return maybe_msg_dict
 
