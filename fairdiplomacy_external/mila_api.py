@@ -702,16 +702,17 @@ class milaWrapper:
             messages=self.game.messages, power=power_name
         )
         most_recent = self.last_received_message_time
+        print(f'most update message: {most_recent}')
 
         # update message in dipcc game
         for timesent, message in phase_messages.items():
             print(f'message from mila to dipcc {message}')
             self.prev_received_msg_time_sent[message.sender] = message.time_sent
             if int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]):
-
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                print(f'time_sent in dipcc {dipcc_timesent}')
 
-                if timesent > most_recent:
+                if dipcc_timesent > most_recent:
                     most_recent = dipcc_timesent
 
                 # Excluding the parentheses, check if the message only contains three upper letters.
