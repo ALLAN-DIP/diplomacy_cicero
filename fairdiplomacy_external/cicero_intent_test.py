@@ -258,7 +258,7 @@ def test_val_table(power: Power, recipient: Power):
         key1, key2 = key
         if str(key1) not in new_table_dict:
             new_table_dict[str(key1)] = dict()
-        new_table_dict[str(key1)][str(key2)] = values.numpy()
+        new_table_dict[str(key1)][str(key2)] = values.numpy().tolist()
 
     out_file = open(f'./fairdiplomacy_external/out/value_table_{YEAR}_{power[:3]}_{recipient[:3]}.json', "w") 
     json.dump(new_table_dict, out_file, indent = 6) 
