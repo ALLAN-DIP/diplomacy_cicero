@@ -100,6 +100,7 @@ from fairdiplomacy.agents.parlai_message_handler import (
     pseudoorders_initiate_sleep_heuristics_should_trigger,
     joint_action_contains_xpower_support_or_convoy,
 )
+import copy
 
 
 ActionDict = Dict[Tuple[Power, Action], float]
@@ -1433,6 +1434,7 @@ class SearchBotAgent(BaseSearchAgent):
         pseudo_orders = model_pseudo_orders.produce_joint_action_bilateral(
             game, agent_power, recipient=recipient
         )
+        og_pseudo_orders = copy.deepcopy(pseudo_orders)
         model_pseudo_orders.set_generation_args(**old_args)
         logging.info(f"greedy model pseudo orders: {pseudo_orders}")
         extra_plausible_orders = {
@@ -1551,9 +1553,11 @@ class SearchBotAgent(BaseSearchAgent):
                 ppo_order_logprobs = {a[cur_power]: lp[cur_power] for a, lp in score_list}
                 ppo_logprobs = {a: float(sum(lp)) for a, lp in ppo_order_logprobs.items()}
                 ppo_probs = {a: math.exp(lp) for a, lp in ppo_logprobs.items()}
-                filtered_ppos = filter_logprob_ratio(ppo_logprobs, 0.1)
+                filtered_ppos = filter_logprob_ratio(ppo_logprobs, 0.0001)
+                og_filtered_ppos = filter_logprob_ratio(ppo_logprobs, 0.1)
                 if need_ppo:
                     policy_valid = {a: p for a, p in policy_valid.items() if a in filtered_ppos}
+                    og_policy_valid = {a: p for a, p in policy_valid.items() if a in og_filtered_ppos}
             else:
                 score_list = ppo_order_logprobs = filtered_ppos = ppo_probs = None
 
@@ -1566,9 +1570,13 @@ class SearchBotAgent(BaseSearchAgent):
             if self.bilateral_cfg.strategy != "NONE" and cur_power != agent_power:
                 assert self.bilateral_cfg.strategy == "BEST_POP"
                 filtered_policy = filter_logprob_ratio(
+                    {a: math.log(p) for a, p in policy.items()}, 0.0001
+                )
+                og_filtered_policy = filter_logprob_ratio(
                     {a: math.log(p) for a, p in policy.items()}, 0.1
                 )
                 policy_valid = {a: p for a, p in policy_valid.items() if a in filtered_policy}
+                og_policy_valid = {a: p for a, p in og_policy_valid.items() if a in og_filtered_policy}
 
                 if policy_valid:  # else go with PPO default
                     logging.info(f"Choosing BEST_POP pseudo-order for {cur_power}")
@@ -1576,7 +1584,13 @@ class SearchBotAgent(BaseSearchAgent):
                         policy_valid, key=lambda a: value_to_me[cur_power, a].get_avg()
                     )
                 else:
-                    logging.info(f"Sticking with default pseudo-order for {cur_power}")
+                    logging.info(f"our PO: Sticking with default pseudo-order for {cur_power}")
+                if og_policy_valid:  # else go with PPO default
+                    og_pseudo_orders[cur_power] = max(
+                        og_policy_valid, key=lambda a: value_to_me[cur_power, a].get_avg()
+                    )
+                else:
+                    logging.info(f"OG PO: Sticking with default pseudo-order for {cur_power}")
             else:
                 filtered_policy = None
                 if policy_valid:  # else go with PPO default
@@ -1614,6 +1628,7 @@ class SearchBotAgent(BaseSearchAgent):
                     x_in(action, filtered_ppos),
                     value_to_me[cur_power, action].get_avg(),
                     "x" if action == pseudo_orders[cur_power] else "",
+                    "x" if action == og_pseudo_orders[cur_power] else "",
                     color_order_logprobs(action, ppo_order_logprobs),
                 )
                 for action in policy
@@ -1622,13 +1637,21 @@ class SearchBotAgent(BaseSearchAgent):
                 "\n"
                 + tabulate.tabulate(
                     rows,
-                    headers=["bp_p", "search_p", "val", "ppo_p", "val", "v_me", "sel", "action"],
+                    headers=["bp_p", "search_p", "val", "ppo_p", "val", "v_me", "sel","og_sel", "action"],
                     floatfmt=".2g",
                 )
             )
+
+            print("\n"
+                + tabulate.tabulate(
+                    rows,
+                    headers=["bp_p", "search_p", "val", "ppo_p", "val", "v_me", "sel","og_sel", "action"],
+                    floatfmt=".2g",
+                ))
             # ===========================================
 
         logging.info(f"Pseudo orders for {agent_power}: {pseudo_orders}")
+        print(f"Pseudo orders for {agent_power}: {pseudo_orders}")
 
         self.log_pseudoorder_consistency(game, agent_power, pseudo_orders, state)
 
