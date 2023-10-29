@@ -112,6 +112,7 @@ power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUST
 af_dict = {'A':'AMY','F':'FLT'}
 possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive','sure','Alright','yes','yep','Awesome','Done','Works for me','Will do','Perfect','I agree','Fine','Agreed','yup','Absolutely','Understood','That\'s the plan','Deal']
 
+
 class milaWrapper:
 
     def __init__(self, is_deceptive):
@@ -150,7 +151,7 @@ class milaWrapper:
         game_type: int,
         gamedir: Path,
     ) -> None:
-
+        
         self.power_name = power_name
         print(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
@@ -652,7 +653,7 @@ class milaWrapper:
         if self.has_phase_changed():
             return True
 
-        no_message_second = 45
+        no_message_second = 30
         deadline = self.game.deadline
         
         close_to_deadline = deadline - no_message_second
@@ -1004,7 +1005,7 @@ def main() -> None:
         help="Is Cicero being deceptive? -- removing PO correspondence filter from message module?",
     )
     parser.add_argument(
-        "--outdir", default= "./fairdiplomacy_external", type=Path, help="output directory for game json to be stored"
+        "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
     )
     
     args = parser.parse_args()
