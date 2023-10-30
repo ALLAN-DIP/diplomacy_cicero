@@ -151,7 +151,7 @@ class milaWrapper:
         game_type: int,
         gamedir: Path,
     ) -> None:
-        
+
         self.power_name = power_name
         print(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
@@ -656,10 +656,8 @@ class milaWrapper:
         no_message_second = 30
         deadline = self.game.deadline
         
+
         close_to_deadline = deadline - no_message_second
-
-        assert close_to_deadline >= 0, "Press period is less than zero"
-
         current_time = time.time()
 
         has_deadline = self.game.deadline > 0 
@@ -672,6 +670,10 @@ class milaWrapper:
             print(f'remaining time to play: {deadline_timer}')
         else:
             deadline = DEFAULT_DEADLINE*60
+
+        close_to_deadline = deadline - no_message_second
+
+        assert close_to_deadline >= 0, "Press period is less than zero"
 
         # PRESS allows in movement phase (ONLY)
         if not self.dipcc_game.get_current_phase().endswith("M"):
