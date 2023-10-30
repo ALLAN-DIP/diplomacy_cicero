@@ -639,10 +639,10 @@ class MessageFiltering:
         }
 
         corresponds_to_pseudo = diff >= pseudo_orders_correspondence_threshold
-        print(f'place one in message_editing.py message: {msg} and deceptive info {extra_info}')
-        print(f'self variable {self.pseudo_orders_correspondence_threshold}')
+        # print(f'place one in message_editing.py message: {msg} and deceptive info {extra_info}')
+        # print(f'self variable {self.pseudo_orders_correspondence_threshold}')
         if self.pseudo_orders_correspondence_threshold == -1.0:
-            print(f'place two in message_editing.py message: {msg} and deceptive info {extra_info}')
+            # print(f'place two in message_editing.py message: {msg} and deceptive info {extra_info}')
             return True, extra_info
 
         return corresponds_to_pseudo, extra_info
