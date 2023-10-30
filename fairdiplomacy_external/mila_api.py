@@ -705,15 +705,18 @@ class milaWrapper:
             messages=self.game.messages, power=power_name
         )
         most_recent = self.last_received_message_time
-        print(f'most update message: {most_recent}')
+        # print(f'most update message: {most_recent}')
 
         # update message in dipcc game
         for timesent, message in phase_messages.items():
-            print(f'message from mila to dipcc {message}')
+            if message.recipient != power_name:
+                continue
+            
             self.prev_received_msg_time_sent[message.sender] = message.time_sent
             if int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]):
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-                print(f'time_sent in dipcc {dipcc_timesent}')
+                # print(f'time_sent in dipcc {dipcc_timesent}')
+                print(f'update a new message to {power_name} from mila to dipcc {message}')
 
                 if dipcc_timesent > most_recent:
                     most_recent = dipcc_timesent
@@ -904,6 +907,7 @@ class milaWrapper:
 
         game.set_scoring_system(Game.SCORING_SOS)
         game.set_metadata("phase_minutes", str(deadline))
+        game = game_from_view_of(game, power_name)
 
         while game.get_state()['name'] != self.game.get_current_phase():
             self.update_past_phase(game,  game.get_state()['name'], power_name)
@@ -924,7 +928,7 @@ class milaWrapper:
                 # and don't add it to the dipcc game.
                 # If it has at least one part that contains anything other than three upper letters,
                 # then just keep message body as original
-                if message.recipient not in self.game.powers:
+                if message.recipient != power_name or message.sender != power_name:
                     continue
                 # print(f'load message from mila to dipcc {message}')
 

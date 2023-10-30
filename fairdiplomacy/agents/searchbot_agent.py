@@ -1650,7 +1650,13 @@ class SearchBotAgent(BaseSearchAgent):
                 ))
             # ===========================================
 
-        logging.info(f"Pseudo orders for {agent_power}: {pseudo_orders}")
+        if agent_power== 'RUSSIA':
+            logging.info(f"Pseudo orders for {agent_power}: {pseudo_orders}")
+            logging.info(f"OG: Pseudo orders for {agent_power}: {og_pseudo_orders}")
+        else:
+            pseudo_orders = og_pseudo_orders
+            logging.info(f"Pseudo orders for {agent_power}: {pseudo_orders}")
+            
         print(f"Pseudo orders for {agent_power}: {pseudo_orders}")
 
         self.log_pseudoorder_consistency(game, agent_power, pseudo_orders, state)
