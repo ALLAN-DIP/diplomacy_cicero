@@ -906,6 +906,7 @@ class milaWrapper:
 
         game.set_scoring_system(Game.SCORING_SOS)
         game.set_metadata("phase_minutes", str(deadline))
+        game = game_from_view_of(game, power_name)
 
         while game.get_state()['name'] != self.game.get_current_phase():
             self.update_past_phase(game,  game.get_state()['name'], power_name)
