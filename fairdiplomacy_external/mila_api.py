@@ -297,7 +297,8 @@ class milaWrapper:
                             #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
                                 
                     should_stop = await self.get_should_stop()
-                    await asyncio.sleep(0.25)
+                    randsleep = random.random()
+                    await asyncio.sleep(2 + 5* randsleep)
         
                 # ORDER
 

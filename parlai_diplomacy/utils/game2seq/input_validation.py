@@ -376,7 +376,7 @@ class InputValidationException(ValueError):
     pass
 
 
-def validate(regex: str, x: str, throw_on_failure: bool = False) -> None:
+def validate(regex: str, x: str, throw_on_failure: bool = True) -> None:
     if not re.fullmatch(regex, x, re.VERBOSE):
         msg = f"\n\nREGEX:\n{regex}\n\nINPUT:\n{x}\n\nERROR: InputValidationException"
         if throw_on_failure:
