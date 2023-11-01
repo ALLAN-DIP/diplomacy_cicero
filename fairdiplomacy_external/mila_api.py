@@ -284,7 +284,7 @@ class milaWrapper:
                             self.send_message(msg, 'mila')
 
                             self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
-                                I respond with {msg["message"]} (msg time_sent: {msg["time_sent"]}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
+                                My response is {msg["message"]} (msg time_sent: {msg["time_sent"]}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
                             self.send_log(self_pseudo_log) 
 
                             if 'deceptive' in msg:
