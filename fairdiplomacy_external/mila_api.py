@@ -297,7 +297,8 @@ class milaWrapper:
                             #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
                                 
                     should_stop = await self.get_should_stop()
-                    await asyncio.sleep(0.25)
+                    randsleep = random.random()
+                    await asyncio.sleep(1 + 10* randsleep)
         
                 # ORDER
 
@@ -704,7 +705,7 @@ class milaWrapper:
         phase_messages = self.get_messages(
             messages=self.game.messages, power=power_name
         )
-        most_recent = self.last_received_message_time
+        most_recent_mila = self.last_received_message_time
         # print(f'most update message: {most_recent}')
 
         # update message in dipcc game
@@ -716,10 +717,9 @@ class milaWrapper:
             if int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]):
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
                 # print(f'time_sent in dipcc {dipcc_timesent}')
-                print(f'update a new message to {power_name} from mila to dipcc {message}')
 
-                if dipcc_timesent > most_recent:
-                    most_recent = dipcc_timesent
+                if timesent > most_recent_mila:
+                    most_recent_mila = timesent
 
                 # Excluding the parentheses, check if the message only contains three upper letters.
                 # If so, go through daide++. If there is an error, then send 'ERROR parsing {message}' to global,
@@ -765,18 +765,18 @@ class milaWrapper:
 
                 # if the message is english, just send it to dipcc recipient
                 else:
+                    print(f'message from mila to dipcc {message}')
                     self.dipcc_game.add_message(
                         message.sender,
                         message.recipient,
                         message.message,
-                        time_sent=dipcc_timesent,
+                        time_sent=Timestamp.now(),
                         increment_on_collision=True,
                     )
-
                     # print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
 
         # update last_received_message_time 
-        self.last_received_message_time = most_recent
+        self.last_received_message_time = most_recent_mila
 
     def update_and_process_dipcc_game(self):
         """     
