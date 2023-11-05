@@ -281,10 +281,10 @@ class milaWrapper:
 
                         elif self.game_type==2:
                             self.send_message(msg, 'dipcc')
-                            self.send_message(msg, 'mila')
+                            mila_timesent = self.send_message(msg, 'mila')
 
                             self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
-                                My response is {msg["message"]} (msg time_sent: {msg["time_sent"]}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
+                                My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
                             self.send_log(self_pseudo_log) 
 
                             if 'deceptive' in msg:
@@ -867,8 +867,9 @@ class milaWrapper:
         """ 
         send message in dipcc and mila games 
         """ 
-        timesend = Timestamp.now()
+        
         if engine =='dipcc':
+            timesend = Timestamp.now()
             self.dipcc_game.add_message(
                         msg['sender'], 
                         msg['recipient'], 
@@ -885,8 +886,10 @@ class milaWrapper:
                 phase=self.game.get_current_phase(),
                 )
             self.game.send_game_message(message=mila_msg)
+            timesend = mila_msg['time_sent']
 
         print(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
+        return timesend
 
     def get_messages(
         self, 
