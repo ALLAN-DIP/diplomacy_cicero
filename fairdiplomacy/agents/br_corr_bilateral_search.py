@@ -34,7 +34,6 @@ from fairdiplomacy.utils.sampling import sample_p_dict
 from fairdiplomacy.utils.order_idxs import ORDER_VOCABULARY_TO_IDX
 from fairdiplomacy.utils.game import game_from_two_party_view
 
-
 class BRCorrBilateralSearchResult(SearchResult):
     def __init__(
         self,
@@ -59,7 +58,7 @@ class BRCorrBilateralSearchResult(SearchResult):
                 )
                 self.policies[power] = policy
 
-    def set_value_for_power(self, power: Power, best_action: Action, best_value: float):
+    def set_policy_and_value_for_power(self, power: Power, best_action: Action, best_value: float):
         """Set our policy and decide the value_to_me for my and opponents' actions.
 
         Our policy is simply set as {best_action: 1.0}
@@ -90,12 +89,12 @@ class BRCorrBilateralSearchResult(SearchResult):
                 ].item()
                 self.value_to_me[power, action].accum(value, 1)
 
-    def set_policy_and_value_for_other_power(self, other_power: Power, best_action: Action):
+    def set_policy_and_value_for_other_power(self, other_power: Power, best_action: Action, game: pydipcc.Game):
         """
         Set the value_to_them for my and opponents' actions.
         """
-
         assert len(self.value_to_them) == 0, self.value_to_them
+        
         agent_power_idx = POWERS.index(self.agent_power)
         other_power_idx = POWERS.index(other_power)
         policy = self.bp_policies[self.agent_power]
@@ -104,7 +103,9 @@ class BRCorrBilateralSearchResult(SearchResult):
             self.value_to_them[self.agent_power, action] = WeightedAverager()
             self.value_to_them[other_power, action] = WeightedAverager()
 
-            if self.agent_power not in self.power_value_matrices or other_power not in self.power_value_matrices:
+            # print(f'Power in pwoer value metrics {self.power_value_matrices.keys()}')
+
+            if other_power not in self.power_value_matrices:
                 assert len(action) == 0
                 # dead power, value not matter
                 self.value_to_them[self.agent_power, action].accum(0, 1)
@@ -112,16 +113,16 @@ class BRCorrBilateralSearchResult(SearchResult):
                 continue
 
             #what is my value if I using this lie po with their best action
-            my_value = self.power_value_matrices[self.agent_power][(action, best_action)][agent_power_idx].item() 
+            if (action, best_action) not in self.power_value_matrices[other_power]:
+                continue
+            my_value = self.power_value_matrices[other_power][(action, best_action)][agent_power_idx].item() 
             #what is their value if I using this lie po with their best action
             their_value = self.power_value_matrices[other_power][(action, best_action)][other_power_idx].item()
 
             self.value_to_them[self.agent_power, action].accum(my_value, 1)
             self.value_to_them[other_power, action].accum(their_value, 1)
 
-        print(f'with value to them for {other_power} for our bp policy actions: {self.value_to_them[other_power]}')
-        print(f'with value to me for {self.agent_power} for our bp policy actions: {self.value_to_them[self.agent_power]}')
-
+        # print(f'with value to them for our bp policy actions: {self.value_to_them}')
 
     def get_agent_policy(self) -> PowerPolicies:
         return self.policies

@@ -460,6 +460,7 @@ class SearchBotAgent(BaseSearchAgent):
         self.max_seconds = cfg.max_seconds
         self.br_corr_bilateral_search_cfg = cfg.br_corr_bilateral_search
         self.message_search_cfg = cfg.message_search
+        self.mila_game = None
 
         self.all_power_base_strategy_model_executor = None
         if self.br_corr_bilateral_search_cfg is not None:
@@ -563,6 +564,9 @@ class SearchBotAgent(BaseSearchAgent):
 
     def get_exploited_agent_power(self) -> Optional[Power]:
         return self.exploited_agent_power
+
+    def set_mila_game(self, game):
+        self.mila_game = game
 
     def override_has_press(self, has_press: bool):
         self.has_press = has_press
@@ -1425,16 +1429,16 @@ class SearchBotAgent(BaseSearchAgent):
         ##################################
         # 1. Compute "default" most likely pseudo-orders
         ##################################
-        timings.start("beam")
+        timings.start("greedy")
         # we want to get the most likely pseudo-orders as the "default", and as
         # a baseline probability to score other orders against.
         # For now, I will do it with greedy generation because it has the lowest compute cost.
         # But a more sound way would be beam search or finding the most likely out of N samples.
-        old_args = model_pseudo_orders.set_generation_args("beam")
+        old_args = model_pseudo_orders.set_generation_args("greedy")
         pseudo_orders = model_pseudo_orders.produce_joint_action_bilateral(
             game, agent_power, recipient=recipient
         )
-        print(f'PO with beam search {pseudo_orders}')
+        print(f'PO with greedy {pseudo_orders}')
 
         og_pseudo_orders = copy.deepcopy(pseudo_orders)
         model_pseudo_orders.set_generation_args(**old_args)
@@ -1604,6 +1608,7 @@ class SearchBotAgent(BaseSearchAgent):
 
                     if max(policy_valid.values()) > 0.02:
                         pseudo_orders[cur_power] = argmax_p_dict(policy_valid)
+                        og_pseudo_orders[cur_power] = argmax_p_dict(policy_valid)
                     else:
                         # there's no valid action in the support of the BQRE equilibrium
                         # so just pick the action with highest QRE value (i.e. what we would have played
@@ -1617,6 +1622,7 @@ class SearchBotAgent(BaseSearchAgent):
                             for a in policy_valid
                         }
                         pseudo_orders[cur_power] = argmax_p_dict(agent_qre_values)
+                        og_pseudo_orders[cur_power] = argmax_p_dict(agent_qre_values)
 
                 else:
                     logging.info(f"Sticking with default pseudo-order for {cur_power}")
@@ -1660,10 +1666,10 @@ class SearchBotAgent(BaseSearchAgent):
         #with assumtpion that recipient will move = og_pseudo_orders[recipient]
 
         self.tau = 0
-        change_our_po = True
-        change_our_po = change_our_po and self.tau >= 0
+        change_our_po = False
+        lie_country = 'TURKEY'
 
-        search_result.set_policy_and_value_for_other_power(recipient, og_pseudo_orders[recipient])
+        search_result.set_policy_and_value_for_other_power(recipient, og_pseudo_orders[recipient], game)
         value_to_them = search_result.value_to_them
         lie_policy = search_result.get_bp_policy()[agent_power]
 
@@ -1674,27 +1680,35 @@ class SearchBotAgent(BaseSearchAgent):
         print(f'argmax lie_po: {lie_po}')
         #if lie PO v(sounds good) = (lambda * value_to_them[recipient, lie_po]) + (1- lambda * value_to_me[recipient, their_po])
         #or just v(sounds good) = value_to_them[recipient, lie_po]
-        v_good_to_them = value_to_them[recipient, lie_po]
-        print(f'value to {recipient}: {v_good_to_them}')
-        print(f'value to me with og PO {agent_power}: {value_to_me[agent_power, og_pseudo_orders[agent_power]]}')
-        print(f'value to me with this lie PO {agent_power}: {value_to_them[agent_power, lie_po]}')
+        v_them = value_to_them[recipient, lie_po].get_avg() - value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
+        v_me_og =  value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()
+        v_me_lie = value_to_them[agent_power, lie_po].get_avg()
+        print(f'lie_po value to {recipient}: {v_them}')
+        print(f'value to me with og PO {og_pseudo_orders[agent_power]}: {v_me_og}')
+        print(f'value to me with this lie PO {lie_po}: {v_me_lie}')
 
         #objective value = v(sounds good) + v(og_po) - v(lie_po)
-        v_obj = v_good_to_them + value_to_me[agent_power, og_pseudo_orders[agent_power]] - value_to_them[agent_power, lie_po]
+        v_obj = v_them + v_me_og - v_me_lie
         #lie if objective value > tau
         print(f'obj: {v_obj}')
+        change_our_po = change_our_po and lie_po != pseudo_orders[agent_power]
+        change_our_po = change_our_po and v_obj >= self.tau
 
         if change_our_po:
+            log = f'With objective value {v_obj}, changing PO to Deceptive PO. PO: {pseudo_orders[agent_power]} and Deceptive PO: {lie_po}'
+            log_data = self.mila_game.new_log_data(body=log)
+            self.mila_game.send_log_data(log=log_data)
+            print(f'we can change our PO from {pseudo_orders[agent_power] } to {lie_po}')
             pseudo_orders[agent_power] = lie_po
 
         #===================================================
         change_their_po = False
 
-        if agent_power== 'RUSSIA' and change_their_po and change_our_po:
+        if agent_power== lie_country and change_their_po and change_our_po:
             assert pseudo_orders != og_pseudo_orders, "(two-way) deceived pseudo_orders cannot be the same as original"
-        elif agent_power== 'RUSSIA' and change_their_po and not change_our_po:
+        elif agent_power== lie_country and change_their_po and not change_our_po:
             pseudo_orders[agent_power] = og_pseudo_orders[agent_power]
-        elif agent_power== 'RUSSIA' and not change_their_po and change_our_po:
+        elif agent_power== lie_country and not change_their_po and change_our_po:
             pseudo_orders[recipient] = og_pseudo_orders[recipient]
         else:
             pseudo_orders = og_pseudo_orders
@@ -1704,9 +1718,9 @@ class SearchBotAgent(BaseSearchAgent):
             
         print(f"Pseudo orders for {agent_power}: {pseudo_orders}")
 
-        self.log_pseudoorder_consistency(game, agent_power, pseudo_orders, state)
+        self.log_pseudoorder_consistency(game, agent_power, og_pseudo_orders, state)
 
-        state.update(game, agent_power, search_result, pseudo_orders)
+        state.update(game, agent_power, search_result, og_pseudo_orders)
 
         # joint action for rollout is pseudo-orders with other powers filled in with
         # their most likely action

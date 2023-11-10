@@ -172,6 +172,7 @@ class milaWrapper:
         self.dipcc_game = self.start_dipcc_game(power_name)
         print(f"Started dipcc game")
 
+        self.agent.set_mila_game(self.game)
         self.player = Player(self.agent, power_name)
         self.game_type = game_type
         
