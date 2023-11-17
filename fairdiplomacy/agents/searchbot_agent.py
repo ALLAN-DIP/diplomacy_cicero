@@ -1677,41 +1677,51 @@ class SearchBotAgent(BaseSearchAgent):
         lie_po = max(
                         lie_policy, key=lambda a: value_to_them[recipient, a].get_avg()
                     )
-        print(f'argmax lie_po: {lie_po}')
+        # print(f'argmax lie_po: {lie_po}')
         #if lie PO v(sounds good) = (lambda * value_to_them[recipient, lie_po]) + (1- lambda * value_to_me[recipient, their_po])
         #or just v(sounds good) = value_to_them[recipient, lie_po]
         v_them = value_to_them[recipient, lie_po].get_avg() - value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
         v_me_og =  value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()
         v_me_lie = value_to_them[agent_power, lie_po].get_avg()
-        print(f'lie_po value to {recipient}: {v_them}')
-        print(f'value to me with og PO {og_pseudo_orders[agent_power]}: {v_me_og}')
-        print(f'value to me with this lie PO {lie_po}: {v_me_lie}')
+        # print(f'lie_po value to {recipient}: {v_them}')
+        # print(f'value to me with og PO {og_pseudo_orders[agent_power]}: {v_me_og}')
+        # print(f'value to me with this lie PO {lie_po}: {v_me_lie}')
 
         #objective value = v(sounds good) + v(og_po) - v(lie_po)
         v_obj = v_them + v_me_og - v_me_lie
         #lie if objective value > tau
-        print(f'obj: {v_obj}')
+        # print(f'obj: {v_obj}')
         change_our_po = change_our_po and lie_po != pseudo_orders[agent_power]
         change_our_po = change_our_po and v_obj >= self.tau
 
         if change_our_po:
-            log = f'With objective value {v_obj}, changing PO to Deceptive PO. PO: {pseudo_orders[agent_power]} and Deceptive PO: {lie_po}'
-            log_data = self.mila_game.new_log_data(body=log)
-            self.mila_game.send_log_data(log=log_data)
-            print(f'we can change our PO from {pseudo_orders[agent_power] } to {lie_po}')
             pseudo_orders[agent_power] = lie_po
 
         #===================================================
-        change_their_po = False
-
+        change_their_po = True
+        log = ''
         if agent_power== lie_country and change_their_po and change_our_po:
             assert pseudo_orders != og_pseudo_orders, "(two-way) deceived pseudo_orders cannot be the same as original"
+
+            log = f'(two-way PO) changing PO to Deceptive PO. PO: {og_pseudo_orders} and Deceptive PO: {pseudo_orders}'
+            log_data = self.mila_game.new_log_data(body=log)
+            self.mila_game.send_log_data(log=log_data)
+
         elif agent_power== lie_country and change_their_po and not change_our_po:
+            log = f'(recipient PO) changing PO to Deceptive PO. PO: {og_pseudo_orders[recipient]} and Deceptive PO: {pseudo_orders[recipient]}'
+            log_data = self.mila_game.new_log_data(body=log)
+            self.mila_game.send_log_data(log=log_data)
             pseudo_orders[agent_power] = og_pseudo_orders[agent_power]
+
         elif agent_power== lie_country and not change_their_po and change_our_po:
+            log = f'With objective value {v_obj}, changing PO to Deceptive PO. PO: {og_pseudo_orders[agent_power]} and Deceptive PO: {pseudo_orders[agent_power]}'
+            log_data = self.mila_game.new_log_data(body=log)
+            self.mila_game.send_log_data(log=log_data)
             pseudo_orders[recipient] = og_pseudo_orders[recipient]
         else:
             pseudo_orders = og_pseudo_orders
+
+        print(log)
 
         logging.info(f"Pseudo orders for {agent_power}: {pseudo_orders}")
         logging.info(f"OG: Pseudo orders for {agent_power}: {og_pseudo_orders}")
