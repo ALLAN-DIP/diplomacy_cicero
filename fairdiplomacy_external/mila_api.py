@@ -886,7 +886,7 @@ class milaWrapper:
                 phase=self.game.get_current_phase(),
                 )
             self.game.send_game_message(message=mila_msg)
-            timesend = mila_msg['time_sent']
+            timesend = mila_msg.time_sent
 
         print(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
         return timesend
