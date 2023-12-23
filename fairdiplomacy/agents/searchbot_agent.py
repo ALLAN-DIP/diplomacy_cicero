@@ -461,6 +461,7 @@ class SearchBotAgent(BaseSearchAgent):
         self.br_corr_bilateral_search_cfg = cfg.br_corr_bilateral_search
         self.message_search_cfg = cfg.message_search
         self.mila_game = None
+        self.stance_vector = None
 
         self.all_power_base_strategy_model_executor = None
         if self.br_corr_bilateral_search_cfg is not None:
@@ -564,9 +565,6 @@ class SearchBotAgent(BaseSearchAgent):
 
     def get_exploited_agent_power(self) -> Optional[Power]:
         return self.exploited_agent_power
-
-    def set_mila_game(self, game):
-        self.mila_game = game
 
     def override_has_press(self, has_press: bool):
         self.has_press = has_press
@@ -1666,8 +1664,16 @@ class SearchBotAgent(BaseSearchAgent):
         #with assumtpion that recipient will move = og_pseudo_orders[recipient]
 
         self.tau = 0
-        change_our_po = False
-        lie_country = 'TURKEY'
+        curr_stance_vector, log = self.stance_vector.get_stance(self.mila_game)
+        pair_curr_sv = curr_stance_vector[recipient][agent_power]
+
+        #check new stance if we do this intent --- how to predicted stance from here?
+        new_stance_vector = self.predict_stance_vector_from_to(recipient, agent_power, curr_stance_vector, og_pseudo_orders[agent_power])
+        #alpha2 = lowerbound when there is a conflict (conflict move and support )
+        is_betray = curr_stance_vector - new_stance_vector >= self.stance_vector.alpha2 
+
+        change_our_po = is_betray
+        lie_country = 'AUSTRIA'
 
         search_result.set_policy_and_value_for_other_power(recipient, og_pseudo_orders[recipient], game)
         value_to_them = search_result.value_to_them
@@ -2160,6 +2166,57 @@ class SearchBotAgent(BaseSearchAgent):
                     return MessageHeuristicResult.FORCE
         return MessageHeuristicResult.NONE
 
+    def set_mila_game(self, game):
+        self.mila_game = game
+
+    def set_stance_vector(self, stance_vector):
+        self.stance_vector = stance_vector
+
+    def predict_stance_vector_from_to(self, from_power, to_power, curr_stance_vector, orders):
+        
+        def __game_deepcopy__(self, game: Game) -> None:
+            """Fast deep copy implementation, from Paquette's game engine https://github.com/diplomacy/diplomacy"""
+            if game.__class__.__name__ != Game.__name__:
+                cls = list(game.__class__.__bases__)[0]
+                result = cls.__new__(cls)
+            else:
+                cls = game.__class__
+                result = cls.__new__(cls)
+            # Deep copying
+            for key in game._slots:
+                if key in [
+                    "map",
+                    "renderer",
+                    "powers",
+                    "channel",
+                    "notification_callbacks",
+                    "data",
+                    "__weakref__",
+                ]:
+                    continue
+                setattr(result, key, copy.deepcopy(getattr(game, key)))
+            setattr(result, "map", game.map)
+            setattr(result, "powers", {})
+            for power in game.powers.values():
+                result.powers[power.name] = copy.deepcopy(power)
+                setattr(result.powers[power.name], "game", result)
+            result.role = strings.SERVER_TYPE
+            return result
+        #save current stance
+        temp_stance_vector = copy.deepcopy(curr_stance_vector)
+        #create a sim that to_power submit "order" 
+        sim_game = __game_deepcopy__(self.mila_game)
+        #submit order
+        sim_game.set_order(power_name=to_power, orders=list(orders), wait=False)
+        sim_game.process()
+        #retreive new stance
+        predict_stance_vector = self.stance_vector.get_stance(sim_game)
+        #set stance vector back to saved version
+        for p1 in POWERS:
+            for p2 in POWERS:
+                if p1 != p2:
+                    self.stance_vector.update_stance(p1,p2, temp_stance_vector[p1][p2])
+        return predict_stance_vector[from_power][to_power]
 
 def augment_plausible_orders(
     game: Game,

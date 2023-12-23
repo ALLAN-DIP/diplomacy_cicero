@@ -92,6 +92,8 @@ from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
 from daide2eng.utils import gen_English, create_daide_grammar, is_daide
+#stance vector
+from stance_vector import ActionBasedStance, ScoreBasedStance
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -173,6 +175,10 @@ class milaWrapper:
         print(f"Started dipcc game")
 
         self.agent.set_mila_game(self.game)
+        # init action stance class
+        stance_vector = ActionBasedStance()
+        # get init stance from stance lib
+        self.agent.set_stance_vector(stance_vector)
         self.player = Player(self.agent, power_name)
         self.game_type = game_type
         
@@ -932,6 +938,8 @@ class milaWrapper:
                 if message.recipient != power_name or message.sender != power_name:
                     continue
                 # print(f'load message from mila to dipcc {message}')
+                if message.recipient not in self.game.powers:
+                    continue
 
                 if is_daide(message.message):
                     generated_English = gen_English(message.message, message.recipient, message.sender)
@@ -964,7 +972,6 @@ class milaWrapper:
         
         dipcc_game.process()
 
-            
 def main() -> None:
 
     parser = argparse.ArgumentParser(description=__doc__)
