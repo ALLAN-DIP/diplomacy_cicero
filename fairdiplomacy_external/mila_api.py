@@ -113,7 +113,25 @@ from amrlib.models.parse_xfm.inference import Inference
 power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
 af_dict = {'A':'AMY','F':'FLT'}
 possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive','sure','Alright','yes','yep','Awesome','Done','Works for me','Will do','Perfect','I agree','Fine','Agreed','yup','Absolutely','Understood','That\'s the plan','Deal']
+default_is_bot ={
+            'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ENGLAND': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'FRANCE': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'GERMANY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ITALY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'RUSSIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'TURKEY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False}
+        }
 
+default_deceiving = {
+            'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ENGLAND': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'FRANCE': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'GERMANY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ITALY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'RUSSIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'TURKEY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False}
+        }
 
 class milaWrapper:
 
@@ -176,7 +194,7 @@ class milaWrapper:
 
         self.agent.set_mila_game(self.game)
         # init action stance class
-        stance_vector = ActionBasedStance()
+        stance_vector = ActionBasedStance(power_name ,self.game)
         # get init stance from stance lib
         self.agent.set_stance_vector(stance_vector)
         self.player = Player(self.agent, power_name)
@@ -192,6 +210,10 @@ class milaWrapper:
         
 
         while not self.game.is_game_done:
+            if self.game.get_current_phase() not in self.game.is_bot_history:
+                self.game.is_bot_history.put(self.game._phase_wrapper_type(self.game.get_current_phase()), default_is_bot)
+                self.game.deceiving_history.put(self.game._phase_wrapper_type(self.game.get_current_phase()), default_deceiving)
+
             self.phase_start_time = time.time()
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()
             self.presubmit = False
