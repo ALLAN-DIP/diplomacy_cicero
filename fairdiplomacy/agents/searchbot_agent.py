@@ -106,6 +106,35 @@ from diplomacy.utils import strings
 
 ActionDict = Dict[Tuple[Power, Action], float]
 
+default_is_bot ={
+            'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ENGLAND': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'FRANCE': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'GERMANY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ITALY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'RUSSIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'TURKEY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False}
+        }
+default_stance ={
+            'AUSTRIA': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'ENGLAND': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'FRANCE': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'GERMANY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'ITALY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'RUSSIA': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'TURKEY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0}
+        }
+default_order_log ={00000:'default'}  
+default_deceiving = {
+            'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ENGLAND': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'FRANCE': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'GERMANY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ITALY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'RUSSIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'TURKEY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False}
+        }
+
 
 def color_order_logprobs(a: Action, lp: Optional[Dict[Action, List[float]]]) -> str:
     if not _is_interactive() or lp is None:
@@ -1663,62 +1692,51 @@ class SearchBotAgent(BaseSearchAgent):
         #deceive by changing our PO    
         #time to change our PO to sounds good for recipient argmax lie_po 
         #with assumtpion that recipient will move = og_pseudo_orders[recipient]
-
+        lie_country = 'RUSSIA'
         self.tau = 0
         first_turn = True if self.mila_game.get_current_phase()=='S1901M' else False
         if not first_turn:
-            # test object game when passing through stance vector
-            self.stance_vector.__game_deepcopy__(self.mila_game)
-            # expected to see one missing from new dict added in Diplomacy 
-            print(f'print mila game example order: {self.mila_game.order_history}')
-            print(f'print mila game stances: {self.mila_game.stance_history}')
-            print(f'print mila game is_bot: {self.mila_game.is_bot_history}')
-            print(f'print mila game deceiving: {self.mila_game.deceiving_history}')
-            print(f'print mila game order_logs: {self.mila_game.order_log_history}')
-
-            print(f'print copied game example order: {self.stance_vector.game.order_history}')
-            print(f'print copied game stances: {self.stance_vector.game.stance_history}')
-            print(f'print copied game is_bot: {self.stance_vector.game.is_bot_history}')
-            print(f'print copied game deceiving: {self.stance_vector.game.deceiving_history}')
-            print(f'print copied game order_logs: {self.stance_vector.game.order_log_history}')
-
             curr_stance_vector, stance_log = self.stance_vector.get_stance(self.mila_game, verbose=True)
             pair_curr_sv = curr_stance_vector[recipient][agent_power]
-
-            log_data = self.mila_game.new_log_data(body=f'generating message and log stance: {stance_log}')
-            self.mila_game.send_log_data(log=log_data)
+            self.send_log(f'log curr_stance from {recipient} to {agent_power}: {pair_curr_sv}')
+            # self.send_log(f'generating message and log stance: {stance_log[agent_power]}')
 
             #check new stance if we do this intent --- how to predicted stance from here?
             new_stance_vector = self.predict_stance_vector_from_to(recipient, agent_power, curr_stance_vector, og_pseudo_orders[agent_power])
+
+            self.send_log(f'with PO: {og_pseudo_orders[agent_power]} a new predicted stance vector from {recipient} to {agent_power}: {pair_curr_sv}->{new_stance_vector}')
             #alpha2 = lowerbound when there is a conflict (conflict move and support )
             is_betray = pair_curr_sv - new_stance_vector >= self.stance_vector.alpha2 
-
+            self.send_log(f'betray if {pair_curr_sv} - {new_stance_vector} >= {self.stance_vector.alpha2 }')
             change_our_po = is_betray
-            lie_country = 'AUSTRIA'
-
+            
             search_result.set_policy_and_value_for_other_power(recipient, og_pseudo_orders[recipient], game)
             value_to_them = search_result.value_to_them
             lie_policy = search_result.get_bp_policy()[agent_power]
 
             #their value when we play lie PO and their PO
+            v_me_og =  value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()
+            v_them_og = value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
+
             lie_po = max(
-                            lie_policy, key=lambda a: value_to_them[recipient, a].get_avg()
+                            lie_policy, key=lambda a: value_to_them[recipient, a].get_avg() - v_them_og + v_me_og - value_to_them[agent_power, a].get_avg()
                         )
             # print(f'argmax lie_po: {lie_po}')
+            self.send_log(f'argmax lie_po: {lie_po} and og PO: {og_pseudo_orders[agent_power]}')
             #if lie PO v(sounds good) = (lambda * value_to_them[recipient, lie_po]) + (1- lambda * value_to_me[recipient, their_po])
             #or just v(sounds good) = value_to_them[recipient, lie_po]
-            v_them = value_to_them[recipient, lie_po].get_avg() - value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
-            v_me_og =  value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()
-            v_me_lie = value_to_them[agent_power, lie_po].get_avg()
+            # v_them = value_to_them[recipient, lie_po].get_avg() - value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
+            
+            # v_me_lie = value_to_them[agent_power, lie_po].get_avg()
             # print(f'lie_po value to {recipient}: {v_them}')
             # print(f'value to me with og PO {og_pseudo_orders[agent_power]}: {v_me_og}')
             # print(f'value to me with this lie PO {lie_po}: {v_me_lie}')
 
             #objective value = v(sounds good) + v(og_po) - v(lie_po)
-            v_obj = v_them + v_me_og - v_me_lie
+            # v_obj = v_them + v_me_og - v_me_lie
             #lie if objective value > tau
             # print(f'obj: {v_obj}')
-            change_our_po = change_our_po and lie_po != pseudo_orders[agent_power]
+            # change_our_po = change_our_po and lie_po != pseudo_orders[agent_power]
             # change_our_po = change_our_po and v_obj >= self.tau
 
             if change_our_po:
@@ -1731,29 +1749,26 @@ class SearchBotAgent(BaseSearchAgent):
                 assert pseudo_orders != og_pseudo_orders, "(two-way) deceived pseudo_orders cannot be the same as original"
 
                 log = f'(two-way PO) changing PO to Deceptive PO. PO: {og_pseudo_orders} and Deceptive PO: {pseudo_orders}'
-                log_data = self.mila_game.new_log_data(body=log)
-                self.mila_game.send_log_data(log=log_data)
+                self.send_log(log)
 
             elif agent_power== lie_country and change_their_po and not change_our_po:
                 log = f'(recipient PO) changing PO to Deceptive PO. PO: {og_pseudo_orders[recipient]} and Deceptive PO: {pseudo_orders[recipient]}'
-                log_data = self.mila_game.new_log_data(body=log)
-                self.mila_game.send_log_data(log=log_data)
+                self.send_log(log)
                 pseudo_orders[agent_power] = og_pseudo_orders[agent_power]
 
             elif agent_power== lie_country and not change_their_po and change_our_po:
-                log = f'With objective value {v_obj}, changing PO to Deceptive PO. PO: {og_pseudo_orders[agent_power]} and Deceptive PO: {pseudo_orders[agent_power]}'
-                log_data = self.mila_game.new_log_data(body=log)
-                self.mila_game.send_log_data(log=log_data)
+                log = f'(Our PO) changing PO to Deceptive PO. PO: {og_pseudo_orders[agent_power]} and Deceptive PO: {pseudo_orders[agent_power]}'
+                self.send_log(log)
                 pseudo_orders[recipient] = og_pseudo_orders[recipient]
             else:
                 pseudo_orders = og_pseudo_orders
 
-            print(log)
+            # print(log)
 
             logging.info(f"Pseudo orders for {agent_power}: {pseudo_orders}")
             logging.info(f"OG: Pseudo orders for {agent_power}: {og_pseudo_orders}")
                 
-            print(f"Pseudo orders for {agent_power}: {pseudo_orders}")
+            # print(f"Pseudo orders for {agent_power}: {pseudo_orders}")
 
         self.log_pseudoorder_consistency(game, agent_power, og_pseudo_orders, state)
 
@@ -2227,17 +2242,30 @@ class SearchBotAgent(BaseSearchAgent):
         temp_stance_vector = copy.deepcopy(curr_stance_vector)
         #create a sim that to_power submit "order" 
         sim_game = __game_deepcopy__(self.mila_game)
+        
         #submit order
         sim_game.set_orders(power_name=to_power, orders=list(orders))
+
         sim_game.process()
+
+        if sim_game.get_current_phase() not in sim_game.order_log_history:
+            sim_game.order_log_history.put(sim_game._phase_wrapper_type(sim_game.get_current_phase()), default_order_log)
+        if sim_game.get_current_phase() not in sim_game.is_bot_history:
+            sim_game.is_bot_history.put(sim_game._phase_wrapper_type(sim_game.get_current_phase()), default_is_bot)
+        if sim_game.get_current_phase() not in sim_game.deceiving_history:
+            sim_game.deceiving_history.put(sim_game._phase_wrapper_type(sim_game.get_current_phase()), default_deceiving)
         #retreive new stance
-        predict_stance_vector = self.stance_vector.get_stance(sim_game)
+        predict_stance_vector = copy.deepcopy(self.stance_vector.get_stance(sim_game))
         #set stance vector back to saved version
         for p1 in POWERS:
             for p2 in POWERS:
                 if p1 != p2:
                     self.stance_vector.update_stance(p1,p2, temp_stance_vector[p1][p2])
         return predict_stance_vector[from_power][to_power]
+
+    def send_log(self, data):
+        log_data = self.mila_game.new_log_data(body=data)
+        self.mila_game.send_log_data(log=log_data)
 
 def augment_plausible_orders(
     game: Game,

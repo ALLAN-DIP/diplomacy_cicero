@@ -122,7 +122,16 @@ default_is_bot ={
             'RUSSIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
             'TURKEY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False}
         }
-
+default_stance ={
+            'AUSTRIA': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'ENGLAND': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'FRANCE': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'GERMANY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'ITALY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'RUSSIA': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'TURKEY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0}
+        }
+default_order_log ={00000:'default'}  
 default_deceiving = {
             'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
             'ENGLAND': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
@@ -210,8 +219,13 @@ class milaWrapper:
         
 
         while not self.game.is_game_done:
+            # if self.game.get_current_phase() not in self.game.stance_history:
+            #     self.game.stance_history.put(self.game._phase_wrapper_type(self.game.get_current_phase()), default_stance)
+            if self.game.get_current_phase() not in self.game.order_log_history:
+                self.game.order_log_history.put(self.game._phase_wrapper_type(self.game.get_current_phase()), default_order_log)
             if self.game.get_current_phase() not in self.game.is_bot_history:
                 self.game.is_bot_history.put(self.game._phase_wrapper_type(self.game.get_current_phase()), default_is_bot)
+            if self.game.get_current_phase() not in self.game.deceiving_history:
                 self.game.deceiving_history.put(self.game._phase_wrapper_type(self.game.get_current_phase()), default_deceiving)
 
             self.phase_start_time = time.time()
