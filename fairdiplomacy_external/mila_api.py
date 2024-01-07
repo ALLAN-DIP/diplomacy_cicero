@@ -75,7 +75,6 @@ from fairdiplomacy.agents.bqre1p_agent import BQRE1PAgent as PyBQRE1PAgent
 from conf.agents_pb2 import *
 import google.protobuf.message
 import heyhi
-
 import sys
 import argparse
 import asyncio
@@ -83,6 +82,7 @@ import json as json
 import sys
 import time
 import math
+import pandas as pd
 from pathlib import Path
 from typing import Optional
 import concurrent.futures
@@ -180,6 +180,9 @@ class milaWrapper:
             model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/improvement1/'
         self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
+
+
+
         while not self.game.is_game_done:
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()
 
@@ -215,7 +218,6 @@ class milaWrapper:
                         continue
                     self.phase_start_time = time.time()
                     print(f"Antony_{power_name} start time for press")
-
                     # PRESS
                     while not self.get_should_stop() and not silent:
 
@@ -225,7 +227,22 @@ class milaWrapper:
                             await self.update_press_dipcc_game(power_name)
                         # reply/gen new message
                         msg = self.generate_message(power_name)
-                        
+                        print("#######################")
+                        print(msg)
+                        print("@@@@@@@@@@@@")
+                        if msg is not None:
+                            mapping_dic = {'S':'Spring','F':'Fall'}
+                            if int(msg['phase'][1:5]) <= 1904:
+                                s = self.generate_message_random(msg['sender'].lower(),msg['recipient'].lower(),mapping_dic[msg['phase'][0]],msg['phase'][1:5])
+                            else:
+                                phase = str(int(msg['phase'][1:5]) - 4)
+                                s = self.generate_message_random(msg['sender'].lower(),msg['recipient'].lower(),mapping_dic[msg['phase'][0]],phase)
+                            if s is not None:
+                                msg['message'] = s
+                            else:
+                                msg = None
+                        print(msg)
+                        print("#######################")
                         if msg is not None:
                             draw_token_message = self.is_draw_token_message(msg,power_name)
                             #proposal_response = self.check_PRP(msg,power_name)
@@ -246,32 +263,33 @@ class milaWrapper:
                             
                             if not self.sent_self_intent:
                                 self_pseudo_log = f'At the start of this phase, I intend to do: {self_po}'
-                                await self.send_log(self_pseudo_log) 
+                                await self.send_log(self_pseudo_log)
                                 self.sent_self_intent = True
                             else:
                                 self_pseudo_log = f'After I got the message from {recipient_power}, I intend to do: {self_po}'
                                 await self.send_log(self_pseudo_log) 
 
-                            list_msg = self.to_daide_msg(msg,power_name)
-
+                            #list_msg = self.to_daide_msg(msg,power_name)
                             await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
                             await self.send_log(f'My (internal) response is: {msg["message"]}') 
+                            # await self.send_log(f'I expect {recipient_power} to do: {recp_po}') 
+                            # await self.send_log(f'My (internal) response is: {msg["message"]}') 
 
                             if human_game:
                                 self.send_message(msg, 'dipcc')
                                 self.send_message(msg, 'mila')
                             
-                            if len(list_msg)>0:
-                                for daide_msg in list_msg:
-                                    await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')
-                                    await self.send_log(f'My external DAIDE response status is: {daide_msg["daide_status"]}')   
-                                if not human_game:
-                                    self.send_message(msg, 'dipcc')    
-                            else:
-                                await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                            # if len(list_msg)>0:
+                            #     for daide_msg in list_msg:
+                            #         await self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')
+                            #         await self.send_log(f'My external DAIDE response status is: {daide_msg["daide_status"]}')   
+                            #     if not human_game:
+                            #         self.send_message(msg, 'dipcc')    
+                            # else:
+                            #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
 
-                            for msg in list_msg:
-                                self.send_message(msg, 'mila')
+                            # for msg in list_msg:
+                            #     self.send_message(msg, 'mila')
                                 
                         await asyncio.sleep(0.25)
         
@@ -279,10 +297,11 @@ class milaWrapper:
                 if not self.has_phase_changed():
                     print(f"Submit orders in {self.dipcc_current_phase}")
                     agent_orders = self.player.get_orders(self.dipcc_game)
-
+                    print('1')
                     # set order in Mila
                     self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
-                
+                    print('2')
+                    
                 # wait until the phase changed
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
                 while not self.has_phase_changed():
@@ -302,6 +321,51 @@ class milaWrapper:
             )
             file.write("\n")
 
+
+    def find_messages(self, df, game_id, player1, player2, season, year):
+    
+        filtered_df = df[(df['game_id'] == game_id) &
+                        (df['players'].apply(lambda x: player1 in x and player2 in x))]
+        
+        return filtered_df
+
+    def search_messages(self, data, player1, player2, season=None, year=None):
+        matched_messages = []
+        for i in range(len(data['messages'])):
+            if (season is None or data['seasons'][i] == season) \
+            and (year is None or data['years'][i] == year) \
+            and (data['speakers'][i] == player1) \
+            and (data['receivers'][i] == player2):
+                matched_messages.append(data['messages'][i])
+
+        return matched_messages
+
+    def generate_message_random(self, player1, player2, season, year):
+        with open('/diplomacy_cicero/fairdiplomacy_external/train.jsonl', 'r') as file:
+            lines = file.readlines()
+            data = [json.loads(line) for line in lines]
+
+        dfs = [pd.json_normalize(d) for d in data]
+        df = pd.concat(dfs, ignore_index=True)
+        player1 = player1
+        player2 = player2
+        season = season
+        year = year
+        m = []
+        for s in range(1,11):
+            df_whole = self.find_messages(df, s, player1, player2, season, year)
+            df_outside = df_whole.to_dict(orient='index')
+            if df_outside !={}:
+                df_inside = next(iter(df_outside.values()))
+                filtered_messages = self.search_messages(df_inside, player1, player2,season, year)
+                m = m + filtered_messages
+            else:
+                continue
+        if m != []: 
+            random_element = random.choice(m)
+            return random_element
+        else:
+            return None
 
     def check_PRP(self,msg,power_name,response):
         phase_messages = self.get_messages(
@@ -875,21 +939,23 @@ class milaWrapper:
         """ 
         send log to mila games 
         """ 
-
+        MAX_RETRIES = 5
+        BACKOFF_FACTOR = 0.5
         log_data = self.game.new_log_data(body=log)
-        max_retries = 3
-        retry_delay = 5
-        for attempt in range(max_retries + 1):
+
+        for attempt in range(MAX_RETRIES):
             try:
                 await self.game.send_log_data(log=log_data)
-            except concurrent.futures._base.TimeoutError:
-                if attempt < max_retries:
-                    await asyncio.sleep(retry_delay)
-                else:
-                    raise Exception("Operation failed after all retry attempts")
-            else:
-                print("Operation completed successfully.")
+                print("Log sent successfully.")
                 break
+            except concurrent.futures._base.TimeoutError as e:
+                if attempt < MAX_RETRIES - 1:
+                    wait_time = BACKOFF_FACTOR * (2 ** attempt)
+                    print(f"Timeout encountered. Retrying in {wait_time} seconds...")
+                    await asyncio.sleep(wait_time)
+                else:
+                    print("Failed to send log after multiple attempts.")
+        #await self.game.send_log_data(log=log_data)
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
