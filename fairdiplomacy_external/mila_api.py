@@ -92,6 +92,7 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
+from diplomacy.utils.constants import OrderSettings, DEFAULT_GAME_RULES
 from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
@@ -203,9 +204,6 @@ class milaWrapper:
                     print(f"Antony_{power_name} is ready for communication")
 
                     for p in self.game.powers.values():
-                        print(p)
-                        print(p.player_type)
-                        print(p.comm_status)
                         if p.player_type == 'none' or p.is_eliminated() or p.player_type in player_type_exception:
                             continue
                         # if PRESS_BOT and READY or NO_PRESS_BOT or eliminated
@@ -1078,7 +1076,7 @@ def main() -> None:
     daide_fallback : bool = args.daide_fallback
     model : bool = args.model
     print(f"settings:")
-    print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}, model: {model}")
+    print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}, model: {model}, silent: {silent}")
 
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
