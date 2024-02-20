@@ -295,6 +295,22 @@ class milaWrapper:
                             #     await self.send_log(f'My DAIDE response is: {daide_msg["message"]}')    
                             # else:
                             #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                        
+                        elif self.game_type==3:
+                            list_msg = self.eng_daide_eng_dipcc(msg)
+                            
+                            for daide_msg in list_msg:
+                                self.send_log(f'My external DAIDE-ENG response is: {daide_msg["message"]}')    
+                            else:
+                                self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+
+                            for msg in list_msg:
+                                self.send_message(msg, 'dipcc')
+                                mila_timesent = self.send_message(msg, 'mila')
+
+                            self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
+                                My internal response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
+                            self.send_log(self_pseudo_log) 
                                 
                     should_stop = await self.get_should_stop()
                     randsleep = random.random()
@@ -412,6 +428,29 @@ class milaWrapper:
             return True
         
         return False
+
+    def eng_daide_eng_dipcc(self, msg: MessageDict):
+        daide_msgs = self.to_daide_msg(msg)
+        eng_daide_msgs = []
+        for daide_m in daide_msgs:
+            try:
+                generated_English = gen_English(daide_m['message'], daide_m['recipient'], daide_m['sender'])
+            except:
+                print(f"Fail to translate the message into the English, from {daide_m['sender']}: {daide_m['message']}")
+                self.send_log(f"Fail to translate the message into the English, from {daide_m['sender']}: {daide_m['message']}") 
+            
+            if generated_English.startswith("ERROR") or generated_English.startswith("Exception"):
+                print(f"Fail to translate the message into the English, from {daide_m['sender']}: {daide_m['message']}")
+                self.send_log(f"Fail to translate the message into the English, from {daide_m['sender']}: {daide_m['message']}") 
+            else:
+                eng_daide_msg = {'sender': daide_m['sender'] ,'recipient': daide_m['recipient'], 'message': generated_English}
+                eng_daide_msgs.append(eng_daide_msg)
+        
+        return eng_daide_msgs
+
+    def eng_daide_eng_mila(self, msg: Message):
+        mila_dict_msg = {'sender': msg.sender ,'recipient': msg.recipient, 'message': msg.message}
+        return eng_daide_eng_dipcc(mila_msg)
 
     def to_daide_msg(self, msg: MessageDict):
         print('-----------------------')
@@ -767,7 +806,8 @@ class milaWrapper:
                 # if the message is english, just send it to dipcc recipient
                 else:
                     print(f'message from mila to dipcc {message}')
-                    
+                    if self.game_type==3:
+                        message = self.eng_daide_eng_mila(message)
                     self.dipcc_game.add_message(
                         message.sender,
                         message.recipient,
