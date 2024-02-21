@@ -93,11 +93,41 @@ from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format, from_saved_game_format
 from diplomacy.utils import strings
 from daide2eng.utils import gen_English, create_daide_grammar, is_daide
+from stance_vector import ActionBasedStance, ScoreBasedStance
+
+default_is_bot ={
+            'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ENGLAND': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'FRANCE': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'GERMANY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ITALY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'RUSSIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'TURKEY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False}
+        }
+default_stance ={
+            'AUSTRIA': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'ENGLAND': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'FRANCE': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'GERMANY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'ITALY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'RUSSIA': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
+            'TURKEY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0}
+        }
+default_order_log ={00000:'default'}  
+default_deceiving = {
+            'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ENGLAND': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'FRANCE': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'GERMANY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'ITALY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'RUSSIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
+            'TURKEY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False}
+        }
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 DEFAULT_DEADLINE = 5
-GAME_PATH = "./fairdiplomacy_external/out/AIGame_0.json"
-YEAR = 'S1902M'
+GAME_PATH = "./fairdiplomacy_external/out/test_deceptive_cicero_7.json"
+YEAR = 'S1905M'
 
 def update_past_phase(mila_game, dipcc_game: Game, phase: str, power: Power):
     if phase not in mila_game.message_history:
@@ -178,71 +208,140 @@ def load_game(stop_at_phase: str, power: Power):
 
     game.set_scoring_system(Game.SCORING_SOS)
     game.set_metadata("phase_minutes", str(DEFAULT_DEADLINE))
+    #avoid having info. leak!
     game = game_from_view_of(game, power)
 
     #load each phase to mila and dipcc
     #stop at phase
-    print(f'start phase mila: {mila_game.get_current_phase()}')
-    print(f'start phase dipcc: {game.get_state()["name"]}')
+    stance_vector = ActionBasedStance(power ,mila_game)
+    # print(f'start phase mila: {mila_game.get_current_phase()}')
+    # print(f'start phase dipcc: {game.get_state()["name"]}')
     while game.get_state()['name'] != mila_game.get_current_phase() and game.get_state()['name'] !=stop_at_phase:
-        print(f'updating phase: {game.get_state()["name"]}')
+        # print(f'updating phase: {game.get_state()["name"]}')
         update_past_phase(mila_game, game, game.get_state()['name'], power)
+    # print(f'let\'s play at phase: {game.get_state()["name"]}')
 
-    print(f'let\'s play at phase: {game.get_state()["name"]}')
-    #avoid having info. leak!
+    #quick fix for error in diplomacy/engine/game.py
+    for phase in mila_game.order_history:
+        if phase not in mila_game.order_log_history:
+            mila_game.order_log_history.put(mila_game._phase_wrapper_type(phase), default_order_log)
+        if phase  not in mila_game.is_bot_history:
+            mila_game.is_bot_history.put(mila_game._phase_wrapper_type(phase), default_is_bot)
+        if phase  not in mila_game.deceiving_history:
+            mila_game.deceiving_history.put(mila_game._phase_wrapper_type(phase), default_deceiving)
+    # print(len(list(mila_game.order_history.keys())))
+    # print(len(list(mila_game.order_log_history.keys())))
+    # print(len(list(mila_game.is_bot_history.keys())))
+    # print(len(list(mila_game.deceiving_history.keys())))
+
+    #get stance vector
+    first_turn = True if mila_game.get_current_phase()=='S1901M' else False
+    if not first_turn:
+        # update stance vector 
+        _, _ = stance_vector.get_stance(mila_game, verbose=True)
     
-    return mila_game, game
 
-def load_cicero(power_name: Power):
+    
+    return mila_game, game, stance_vector
+
+def load_cicero():
     agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
     agent = PyBQRE1PAgent(agent_config.bqre1p)
-    player = Player(agent, power_name)
-    return player
+    return agent
 
-def test_intent_from_game(sender: Power, recipient: Power):
+
+async def test_intent_from_game(sender: Power, recipient: Power):
     K=20
     #load agent
-    mila_game, dipcc_game = load_game(YEAR, sender)
-    cicero_player = load_cicero(sender)
-
-    pre_orders = cicero_player.get_orders(dipcc_game)
-    print(f'first order of this turn w/o communication {pre_orders}')
-
-    # get msg from cicero and log intent 
-    # for i in range(K):
-    #     msg = generate_message(dipcc_game, cicero_player, recipient=recipient)
-    #     real_pseudo = cicero_player.state.pseudo_orders_cache.maybe_get(
-    #                 dipcc_game, cicero_player.power, True, True, recipient) 
-    #     print(f'-------- sample {i} --------')
-    #     # print(f'PO to comm log: {real_pseudo}')
-    #     print(f'with message {msg}')
-
-    # change intent -> new K intents (by self) and get msg 2... K
-    #ours
-    test_intent1 = PseudoOrders({'S1902M': {'GERMANY': ('F DEN - NTH', 'A HOL H', 'A RUH - MUN', 'F KIE - HEL', 'A MUN - TYR'), 'FRANCE': ('F BRE - ENG', 'A BUR - BEL', 'A PAR - PIC', 'F POR - MAO', 'A SPA - GAS')}, 
-            'S1902R': {'GERMANY': (), 'FRANCE': ()}, 'F1902M': {'GERMANY': ('A HOL H', 'A MUN - TYR', 'F HEL S F DEN - NTH', 'F DEN - NTH', 'A TYR - PIE'), 'FRANCE': ('A BEL S A HOL', 'F BRE - ENG', 'F MAO S F BRE - ENG', 'A PIC S A BEL', 'A GAS - BUR')}})
-    print(f'fake PO1 to comm log: {test_intent1}')
     for i in range(K):
-        msg1 = generate_message(dipcc_game, cicero_player, recipient=recipient, pseudo_orders=test_intent1)
+        mila_game, dipcc_game, stance_vector = load_game(YEAR, sender)
+        if i ==0:
+            agent = load_cicero()
+
+        sender_player = Player(agent, sender)
+        sender_player.agent.set_stance_vector(stance_vector)
+        sender_player.agent.set_mila_game(mila_game)
+
+        dipcc_game.add_message(
+                    recipient, 
+                    sender, 
+                    "What's the plan this turn?", 
+                    time_sent=Timestamp.now(),
+                    increment_on_collision=True,
+                )
+
+        pre_orders = sender_player.get_orders(dipcc_game)
         print(f'-------- sample {i} --------')
+        print(f'{sender} (main) first order of this turn w/o communication {pre_orders}')
+
+        # get msg from cicero and log intent 
+        # for i in range(K):
+        #     msg = generate_message(dipcc_game, cicero_player, recipient=recipient)
+        #     real_pseudo = cicero_player.state.pseudo_orders_cache.maybe_get(
+        #                 dipcc_game, cicero_player.power, True, True, recipient) 
+        #     print(f'-------- sample {i} --------')
+        #     # print(f'PO to comm log: {real_pseudo}')
+        #     print(f'with message {msg}')
+
+        # change intent -> new K intents (by self) and get msg 2... K
+        #ours
+        #get from Searchbot for the best lie intent if possible? #edit in searchbot too
+        # test_intent1 = PseudoOrders({'S1902M': {'GERMANY': ('F DEN - NTH', 'A HOL H', 'A RUH - MUN', 'F KIE - HEL', 'A MUN - TYR'), 'FRANCE': ('F BRE - ENG', 'A BUR - BEL', 'A PAR - PIC', 'F POR - MAO', 'A SPA - GAS')}, 
+        #         'S1902R': {'GERMANY': (), 'FRANCE': ()}, 'F1902M': {'GERMANY': ('A HOL H', 'A MUN - TYR', 'F HEL S F DEN - NTH', 'F DEN - NTH', 'A TYR - PIE'), 'FRANCE': ('A BEL S A HOL', 'F BRE - ENG', 'F MAO S F BRE - ENG', 'A PIC S A BEL', 'A GAS - BUR')}})
+        # print(f'fake PO1 to comm log: {test_intent1}')
+        
+        msg1 = generate_message(dipcc_game, sender_player, recipient=recipient, pseudo_orders=None)
+        if msg1 == None:
+            print(f'msg is none, we are skipping this {i} sample')
+            continue
+        
         
         print(f'with message {msg1}')
 
-    # #theirs
+        # #theirs
 
-    # #future
+        # #future
 
-    # #generate outcomes
-    # msg = generate_message(dipcc_game, cicero_player, recipient=recipient, pseudo_orders=test_intent1)
-    # timesend = Timestamp.now()
-    # dipcc_game.add_message(
-    #             msg['sender'], 
-    #             msg['recipient'], 
-    #             msg['message'], 
-    #             time_sent=timesend,
-    #             increment_on_collision=True,
-    #         )
+        # #generate outcomes
+        # msg = generate_message(dipcc_game, cicero_player, recipient=recipient, pseudo_orders=test_intent1)
 
+        rec_mila_game, rec_dipcc_game, stance_vector = load_game(YEAR, recipient)
+        rec_player = Player(agent, recipient)
+        rec_player.agent.set_stance_vector(stance_vector)
+        rec_player.agent.set_mila_game(mila_game)
+        # rec_pre_orders = rec_player.get_orders(dipcc_game)
+        bp_policy = rec_player.agent.maybe_get_incremental_bp(
+            rec_dipcc_game,
+            agent_power=recipient,
+            agent_state=rec_player.state,
+            extra_plausible_orders=extra_plausible_orders,
+        )
+        print(f'{recipient} (recipient) first order of this turn w/o communication {bp_policy}')
+        rec_dipcc_game.add_message(
+                    recipient, 
+                    sender, 
+                    "What's the plan this turn?", 
+                    time_sent=Timestamp.now(),
+                    increment_on_collision=True,
+                )
+        rec_dipcc_game.add_message(
+                    msg1['sender'], 
+                    msg1['recipient'], 
+                    msg1['message'], 
+                    time_sent=Timestamp.now(),
+                    increment_on_collision=True,
+                )
+        # later_rec_pre_orders = rec_player.agent.get_orders(rec_dipcc_game)
+        bp_policy = rec_player.agent.maybe_get_incremental_bp(
+            rec_dipcc_game,
+            agent_power=recipient,
+            agent_state=rec_player.state,
+            extra_plausible_orders=extra_plausible_orders,
+        )
+        #or get their bp_policies to see diff in prob
+        print(f'{recipient} (recipient) order of this turn after communication with {sender}: {bp_policy}')
+        print(f'-------- end --------')
+        await asyncio.sleep(5)
 # def lie_score():
 
 def test_val_table(power: Power, recipient: Power):
@@ -264,5 +363,5 @@ def test_val_table(power: Power, recipient: Power):
     json.dump(new_table_dict, out_file, indent = 6) 
     out_file.close() 
 
-# test_intent_from_game('GERMANY','FRANCE')
-test_val_table('GERMANY','FRANCE')
+asyncio.run(test_intent_from_game('RUSSIA','TURKEY'))
+# test_val_table('GERMANY','FRANCE')

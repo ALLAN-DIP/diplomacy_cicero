@@ -1696,33 +1696,45 @@ class SearchBotAgent(BaseSearchAgent):
         self.tau = 0
         first_turn = True if self.mila_game.get_current_phase()=='S1901M' else False
         if not first_turn:
-            curr_stance_vector, stance_log = self.stance_vector.get_stance(self.mila_game, verbose=True)
-            pair_curr_sv = curr_stance_vector[recipient][agent_power]
-            self.send_log(f'log curr_stance from {recipient} to {agent_power}: {pair_curr_sv}')
-            # self.send_log(f'generating message and log stance: {stance_log[agent_power]}')
+            #get curr stance
+            pair_curr_sv = self.stance_vector.stance[recipient][agent_power]
+            #check new stance if we do this intent 
+            new_stance_vector = self.predict_stance_vector_from_to(recipient, agent_power, self.stance_vector.stance, og_pseudo_orders[agent_power])
+            
+            log = f'with PO: {og_pseudo_orders[agent_power]} a new predicted stance vector from {recipient} to {agent_power}: {pair_curr_sv}->{new_stance_vector} and betray if {pair_curr_sv} - {new_stance_vector} >= {self.stance_vector.alpha2} '
+            try:
+                self.send_log(log)
+            except:
+                print(log)
 
-            #check new stance if we do this intent --- how to predicted stance from here?
-            new_stance_vector = self.predict_stance_vector_from_to(recipient, agent_power, curr_stance_vector, og_pseudo_orders[agent_power])
-
-            self.send_log(f'with PO: {og_pseudo_orders[agent_power]} a new predicted stance vector from {recipient} to {agent_power}: {pair_curr_sv}->{new_stance_vector}')
             #alpha2 = lowerbound when there is a conflict (conflict move and support )
             is_betray = pair_curr_sv - new_stance_vector >= self.stance_vector.alpha2 
-            self.send_log(f'betray if {pair_curr_sv} - {new_stance_vector} >= {self.stance_vector.alpha2 }')
             change_our_po = is_betray
             
             search_result.set_policy_and_value_for_other_power(recipient, og_pseudo_orders[recipient], game)
             value_to_them = search_result.value_to_them
             lie_policy = search_result.get_bp_policy()[agent_power]
+            # print(f'lie policy {lie_policy}, \n OG: value_to_me (with their avg_action): {value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()} ')
+            # print(f'lie policy {lie_policy}, \n OG: value_to_me (with their avg_action): {value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()} , \n value_to_me: {value_to_me[agent_power, og_pseudo_orders[agent_power]].get_avg()} ')
 
             #their value when we play lie PO and their PO
             v_me_og =  value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()
             v_them_og = value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
 
+            # stance_vector_to_them for every possible order in lie_policy
+
+            # lie_po = max(
+            #                 lie_policy, key=lambda a: value_to_them[recipient, a].get_avg() - v_them_og + v_me_og - value_to_them[agent_power, a].get_avg()
+            #             )
             lie_po = max(
-                            lie_policy, key=lambda a: value_to_them[recipient, a].get_avg() - v_them_og + v_me_og - value_to_them[agent_power, a].get_avg()
-                        )
+                lie_policy, key=lambda a: value_to_them[recipient, a].get_avg() - v_them_og
+            )
             # print(f'argmax lie_po: {lie_po}')
-            self.send_log(f'argmax lie_po: {lie_po} and og PO: {og_pseudo_orders[agent_power]}')
+            log = f'argmax lie_po: {lie_po} and og PO: {og_pseudo_orders[agent_power]} with value_to_them (lie_po,OG): ({value_to_them[recipient, lie_po].get_avg()}, {v_them_og})'
+            try:
+                self.send_log(log)
+            except:
+                print(log)
             #if lie PO v(sounds good) = (lambda * value_to_them[recipient, lie_po]) + (1- lambda * value_to_me[recipient, their_po])
             #or just v(sounds good) = value_to_them[recipient, lie_po]
             # v_them = value_to_them[recipient, lie_po].get_avg() - value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
@@ -1758,8 +1770,14 @@ class SearchBotAgent(BaseSearchAgent):
 
             elif agent_power== lie_country and not change_their_po and change_our_po:
                 log = f'(Our PO) changing PO to Deceptive PO. PO: {og_pseudo_orders[agent_power]} and Deceptive PO: {pseudo_orders[agent_power]}'
-                self.send_log(log)
+                try:
+                    self.send_log(log)
+                except:
+                    print(log)
                 pseudo_orders[recipient] = og_pseudo_orders[recipient]
+
+                # self.send_log("We didn't lie and change PO to OG")
+                # pseudo_orders[agent_power] = og_pseudo_orders[agent_power]
             else:
                 pseudo_orders = og_pseudo_orders
 
@@ -2242,6 +2260,7 @@ class SearchBotAgent(BaseSearchAgent):
         temp_stance_vector = copy.deepcopy(curr_stance_vector)
         #create a sim that to_power submit "order" 
         sim_game = __game_deepcopy__(self.mila_game)
+        print(f'simgame phase: {sim_game.get_current_phase()} and power {to_power} units: {sim_game.powers[to_power].units} with orders: {list(orders)}')
         
         #submit order
         sim_game.set_orders(power_name=to_power, orders=list(orders))

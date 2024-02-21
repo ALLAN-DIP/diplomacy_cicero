@@ -89,7 +89,7 @@ class BRCorrBilateralSearchResult(SearchResult):
                 ].item()
                 self.value_to_me[power, action].accum(value, 1)
 
-    def set_policy_and_value_for_other_power(self, other_power: Power, best_action: Action, game: pydipcc.Game):
+    def set_policy_and_value_for_other_power(self, other_power: Power, avg_action: Action, game: pydipcc.Game):
         """
         Set the value_to_them for my and opponents' actions.
         """
@@ -113,11 +113,11 @@ class BRCorrBilateralSearchResult(SearchResult):
                 continue
 
             #what is my value if I using this lie po with their best action
-            if (action, best_action) not in self.power_value_matrices[other_power]:
+            if (action, avg_action) not in self.power_value_matrices[other_power]:
                 continue
-            my_value = self.power_value_matrices[other_power][(action, best_action)][agent_power_idx].item() 
+            my_value = self.power_value_matrices[other_power][(action, avg_action)][agent_power_idx].item() 
             #what is their value if I using this lie po with their best action
-            their_value = self.power_value_matrices[other_power][(action, best_action)][other_power_idx].item()
+            their_value = self.power_value_matrices[other_power][(action, avg_action)][other_power_idx].item()
 
             self.value_to_them[self.agent_power, action].accum(my_value, 1)
             self.value_to_them[other_power, action].accum(their_value, 1)

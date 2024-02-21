@@ -228,6 +228,12 @@ class milaWrapper:
             if self.game.get_current_phase() not in self.game.deceiving_history:
                 self.game.deceiving_history.put(self.game._phase_wrapper_type(self.game.get_current_phase()), default_deceiving)
 
+            first_turn = True if self.game.get_current_phase()=='S1901M' else False
+            if not first_turn:
+                # update stance vector 
+                curr_stance_vector, stance_log = stance_vector.get_stance(self.game, verbose=True)
+                self.agent.set_stance_vector(stance_vector)
+
             self.phase_start_time = time.time()
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()
             self.presubmit = False
@@ -1074,7 +1080,8 @@ def main() -> None:
         outdir.mkdir(parents=True, exist_ok=True)
 
     mila = milaWrapper(is_deceptive=deceptive)
-
+    # while True:
+    #     try:
     asyncio.run(
         mila.play_mila(
             hostname=host,
@@ -1083,8 +1090,13 @@ def main() -> None:
             power_name=power,
             game_type=game_type,
             gamedir=outdir,
-        )
-    )
+                )
+            )
+        # except:
+        #     pass
+        # else:
+        #     break
+    
 
 async def test_mila_function():
     """ 
