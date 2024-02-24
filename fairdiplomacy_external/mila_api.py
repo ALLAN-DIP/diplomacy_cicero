@@ -92,6 +92,7 @@ from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
 from daide2eng.utils import gen_English, create_daide_grammar, is_daide
+# from discordwebhook import Discord
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -148,18 +149,16 @@ class milaWrapper:
         port = args.port
         game_id = args.game_id
         power_name = args.power
-        human_game = args.human_game
         gamedir = args.outdir
-        silent = args.silent
         self.daide_fallback = args.daide_fallback
         
         print(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port)
         dec = 'Deceptive_' if self.deceptive else ''
         channel = await connection.authenticate(
-            f"{dec}cicero_{power_name}", "password"
+            f"admin", "password"
         )
-        self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
+        self.game: NetworkGame = await channel.join_game(game_id=game_id)
 
         # Wait while game is still being formed
         print(f"Waiting for game to start")
@@ -173,14 +172,15 @@ class milaWrapper:
         print(f"Started dipcc game")
 
         self.player = Player(self.agent, power_name)
-        self.game_type = game_type
+        self.game_type = args.game_type
         
         num_beams   = 4
         batch_size  = 16
 
-        if self.game_type !=2:
+        if self.game_type not in [2,5]:
+            self.model = 'best_model'
             device = 'cuda:0'
-            model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/best_model/'
+            model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/personal/SEN_REC_MODEL/'
             self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
         
 
@@ -208,6 +208,12 @@ class milaWrapper:
                 # PRESS
                 has_deadline = self.game.deadline > 0 
                 should_stop = await self.get_should_stop()
+                
+                # suggest move to human
+                if self.game_type==5:
+                    self.suggest_move(power_name)
+
+
                 while not should_stop :
                     if has_deadline:
                         # if times almost up but still can do some press, let's presubmit order
@@ -225,7 +231,7 @@ class milaWrapper:
                         await self.update_press_dipcc_game(power_name)
 
                     # if not a silent agent
-                    if self.game_type!=4:
+                    if self.game_type!=3:
                     # reply/gen new message
                         msg = self.generate_message(power_name)
                         print(f'msg from cicero to dipcc {msg}')
@@ -247,10 +253,10 @@ class milaWrapper:
                             else:
                                 recp_po = power_po[power]
                         
-                        if not self.sent_self_intent:
-                            self_pseudo_log = f'At the start of this phase, I intend to do: {self_po}'
-                            self.send_log(self_pseudo_log) 
-                            self.sent_self_intent = True
+                        # if not self.sent_self_intent:
+                        #     self_pseudo_log = f'At the start of this phase, I intend to do: {self_po}'
+                        #     self.send_log(self_pseudo_log) 
+                        #     self.sent_self_intent = True
 
                         # keep track of intent that we talked to each recipient
                         self.set_comm_intent(recipient_power, power_po)
@@ -301,16 +307,26 @@ class milaWrapper:
                             self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
                                 My internal response is {msg["message"]}. I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
                             self.send_log(self_pseudo_log) 
-                            
-                            for daide_msg in list_msg:
-                                self.send_log(f'My external DAIDE-ENG response is: {daide_msg["message"]}')    
-                            else:
-                                self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
 
-                            for msg in list_msg:
-                                self.send_message(msg, 'dipcc')
-                                mila_timesent = self.send_message(msg, 'mila')
-                                
+                            if len(list_msg)==0:
+                                self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                            else:
+                                for daide_msg in list_msg:
+                                    self.send_log(f'My external DAIDE-ENG response is: {daide_msg["message"]}')    
+                                    self.send_message(daide_msg, 'dipcc')
+                                    mila_timesent = self.send_message(daide_msg, 'mila')
+
+                        elif self.game_type==5:
+                            msg['message'] = f"{power_name} Cicero suggests a message to {msg['recipient']}: {msg['message']}"
+                            msg['recipient'] = 'GLOBAL'
+                            msg['type'] = 'suggested_message'
+                            mila_timesent = self.send_message(msg, 'mila')
+                            self.suggest_move(power_name)
+
+                            # self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
+                            #     My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
+                            # self.send_log(self_pseudo_log) 
+
                     should_stop = await self.get_should_stop()
                     randsleep = random.random()
                     await asyncio.sleep(1 + 10* randsleep)
@@ -326,7 +342,8 @@ class milaWrapper:
                     self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
 
                     # set order in Mila
-                    self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
+                    if self.game_type!=5:
+                        self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
 
                 # wait until the phase changed
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
@@ -356,7 +373,7 @@ class milaWrapper:
     def set_comm_intent(self, recipient, pseudo_orders):
         self.last_comm_intent[recipient] = pseudo_orders
         
-   def check_PRP(self,msg,power_name,response):
+    def check_PRP(self,msg,power_name,response):
         phase_messages = self.get_messages(
                         messages=self.game.messages, power=power_name
                     )
@@ -397,6 +414,14 @@ class milaWrapper:
     #         return positive_reply+proposal+')'
     #     else:
     #         return negative_reply+proposal+')'
+            
+    def suggest_move(self, power_name):
+        msg = {'sender': power_name}
+        agent_orders = list(self.player.get_orders(self.dipcc_game))
+        msg['message'] = f"{power_name} Cicero suggests move: {', '.join(agent_orders)}"
+        msg['recipient'] = 'GLOBAL'
+        msg['type'] = 'suggested_move'
+        self.send_message(msg, 'mila')
 
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:
@@ -434,8 +459,8 @@ class milaWrapper:
         return eng_daide_msgs
 
     def eng_daide_eng_mila(self, msg: Message):
-        mila_dict_msg = {'sender': msg.sender ,'recipient': msg.recipient, 'message': msg.message}
-        return eng_daide_eng_dipcc(mila_msg)
+        mila_dict_msg = {'sender': msg.sender ,'recipient': msg.recipient, 'message': msg.message, 'phase':msg.phase}
+        return self.eng_daide_eng_dipcc(mila_dict_msg)
 
     def divide_sentences(self,sentence):
         if sentence.startswith('AND '):
@@ -455,13 +480,14 @@ class milaWrapper:
                 list1[i] = 'THK ('+list1[i]+')'
             return list1
 
-    def to_daide_msg(self, msg: MessageDict,power_name:str):
+    def to_daide_msg(self, msg: MessageDict):
         print('-------------------------')
         print(f'Parsing {msg} to DAIDE')
 
         pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
                 self.dipcc_game, self.player.power, True, True, msg['recipient']
-            ) 
+                ) 
+        power_name = self.player.power.upper()
 
         list_msg = []
 
@@ -779,7 +805,7 @@ class milaWrapper:
 
         presubmit_second = 120
 
-        if deadline_timer <= presubmit_second:
+        if deadline_timer <= presubmit_second and self.game_type != 5:
             print(f'time to presubmit order')
             return True
         return False
@@ -844,23 +870,28 @@ class milaWrapper:
             messages=self.game.messages, power=power_name
         )
         most_recent_mila = self.last_received_message_time
+        most_recent_sent_mila = self.last_sent_message_time
         # print(f'most update message: {most_recent}')
 
         # update message in dipcc game
         for timesent, message in phase_messages.items():
-
-            if message.recipient != power_name:
-                continue
             
+            # skip those that were sent to GLOBAL
+            if message.recipient not in POWERS:
+                continue
+
             self.prev_received_msg_time_sent[message.sender] = message.time_sent
-            if int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]):
+            
+            if (int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]) and message.recipient == power_name) or (int(str(timesent)[0:10]) > int(str(self.last_sent_message_time)[0:10]) and message.sender == power_name):
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
                 # dipcc_timesent =Timestamp.now()
                 # print(f'time_sent in dipcc {dipcc_timesent}')
                 
 
-                if timesent > most_recent_mila:
+                if timesent > most_recent_mila and message.recipient == power_name:
                     most_recent_mila = timesent
+                elif timesent > most_recent_sent_mila and message.sender == power_name:
+                    most_recent_sent_mila = timesent
 
                 # Excluding the parentheses, check if the message only contains three upper letters.
                 # If so, go through daide++. If there is an error, then send 'ERROR parsing {message}' to global,
@@ -933,6 +964,7 @@ class milaWrapper:
 
         # update last_received_message_time 
         self.last_received_message_time = most_recent_mila
+        self.last_sent_message_time = most_recent_sent_mila
 
     def update_and_process_dipcc_game(self):
         """     
@@ -976,11 +1008,12 @@ class milaWrapper:
 
         # generate message using pseudo orders
         pseudo_orders = None
-        # if isinstance(self.player.state, SearchBotAgentState):
-        #     pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
-        #         self.dipcc_game, self.player.power, True, True, None
-        #     ) 
 
+        # set human_intent
+        human_intent = self.game.get_orders(power_name)
+        if human_intent:
+            self.agent.set_power_po(human_intent)
+        
         msg = self.player.generate_message(
             game=self.dipcc_game,
             timestamp=timestamp_for_conditioning,
@@ -1012,8 +1045,11 @@ class milaWrapper:
         """ 
         send log to mila games 
         """ 
-        log_data = self.game.new_log_data(body=log)
-        self.game.send_log_data(log=log_data)
+        if self.game_type == 5:
+            print('skip log')
+        else:
+            log_data = self.game.new_log_data(body=log)
+            self.game.send_log_data(log=log_data)
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
@@ -1032,10 +1068,11 @@ class milaWrapper:
 
         if engine =='mila':
             mila_msg = Message(
-                sender=msg["sender"],
+                sender= "omniscient_type" if self.game_type ==5 else msg["sender"],
                 recipient=msg["recipient"],
                 message=msg["message"],
                 phase=self.game.get_current_phase(),
+                type = msg['type']
                 )
             self.game.send_game_message(message=mila_msg)
             timesend = mila_msg.time_sent
@@ -1105,19 +1142,32 @@ class milaWrapper:
                     dipcc_game.add_message(
                         message.sender,
                         message.recipient,
-                        message_to_send,
+                        generated_English,
                         time_sent=dipcc_timesent,
                         increment_on_collision=True)
 
             # if the message is english, just send it to dipcc recipient
             else:
-                dipcc_game.add_message(
-                    message.sender,
-                    message.recipient,
-                    message.message,
-                    time_sent=dipcc_timesent,
-                    increment_on_collision=True,
-                )
+                if self.game_type==4:
+                    list_eng_daide_message = self.eng_daide_eng_mila(message)
+                    for msg_dict in list_eng_daide_message:
+                        dipcc_game.add_message(
+                            msg_dict['sender'],
+                            msg_dict['recipient'],
+                            msg_dict['message'],
+                            # time_sent=dipcc_timesent,
+                            time_sent=Timestamp.now(),
+                            increment_on_collision=True,
+                        )
+
+                else:
+                    dipcc_game.add_message(
+                        message.sender,
+                        message.recipient,
+                        message.message,
+                        time_sent=dipcc_timesent,
+                        increment_on_collision=True,
+                    )
 
         phase_order = self.game.order_history[phase] 
 
@@ -1158,7 +1208,7 @@ def main() -> None:
         "--game_type",
         type=int, 
         default=0,
-        help="0: AI-only game, 1: Human and AI game, 2: Human-only game, 3: silent, 4: human with eng-daide-eng Cicero",
+        help="0: AI-only game, 1: Human and AI game, 2: Human-only game, 3: silent, 4: human with eng-daide-eng Cicero, 5: chiron",
     )
     # parser.add_argument(
     #     "--agent",
@@ -1200,10 +1250,20 @@ def main() -> None:
         outdir.mkdir(parents=True, exist_ok=True)
 
     mila = milaWrapper(is_deceptive=deceptive)
+    # discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
+    # discord.post(content=f"Cicero as power {power} is joining {game_id}.")
 
+    # while True:
+    #     try:
     asyncio.run(
         mila.play_mila(args)
     )
+        # except Exception:
+        #     print(Exception)
+        #     cicero_error = f"Cicero_{power} has an error occured but we are rerunning it"
+        #     discord.post(content=cicero_error)
+
+        
 
 async def test_mila_function():
     """ 
