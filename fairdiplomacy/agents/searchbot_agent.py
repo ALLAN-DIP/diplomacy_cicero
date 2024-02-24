@@ -459,6 +459,7 @@ class SearchBotAgent(BaseSearchAgent):
         self.max_seconds = cfg.max_seconds
         self.br_corr_bilateral_search_cfg = cfg.br_corr_bilateral_search
         self.message_search_cfg = cfg.message_search
+        self.human_power_po = None
 
         self.all_power_base_strategy_model_executor = None
         if self.br_corr_bilateral_search_cfg is not None:
@@ -1643,11 +1644,17 @@ class SearchBotAgent(BaseSearchAgent):
             pwr: a if is_action_valid(game, pwr, a) else argmax_orders[pwr]
             for pwr, a in pseudo_orders.items()
         }
+        
         # valid_pseudo_orders = pseudo_orders
         if valid_pseudo_orders != pseudo_orders:
             logging.info(
                 f"Updated pseudo-orders because some weren't valid: {valid_pseudo_orders}"
             )
+
+        # human_intent is not empty, we force set power_po with human_intent
+        if self.human_power_po and is_action_valid(game, agent_power, self.human_power_po):
+            valid_pseudo_orders[agent_power] = self.human_power_po
+
         joint_action = {pwr: valid_pseudo_orders.get(pwr, argmax_orders[pwr]) for pwr in POWERS}
         timings.stop()
 
@@ -2061,6 +2068,9 @@ class SearchBotAgent(BaseSearchAgent):
                 ):
                     return MessageHeuristicResult.FORCE
         return MessageHeuristicResult.NONE
+    
+    def set_power_po(human_intent):
+        self.human_power_po = human_intent
 
 
 def augment_plausible_orders(
