@@ -1692,14 +1692,14 @@ class SearchBotAgent(BaseSearchAgent):
         #deceive by changing our PO    
         #time to change our PO to sounds good for recipient argmax lie_po 
         #with assumtpion that recipient will move = og_pseudo_orders[recipient]
-        lie_country = 'RUSSIA'
+        lie_country = 'GERMANY'
         self.tau = 0
         first_turn = True if self.mila_game.get_current_phase()=='S1901M' else False
         if not first_turn:
             #get curr stance
             pair_curr_sv = self.stance_vector.stance[recipient][agent_power]
             #check new stance if we do this intent 
-            new_stance_vector = self.predict_stance_vector_from_to(recipient, agent_power, self.stance_vector.stance, og_pseudo_orders[agent_power])
+            new_stance_vector = self.predict_stance_vector_from_to(recipient, agent_power, self.stance_vector, og_pseudo_orders[agent_power])
             
             log = f'with PO: {og_pseudo_orders[agent_power]} a new predicted stance vector from {recipient} to {agent_power}: {pair_curr_sv}->{new_stance_vector} and betray if {pair_curr_sv} - {new_stance_vector} >= {self.stance_vector.alpha2} '
             try:
@@ -1710,8 +1710,16 @@ class SearchBotAgent(BaseSearchAgent):
             #alpha2 = lowerbound when there is a conflict (conflict move and support )
             is_betray = pair_curr_sv - new_stance_vector >= self.stance_vector.alpha2 
             change_our_po = is_betray
+            their_po = og_pseudo_orders[recipient]
+
+            if og_pseudo_orders[recipient]!= pseudo_orders[recipient]:
+                log = f'find {recipient} PO that better with our value: {pseudo_orders[recipient]} (previously: {og_pseudo_orders[recipient]})'
+                self.send_log(log)
+                their_po = pseudo_orders[recipient]
+                change_our_po = True
+                change_their_po = True
             
-            search_result.set_policy_and_value_for_other_power(recipient, og_pseudo_orders[recipient], game)
+            search_result.set_policy_and_value_for_other_power(recipient, their_po, game)
             value_to_them = search_result.value_to_them
             lie_policy = search_result.get_bp_policy()[agent_power]
             # print(f'lie policy {lie_policy}, \n OG: value_to_me (with their avg_action): {value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()} ')
@@ -1755,12 +1763,12 @@ class SearchBotAgent(BaseSearchAgent):
                 pseudo_orders[agent_power] = lie_po
 
             #===================================================
-            change_their_po = False
+            
             log = ''
             if agent_power== lie_country and change_their_po and change_our_po:
                 assert pseudo_orders != og_pseudo_orders, "(two-way) deceived pseudo_orders cannot be the same as original"
 
-                log = f'(two-way PO) changing PO to Deceptive PO. PO: {og_pseudo_orders} and Deceptive PO: {pseudo_orders}'
+                log = f'(Persuasion) changing our and their PO to Deceptive PO. PO: {og_pseudo_orders} and Deceptive PO: {pseudo_orders}'
                 self.send_log(log)
 
             elif agent_power== lie_country and change_their_po and not change_our_po:
@@ -2257,7 +2265,7 @@ class SearchBotAgent(BaseSearchAgent):
             result.role = strings.SERVER_TYPE
             return result
         #save current stance
-        temp_stance_vector = copy.deepcopy(curr_stance_vector)
+        sim_stance_vector = copy.deepcopy(self.stance_vector)
         #create a sim that to_power submit "order" 
         sim_game = __game_deepcopy__(self.mila_game)
         print(f'simgame phase: {sim_game.get_current_phase()} and power {to_power} units: {sim_game.powers[to_power].units} with orders: {list(orders)}')
@@ -2274,12 +2282,13 @@ class SearchBotAgent(BaseSearchAgent):
         if sim_game.get_current_phase() not in sim_game.deceiving_history:
             sim_game.deceiving_history.put(sim_game._phase_wrapper_type(sim_game.get_current_phase()), default_deceiving)
         #retreive new stance
-        predict_stance_vector = copy.deepcopy(self.stance_vector.get_stance(sim_game))
+        predict_stance_vector = copy.deepcopy(sim_stance_vector.get_stance(sim_game))
         #set stance vector back to saved version
-        for p1 in POWERS:
-            for p2 in POWERS:
-                if p1 != p2:
-                    self.stance_vector.update_stance(p1,p2, temp_stance_vector[p1][p2])
+        # for p1 in POWERS:
+        #     for p2 in POWERS:
+        #         if p1 != p2:
+        #             self.stance_vector.update_stance(p1,p2, temp_stance_vector[p1][p2])
+        
         return predict_stance_vector[from_power][to_power]
 
     def send_log(self, data):

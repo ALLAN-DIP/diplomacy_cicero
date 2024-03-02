@@ -94,6 +94,7 @@ from diplomacy.utils import strings
 from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 #stance vector
 from stance_vector import ActionBasedStance, ScoreBasedStance
+from discordwebhook import Discord
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -203,7 +204,8 @@ class milaWrapper:
 
         self.agent.set_mila_game(self.game)
         # init action stance class
-        stance_vector = ActionBasedStance(power_name ,self.game)
+        stance_vector = ActionBasedStance(power_name ,self.game,conflict_coef=1.0, conflict_support_coef=1.0
+                                          , discount_factor=1.0, random_betrayal=False)
         # get init stance from stance lib
         self.agent.set_stance_vector(stance_vector)
         self.player = Player(self.agent, power_name)
@@ -228,10 +230,12 @@ class milaWrapper:
             if self.game.get_current_phase() not in self.game.deceiving_history:
                 self.game.deceiving_history.put(self.game._phase_wrapper_type(self.game.get_current_phase()), default_deceiving)
 
-            first_turn = True if self.game.get_current_phase()=='S1901M' else False
-            if not first_turn:
+            m_turn = True if self.game.get_current_phase()!='S1901M' and self.game.get_current_phase()[-1] =='M' else False
+            if m_turn:
                 # update stance vector 
                 curr_stance_vector, stance_log = stance_vector.get_stance(self.game, verbose=True)
+                # print(f'report stance log for this turn {self.game.get_current_phase()}: {stance_log}')
+                self.send_log(f'report stance log for this turn {self.game.get_current_phase()}: {stance_log}')
                 self.agent.set_stance_vector(stance_vector)
 
             self.phase_start_time = time.time()
@@ -1080,23 +1084,26 @@ def main() -> None:
         outdir.mkdir(parents=True, exist_ok=True)
 
     mila = milaWrapper(is_deceptive=deceptive)
-    # while True:
-    #     try:
-    asyncio.run(
-        mila.play_mila(
-            hostname=host,
-            port=port,
-            game_id=game_id,
-            power_name=power,
-            game_type=game_type,
-            gamedir=outdir,
-                )
-            )
-        # except:
-        #     pass
-        # else:
-        #     break
-    
+    discord = Discord(url="https://discord.com/api/webhooks/1210406902102626336/G3v3wGW5N6HxorNAPBJDv-spbCM0inyjHT-wh4d5NsM_sOIh6_v2aXH6U3CvRvDID5BY")
+    discord.post(content=f"Cicero as power {power} is joining {game_id}.")
+    while True:
+        try:
+            asyncio.run(
+                mila.play_mila(
+                    hostname=host,
+                    port=port,
+                    game_id=game_id,
+                    power_name=power,
+                    game_type=game_type,
+                    gamedir=outdir,
+                        )
+                    )
+        except Exception:
+            print(Exception)
+            cicero_error = f"Cicero_{power} has an error occured but we are rerunning it"
+            discord.post(content=cicero_error)
+
+
 
 async def test_mila_function():
     """ 
