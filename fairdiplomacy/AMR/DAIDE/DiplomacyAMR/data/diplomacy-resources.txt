@@ -118,6 +118,7 @@
  
 ::unit-type-id AMY ::unit-type-name army
 ::unit-type-id FLT ::unit-type-name fleet
+::unit-type-id UNT ::unit-type-name unit
 
 ::amr-mapping accept-01 accept yes
 ::amr-mapping ally-01 ally aly

@@ -1,7 +1,4 @@
 import json
-import sys
-sys.path.insert(0, '../../../amrlib')
-#import amrlib
 from   amrlib.models.parse_xfm.inference import Inference
 from amrtodaide import AMR
 import regex
@@ -11,10 +8,10 @@ def eng_to_daide():
     count = 0
     num_beams   = 4
     batch_size  = 16
-    device = 'cuda:0'
+    device = 'cpu'
     model_dir  = '../../../amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
     print('loading models')
-    inference = amrlib.Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
+    inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
     print('generating')
     gen_graphs = inference.parse_sents(["Hey Austria! I know AT is one of the least successful alliances in the game, so I'm super down to work together here, especially if we can get Russia and Turkey fighting.","Hey Germany! Just reaching out to say I think our two nations tend to benefit a ton from working together, and I'm very down to work together if you'd be interested!"], disable_progress=False)
     for graph in gen_graphs:

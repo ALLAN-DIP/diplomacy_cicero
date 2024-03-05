@@ -1,0 +1,888 @@
+# ::id dip_test_0001.1
+# ::snt Russia send to Turkey that Hey Turkey! R/T is pretty much the most powerful alliance in the game imo, would you be down to play it for the long haul? I can offer to support Austria into Rum if you'd like so that we don't need to bounce and can get your fleet into AEG asap
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Russia"))
+      :ARG1 (a / and
+            :op1 (a2 / ally-01
+                  :ARG1 (a3 / and
+                        :op1 c
+                        :op2 (c2 / country
+                              :name (n2 / name
+                                    :op1 "Turkey"))))
+            :op2 (s / support-01
+                  :ARG0 c
+                  :ARG1 (m / move-01
+                        :ARG1 (u / unit
+                              :mod (c3 / country
+                                    :name (n3 / name
+                                          :op1 "Austria")))
+                        :ARG2 (p2 / province
+                              :name (n4 / name
+                                    :op1 "Romania"))))
+            :op3 (m2 / move-01
+                  :ARG1 (f / fleet
+                        :mod c3)
+                  :ARG2 (s2 / sea
+                        :name (n5 / name
+                              :op1 "Aegean"
+                              :op2 "Sea"))))
+      :ARG3 c3)
+
+# ::id dip_test_0001.2
+# ::snt Russia send to Turkey that Hey Turkey, would you be down for an early Jug? It tends to be the most efficient alliance in the game when it's played. I can support you into Rum this fall and we can work together really well from there.
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Russia"))
+      :ARG1 (a / ally-01
+            :ARG1 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Turkey")))
+            :ARG3 (p2 / province
+                  :name (n3 / name
+                        :op1 "Romania"))
+            :time (d / date-entity
+                  :year 1901
+                  :season (f / fall)))
+      :ARG3 c2)
+
+# ::id dip_test_0001.3
+# ::snt Russia send to Turkey that Hey Turkey, thoughts on opening this game? I'd be down for an early strong juggernaut, and I'm happy to support you into BLA. If you want to take that a bit slower we could try something like Smy-arm-sev in fall?
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Russia"))
+      :ARG1 (a / and
+            :op1 (s / support-01
+                  :ARG0 c
+                  :ARG1 (m / move-01
+                        :ARG1 (f / fleet
+                              :mod (c2 / country
+                                    :name (n2 / name
+                                          :op1 "Turkey")))
+                        :ARG2 (s2 / sea
+                              :name (n3 / name
+                                    :op1 "Black"
+                                    :op2 "Sea"))))
+            :op2 (s3 / support-01
+                  :ARG0 c
+                  :ARG1 (m2 / move-01
+                        :ARG1 (u / unit
+                              :mod c2)
+                        :ARG2 (p2 / province
+                              :name (n4 / name
+                                    :op1 "Armenia")))
+                  :time (d / date-entity
+                        :year 1908
+                        :season (f2 / fall))))
+      :ARG3 c2)
+
+# ::id dip_test_0001.4
+# ::snt Russia send to England that Hey England, just wanted to say hey and let you know I plan to open south and give you Norway uncontested. I'd really rather not have to worry about Stp but that's just me.
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Russia"))
+      :ARG1 (a / and
+            :op1 (a2 / attack-01
+                  :ARG0 c
+                  :ARG1 (p2 / province
+                        :name (n2 / name
+                              :op1 "Norway")))
+            :op2 a2
+            :polarity -
+            :ARG0 c
+            :ARG1 (p3 / province
+                  :name (n3 / name
+                        :op1 "St."
+                        :op2 "Petersburg")))
+      :ARG3 (c2 / country
+            :name (n4 / name
+                  :op1 "England")))
+
+# ::id dip_test_0001.5
+# ::snt Russia send to Italy that Hey Italy, just wanted to say hey. Interested in a wintergreen?
+(a / amr-empty)
+
+# ::id dip_test_0001.6
+# ::snt Russia send to Italy that Hey Italy, any chance you'd like to run an I/R?
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Russia"))
+      :ARG1 (a / and
+            :op1 (a2 / ally-01
+                  :ARG1 (a3 / and
+                        :op1 c
+                        :op2 (c2 / country
+                              :name (n2 / name
+                                    :op1 "Italy"))))
+            :op2 a2
+            :ARG1 (a4 / and
+                  :op1 c
+                  :op2 c2))
+      :ARG3 c2)
+
+# ::id dip_test_0001.7
+# ::snt Russia send to Germany that Hey Germany! Good luck this game. I am opening south and I hope you will let me into Sweden. I would be more than willing to give you support against England if you are interested.
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Russia"))
+      :ARG1 (a / and
+            :op1 (m / move-01
+                  :ARG1 (u / unit
+                        :mod c)
+                  :ARG2 (p2 / province
+                        :name (n2 / name
+                              :op1 "Sweden")))
+            :op2 (s / support-01
+                  :ARG0 (c2 / country
+                        :name (n3 / name
+                              :op1 "Germany"))
+                  :ARG1 (a2 / attack-01
+                        :ARG0 c2
+                        :ARG1 (c3 / country
+                              :name (n4 / name
+                                    :op1 "England"))))
+            :ARG3 c2))
+
+# ::id dip_test_0001.8
+# ::snt Russia send to France that Hey France, good luck this game. I am opening south but if you'd like to collaborate I'd be down.
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Russia"))
+      :ARG1 (a / ally-01
+            :ARG1 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "France"))))
+      :ARG3 c2)
+
+# ::id dip_test_0001.9
+# ::snt Russia send to Austria that Hey Austria, thoughts on opening this game? I'd like to get into Rum early and would be happy to negotiate on the rest of the balkans. I'd also be happy to work with you in a long-term alliance if you have some interest.
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Russia"))
+      :ARG1 (a / ally-01
+            :ARG1 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Austria"))))
+      :ARG3 c2)
+
+# ::id dip_test_0001.10
+# ::snt Austria send to Italy that Hey Italy! I'm happy to keep Tyrolia as a DMZ, or we could bounce if you'd prefer that. Let me know what you'd like to do!
+(a / agree-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Austria"))
+      :ARG1 (d / demilitarize-01
+            :ARG1 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Italy")))
+            :ARG2 (p / province
+                  :name (n3 / name
+                        :op1 "Tyrolia")))
+      :ARG2 c2)
+
+# ::id dip_test_0001.11
+# ::snt Austria send to Germany that Hey Germany! I'm happy to keep Tyrolia as a DMZ if you'd like that. I also wouldn't mind a central alliance between you, me, and Italy, if you'd like to try that!
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Austria"))
+      :ARG1 (a / ally-01
+            :ARG1 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Germany"))
+                  :op3 (c3 / country
+                        :name (n3 / name
+                              :op1 "Italy")))
+            :ARG3 (c4 / country
+                  :name (n4 / name
+                        :op1 "Tyrolia")))
+      :ARG3 c2)
+
+# ::id dip_test_0001.12
+# ::snt Austria send to Russia that Hey Russia! How would you like to handle Galicia? Do you want to bounce? I'd be happy to support you to Rumania in the fall if you'd like!
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Austria"))
+      :ARG1 (s / support-01
+            :ARG0 c
+            :ARG1 (m / move-01
+                  :ARG1 (u / unit
+                        :mod (c2 / country
+                              :name (n2 / name
+                                    :op1 "Russia")))
+                  :ARG2 (p2 / province
+                        :name (n3 / name
+                              :op1 "Romania")))
+            :time (d / date-entity
+                  :year 1904
+                  :season (f / fall)))
+      :ARG3 c2)
+
+# ::id dip_test_0001.13
+# ::snt Austria send to Turkey that Hey Turkey! I'd love to work with you in this game if you're interested. I'm happy to support you into Rumania this fall, if you'd like.
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Austria"))
+      :ARG1 (s / support-01
+            :ARG0 c
+            :ARG1 (m / move-01
+                  :ARG1 (u / unit
+                        :mod (c2 / country
+                              :name (n2 / name
+                                    :op1 "Turkey")))
+                  :ARG2 (p2 / province
+                        :name (n3 / name
+                              :op1 "Romania")))
+            :time (d / date-entity
+                  :year 1908
+                  :season (f / fall)))
+      :ARG3 c2)
+
+# ::id dip_test_0001.14
+# ::snt Austria send to France that Hey France! I'm a big fan of an Austria-france alliance so let me know if there's anything I can do to help you out.
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Austria"))
+      :ARG1 (a / ally-01
+            :ARG1 (a2 / and
+                  :op1 (c2 / country
+                        :name (n2 / name
+                              :op1 "Italy"))
+                  :op2 c))
+      :ARG3 c2)
+
+# ::id dip_test_0001.15
+# ::snt England send to Russia that Hi Russia! Wondering if you'd be down for an ER? I think we have a lot of potential to work together and I'd love to figure that out. Let me know!
+(a / amr-empty)
+
+# ::id dip_test_0001.16
+# ::snt England send to Russia that Looks like a strong RT is coming our way...I hope you know that the Russia in the middle gets killed off really quickly in a RT and the one in the north is going to die too.
+(e / expect-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "England"))
+      :ARG1 (a / attack-01
+            :ARG0 (c2 / country
+                  :name (n2 / name
+                        :op1 "Russia"))
+            :ARG1 (c3 / country
+                  :name (n3 / name
+                        :op1 "Turkey"))))
+
+# ::id dip_test_0001.17
+# ::snt England send to Turkey that Hi Turkey! I think that ET is my favorite alliance in the game. Would you be willing to open to Arm?
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "England"))
+      :ARG1 (m / move-01
+            :ARG1 (a / army
+                  :mod (c2 / country
+                        :name (n2 / name
+                              :op1 "Turkey")))
+            :ARG2 (p2 / province
+                  :name (n3 / name
+                        :op1 "Armenia")))
+      :ARG3 c2)
+
+# ::id dip_test_0001.18
+# ::snt England send to Turkey that I really think the ET works really well together, it's the best RT alliance in the game. I'll put armies in Russia's north and all we have to do is destroy him.
+(a / and
+      :op1 (a2 / ally-01
+            :ARG1 (a3 / and
+                  :op1 (c / country
+                        :name (n / name
+                              :op1 "England"))
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Turkey"))))
+      :op2 (e / expect-01
+            :ARG0 c
+            :ARG1 (a4 / attack-01
+                  :ARG0 (a5 / and
+                        :op1 c
+                        :op2 c2)
+                  :ARG1 (c3 / country
+                        :name (n3 / name
+                              :op1 "Russia")))))
+
+# ::id dip_test_0001.19
+# ::snt England send to Italy that Hi Italy! If France goes south, I'm on your side, but if not, I'm going to stay relatively neutral for now. Are you going to open east?
+(a / and
+      :op1 (p / possible-01
+            :ARG1 (a2 / ally-01
+                  :ARG1 (c / country
+                        :name (n / name
+                              :op1 "England"))
+                  :ARG2 (c2 / country
+                        :name (n2 / name
+                              :op1 "France"))))
+      :op2 (m / move-01
+            :ARG1 (u / unit
+                  :mod c2)
+            :direction (s / south)))
+
+# ::id dip_test_0001.20
+# ::snt England send to Italy that Hi Italy! I think you should just do a Lepanto. I like the AI alliance, it's good for both of us.
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "England"))
+      :ARG1 (a / ally-01
+            :ARG1 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Italy")))
+            :ARG3 (c3 / country
+                  :name (n3 / name
+                        :op1 "Austria")))
+      :ARG3 c2)
+
+# ::id dip_test_0001.21
+# ::snt England send to Italy that I think there's a strong RT going and it's going to mean a quick death for all of us if you don't do a Lepanto.
+(p / possible-01
+      :ARG1 (a / and
+            :op1 (a2 / attack-01
+                  :ARG0 (c / country
+                        :name (n / name
+                              :op1 "England"))
+                  :ARG1 (c2 / country
+                        :name (n2 / name
+                              :op1 "Russia"))
+                  :condition (a3 / ally-01
+                        :polarity -
+                        :ARG1 a
+                        :op1 c
+                        :op2 (c3 / country
+                              :name (n3 / name
+                                    :op1 "Italy")))
+                  :ARG3 (c4 / country
+                        :name (n4 / name
+                              :op1 "Austria")))))
+
+# ::id dip_test_0001.22
+# ::snt England send to Austria that Hi Austria! I think England and Austria are great midgame allies. I'd love to work together. Let me know what your plan is and how I can help.
+(a / ally-01
+      :ARG1 (a2 / and
+            :op1 (c / country
+                  :name (n / name
+                        :op1 "England"))
+            :op2 (c2 / country
+                  :name (n2 / name
+                        :op1 "Austria"))))
+
+# ::id dip_test_0001.23
+# ::snt England send to Austria that There's a strong RT going and it's going to mean a quick death for all of us unless we work together. I hope you're talking to Italy about doing a Lepanto.
+(a / and
+      :op1 (s / strong-01
+            :ARG1 (c / country
+                  :name (n / name
+                        :op1 "Russia")))
+      :op2 (p / propose-01
+            :ARG0 (c2 / country
+                  :name (n2 / name
+                        :op1 "England"))
+            :ARG1 (a2 / ally-01
+                  :ARG1 (a3 / and
+                        :op1 c
+                        :op2 (c3 / country
+                              :name (n3 / name
+                                    :op1 "Austria")))
+                  :ARG3 (c4 / country
+                        :name (n4 / name
+                              :op1 "Turkey")))
+            :ARG3 c3))
+
+# ::id dip_test_0001.24
+# ::snt England send to France that Hi France! I'd love to DMZ the channel and work together. I can even support you to Bel if you'd like. I think EF is the best alliance for both of us and I'd love to do it. Let me know!
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "England"))
+      :ARG1 (a / and
+            :op1 (d / demilitarize-01
+                  :ARG1 (a2 / and
+                        :op1 c
+                        :op2 (c2 / country
+                              :name (n2 / name
+                                    :op1 "France")))
+                  :ARG2 (s / sea
+                        :name (n3 / name
+                              :op1 "English"
+                              :op2 "Channel")))
+            :op2 (s2 / support-01
+                  :ARG0 c
+                  :ARG1 (m / move-01
+                        :ARG1 (u / unit
+                              :mod c2)
+                        :ARG2 (p2 / province
+                              :name (n4 / name
+                                    :op1 "Belgium")))))
+      :ARG3 c2)
+
+# ::id dip_test_0001.25
+# ::snt England send to France that I'm really hoping you'll join me. I think England and France work really well together.
+(a / amr-empty)
+
+# ::id dip_test_0001.26
+# ::snt England send to Germany that Hi Germany! I'd love to work together. How do you feel about opening to Denmark and bouncing Russia? If you do that I'll help you get Bel. I think EG is great for both of us and I'd love to do it. Let me know!
+(a / and
+      :op1 (p / propose-01
+            :ARG0 (c / country
+                  :name (n / name
+                        :op1 "England"))
+            :ARG1 (a2 / and
+                  :op1 (m / move-01
+                        :ARG1 (u / unit
+                              :mod c)
+                        :ARG2 (p2 / province
+                              :name (n2 / name
+                                    :op1 "Denmark")))
+                  :op2 (b / bounce-03
+                        :ARG1 (u2 / unit
+                              :mod (c2 / country
+                                    :name (n3 / name
+                                          :op1 "Russia")))
+                        :ARG2 (u3 / unit
+                              :mod c)
+                        :ARG3 (p3 / province
+                              :name (n4 / name
+                                    :op1 "Belgium")))
+                  :op3 (s / support-01
+                        :ARG0 c
+                        :ARG1 (m2 / move-01
+                              :ARG1 (u4 / unit
+                                    :mod c2)
+                              :ARG2 p2)))
+            :ARG3 c2)
+      :op2 (h / have-03
+            :ARG0 c2
+            :ARG1 (p4 / province
+                  :name (n5 / name
+                        :op1 "Ukraine"))))
+
+# ::id dip_test_0001.27
+# ::snt England send to Germany that It looks like there's a strong RT going. We're going to need to work together to stop that.
+(a / and
+      :op1 (p / possible-01
+            :ARG1 (a2 / attack-01
+                  :ARG0 (a3 / and
+                        :op1 (c / country
+                              :name (n / name
+                                    :op1 "England"))
+                        :op2 (c2 / country
+                              :name (n2 / name
+                                    :op1 "Germany")))
+                  :ARG1 (c3 / country
+                        :name (n3 / name
+                              :op1 "Russia"))))
+      :op2 (a4 / ally-01
+            :ARG1 (a5 / and
+                  :op1 c
+                  :op2 c2)
+            :ARG3 c3))
+
+# ::id dip_test_0001.28
+# ::snt France send to Austria that Hey Austria! Any plans for the near future? I would be very interested in a later-game alliance.
+(a / amr-empty)
+
+# ::id dip_test_0001.29
+# ::snt France send to Turkey that Hey Turkey! Just wanted to say hi and I hope we can work together later in the game. Anyways, if you want me to do anything in particular just send me a message.
+(a / amr-empty)
+
+# ::id dip_test_0001.30
+# ::snt France send to Russia that If you are looking for allies I am interested.
+(a / amr-empty)
+
+# ::id dip_test_0001.31
+# ::snt France send to Germany that So yeah, the ideal situation for me is to get fleets going against England.
+(p / possible-01
+      :ARG1 (a / attack-01
+            :ARG0 (c / country
+                  :name (n / name
+                        :op1 "France"))
+            :ARG1 (c2 / country
+                  :name (n2 / name
+                        :op1 "England"))))
+
+# ::id dip_test_0001.32
+# ::snt Germany send to France that Hey France, I'm keeping Munich in place to defend in case you decide to move to Bur. Would you like to work together long term though?
+(a / and
+      :op1 (d / defend-01
+            :ARG0 (c / country
+                  :name (n / name
+                        :op1 "Germany"))
+            :ARG1 (p / province
+                  :name (n2 / name
+                        :op1 "Munich"))
+            :ARG3 (c2 / country
+                  :name (n3 / name
+                        :op1 "France")))
+      :op2 (p2 / propose-01
+            :ARG0 c
+            :ARG1 (a2 / ally-01
+                  :ARG1 (a3 / and
+                        :op1 c
+                        :op2 c2)
+                  :ARG3 (p3 / province
+                        :name (n4 / name
+                              :op1 "Burgundy")))
+            :ARG3 c2))
+
+# ::id dip_test_0001.33
+# ::snt Germany send to England that Hey England, I'm leaving Munich in place to defend against France. My fleet in Kiel will not be attacking Hol or Bel. Let me know if you would like to work together.
+(a / and
+      :op1 (d / defend-01
+            :ARG0 (c / country
+                  :name (n / name
+                        :op1 "Germany"))
+            :ARG1 (o / or
+                  :op1 (p / province
+                        :name (n2 / name
+                              :op1 "Holland"))
+                  :op2 (p2 / province
+                        :name (n3 / name
+                              :op1 "Belgium")))
+            :ARG3 (c2 / country
+                  :name (n4 / name
+                        :op1 "France")))
+      :op2 (a2 / attack-01
+            :polarity -
+            :ARG0 c
+            :ARG1 (o2 / or
+                  :op1 (p3 / province
+                        :name (n5 / name
+                              :op1 "Holland"))
+                  :op2 (p4 / province
+                        :name (n6 / name
+                              :op1 "Belgium")))))
+
+# ::id dip_test_0001.34
+# ::snt Germany send to Russia that I'm not moving to Prussia or Silesia, but will be defending if you move there. I think we would both benefit from working together.
+(a / and
+      :op1 (m / move-01
+            :polarity -
+            :ARG1 (u / unit
+                  :mod (c / country
+                        :name (n / name
+                              :op1 "Germany")))
+            :ARG2 (o / or
+                  :op1 (p / province
+                        :name (n2 / name
+                              :op1 "Prussia"))
+                  :op2 (p2 / province
+                        :name (n3 / name
+                              :op1 "Silesia"))))
+      :op2 (d / defend-01
+            :ARG0 c
+            :ARG1 (p3 / province
+                  :name (n4 / name
+                        :op1 "Tyrolia"))
+            :ARG3 (c2 / country
+                  :name (n5 / name
+                        :op1 "Russia"))))
+
+# ::id dip_test_0001.35
+# ::snt Germany send to Turkey that Good luck! Let me know if you're going after Russia!
+(a / attack-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Turkey"))
+      :ARG1 (c2 / country
+            :name (n2 / name
+                  :op1 "Russia")))
+
+# ::id dip_test_0001.36
+# ::snt Germany send to Italy that Good luck! Let me know if you're going after France!
+(a / attack-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Italy"))
+      :ARG1 (c2 / country
+            :name (n2 / name
+                  :op1 "France")))
+
+# ::id dip_test_0001.37
+# ::snt Germany send to Austria that I'm not moving to Tyr or Boh, let me know if you want support. I think we both benefit from not attacking each other.
+(a / and
+      :op1 (m / move-01
+            :polarity -
+            :ARG1 (u / unit
+                  :mod (c / country
+                        :name (n / name
+                              :op1 "Germany")))
+            :ARG2 (o / or
+                  :op1 (p / province
+                        :name (n2 / name
+                              :op1 "Tyrolia"))
+                  :op2 (p2 / province
+                        :name (n3 / name
+                              :op1 "Bohemia"))))
+      :op2 (p3 / propose-01
+            :ARG0 c
+            :ARG1 (s / support-01
+                  :ARG0 (c2 / country
+                        :name (n4 / name
+                              :op1 "Austria"))
+                  :ARG1 (a2 / attack-01
+                        :polarity -
+                        :ARG0 (a3 / and
+                              :op1 c
+                              :op2 c2)
+                        :ARG1 (a4 / and
+                              :op1 c
+                              :op2 c2))
+                  :ARG3 c2)))
+
+# ::id dip_test_0001.38
+# ::snt Germany send to Austria that In the future, an alliance between the two of us would be extremely strong if you decide to go after Russia.
+(p / possible-01
+      :ARG1 (a / ally-01
+            :ARG1 (a2 / and
+                  :op1 (c / country
+                        :name (n / name
+                              :op1 "Germany"))
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Austria"))
+                  :op3 (c3 / country
+                        :name (n3 / name
+                              :op1 "Italy")))
+            :ARG3 (c4 / country
+                  :name (n4 / name
+                        :op1 "Russia"))))
+
+# ::id dip_test_0001.39
+# ::snt Italy send to Austria that Hey Austria! I am a big fan of a strong AI, and I hope you are too! Would you like to go after Turkey together?
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Italy"))
+      :ARG1 (a / attack-01
+            :ARG0 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Austria")))
+            :ARG1 (c3 / country
+                  :name (n3 / name
+                        :op1 "Turkey")))
+      :ARG3 c2)
+
+# ::id dip_test_0001.40
+# ::snt Italy send to Turkey that If you want to go after Russia first, that's fine by me!
+(a / amr-empty)
+
+# ::id dip_test_0001.41
+# ::snt Italy send to Turkey that Hey Turkey! What are you thinking? I am open to a strong AI.
+(p / possible-01
+      :ARG1 (a / ally-01
+            :ARG1 (c / country
+                  :name (n / name
+                        :op1 "Italy"))
+            :ARG2 (c2 / country
+                  :name (n2 / name
+                        :op1 "Turkey"))))
+
+# ::id dip_test_0001.42
+# ::snt Italy send to England that Hey England! Good luck! If you're planning to go after France, let me know!
+(a / amr-empty)
+
+# ::id dip_test_0001.43
+# ::snt Italy send to England that If you're going to be pretty neutral for a while, that's fine by me! Just lmk
+(a / amr-empty)
+
+# ::id dip_test_0001.44
+# ::snt Italy send to Germany that Let me know what your plan is if you're going to go after France.
+(a / attack-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Germany"))
+      :ARG1 (c2 / country
+            :name (n2 / name
+                  :op1 "France")))
+
+# ::id dip_test_0001.45
+# ::snt Italy send to Russia that If you'd like to coordinate against Austria or Turkey, let me know!
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Italy"))
+      :ARG1 (a / ally-01
+            :ARG1 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Russia")))
+            :ARG3 (o / or
+                  :op1 (c3 / country
+                        :name (n3 / name
+                              :op1 "Austria"))
+                  :op2 (c4 / country
+                        :name (n4 / name
+                              :op1 "Turkey"))))
+      :ARG3 c2)
+
+# ::id dip_test_0001.46
+# ::snt Italy send to Russia that What's your plan? I think if you attack Turkey with me, we should be able to roll him.
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Italy"))
+      :ARG1 (a / attack-01
+            :ARG0 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Russia")))
+            :ARG1 (c3 / country
+                  :name (n3 / name
+                        :op1 "Turkey")))
+      :ARG3 c2)
+
+# ::id dip_test_0001.47
+# ::snt Turkey send to Austria that Hey Austria! I think our countries have a lot of potential, and I hope that we can work together in this game. Thoughts on how we can do that?
+(a / amr-empty)
+
+# ::id dip_test_0001.48
+# ::snt Turkey send to Austria that Hey Austria! I'd really like to work with you this game. I find that AT is a super underplayed alliance, especially when it's done well. Would you be willing to give it a shot?
+(a / ally-01
+      :ARG1 (a2 / and
+            :op1 (c / country
+                  :name (n / name
+                        :op1 "Turkey"))
+            :op2 (c2 / country
+                  :name (n2 / name
+                        :op1 "Austria"))))
+
+# ::id dip_test_0001.49
+# ::snt Turkey send to Austria that Hey Austria, I'm a huge fan of the A/T and I think it's one of the strongest alliances in the game. I am a huge fan of going after Russia first, and if you can ensure Italy is going west I think it can be an extremely strong alliance. Thoughts?
+(a / and
+      :op1 (a2 / ally-01
+            :ARG1 (a3 / and
+                  :op1 (c / country
+                        :name (n / name
+                              :op1 "Turkey"))
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Austria"))))
+      :op2 a2
+      :ARG1 (a4 / and
+            :op1 c
+            :op2 c2)
+      :op3 (p / propose-01
+            :ARG0 c
+            :ARG1 a2
+            :ARG1 (a5 / and
+                  :op1 c
+                  :op2 c2
+                  :op3 (c3 / country
+                        :name (n3 / name
+                              :op1 "Italy")))
+            :ARG3 (c4 / country
+                  :name (n4 / name
+                        :op1 "Russia")))
+      :ARG3 c3)
+
+# ::id dip_test_0001.50
+# ::snt Turkey send to Austria that Hi Austria! I hope you and I can get off to a great start this game. I love working with Austria when I play Turkey and I think it can be really strong. The important thing to me is that we get you to focus on armies while I focus on fleets, and then we can make some strong gains in the early game. In the fall we can decide what to do about Russia. I might ask Germany to deny Sweden if we do a 3v1 against Russia. Thoughts?
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Turkey"))
+      :ARG1 (a / and
+            :op1 (a2 / ally-01
+                  :ARG1 (a3 / and
+                        :op1 c
+                        :op2 (c2 / country
+                              :name (n2 / name
+                                    :op1 "Austria"))
+                        :op3 (c3 / country
+                              :name (n3 / name
+                                    :op1 "Russia")))
+                  :ARG3 (c4 / country
+                        :name (n4 / name
+                              :op1 "Sweden")))
+            :op2 a2
+            :ARG1 (a4 / and
+                  :op1 c2
+                  :op2 (c5 / country)
+                  :ARG3 c3))
+      :ARG3 c2)
+
+# ::id dip_test_0001.51
+# ::snt Turkey send to Austria that Hey Austria, what are your thoughts on an AT? It's really strong if we work together well and communicate well.
+(a / amr-empty)
+
+# ::id dip_test_0001.52
+# ::snt Turkey send to Russia that Hey Russia, what are your thoughts on a strong Russia and Turkey ally?
+(a / amr-empty)
+
+# ::id dip_test_0001.53
+# ::snt Turkey send to Russia that Hey Russia. Any thoughts on pulling off a strong Russia and Turkey ally?
+(p / possible-01
+      :ARG1 (a / ally-01
+            :polarity -
+            :ARG1 (a2 / and
+                  :op1 (c / country
+                        :name (n / name
+                              :op1 "Russia"))
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Turkey")))
+            :ARG3 (c3 / country
+                  :name (n3 / name
+                        :op1 "Austria"))))
+
+# ::id dip_test_0001.54
+# ::snt Turkey send to Italy that Hey Italy. Want to work together?
+(p / propose-01
+      :ARG0 (c / country
+            :name (n / name
+                  :op1 "Turkey"))
+      :ARG1 (a / ally-01
+            :ARG1 (a2 / and
+                  :op1 c
+                  :op2 (c2 / country
+                        :name (n2 / name
+                              :op1 "Italy"))))
+      :ARG3 c2)
+
+# ::id dip_test_0001.55
+# ::snt Turkey send to Italy that Hey Italy. Want to pinch Austria with me?
+(a / amr-empty)
+
+# ::id dip_test_0001.56
+# ::snt Turkey send to England that Hey England. I'm not exactly sure what we're going to do with each other, but it's good to keep in touch even though we're on opposite ends. If we do end up working together, a 2 way draw is really strong.
+(a / amr-empty)
+
+# ::id dip_test_0001.57
+# ::snt Turkey send to France that Hey France. How are you?
+(a / amr-empty)
+
+# ::id dip_test_0001.58
+# ::snt Turkey send to Germany that Hey Germany. How are you?
+(a / amr-empty)
+

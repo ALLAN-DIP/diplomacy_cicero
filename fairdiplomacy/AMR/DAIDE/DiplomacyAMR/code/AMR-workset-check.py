@@ -126,8 +126,7 @@ def main():
                     if not line.startswith('# '):
                         log.error(f"{workset_file} line {line_number} should start with '# '")
                 else:
-                    m4 = re.match(r'(([a-z][-_a-z0-9]*[a-z0-9]_\d\d\d\d)\.(\d+))\s*(.*?)\s*$', line, re.IGNORECASE)
-                    if m4 :
+                    if m4 := re.match(r'(([a-z][-_a-z0-9]*[a-z0-9]_\d\d\d\d)\.(\d+))\s*(.*?)\s*$', line, re.IGNORECASE):
                         n_sentences = +1
                         snt_id = m4.group(1)
                         if snt_id in sentence_ids:
@@ -150,8 +149,7 @@ def main():
                         if m4.group(4) == '':
                             log.error(f'{workset_file} line {line_number} sentence ID {snt_id} has empty sentence')
                     else:
-                        m = re.match(r'\S+', line)
-                        if m :
+                        if m := re.match(r'\S+', line):
                             first_token = m.group(0)
                             log.error(f"{workset_file} line {line_number} does not start "
                                       f"with a valid sentence ID: {first_token}")
@@ -177,8 +175,7 @@ def main():
                 line_number += 1
                 if not line.endswith('\n'):
                     log.error(f"{info_file} line {line_number} does not end with newline character ('{line}')")
-                m4 = re.match(r'(([a-z][-_a-z0-9]*[a-z0-9]_\d\d\d\d)\.(\d+))\s*(.*?)\s*$', line, re.IGNORECASE)    
-                if m4 :
+                if m4 := re.match(r'(([a-z][-_a-z0-9]*[a-z0-9]_\d\d\d\d)\.(\d+))\s*(.*?)\s*$', line, re.IGNORECASE):
                     n_sentences += 1
                     snt_id = m4.group(1)
                     if snt_id in sentence_ids:

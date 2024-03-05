@@ -38,8 +38,8 @@ options:
 
 ```
 cd DiplomacyAMR/annotations
-../code/amr-to-daide.py -i dip-all-amr-smosher.txt --max 10
-../code/amr-to-daide.py -i dip-all-amr-smosher.txt -o dip-all-amr-daide-smosher.txt -j dip-all-amr-daide-smosher.jsonl
+../code/amrtodaide.py -i dip-all-amr-smosher.txt --max 10
+../code/amrtodaide.py -i dip-all-amr-smosher.txt -o dip-all-amr-daide-smosher.txt -j dip-all-amr-daide-smosher.jsonl
 ``` 
 </details>
 

@@ -173,6 +173,7 @@ class milaWrapper:
 
         self.player = Player(self.agent, power_name)
         self.game_type = args.game_type
+        self.power_name = power_name
         
         num_beams   = 4
         batch_size  = 16
@@ -361,28 +362,29 @@ class milaWrapper:
                     )
         most_recent = self.last_PRP_review_timestamp.copy()
         for timesent,message in phase_messages.items():
-            if message.message.startswith('PRP'):
-                if msg is not None and message is not None:
-                    if msg['recipient'] == message.sender:
-                        if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
-                            dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-                            if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
-                                most_recent[message.sender] = dipcc_timesent
-                            if response == True:
-                                result = 'YES ('+message.message+')'
-                            elif response == False:
-                                result = 'REJ ('+message.message+')'
-                            else:
-                                result = None
-                                #result = self.reply_to_proposal(message.message,msg)
-                            if result is not None:
-                                #msg['message'] = result
-                                #self.send_message(msg, 'mila')
-                                self.last_PRP_review_timestamp = most_recent
-                                return result
-                                #return True
-            else:
-                continue
+            mila_dict_msg = {'sender': message.sender ,'recipient': message.recipient, 'message': message.message, 'phase':message.phase}
+            list_daide_message = self.to_daide_msg(mila_dict_msg)
+            for daide_m in list_daide_message:
+                if daide_m['message'].startswith('PRP'):
+                    if msg is not None and message is not None:
+                        if msg['recipient'] == message.sender:
+                            if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
+                                dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                                if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
+                                    most_recent[message.sender] = dipcc_timesent
+                                if response == True:
+                                    result = 'YES ('+message.message+')'
+                                elif response == False:
+                                    result = 'REJ ('+message.message+')'
+                                else:
+                                    result = None
+                                    #result = self.reply_to_proposal(message.message,msg)
+                                if result is not None:
+                                    #msg['message'] = result
+                                    #self.send_message(msg, 'mila')
+                                    self.last_PRP_review_timestamp = most_recent
+                                    return result
+                                    #return True
 
     # def reply_to_proposal(self, proposal, cicero_response):
     #     # Proposal: DAIDE Proposal from the speaker, for example RUSSIA-TURKEY here
@@ -415,6 +417,11 @@ class milaWrapper:
 
     def eng_daide_eng_dipcc(self, msg: MessageDict):
         daide_msgs = self.to_daide_msg(msg)
+
+        # if we are responding (dipcc msg sending to mila)
+        if daide_m['recipient'] == self.power_name:
+            self.send_log(f'My internal DAIDE response is: {",".join(daide_msgs)}')  
+
         eng_daide_msgs = []
         for daide_m in daide_msgs:
             try:
@@ -461,7 +468,8 @@ class milaWrapper:
         pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
                 self.dipcc_game, self.player.power, True, True, msg['recipient']
                 ) 
-        power_name = self.player.power.upper()
+        power_name = self.power_name
+        print(f'in daide msg test power_name: {power_name}')
 
         list_msg = []
 

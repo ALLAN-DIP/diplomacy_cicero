@@ -1,7 +1,7 @@
 # Opening JSON file
 import json
 def main():
-    data = [json.loads(line) for line in open('../DAIDE/DiplomacyAMR/annotations/dip-all-amr-daide-smosher.jsonl', 'r')]
+    data = [json.loads(line) for line in open('amrlib/data/annotations/dip-all-amr-daide-smosher.jsonl', 'r')]
     train_data = ''
     validation_data = ''
     test_data = ''
