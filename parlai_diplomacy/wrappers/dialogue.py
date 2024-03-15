@@ -161,7 +161,9 @@ class BaseDialogueWrapper(BaseWrapper, ABC):
 
             logging.debug(f"\n(ParlAIDialogueWrapper) Output sequence:\n{raw_pred_text}\n")
             try:
+                # print(f'we are going to format output seq {raw_pred}')
                 msgs = self.format_output_seq(raw_pred_text, power)
+                # print(f'get msg {msgs}')
             except ParlaiDecodingError as e:
                 # Once in a while we get badly-formatted messages. Watcha gonna do?
                 logging.warning(f"{e}")

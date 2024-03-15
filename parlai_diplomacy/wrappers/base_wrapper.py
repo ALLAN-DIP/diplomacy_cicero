@@ -341,6 +341,7 @@ class BaseWrapper(ABC):
             self.parlai_agent.set_prefix_tokens(prefix_toks)
 
         self.parlai_agent.observe(ex)
+        # print(self.parlai_agent.state_dict()['model'])
         act = self.parlai_agent.act()
 
         # reset candidate ranking

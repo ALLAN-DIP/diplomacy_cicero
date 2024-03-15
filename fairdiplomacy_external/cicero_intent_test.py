@@ -94,6 +94,7 @@ from diplomacy.utils.export import to_saved_game_format, from_saved_game_format
 from diplomacy.utils import strings
 from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 from stance_vector import ActionBasedStance, ScoreBasedStance
+from cicero_stance import CiceroStance
 
 default_is_bot ={
             'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
@@ -127,7 +128,7 @@ default_deceiving = {
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 DEFAULT_DEADLINE = 5
 GAME_PATH = "./fairdiplomacy_external/out/test_deceptive_cicero_7.json"
-YEAR = 'S1905M'
+YEAR = 'F1902M'
 
 def update_past_phase(mila_game, dipcc_game: Game, phase: str, power: Power):
     if phase not in mila_game.message_history:
@@ -213,7 +214,7 @@ def load_game(stop_at_phase: str, power: Power):
 
     #load each phase to mila and dipcc
     #stop at phase
-    stance_vector = ActionBasedStance(power ,mila_game)
+    stance_vector = start_stance(game, power_name)
     # print(f'start phase mila: {mila_game.get_current_phase()}')
     # print(f'start phase dipcc: {game.get_state()["name"]}')
     while game.get_state()['name'] != mila_game.get_current_phase() and game.get_state()['name'] !=stop_at_phase:
@@ -229,17 +230,6 @@ def load_game(stop_at_phase: str, power: Power):
             mila_game.is_bot_history.put(mila_game._phase_wrapper_type(phase), default_is_bot)
         if phase  not in mila_game.deceiving_history:
             mila_game.deceiving_history.put(mila_game._phase_wrapper_type(phase), default_deceiving)
-    # print(len(list(mila_game.order_history.keys())))
-    # print(len(list(mila_game.order_log_history.keys())))
-    # print(len(list(mila_game.is_bot_history.keys())))
-    # print(len(list(mila_game.deceiving_history.keys())))
-
-    #get stance vector
-    first_turn = True if mila_game.get_current_phase()=='S1901M' else False
-    if not first_turn:
-        # update stance vector 
-        _, _ = stance_vector.get_stance(mila_game, verbose=True)
-    
 
     
     return mila_game, game, stance_vector
@@ -362,6 +352,69 @@ def test_val_table(power: Power, recipient: Power):
     out_file = open(f'./fairdiplomacy_external/out/value_table_{YEAR}_{power[:3]}_{recipient[:3]}.json', "w") 
     json.dump(new_table_dict, out_file, indent = 6) 
     out_file.close() 
+    
+def start_stance(game, power_name):
+    stance_vector = CiceroStance(power_name ,game,conflict_coef=1.0, conflict_support_coef=1.0, unrealized_coef = 0.0
+                    , discount_factor=1.0, random_betrayal=False)
+    
+    # let's recalculate stance vector from begining if this is not the first m turn
+    if game.get_current_phase() != 'S1901M':
+        for state in game.state_history.values():
+            phase = state['name']
+            if phase[-1] == 'M':
+                #set for prev_m_phase to specific mphase data
+                stance_vector.set_mphase(phase)
+                curr_stance, stance_log = stance_vector.get_stance(game, verbose=True)
+        print(f'most updated stance: {stance_log[power_name]}')
+                
+    stance_vector.set_mphase(None)  
+    return stance_vector
+
+def load_prev_messages(extracted_pair_file, dipcc_game, cutoff_timesent):
+    # messages is a list of message that needed to load
+    f = open(extracted_pair_file)
+    extracted_pair = json.load(f)
+    
+    for pair, pair_conv in extracted_pair_file[YEAR].items():
+        for msg in pair_conv:
+            if msg['time_sent'] >= cutoff_timesent:
+                break
+            
+            dipcc_game.add_message(
+                msg['sender'], 
+                msg['recipient'], 
+                msg['message'], 
+                time_sent=Timestamp.now(),
+                increment_on_collision=True,
+            )
+        
+async def test_lie_message(sender: Power, recipient: Power):
+    extracted_game_file = ''
+    cutoff = 1706817699267429
+    K=20
+    #load agent
+    
+        mila_game, dipcc_game, stance_vector = load_game(YEAR, sender)
+        agent = load_cicero()
+
+        sender_player = Player(agent, sender)
+        sender_player.agent.set_stance_vector(stance_vector)
+        sender_player.agent.set_mila_game(mila_game)
+
+        pre_orders = sender_player.get_orders(dipcc_game)
+        print(f'-------- sample {i} --------')
+        print(f'{sender} (main) first order of this turn w/o communication {pre_orders}')
+        
+        load_prev_messages(extracted_game_file, dipcc_game, cutoff)
+        
+        for i in range(K):
+            msg1 = generate_message(dipcc_game, sender_player, recipient=recipient, pseudo_orders=None)
+            if msg1 == None:
+                print(f'msg is none, we are skipping this {i} sample')
+                continue
+            print(f'with message {msg1}')
+
+        await asyncio.sleep(5)
 
 asyncio.run(test_intent_from_game('RUSSIA','TURKEY'))
 # test_val_table('GERMANY','FRANCE')

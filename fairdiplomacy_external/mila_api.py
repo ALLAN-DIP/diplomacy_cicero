@@ -95,12 +95,14 @@ from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 #stance vector
 from stance_vector import ActionBasedStance, ScoreBasedStance
 from discordwebhook import Discord
+from cicero_stance import CiceroStance
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
 
 DEFAULT_DEADLINE = 5
 PRE_DEADLINE = 4
+GAME_IS_RUNNING = True
 
 import json
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
@@ -161,6 +163,7 @@ class milaWrapper:
         self.last_comm_intent={'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None,'final':None}
         self.prev_received_msg_time_sent = {'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None}
         self.deceptive = is_deceptive
+        self.game_is_running = True
         
         if self.deceptive:
             agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero_lie.prototxt')
@@ -198,14 +201,21 @@ class milaWrapper:
 
         # Playing game
         print(f"Started playing")
-
+        
+        stance_vector = self.start_stance(power_name)
         self.dipcc_game = self.start_dipcc_game(power_name)
         print(f"Started dipcc game")
 
-        self.agent.set_mila_game(self.game)
+        self.agent.set_mila_game(self.game, game_id)
         # init action stance class
-        stance_vector = ActionBasedStance(power_name ,self.game,conflict_coef=1.0, conflict_support_coef=1.0
-                                          , discount_factor=1.0, random_betrayal=False)
+
+        
+        #reload backup stance from server (case: disconnection during game)
+        # if self.game.get_current_phase()!='S1901M':    
+        #     recall_stance = self.game.get_stance()
+        #     for power in recall_stance:
+        #         stance_vector.update_stance(power_name, power, float(recall_stance))
+
         # get init stance from stance lib
         self.agent.set_stance_vector(stance_vector)
         self.player = Player(self.agent, power_name)
@@ -234,8 +244,12 @@ class milaWrapper:
             if m_turn:
                 # update stance vector 
                 curr_stance_vector, stance_log = stance_vector.get_stance(self.game, verbose=True)
+                # print(curr_stance_vector[power_name])
+                # backup_stance = {p2: max(2,min(-2,int(st2))) for p2, st2 in curr_stance_vector[power_name].items()}
+                # new_stance = {"power_name": power_name, "stance": backup_stance}
+                # self.game.add_stance(new_stance)
                 # print(f'report stance log for this turn {self.game.get_current_phase()}: {stance_log}')
-                self.send_log(f'report stance log for this turn {self.game.get_current_phase()}: {stance_log}')
+                self.send_log(f'report stance log for this turn {self.game.get_current_phase()}: {stance_log[power_name]}')
                 self.agent.set_stance_vector(stance_vector)
 
             self.phase_start_time = time.time()
@@ -339,10 +353,11 @@ class milaWrapper:
                         elif self.game_type==2:
                             self.send_message(msg, 'dipcc')
                             self.send_message(msg, 'mila')
+                            self.send_log(f"I respond with: {msg['message']}")
 
-                            if 'deceptive' in msg:
-                                self.send_log(msg['deceptive'])
-                                print(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
+                            # if 'deceptive' in msg:
+                            #     self.send_log(msg['deceptive'])
+                            #     print(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
                             
                             # for daide_msg in list_msg:
                             #     await self.send_log(f'My DAIDE response is: {daide_msg["message"]}')    
@@ -404,6 +419,9 @@ class milaWrapper:
                     to_saved_game_format(self.game), file, ensure_ascii=False, indent=2
                 )
                 file.write("\n")
+        
+        self.game_is_running = False
+
 
     def reset_comm_intent(self):
         self.last_comm_intent={'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None,'final':None}
@@ -1017,6 +1035,23 @@ class milaWrapper:
             dipcc_game.set_orders(power, orders)
         
         dipcc_game.process()
+        
+    def start_stance(self, power_name):    
+        stance_vector = CiceroStance(power_name ,self.game,conflict_coef=1.0, conflict_support_coef=1.0, unrealized_coef = 0.0
+                        , discount_factor=1.0, random_betrayal=False)
+        
+        # let's recalculate stance vector from begining if this is not the first m turn
+        if self.game.get_current_phase() != 'S1901M':
+            for state in self.game.state_history.values():
+                phase = state['name']
+                if phase[-1] == 'M':
+                    #set for prev_m_phase to specific mphase data
+                    stance_vector.set_mphase(phase)
+                    curr_stance, stance_log = stance_vector.get_stance(self.game, verbose=True)
+            self.send_log(f'most updated stance: {stance_log[power_name]}')
+                    
+        stance_vector.set_mphase(None)  
+        return stance_vector
 
 def main() -> None:
 
@@ -1086,7 +1121,8 @@ def main() -> None:
     mila = milaWrapper(is_deceptive=deceptive)
     discord = Discord(url="https://discord.com/api/webhooks/1210406902102626336/G3v3wGW5N6HxorNAPBJDv-spbCM0inyjHT-wh4d5NsM_sOIh6_v2aXH6U3CvRvDID5BY")
     discord.post(content=f"Cicero as power {power} is joining {game_id}.")
-    while True:
+    
+    while mila.game_is_running:
         try:
             asyncio.run(
                 mila.play_mila(
@@ -1102,6 +1138,9 @@ def main() -> None:
             print(Exception)
             cicero_error = f"Cicero_{power} has an error occured but we are rerunning it"
             discord.post(content=cicero_error)
+            
+    cicero_error = f"{game_id} is completed. Cicero_{power} is stopped."
+    discord.post(content=cicero_error)
 
 
 
