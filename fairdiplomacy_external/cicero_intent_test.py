@@ -208,42 +208,34 @@ def test_intent_from_game(sender: Power, recipient: Power):
     pre_orders = cicero_player.get_orders(dipcc_game)
     print(f'first order of this turn w/o communication {pre_orders}')
 
-    # get msg from cicero and log intent 
-    # for i in range(K):
-    #     msg = generate_message(dipcc_game, cicero_player, recipient=recipient)
-    #     real_pseudo = cicero_player.state.pseudo_orders_cache.maybe_get(
-    #                 dipcc_game, cicero_player.power, True, True, recipient) 
-    #     print(f'-------- sample {i} --------')
-    #     # print(f'PO to comm log: {real_pseudo}')
-    #     print(f'with message {msg}')
-
-    # change intent -> new K intents (by self) and get msg 2... K
-    #ours
-    test_intent1 = PseudoOrders({'S1902M': {'GERMANY': ('F DEN - NTH', 'A HOL H', 'A RUH - MUN', 'F KIE - HEL', 'A MUN - TYR'), 'FRANCE': ('F BRE - ENG', 'A BUR - BEL', 'A PAR - PIC', 'F POR - MAO', 'A SPA - GAS')}, 
-            'S1902R': {'GERMANY': (), 'FRANCE': ()}, 'F1902M': {'GERMANY': ('A HOL H', 'A MUN - TYR', 'F HEL S F DEN - NTH', 'F DEN - NTH', 'A TYR - PIE'), 'FRANCE': ('A BEL S A HOL', 'F BRE - ENG', 'F MAO S F BRE - ENG', 'A PIC S A BEL', 'A GAS - BUR')}})
-    print(f'fake PO1 to comm log: {test_intent1}')
     for i in range(K):
-        msg1 = generate_message(dipcc_game, cicero_player, recipient=recipient, pseudo_orders=test_intent1)
+        msg1 = generate_message(dipcc_game, cicero_player, recipient=recipient, pseudo_orders=None)
         print(f'-------- sample {i} --------')
         
         print(f'with message {msg1}')
 
-    # #theirs
-
-    # #future
-
-    # #generate outcomes
-    # msg = generate_message(dipcc_game, cicero_player, recipient=recipient, pseudo_orders=test_intent1)
-    # timesend = Timestamp.now()
-    # dipcc_game.add_message(
-    #             msg['sender'], 
-    #             msg['recipient'], 
-    #             msg['message'], 
-    #             time_sent=timesend,
-    #             increment_on_collision=True,
-    #         )
-
-# def lie_score():
+def test_reply_from_game(sender: Power, recipient: Power, test):
+    test_message = test
+    K=20
+    #load agent
+    mila_game, dipcc_game = load_game(YEAR, sender)
+    cicero_player = load_cicero(sender)
+    
+    dipcc_game.add_message(
+                recipient, 
+                sender, 
+                test_message, 
+                time_sent=Timestamp.now(),
+                increment_on_collision=True,
+            )
+    
+    for i in range(K):
+        msg1 = generate_message(dipcc_game, cicero_player, recipient=recipient, pseudo_orders=None)
+        if msg1 == None:
+            print(f'msg is none, we are skipping this {i} sample')
+            continue
+        print(f'-------- sample {i} --------')
+        print(f'with message {msg1}')
 
 def test_val_table(power: Power, recipient: Power):
     #ref: https://github.com/facebookresearch/diplomacy_cicero/blob/main/fairdiplomacy/agents/br_corr_bilateral_search.py#L358
@@ -265,4 +257,9 @@ def test_val_table(power: Power, recipient: Power):
     out_file.close() 
 
 # test_intent_from_game('GERMANY','FRANCE')
-test_val_table('GERMANY','FRANCE')
+# test_val_table('GERMANY','FRANCE')
+
+# test format of proposal.
+test_reply_from_game('AUSTRIA','ITALY','Please let me know if you can move army in VIE to GAL.')
+test_reply_from_game('AUSTRIA','ITALY','Can you move army in VIE to GAL?')
+test_reply_from_game('AUSTRIA','ITALY','Will you army in VIE to GAL?')
