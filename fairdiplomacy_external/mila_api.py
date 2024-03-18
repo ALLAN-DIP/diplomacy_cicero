@@ -317,8 +317,9 @@ class milaWrapper:
                                     mila_timesent = self.send_message(daide_msg, 'mila')
 
                         elif self.game_type==5:
-                            msg['message'] = f"Cicero suggests a message to {msg['recipient']}: {msg['message']}"
+                            msg['message'] = f"{power_name} Cicero suggests a message to {msg['recipient']}: {msg['message']}"
                             msg['recipient'] = 'GLOBAL'
+                            msg['type'] = 'suggested_message'
                             mila_timesent = self.send_message(msg, 'mila')
                             self.suggest_move(power_name)
 
@@ -415,9 +416,10 @@ class milaWrapper:
             
     def suggest_move(self, power_name):
         msg = {'sender': power_name}
-        agent_orders = self.player.get_orders(self.dipcc_game)
-        msg['message'] = f"Cicero suggests move: {agent_orders}"
+        agent_orders = list(self.player.get_orders(self.dipcc_game))
+        msg['message'] = f"{power_name} Cicero suggests move: {', '.join(agent_orders)}"
         msg['recipient'] = 'GLOBAL'
+        msg['type'] = 'suggested_move'
         self.send_message(msg, 'mila')
 
     def is_draw_token_message(self, msg ,power_name):
