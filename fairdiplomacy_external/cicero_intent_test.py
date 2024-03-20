@@ -94,10 +94,42 @@ from diplomacy.utils.export import to_saved_game_format, from_saved_game_format
 from diplomacy.utils import strings
 from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
+from amrtodaide import AMR
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/penman')
+# import penman
+import regex
+sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/amrlib')
+from amrlib.models.parse_xfm.inference import Inference
+
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 DEFAULT_DEADLINE = 5
 GAME_PATH = "./fairdiplomacy_external/out/AIGame_0.json"
-YEAR = 'S1902M'
+YEAR = 'S1901M'
+
+num_beams   = 4
+batch_size  = 16
+
+device = 'cuda:0'
+# model_dir  = './drive/MyDrive/cicero_experiments/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/'
+model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/personal/SEN_REC_MODEL/'
+inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
+
+def eng_to_amr(english,sender,recipient,inference):
+    print('---------------------------')
+    # gen_graphs = inference.parse_sents([english], disable_progress=False)
+    gen_graphs = inference.parse_sents(['SEN'+' send to '+'REC'+' that '+english.replace(sender,'SEN').replace(recipient,'REC')], disable_progress=False)
+    for graph in gen_graphs:
+        graph = graph.replace('SEN',sender).replace('REC',recipient)
+        amr = AMR()
+        amr_node, s, error_list, snt_id, snt, amr_s = amr.string_to_amr(graph)
+        if amr_node:
+            amr.root = amr_node
+        try:
+            amr_s2 = amr.amr_to_string()
+            return amr_s2
+        except RecursionError:
+            return '(a / amr-empty)'
 
 def update_past_phase(mila_game, dipcc_game: Game, phase: str, power: Power):
     if phase not in mila_game.message_history:
@@ -214,28 +246,39 @@ def test_intent_from_game(sender: Power, recipient: Power):
         
         print(f'with message {msg1}')
 
-def test_reply_from_game(sender: Power, recipient: Power, test):
-    test_message = test
-    K=20
-    #load agent
-    mila_game, dipcc_game = load_game(YEAR, sender)
-    cicero_player = load_cicero(sender)
-    
-    dipcc_game.add_message(
-                recipient, 
-                sender, 
-                test_message, 
-                time_sent=Timestamp.now(),
-                increment_on_collision=True,
-            )
-    
-    for i in range(K):
-        msg1 = generate_message(dipcc_game, cicero_player, recipient=recipient, pseudo_orders=None)
-        if msg1 == None:
-            print(f'msg is none, we are skipping this {i} sample')
-            continue
-        print(f'-------- sample {i} --------')
-        print(f'with message {msg1}')
+def test_reply_from_game(sender: Power, recipient: Power, test_list):
+    log = []
+    for test in test_list:
+        test_message = test
+        K=10
+        #load agent
+        mila_game, dipcc_game = load_game(YEAR, sender)
+        cicero_player = load_cicero(sender)
+        dipcc_game.add_message(
+                    recipient, 
+                    sender, 
+                    test_message, 
+                    time_sent=Timestamp.now(),
+                    increment_on_collision=True,
+                )
+        print(f'------ test_message: {test} ------')
+        log_test = {'test_message': test, 'reply': []}
+        for i in range(K):
+            msg = generate_message(dipcc_game, cicero_player, recipient=recipient, pseudo_orders=None)
+            if msg == None:
+                print(f'msg is none, we are skipping this {i} sample')
+                continue
+            try:
+                daide_string = eng_to_amr(msg['message'],msg['sender'],msg['recipient'],inference)
+            except:
+                daide_string = '(a / amr-empty)'
+            log_test['reply'].append({'message':msg['message'], 'daide':daide_string})
+        
+        log.append(log_test)
+        # print(f'sample {i}: message: {msg["message"]}, DAIDE: {daide_string}')
+    out_file = open(f'./fairdiplomacy_external/out/log_reply_test.json', "w") 
+    json.dump(log, out_file, indent = 4) 
+    out_file.close() 
 
 def test_val_table(power: Power, recipient: Power):
     #ref: https://github.com/facebookresearch/diplomacy_cicero/blob/main/fairdiplomacy/agents/br_corr_bilateral_search.py#L358
@@ -260,6 +303,17 @@ def test_val_table(power: Power, recipient: Power):
 # test_val_table('GERMANY','FRANCE')
 
 # test format of proposal.
-test_reply_from_game('AUSTRIA','ITALY','Please let me know if you can move army in VIE to GAL.')
-test_reply_from_game('AUSTRIA','ITALY','Can you move army in VIE to GAL?')
-test_reply_from_game('AUSTRIA','ITALY','Will you army in VIE to GAL?')
+test_list = []
+test_list += ["Please move VIE to GAL."]
+test_list += ["Please move VIE to GAL. Reply with Yes if you agree or No if you won't or haven't decided."]
+test_list += ["Please move VIE to GAL. Say agree if you are fine or say no if you won't or haven't decided."]
+test_list += ["Please move VIE to GAL. Reply with Yes or No only"]
+test_list += ["Can move army in VIE to GAL?"]
+test_list += ["Can move army in VIE to GAL? Reply with Yes if you agree or No if you won't or haven't decided."]
+test_list += ["Can move army in VIE to GAL? Say agree if you are fine or say no if you won't or haven't decided."]
+test_list += ["Can move army in VIE to GAL? Reply with Yes or No only"]
+test_list += ["Will you move VIE to GAL?"]
+test_list += ["Will you move VIE to GAL? Reply with Yes if you agree or No if you won't or haven't decided."]
+test_list += ["Will you move VIE to GAL? Say agree if you are fine or say no if you won't or haven't decided."]
+test_list += ["Will you move VIE to GAL? Reply with Yes or No only"]
+test_reply_from_game('AUSTRIA','ITALY', test_list)
