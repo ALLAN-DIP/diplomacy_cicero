@@ -156,9 +156,9 @@ class milaWrapper:
         connection = await connect(hostname, port)
         dec = 'Deceptive_' if self.deceptive else ''
         channel = await connection.authenticate(
-            f"{dec}cicero_{power_name}", "password"
+            f"admin", "password"
         )
-        self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
+        self.game: NetworkGame = await channel.join_game(game_id=game_id)
 
         # Wait while game is still being formed
         print(f"Waiting for game to start")
@@ -177,7 +177,7 @@ class milaWrapper:
         num_beams   = 4
         batch_size  = 16
 
-        if self.game_type !=2:
+        if self.game_type not in [2,5]:
             self.model = 'best_model'
             device = 'cuda:0'
             model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/personal/SEN_REC_MODEL/'
@@ -323,9 +323,9 @@ class milaWrapper:
                             mila_timesent = self.send_message(msg, 'mila')
                             self.suggest_move(power_name)
 
-                            self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
-                                My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
-                            self.send_log(self_pseudo_log) 
+                            # self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
+                            #     My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
+                            # self.send_log(self_pseudo_log) 
 
                     should_stop = await self.get_should_stop()
                     randsleep = random.random()
@@ -342,7 +342,8 @@ class milaWrapper:
                     self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
 
                     # set order in Mila
-                    self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
+                    if self.game_type!=5:
+                        self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
 
                 # wait until the phase changed
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
@@ -804,7 +805,7 @@ class milaWrapper:
 
         presubmit_second = 120
 
-        if deadline_timer <= presubmit_second:
+        if deadline_timer <= presubmit_second and self.game_type != 5:
             print(f'time to presubmit order')
             return True
         return False
@@ -1044,8 +1045,11 @@ class milaWrapper:
         """ 
         send log to mila games 
         """ 
-        log_data = self.game.new_log_data(body=log)
-        self.game.send_log_data(log=log_data)
+        if self.game_type == 5:
+            print('skip log')
+        else:
+            log_data = self.game.new_log_data(body=log)
+            self.game.send_log_data(log=log_data)
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
@@ -1064,10 +1068,11 @@ class milaWrapper:
 
         if engine =='mila':
             mila_msg = Message(
-                sender=msg["sender"],
+                sender= "omniscient_type" if self.game_type ==5 else msg["sender"],
                 recipient=msg["recipient"],
                 message=msg["message"],
                 phase=self.game.get_current_phase(),
+                type = msg['type']
                 )
             self.game.send_game_message(message=mila_msg)
             timesend = mila_msg.time_sent
@@ -1248,15 +1253,15 @@ def main() -> None:
     discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
     discord.post(content=f"Cicero as power {power} is joining {game_id}.")
 
-    while True:
-        try:
-            asyncio.run(
-                mila.play_mila(args)
-            )
-        except Exception:
-            print(Exception)
-            cicero_error = f"Cicero_{power} has an error occured but we are rerunning it"
-            discord.post(content=cicero_error)
+    # while True:
+    #     try:
+    asyncio.run(
+        mila.play_mila(args)
+    )
+        # except Exception:
+        #     print(Exception)
+        #     cicero_error = f"Cicero_{power} has an error occured but we are rerunning it"
+        #     discord.post(content=cicero_error)
 
         
 
