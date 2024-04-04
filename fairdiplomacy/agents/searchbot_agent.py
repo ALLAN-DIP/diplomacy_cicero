@@ -2069,7 +2069,7 @@ class SearchBotAgent(BaseSearchAgent):
                     return MessageHeuristicResult.FORCE
         return MessageHeuristicResult.NONE
     
-    def set_power_po(human_intent):
+    def set_power_po(self, human_intent):
         self.human_power_po = human_intent
 
 
