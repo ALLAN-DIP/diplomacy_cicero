@@ -1088,7 +1088,7 @@ class milaWrapper:
 
         return {message.time_sent: message
                 for message in messages.values()
-                if message.recipient == power}
+                if message.recipient == power or message.sender == power}
 
     def start_dipcc_game(self, power_name: POWERS) -> Game:
 
