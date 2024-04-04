@@ -1250,8 +1250,8 @@ def main() -> None:
         outdir.mkdir(parents=True, exist_ok=True)
 
     mila = milaWrapper(is_deceptive=deceptive)
-    discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
-    discord.post(content=f"Cicero as power {power} is joining {game_id}.")
+    # discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
+    # discord.post(content=f"Cicero as power {power} is joining {game_id}.")
 
     # while True:
     #     try:
