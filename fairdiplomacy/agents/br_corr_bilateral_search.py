@@ -89,7 +89,7 @@ class BRCorrBilateralSearchResult(SearchResult):
                 ].item()
                 self.value_to_me[power, action].accum(value, 1)
 
-    def set_policy_and_value_for_other_power(self, other_power: Power, avg_action: Action, game: pydipcc.Game):
+    def set_policy_and_value_for_other_power(self, other_power: Power, avg_action: Action):
         """
         Set the value_to_them for my and opponents' actions.
         """
