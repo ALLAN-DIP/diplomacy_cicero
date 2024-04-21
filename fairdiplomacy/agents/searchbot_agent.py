@@ -2070,7 +2070,7 @@ class SearchBotAgent(BaseSearchAgent):
         return MessageHeuristicResult.NONE
     
     def set_power_po(self, human_intent):
-        self.human_power_po = human_intent
+        self.human_power_po = tuple(human_intent)
 
 
 def augment_plausible_orders(
