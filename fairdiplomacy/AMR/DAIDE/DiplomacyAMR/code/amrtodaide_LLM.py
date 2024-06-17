@@ -373,6 +373,9 @@ class AMR:
                             # if self.parent_is_in_concepts(sub_amr_node,['support-01']):
                             #     print('yes1')
                             sub_name = self.ne_amr_to_name(sub_amr_node)
+                            print(amr_node.concept)
+                            print(sub_amr_node.concept)
+                            print(sub_name)
                             #print(sub_name)
                             # if sub_name := self.ne_amr_to_name(sub_amr_node):
                             if sub_name:
@@ -380,6 +383,7 @@ class AMR:
                                 result[var] = daide.name_to_id.get(sub_name) or sub_name
                                 #print('2')
                                 if sub_amr_node.concept == 'country' and amr_node.concept =='support-01':
+                                    print('yes2')
                                     result[var] = '(' + result[var] +' <unit_type> <location>)'
                             elif sub_amr_node.subs:
                                 result[var], sub_warnings = self.amr_to_daide(sub_amr_node, top=False) or sub_concept
@@ -443,6 +447,7 @@ class AMR:
     #def amr_to_daide(self, amr_node: AMRnode = None, top: bool = True) -> Tuple[str, list[str]]:
     def amr_to_daide(self, amr_node: AMRnode = None, top: bool = True):
         # returns pair of (daide_element, warnings)
+        print('----')
         warnings = []
         if amr_node is None:
             amr_node = self.root
@@ -595,6 +600,7 @@ class AMR:
         d = self.match_for_daide(amr_node, '(ally-01 :ARG1 $allies :ARG2 $countries :ARG3 $ennemies)')
         if d :
             ennemies = d.get('ennemies', '')
+            print(ennemies)
             ennemies_list = ennemies.split()
             if top:
                 self.add_warning_to_match_dict(d, 'ALY at top level')
@@ -770,17 +776,7 @@ class AMR:
         if d :
             if top:
                 self.add_warning_to_match_dict(d, 'RTO at top level')
-            # return self.match_map(amr_node, d, '$unit RTO $destination')
-
-
-            if self.ancestor_is_in_concepts(amr_node, ['possible-01','propose-01','agree-01','expect-01']):
-                return self.match_map(amr_node, d, '$unit RTO $destination')
-            else:
-                s = self.match_map(amr_node, d, '$unit RTO $destination')
-                s_list = list(s)
-                s_list[0] = 'PRP ( XDO (' + s_list[0] + '))'
-                s_modified = tuple(s_list)
-                return s_modified
+            return self.match_map(amr_node, d, '$unit RTO $destination')
 
         d = self.match_for_daide(amr_node, '(have-03 :ARG0 $owner(country) :ARG1 $province)')
         if d:
