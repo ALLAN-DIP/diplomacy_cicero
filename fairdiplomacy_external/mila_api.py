@@ -376,29 +376,28 @@ class milaWrapper:
                     )
         most_recent = self.last_PRP_review_timestamp.copy()
         for timesent,message in phase_messages.items():
-            mila_dict_msg = {'sender': message.sender ,'recipient': message.recipient, 'message': message.message, 'phase':message.phase}
-            list_daide_message = self.to_daide_msg(mila_dict_msg)
-            for daide_m in list_daide_message:
-                if daide_m['message'].startswith('PRP'):
-                    if msg is not None and message is not None:
-                        if msg['recipient'] == message.sender:
-                            if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
-                                dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-                                if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
-                                    most_recent[message.sender] = dipcc_timesent
-                                if response == True:
-                                    result = 'YES ('+message.message+')'
-                                elif response == False:
-                                    result = 'REJ ('+message.message+')'
-                                else:
-                                    result = None
-                                    #result = self.reply_to_proposal(message.message,msg)
-                                if result is not None:
-                                    #msg['message'] = result
-                                    #self.send_message(msg, 'mila')
-                                    self.last_PRP_review_timestamp = most_recent
-                                    return result
-                                    #return True
+            if msg['recipient'] == message.sender and msg is not None and message is not None:
+                mila_dict_msg = {'sender': message.sender ,'recipient': message.recipient, 'message': message.message, 'phase':message.phase}
+                list_daide_message = self.to_daide_msg(mila_dict_msg)
+                for daide_m in list_daide_message:
+                    if daide_m['message'].startswith('PRP'):
+                        if int(str(timesent)[0:10]) > int(str(self.last_PRP_review_timestamp[message.sender])[0:10]):
+                            dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
+                            if int(str(timesent)[0:10]) > int(str(most_recent[message.sender])[0:10]):
+                                most_recent[message.sender] = timesent
+                            if response == True:
+                                result = 'YES ('+message.message+')'
+                            elif response == False:
+                                result = 'REJ ('+message.message+')'
+                            else:
+                                result = None
+                                #result = self.reply_to_proposal(message.message,msg)
+                            if result is not None:
+                                #msg['message'] = result
+                                #self.send_message(msg, 'mila')
+                                self.last_PRP_review_timestamp = most_recent
+                                return result
+                                #return True
 
 
     def is_draw_token_message(self, msg ,power_name):
@@ -420,35 +419,40 @@ class milaWrapper:
     def eng_daide_eng_dipcc(self, msg: MessageDict):
         self.send_log(f"sending English {msg['message']}")
         
-        print(f"changing {msg['message']}")
+        # print(f"changing {msg['message']}")
         old_message = msg['message']
         msg['message'] = replace_powers_and_provinces(msg)
-        print(f"to -> {msg['message']}")
+        # print(f"to -> {msg['message']}")
         self.send_log(f"to -> {msg['message']}")
+        print(f"to -> {msg['message']}")
         
         daide_msgs = self.to_daide_msg(msg)
         self.send_log(f"DAIDE -> {daide_msgs}")
+        print(f"DAIDE -> {daide_msgs}")
         left_daide_list = []
         eng_daide_msgs = []
         for daide_m in daide_msgs:
             try:
-                generated_English = gen_English(daide_m['message'], daide_m['recipient'], daide_m['sender'])
+                generated_English = gen_English(daide_m['message'], daide_m['sender'][:3].upper(), daide_m['recipient'][:3].upper())
                 if not generated_English.startswith("ERROR") and not generated_English.startswith("Exception") and '<location>' not in generated_English:
                     eng_daide_msg = {'sender': daide_m['sender'] ,'recipient': daide_m['recipient'], 'message': generated_English}
                     eng_daide_msgs.append(eng_daide_msg)
+                    print(f"{daide_m['message']} -> {generated_English}")
                 else:
+                    print(f"can't parse, add to amr moves {daide_m['message']}")
                     left_daide_list.append(daide_m)
             except:
                 left_daide_list.append(daide_m)
                 print(f"Fail to translate the message into the English, from {daide_m['sender']}: {daide_m['message']}")
                 self.send_log(f"Fail to translate the message into the English, from {daide_m['sender']}: {daide_m['message']}") 
             
-        
         if len(left_daide_list) > 0:
             # extract moves if it is len ==1 or >1 (get from index 0)
             moves = get_amr_moves(left_daide_list[0]['amr_s'], msg)
             self.send_log(f"AMR moves -> {moves}")
-
+            print(f"DAIDE -> {left_daide_list}")
+            print(f"AMR moves -> {moves}")
+            
             for daide_m in left_daide_list:
                 daide_sentence = daide_m['message']
                 for move in moves:
@@ -463,8 +467,8 @@ class milaWrapper:
                             eng_daide_msg = {'sender': daide_m['sender'] ,'recipient': daide_m['recipient'], 'message': action_s}
                             eng_daide_msgs.append(eng_daide_msg)
                             
-        # logging.info(f"DAIDE-ENG -> {daide_msgs}")
         self.send_log(f"DAIDE-ENG -> {eng_daide_msgs}")
+        print(f"DAIDE-ENG -> {eng_daide_msgs}")
                 
         return eng_daide_msgs
 
@@ -499,31 +503,30 @@ class milaWrapper:
                 self.dipcc_game, self.player.power, True, True, msg['recipient']
                 ) 
         power_name = self.power_name
-        print(f'in daide msg test power_name: {power_name}')
 
         list_msg = []
 
-        if pseudo_orders is None or msg['sender'] not in pseudo_orders[self.dipcc_current_phase] or msg['recipient'] not in pseudo_orders[self.dipcc_current_phase]:
-            return list_msg
+        # if pseudo_orders is None or msg['sender'] not in pseudo_orders[self.dipcc_current_phase] or msg['recipient'] not in pseudo_orders[self.dipcc_current_phase]:
+        #     return list_msg
 
-        if self.daide_fallback:
-            current_phase_code = pseudo_orders[msg["phase"]]
-            FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
+        # if self.daide_fallback:
+        #     current_phase_code = pseudo_orders[msg["phase"]]
+        #     FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
             
-            if FCT_DAIDE is not None:
-                FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
-                fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE,'daide_status':'fall_back'}
-                if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
-                    list_msg.append(fct_msg)
-                    self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
-            if PRP_DAIDE is not None:
-                PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
-                prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE,'daide_status':'fall_back'}
-                if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
-                    list_msg.append(prp_msg)
-                    self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
+        #     if FCT_DAIDE is not None:
+        #         FCT_DAIDE = self.remove_ORR(FCT_DAIDE)
+        #         fct_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': FCT_DAIDE,'daide_status':'fall_back'}
+        #         if fct_msg['message'] not in self.sent_FCT[fct_msg['recipient']]:
+        #             list_msg.append(fct_msg)
+        #             self.sent_FCT[fct_msg['recipient']].add(fct_msg['message'])
+        #     if PRP_DAIDE is not None:
+        #         PRP_DAIDE = self.remove_ORR(PRP_DAIDE)
+        #         prp_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': PRP_DAIDE,'daide_status':'fall_back'}
+        #         if prp_msg['message'] not in self.sent_PRP[prp_msg['recipient']]:
+        #             list_msg.append(prp_msg)
+        #             self.sent_PRP[prp_msg['recipient']].add(prp_msg['message'])
 
-            return list_msg
+        #     return list_msg
 
         try:
             graph,daide_status,daide_s,amr_s = self.eng_to_daide(msg, self.inference)
@@ -565,6 +568,7 @@ class milaWrapper:
                             list_msg.append(daide_msg)
                 else:
                     daide_msg = {'sender': msg['sender'] ,'recipient': msg['recipient'], 'message': daide_s,'daide_status':daide_status,'amr_s': amr_s}
+                    list_msg.append(daide_msg)
                     # current_phase_code = pseudo_orders[msg["phase"]]
                     # FCT_DAIDE, PRP_DAIDE = self.psudo_code_gene(current_phase_code,msg,power_dict,af_dict)
                     
@@ -896,7 +900,7 @@ class milaWrapper:
 
                 if is_daide(message.message):
                     try:
-                        generated_English = gen_English(message.message, message.recipient, message.sender)
+                        generated_English = gen_English(message.message, message.sender[:3].upper(), message.recipient[:3].upper())
                     except:
                         print(f"Fail to translate the message into the English, from {message.sender}: {message.message}")
                         self.send_log(f"Fail to translate the message into the English, from {message.sender}: {message.message}") 
@@ -932,7 +936,7 @@ class milaWrapper:
 
                 # if the message is english, just send it to dipcc recipient
                 else:
-                    print(f'message from mila to dipcc {message}')
+                    print(f'parising message from mila to dipcc {message}')
                     if self.game_type==4:
                         list_eng_daide_message = self.eng_daide_eng_mila(message)
                         for msg_dict in list_eng_daide_message:
@@ -944,6 +948,7 @@ class milaWrapper:
                                 time_sent=Timestamp.now(),
                                 increment_on_collision=True,
                             )
+                            print(f'message from mila to dipcc {msg_dict["message"]}')
 
                     else:
                         self.dipcc_game.add_message(
@@ -1122,7 +1127,7 @@ class milaWrapper:
             # print(f'load message from mila to dipcc {message}')
 
             if is_daide(message.message):
-                generated_English = gen_English(message.message, message.recipient, message.sender)
+                generated_English = gen_English(message.message, message.sender[:3].upper(), message.recipient[:3].upper())
 
                 # if the message is invalid daide, send an error to paquette global; do nothing
                 if generated_English.startswith("ERROR") or generated_English.startswith("Exception"):
