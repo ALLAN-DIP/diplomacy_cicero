@@ -133,6 +133,7 @@ class milaWrapper:
         self.prev_received_msg_time_sent = {'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None}
         self.deceptive = is_deceptive
         self.grammar = create_daide_grammar(level=130)
+        self.new_message = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
         
         if self.deceptive:
             agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero_lie.prototxt')
@@ -173,6 +174,7 @@ class milaWrapper:
 
         self.player = Player(self.agent, power_name)
         self.game_type = args.game_type
+        self.chiron_type = args.chiron_type
         
         num_beams   = 4
         batch_size  = 16
@@ -210,10 +212,9 @@ class milaWrapper:
                 should_stop = await self.get_should_stop()
                 
                 # suggest move to human
-                if self.game_type==5:
+                if self.game_type==5 and self.chiron_type in [2,3]:
                     self.suggest_move(power_name)
-
-
+    
                 while not should_stop :
                     if has_deadline:
                         # if times almost up but still can do some press, let's presubmit order
@@ -231,7 +232,7 @@ class milaWrapper:
                         await self.update_press_dipcc_game(power_name)
 
                     # if not a silent agent
-                    if self.game_type!=3:
+                    if self.game_type in [1,2,4] or (self.game_type==5 and self.chiron_type in [1,3]):
                     # reply/gen new message
                         msg = self.generate_message(power_name)
                         print(f'msg from cicero to dipcc {msg}')
@@ -317,11 +318,16 @@ class milaWrapper:
                                     mila_timesent = self.send_message(daide_msg, 'mila')
 
                         elif self.game_type==5:
-                            msg['message'] = f"{power_name} Cicero suggests a message to {msg['recipient']}: {msg['message']}"
-                            msg['recipient'] = 'GLOBAL'
-                            msg['type'] = 'suggested_message'
-                            mila_timesent = self.send_message(msg, 'mila')
-                            self.suggest_move(power_name)
+                            current_time = time.time()
+                            if self.chiron_type in [1,3] and current_time - self.new_message[msg['recipient']]>=120:
+                                K = 2
+                                self.new_message[msg['recipient']] = current_time
+                                msg_options = [msg] + [self.generate_message(power_name) for i in range(K)]
+                                for msg in msg_options:
+                                    msg['message'] = f"{power_name} Cicero suggests a message to {msg['recipient']}: {msg['message']}"
+                                    msg['recipient'] = 'GLOBAL'
+                                    msg['type'] = 'suggested_message'
+                                    mila_timesent = self.send_message(msg, 'mila')
 
                             # self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
                             #     My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
@@ -767,6 +773,7 @@ class milaWrapper:
         self.sent_PRP = {'RUSSIA':set(),'TURKEY':set(),'ITALY':set(),'ENGLAND':set(),'FRANCE':set(),'GERMANY':set(),'AUSTRIA':set()}
         self.last_PRP_review_timestamp = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
         self.reset_comm_intent()
+        self.new_message = {'RUSSIA':0,'TURKEY':0,'ITALY':0,'ENGLAND':0,'FRANCE':0,'GERMANY':0,'AUSTRIA':0}
 
     def has_phase_changed(self)->bool:
         """ 
@@ -887,6 +894,8 @@ class milaWrapper:
                 # dipcc_timesent =Timestamp.now()
                 # print(f'time_sent in dipcc {dipcc_timesent}')
                 
+                if message.recipient == power_name:
+                    self.new_message[message.sender] = 0
 
                 if timesent > most_recent_mila and message.recipient == power_name:
                     most_recent_mila = timesent
@@ -1012,6 +1021,7 @@ class milaWrapper:
         # set human_intent
         human_intent = self.game.get_orders(power_name)
         if human_intent:
+            print(f'set intent to {tuple(human_intent)}')
             self.agent.set_power_po(human_intent)
         
         msg = self.player.generate_message(
@@ -1078,6 +1088,7 @@ class milaWrapper:
             timesend = mila_msg.time_sent
 
         print(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
+        
         return timesend
 
     def get_messages(
@@ -1210,6 +1221,12 @@ def main() -> None:
         default=0,
         help="0: AI-only game, 1: Human and AI game, 2: Human-only game, 3: silent, 4: human with eng-daide-eng Cicero, 5: chiron",
     )
+    parser.add_argument(
+        "--chiron_type",
+        type=int, 
+        default=3,
+        help="Level of cicero controls 1: message only, 2: order only, 3: both",
+    )
     # parser.add_argument(
     #     "--agent",
     #     type=Path,
@@ -1242,6 +1259,7 @@ def main() -> None:
     daide_fallback : bool = args.daide_fallback
     outdir: Optional[Path] = args.outdir
     game_type : int = args.game_type
+    chiron_type : int = args.chiron_type
 
     print(f"settings:")
     print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
