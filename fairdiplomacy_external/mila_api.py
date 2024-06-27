@@ -267,6 +267,8 @@ class milaWrapper:
                                 self.new_message[msg['recipient']] = current_time
                                 msg_options = [msg] + [self.generate_message(power_name) for i in range(K)]
                                 for msg in msg_options:
+                                    if msg is None:
+                                        continue
                                     msg['message'] = f"{power_name} Cicero suggests a message to {msg['recipient']}: {msg['message']}"
                                     msg['recipient'] = 'GLOBAL'
                                     msg['type'] = 'suggested_message'
