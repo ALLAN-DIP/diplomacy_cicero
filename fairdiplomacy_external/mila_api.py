@@ -1247,15 +1247,15 @@ def main() -> None:
     discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
     discord.post(content=f"Cicero as power {power} is joining {game_id}.")
 
-    # while True:
-    #     try:
-    asyncio.run(
-        mila.play_mila(args)
-            )
-        # except Exception:
-        #     print(Exception)
-        #     cicero_error = f"Cicero_{power} has an error occured but we are rerunning it"
-        #     discord.post(content=cicero_error)
+    while True:
+        try:
+            asyncio.run(
+                mila.play_mila(args)
+                    )
+        except Exception as e:
+            print(e)
+            cicero_error = f"centaur cicero controlling {args.human_powers} has an error occured: \n {e}"
+            discord.post(content=cicero_error)
 
 
 async def test_mila_function():
