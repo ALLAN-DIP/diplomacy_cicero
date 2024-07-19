@@ -1254,7 +1254,7 @@ def main() -> None:
                     )
         except Exception as e:
             print(e)
-            cicero_error = f"centaur cicero controlling {args.human_powers} has an error occured: \n {e}"
+            cicero_error = f"cicero controlling {power} has an error occured: \n {e}"
             discord.post(content=cicero_error)
 
 
