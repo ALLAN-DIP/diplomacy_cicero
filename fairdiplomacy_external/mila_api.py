@@ -569,10 +569,7 @@ class milaWrapper:
 
             self.prev_received_msg_time_sent[message.sender] = message.time_sent
             
-            if (int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]) and message.recipient == power_name) or (int(str(timesent)[0:10]) > int(str(self.last_sent_message_time)[0:10]) and message.sender == power_name):
-                dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-                # dipcc_timesent =Timestamp.now()
-                # print(f'time_sent in dipcc {dipcc_timesent}')
+            if (int(str(timesent)) > int(str(self.last_received_message_time)) and message.recipient == power_name) or (int(str(timesent)) > int(str(self.last_sent_message_time)) and message.sender == power_name):
                 
                 if message.recipient == power_name:
                     self.new_message[message.sender] = 0
@@ -589,7 +586,7 @@ class milaWrapper:
                 # then just keep message body as original
 
 
-                print(f'message from mila to dipcc {message}')
+                print(f'message from mila to dipcc (chiron cicero): {message}')
 
                 self.dipcc_game.add_message(
                     message.sender,
