@@ -663,7 +663,7 @@ class milaWrapper:
         
         # if human doesn't set a complete order then we won't gen message (avoid leaked move suggestion)
         if self.chiron_type == 1 and (human_intent is None or len(human_intent) != len(orderable_locs)):
-            print(f"we gen sth {msg['message']} but still wait for human to complete order, which currently is {human_intent}")
+            print(f"we gen sth {msg} but still wait for human to complete order, which currently is {human_intent}")
             return None
 
         self.last_successful_message_time = Timestamp.now()
