@@ -22,7 +22,6 @@ RUN apt-get -y update \
     libgoogle-glog-dev=0.4.0-1build1 \
     libtool=2.4.6-14 \
     pkg-config=0.29.1-0ubuntu4 \
-    wget=1.20.3-1ubuntu2.1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
