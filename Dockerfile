@@ -90,3 +90,5 @@ COPY LICENSE_FOR_MODEL_WEIGHTS.txt .
 COPY README.md .
 COPY bin/ bin/
 COPY run.py .
+
+LABEL org.opencontainers.image.source=https://github.com/ALLAN-DIP/diplomacy_cicero
