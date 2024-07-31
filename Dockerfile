@@ -84,5 +84,7 @@ RUN pip install --no-cache-dir -e . -vv
 # Make
 RUN make
 
+COPY slurm/ slurm/
+
 # Run unit tests
 RUN make test_fast
