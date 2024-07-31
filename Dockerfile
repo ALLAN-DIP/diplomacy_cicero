@@ -70,7 +70,21 @@ RUN pip install --no-cache-dir \
     git+https://github.com/delaschwein/daidepp.git@859b99b4ac1cf6fc02f05b38d6bcd9781b47f97d \
     ujson==5.7.0
 
-COPY . .
+COPY LICENSE.md .
+COPY LICENSE_FOR_MODEL_WEIGHTS.txt .
+COPY Makefile .
+COPY README.md .
+COPY bin/ bin/
+COPY conf/ conf/
+COPY dipcc/ dipcc/
+COPY fairdiplomacy/ fairdiplomacy/
+COPY fairdiplomacy_external/ fairdiplomacy_external/
+COPY heyhi/ heyhi/
+COPY parlai_diplomacy/ parlai_diplomacy/
+COPY pyproject.toml .
+COPY run.py .
+COPY setup.py .
+COPY unit_tests/ unit_tests/
 RUN pip install --no-cache-dir -e . -vv
 
 # RUN scp wwongkam@ls6.tacc.utexas.edu:/corral/projects/DARPA-SHADE/Shared/UMD/best_model/pytorch_model.bin .
