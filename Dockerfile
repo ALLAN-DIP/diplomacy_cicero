@@ -10,7 +10,7 @@ ENV IMG_NAME=11.1.1-cudnn8-devel-ubuntu20.04 \
 
 RUN apt-get -y update \
     && apt-get -y upgrade \
-    && apt-get --no-install-recommends -y \
+    && apt-get -y install --no-install-recommends \
     autoconf \
     build-essential \
     bzip2 \
