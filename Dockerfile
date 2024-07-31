@@ -62,8 +62,8 @@ RUN pip install -e ./thirdparty/github/fairinternal/postman/postman/
 COPY . .
 RUN pip install -e . -vv
 RUN pip install ujson
-RUN pip install git+https://git@github.com/SHADE-AI/diplomacy.git@comm_state
-RUN pip install git+https://github.com/SiddarGu/daidepp.git
+RUN pip install git+https://git@github.com/ALLAN-DIP/diplomacy.git@centaur-interface
+RUN pip install git+https://github.com/delaschwein/daidepp.git
 
 # RUN scp wwongkam@ls6.tacc.utexas.edu:/corral/projects/DARPA-SHADE/Shared/UMD/best_model/pytorch_model.bin .
 
