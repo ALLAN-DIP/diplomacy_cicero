@@ -8,10 +8,6 @@ ENV IMG_NAME=11.1.1-cudnn8-devel-ubuntu20.04 \
     JAXLIB_VERSION=0.1.70 \
     DEBIAN_FRONTEND=noninteractive
 
-# Hack due to Nvidia :/! Check if it's fixed ASAP
-RUN rm /etc/apt/sources.list.d/cuda.list
-
-
 #FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu18.04
 #FROM nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu20.04
 #FROM nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu18.04
