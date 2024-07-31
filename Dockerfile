@@ -37,7 +37,6 @@ RUN curl https://repo.anaconda.com/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh >
 # Create env?
 
 # Install pytorch, pybind11
-# RUN conda install --yes pytorch=1.7.1 torchvision cudatoolkit=11.0 -c pytorch
 RUN conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 -c pytorch
 RUN conda install --yes pybind11
 
