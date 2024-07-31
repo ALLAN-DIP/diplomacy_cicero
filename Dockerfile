@@ -43,30 +43,30 @@ RUN conda install --yes pybind11
 RUN conda install --yes go protobuf==3.19.1
 
 # Install python requirements
-RUN pip install -U pip
+RUN pip install --no-cache-dir -U pip
 
 WORKDIR /diplomacy_cicero
 
 # Local pip installs
 COPY thirdparty/ thirdparty/
-RUN pip install -e ./thirdparty/github/fairinternal/postman/nest/
+RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/nest/
 
 # NOTE: Postman here links against pytorch for tensors, for this to work you may
 # need to separately have installed cuda 11 on your own.
 RUN ln -s /usr/local/cuda /usr/local/nvidia
 ENV Torch_DIR=/usr/local/lib/python3.7/site-packages/torch/share/cmake/Torch
-RUN pip install -e ./thirdparty/github/fairinternal/postman/postman/
+RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/postman/
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install \
+RUN pip install --no-cache-dir \
     git+https://github.com/ALLAN-DIP/diplomacy.git@centaur-interface \
     git+https://github.com/delaschwein/daidepp.git \
     ujson
 
 COPY . .
-RUN pip install -e . -vv
+RUN pip install --no-cache-dir -e . -vv
 
 # RUN scp wwongkam@ls6.tacc.utexas.edu:/corral/projects/DARPA-SHADE/Shared/UMD/best_model/pytorch_model.bin .
 
