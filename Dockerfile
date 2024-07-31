@@ -17,11 +17,9 @@ RUN rm /etc/apt/sources.list.d/cuda.list
 #FROM nvidia/cuda:11.2.0-cudnn8-runtime-ubuntu18.04
 #FROM ubuntu:20.04
 
-RUN apt update && apt-get upgrade -y && apt-get install -y curl
-
-RUN ln -snf /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
-
-RUN apt-get install -y \
+RUN apt-get -y update \
+    && apt-get -y upgrade \
+    && apt-get --no-install-recommends -y \
     autoconf \
     build-essential \
     bzip2 \
@@ -33,7 +31,9 @@ RUN apt-get install -y \
     libgoogle-glog-dev \
     libtool \
     pkg-config \
-    wget
+    wget \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # found we needed these too
 #RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
