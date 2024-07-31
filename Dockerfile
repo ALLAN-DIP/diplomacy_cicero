@@ -80,12 +80,13 @@ COPY dipcc/ dipcc/
 # Make
 RUN make
 
+COPY slurm/ slurm/
+
+# Run unit tests
+RUN make test_fast
+
 COPY LICENSE.md .
 COPY LICENSE_FOR_MODEL_WEIGHTS.txt .
 COPY README.md .
 COPY bin/ bin/
 COPY run.py .
-COPY slurm/ slurm/
-
-# Run unit tests
-RUN make test_fast
