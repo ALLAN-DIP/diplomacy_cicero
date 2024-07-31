@@ -48,5 +48,7 @@ mypy-protobuf==2.10
 # temporary fix for https://github.com/aws/aws-sam-cli/issues/3661
 markupsafe==2.0.1
 
-# daide to english translation
-daide2eng @ git@github.com:SiddarGu/daidepp.git
+# Pinned `diplomacy` to `centaur-interface`
+diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@027f42288c3c9ab3261ecd2961287ec319ddefdf
+
+ujson==5.7.0
