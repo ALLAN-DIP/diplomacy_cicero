@@ -59,11 +59,14 @@ RUN pip install -e ./thirdparty/github/fairinternal/postman/nest/
 RUN ln -s /usr/local/cuda /usr/local/nvidia
 ENV Torch_DIR=/usr/local/lib/python3.7/site-packages/torch/share/cmake/Torch
 RUN pip install -e ./thirdparty/github/fairinternal/postman/postman/
+
+RUN pip install \
+    git+https://github.com/ALLAN-DIP/diplomacy.git@centaur-interface \
+    git+https://github.com/delaschwein/daidepp.git \
+    ujson
+
 COPY . .
 RUN pip install -e . -vv
-RUN pip install ujson
-RUN pip install git+https://git@github.com/ALLAN-DIP/diplomacy.git@centaur-interface
-RUN pip install git+https://github.com/delaschwein/daidepp.git
 
 # RUN scp wwongkam@ls6.tacc.utexas.edu:/corral/projects/DARPA-SHADE/Shared/UMD/best_model/pytorch_model.bin .
 
