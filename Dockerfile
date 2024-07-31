@@ -43,7 +43,7 @@ RUN conda install --yes pybind11
 RUN conda install --yes go protobuf==3.19.1
 
 # Install python requirements
-RUN pip install --no-cache-dir -U pip
+RUN pip install --no-cache-dir pip==24.0
 
 WORKDIR /diplomacy_cicero
 
@@ -63,7 +63,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir \
     git+https://github.com/ALLAN-DIP/diplomacy.git@centaur-interface \
     git+https://github.com/delaschwein/daidepp.git \
-    ujson
+    ujson==5.7.0
 
 COPY . .
 RUN pip install --no-cache-dir -e . -vv
