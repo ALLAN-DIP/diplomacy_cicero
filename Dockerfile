@@ -21,8 +21,19 @@ RUN apt update && apt-get upgrade -y && apt-get install -y curl
 
 RUN ln -snf /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
 
-RUN apt-get install -y wget bzip2 ca-certificates curl git build-essential build-essential \
-clang-format-8 cmake autoconf libtool pkg-config libgoogle-glog-dev
+RUN apt-get install -y \
+    autoconf \
+    build-essential \
+    bzip2 \
+    ca-certificates \
+    clang-format-8 \
+    cmake \
+    curl \
+    git \
+    libgoogle-glog-dev \
+    libtool \
+    pkg-config \
+    wget
 
 # found we needed these too
 #RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
