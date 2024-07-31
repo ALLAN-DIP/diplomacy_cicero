@@ -63,13 +63,6 @@ RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/postm
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pinned `diplomacy` to `centaur-interface`
-# Pinned `daidepp` to `main`
-RUN pip install --no-cache-dir \
-    git+https://github.com/ALLAN-DIP/diplomacy.git@027f42288c3c9ab3261ecd2961287ec319ddefdf \
-    git+https://github.com/delaschwein/daidepp.git@859b99b4ac1cf6fc02f05b38d6bcd9781b47f97d \
-    ujson==5.7.0
-
 COPY LICENSE.md .
 COPY LICENSE_FOR_MODEL_WEIGHTS.txt .
 COPY Makefile .
