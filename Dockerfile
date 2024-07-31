@@ -37,12 +37,12 @@ RUN curl https://repo.anaconda.com/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh >
 
 # Install pytorch, pybind11
 RUN conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 -c pytorch
-RUN conda install --yes pybind11
+RUN conda install --yes pybind11==2.9.1
 
 # Install go for boringssl in grpc
 # We have some hacky patching code for protobuf that is not guaranteed
 # to work on versions other than this.
-RUN conda install --yes go protobuf==3.19.1
+RUN conda install --yes go==1.21.5 protobuf==3.19.1
 
 # Install python requirements
 RUN pip install --no-cache-dir pip==24.0
