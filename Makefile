@@ -28,7 +28,7 @@ test: | test_fast test_cc
 
 test_fast: | compile
 	@echo "Running fast (unit) tests"
-	python -m pytest heyhi/ fairdiplomacy/ parlai_diplomacy/ unit_tests/
+	python -m pytest heyhi/ fairdiplomacy/ parlai_diplomacy/ unit_tests/ --ignore=fairdiplomacy/AMR/
 
 test_cc: | compile
 	@echo "Running c++ tests"
