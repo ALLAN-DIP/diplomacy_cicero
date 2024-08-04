@@ -149,7 +149,6 @@ class milaWrapper:
         self.advice_level = random.choice(advice_levels)
         print(f'assigning Cicero to {self.power_to_advise} and advicing at level {self.advice_level}')
         self.send_log(f'assigning Cicero to {self.power_to_advise} and advicing at level {self.advice_level}')
-        print("Note: level of cicero advice 1: message only, 2: order only, 3: both")
         # write to json
         with open(file_dir, 'w') as f:
             advisor_dict = {'assign_phase': self.game.get_current_phase(), 'power_to_advise':self.power_to_advise, 'advice_level':self.advice_level}
@@ -202,7 +201,7 @@ class milaWrapper:
         game_id = args.game_id
         gamedir = args.outdir
         human_powers = args.human_powers
-        advice_levels = [1,2,3]
+        advice_levels = [int(l) for l in args.advice_levels]
         power_name = None
 
         print(f"settings:")
@@ -839,6 +838,11 @@ def main() -> None:
     parser.add_argument(
         "--human_powers", default= "", type=list_of_strings, help="human - controlled powers that we provide an advisor to"
     )
+    
+    parser.add_argument(
+        "--advice_levels", default= "", type=list_of_strings, help="given levels of advising from Cicero 1: message only, 2: order only, 3: both"
+    )
+    
     
     args = parser.parse_args()
 
