@@ -328,13 +328,13 @@ class milaWrapper:
                                 K = 2
                                 self.new_message[msg['recipient']] = current_time
                                 msg_options = [msg] 
-                                msg_str_options = [msg['message']]
+                                msg_str_options = {msg['message']}
                                 
                                 for i in range(K):
                                     new_msg = self.generate_message(power_name)
                                     if new_msg['message'] not in msg_str_options:
                                         msg_options.append(new_msg)
-                                        msg_str_options.append(new_msg['message'])
+                                        msg_str_options.add(new_msg['message'])
 
                                 for msg in msg_options:
                                     if msg is None:
