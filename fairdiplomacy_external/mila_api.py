@@ -332,7 +332,7 @@ class milaWrapper:
                                 
                                 for i in range(K):
                                     new_msg = self.generate_message(power_name)
-                                    if new_msg['message'] not in msg_str_options:
+                                    if new_msg is not None and new_msg['message'] not in msg_str_options:
                                         msg_options.append(new_msg)
                                         msg_str_options.add(new_msg['message'])
 
