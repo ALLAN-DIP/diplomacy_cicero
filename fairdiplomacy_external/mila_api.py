@@ -146,9 +146,15 @@ class milaWrapper:
         # random N powers
         # random level 
         self.power_to_advise = sample_p_dict(power_dist)
+        if len(power_dist) ==1 and len(advice_levels)>1:
+            print(f'we left with only one power {power_dist}, let\'s add 0 as no advice to advice levels')
+            if 0 not in advice_levels:
+                advice_levels.append(0)
+        print(f'randoming from advice choices {advice_levels}')
         self.advice_level = random.choice(advice_levels)
-        print(f'assigning Cicero to {self.power_to_advise} and advicing at level {self.advice_level}')
-        self.send_log(f'assigning Cicero to {self.power_to_advise} and advicing at level {self.advice_level}')
+        print(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
+        print("Note: level of cicero advice 1: message only, 2: order only, 3: both")
+        self.send_log(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
         # write to json
         with open(file_dir, 'w') as f:
             advisor_dict = {'assign_phase': self.game.get_current_phase(), 'power_to_advise':self.power_to_advise, 'advice_level':self.advice_level}
@@ -233,6 +239,8 @@ class milaWrapper:
             while self.dipcc_game and self.has_phase_changed():
                 self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
                 agent_orders = self.player.get_orders(self.dipcc_game)
+                if power_name is None:
+                    power_name = self.get_curr_power_to_advise()
                 self.dipcc_game.set_orders(power_name, agent_orders)
                 self.dipcc_game.process()
                 self.dipcc_current_phase = self.dipcc_game.get_current_phase()
@@ -319,7 +327,15 @@ class milaWrapper:
                             if self.chiron_type in [1,3] and current_time - self.new_message[msg['recipient']]>=60:
                                 K = 2
                                 self.new_message[msg['recipient']] = current_time
-                                msg_options = [msg] + [self.generate_message(power_name) for i in range(K)]
+                                msg_options = [msg] 
+                                msg_str_options = [msg['message']]
+                                
+                                for i in range(K):
+                                    new_msg = self.generate_message(power_name)
+                                    if new_msg['message'] not in msg_str_options:
+                                        msg_options.append(new_msg)
+                                        msg_str_options.append(new_msg['message'])
+
                                 for msg in msg_options:
                                     if msg is None:
                                         continue
