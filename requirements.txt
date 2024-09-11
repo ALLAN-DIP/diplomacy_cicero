@@ -47,3 +47,15 @@ mypy-protobuf==2.10
 
 # temporary fix for https://github.com/aws/aws-sam-cli/issues/3661
 markupsafe==2.0.1
+
+# Pinned `diplomacy` to `clean-up-branches`
+diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@68b5e3343e77591e1a879b0d6074a0c8b7fede8e
+# Pinned `chiron-utils` to `alex-dev`
+chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@aecaa2afbfbe0672663bb015cfc39ad1bd4af843
+
+ujson==5.7.0
+discordwebhook==1.0.3
+daide2eng @ git+https://github.com/ALLAN-DIP/daide2eng.git@e4fa27071c52408817946598d3463f20bf064f6e
+# First version to not include py3.7 wheels
+# See https://github.com/explosion/spaCy/issues/13606, https://github.com/explosion/spaCy/issues/13622
+spacy<3.7.6

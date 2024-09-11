@@ -40,3 +40,11 @@ pyright:
 clean:
 	-make -C dipcc/build clean
 	rm -rf build
+
+TAG ?= latest
+
+.PHONY: build
+build:
+	docker build \
+		--tag ghcr.io/allan-dip/diplomacy_cicero:$(TAG) \
+		.
