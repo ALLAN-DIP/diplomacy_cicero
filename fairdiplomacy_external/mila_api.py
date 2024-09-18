@@ -158,13 +158,14 @@ class milaWrapper:
     async def play_mila(self, args) -> None:
         hostname = args.host
         port = args.port
+        use_ssl = args.use_ssl
         game_id = args.game_id
         power_name = args.power
         gamedir = args.outdir
         self.daide_fallback = args.daide_fallback
         
         print(f"Cicero joining game: {game_id} as {power_name}")
-        connection = await connect(hostname, port)
+        connection = await connect(hostname, port, use_ssl)
         dec = 'Deceptive_' if self.deceptive else ''
         channel = await connection.authenticate(
             f"{dec}cicero_{power_name}", "password"
@@ -1183,8 +1184,13 @@ def main() -> None:
     parser.add_argument(
         "--port",
         type=int,
-        default=8432,
+        default=8433,
         help="port to connect to the game (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--use-ssl",
+        action="store_true",
+        help="Whether to use SSL to connect to the game server. (default: %(default)s)",
     )
     parser.add_argument(
         "--game_id",
@@ -1230,6 +1236,7 @@ def main() -> None:
     args = parser.parse_args()
     host: str = args.host
     port: int = args.port
+    use_ssl: int = args.use_ssl
     game_id: str = args.game_id
     power: str = args.power
     deceptive: bool = args.deceptive
@@ -1238,7 +1245,7 @@ def main() -> None:
     game_type : int = args.game_type
 
     print(f"settings:")
-    print(f"host: {host}, port: {port}, game_id: {game_id}, power: {power}")
+    print(f"host: {host}, port: {port}, use_ssl: {use_ssl}, game_id: {game_id}, power: {power}")
 
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
