@@ -1184,7 +1184,7 @@ def main() -> None:
     parser.add_argument(
         "--port",
         type=int,
-        default=8432,
+        default=8433,
         help="port to connect to the game (default: %(default)s)",
     )
     parser.add_argument(
