@@ -204,6 +204,7 @@ class milaWrapper:
     async def play_mila(self, args) -> None:
         hostname = args.host
         port = args.port
+        use_ssl = args.use_ssl
         game_id = args.game_id
         gamedir = args.outdir
         human_powers = args.human_powers
@@ -212,8 +213,8 @@ class milaWrapper:
 
         print(f"settings:")
         print(f"host: {hostname}, port: {port}, game_id: {game_id}, human_powers to advise: {human_powers}")
-        
-        connection = await connect(hostname, port)
+
+        connection = await connect(hostname, port, use_ssl)
         channel = await connection.authenticate(
             f"admin", "password"
         )
@@ -819,8 +820,13 @@ def main() -> None:
     parser.add_argument(
         "--port",
         type=int,
-        default=8432,
+        default=8433,
         help="port to connect to the game (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--use-ssl",
+        action="store_true",
+        help="Whether to use SSL to connect to the game server. (default: %(default)s)",
     )
     parser.add_argument(
         "--game_id",
