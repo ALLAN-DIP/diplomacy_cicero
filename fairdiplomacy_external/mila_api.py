@@ -210,20 +210,12 @@ class milaWrapper:
         print(f"Started dipcc game")
 
         self.player = Player(self.agent, power_name)
-        self.game_type = args.game_type
         self.power_name = power_name
         
         num_beams   = 4
         batch_size  = 16
         
         logging.basicConfig(filename=f'/diplomacy_cicero/fairdiplomacy_external/{game_id}_{power_name}.log', format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO)
-
-        if self.game_type !=2:
-            self.model = 'best_model'
-            device = 'cuda:0'
-            model_dir  = '/diplomacy_cicero/fairdiplomacy/AMR/personal/SEN_REC_MODEL/'
-            self.inference = Inference(model_dir, batch_size=batch_size, num_beams=num_beams, device=device)
-
 
         while not self.game.is_game_done:
             self.phase_start_time = time.time()
@@ -265,11 +257,9 @@ class milaWrapper:
                         # update press in dipcc
                         await self.update_press_dipcc_game(power_name)
 
-                    # if not a silent agent
-                    if self.game_type!=3:
                     # reply/gen new message
-                        msg = self.generate_message(power_name)
-                        print(f'msg from cicero to dipcc {msg}')
+                    msg = self.generate_message(power_name)
+                    print(f'msg from cicero to dipcc {msg}')
                     
                     if msg is not None:
                         draw_token_message = self.is_draw_token_message(msg,power_name)
@@ -296,61 +286,21 @@ class milaWrapper:
                         # keep track of intent that we talked to each recipient
                         self.set_comm_intent(recipient_power, power_po)
 
-                        if self.game_type==0:
-                            list_msg = self.to_daide_msg(msg)
-                            if len(list_msg)>0:
-                                for daide_msg in list_msg:
-                                    self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')   
-                                self.send_message(msg, 'dipcc')    
-                            else:
-                                self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                        self.send_message(msg, 'dipcc')
+                        mila_timesent = self.send_message(msg, 'mila')
 
-                            for msg in list_msg:
-                                self.send_message(msg, 'mila')
+                        self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
+                            My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
+                        self.send_log(self_pseudo_log) 
 
-                        elif self.game_type==1:
-                            list_msg = self.to_daide_msg(msg)
-                            self.send_message(msg, 'dipcc')
-                            self.send_message(msg, 'mila')
-                            for daide_msg in list_msg:
-                                self.send_log(f'My external DAIDE response is: {daide_msg["message"]}')    
-                            else:
-                                self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
-
-                            for msg in list_msg:
-                                self.send_message(msg, 'mila')
-
-                        elif self.game_type==2:
-                            self.send_message(msg, 'dipcc')
-                            mila_timesent = self.send_message(msg, 'mila')
-
-                            self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
-                                My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
-                            self.send_log(self_pseudo_log) 
-
-                            if 'deceptive' in msg:
-                                self.send_log(msg['deceptive'])
-                                print(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
-                            
-                            # for daide_msg in list_msg:
-                            #     await self.send_log(f'My DAIDE response is: {daide_msg["message"]}')    
-                            # else:
-                            #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
+                        if 'deceptive' in msg:
+                            self.send_log(msg['deceptive'])
+                            print(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
                         
-                        elif self.game_type==4:
-                            logging.info(f"sending English {msg['message']}")
-                            list_msg = self.eng_daide_eng_dipcc(msg)
-                            self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
-                                My internal response is {msg["message"]}. I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
-                            self.send_log(self_pseudo_log) 
-
-                            if len(list_msg)==0:
-                                self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
-                            else:
-                                for daide_msg in list_msg:
-                                    self.send_log(f'My external DAIDE-ENG response is: {daide_msg["message"]}')    
-                                    self.send_message(daide_msg, 'dipcc')
-                                    mila_timesent = self.send_message(daide_msg, 'mila')
+                        # for daide_msg in list_msg:
+                        #     await self.send_log(f'My DAIDE response is: {daide_msg["message"]}')    
+                        # else:
+                        #     await self.send_log(f'No valid DIADE found / Attempt to send repeated FCT/PRP messages') 
                            
                     should_stop = await self.get_should_stop()
                     randsleep = random.random()
@@ -964,28 +914,14 @@ class milaWrapper:
                 # if the message is english, just send it to dipcc recipient
                 else:
                     print(f'parising message from mila to dipcc {message}')
-                    if self.game_type==4:
-                        list_eng_daide_message = self.eng_daide_eng_mila(message)
-                        for msg_dict in list_eng_daide_message:
-                            self.dipcc_game.add_message(
-                                msg_dict['sender'],
-                                msg_dict['recipient'],
-                                msg_dict['message'],
-                                # time_sent=dipcc_timesent,
-                                time_sent=Timestamp.now(),
-                                increment_on_collision=True,
-                            )
-                            print(f'message from mila to dipcc {msg_dict["message"]}')
-
-                    else:
-                        self.dipcc_game.add_message(
-                            message.sender,
-                            message.recipient,
-                            message.message,
-                            # time_sent=dipcc_timesent,
-                            time_sent=Timestamp.now(),
-                            increment_on_collision=True,
-                        )
+                    self.dipcc_game.add_message(
+                        message.sender,
+                        message.recipient,
+                        message.message,
+                        # time_sent=dipcc_timesent,
+                        time_sent=Timestamp.now(),
+                        increment_on_collision=True,
+                    )
 
                     # print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
 
@@ -1169,26 +1105,13 @@ class milaWrapper:
 
             # if the message is english, just send it to dipcc recipient
             else:
-                if self.game_type==4:
-                    list_eng_daide_message = self.eng_daide_eng_mila(message)
-                    for msg_dict in list_eng_daide_message:
-                        dipcc_game.add_message(
-                            msg_dict['sender'],
-                            msg_dict['recipient'],
-                            msg_dict['message'],
-                            # time_sent=dipcc_timesent,
-                            time_sent=Timestamp.now(),
-                            increment_on_collision=True,
-                        )
-
-                else:
-                    dipcc_game.add_message(
-                        message.sender,
-                        message.recipient,
-                        message.message,
-                        time_sent=dipcc_timesent,
-                        increment_on_collision=True,
-                    )
+                dipcc_game.add_message(
+                    message.sender,
+                    message.recipient,
+                    message.message,
+                    time_sent=dipcc_timesent,
+                    increment_on_collision=True,
+                )
 
         phase_order = self.game.order_history[phase] 
 
