@@ -850,7 +850,7 @@ class milaWrapper:
         
         close_to_deadline = deadline - no_message_second
 
-        assert close_to_deadline >= 0, "Press period is less than zero"
+        assert close_to_deadline >= 0, f"Press period is less than zero: {close_to_deadline}"
 
         current_time = time.time()
 
