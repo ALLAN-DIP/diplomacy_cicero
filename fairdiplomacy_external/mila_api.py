@@ -244,6 +244,8 @@ class milaWrapper:
                 has_deadline = self.game.deadline > 0 
                 should_stop = await self.get_should_stop()
                 while not should_stop :
+                    await self.chiron_player.wait_for_comm_stage()
+                    
                     if has_deadline:
                         # if times almost up but still can do some press, let's presubmit order
                         should_presubmit = await self.get_should_presubmit()
