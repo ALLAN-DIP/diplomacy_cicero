@@ -17,7 +17,7 @@ RUN apt-get -y update \
     ca-certificates=20230311ubuntu0.20.04.1 \
     clang-format-8=1:8.0.1-9 \
     cmake=3.16.3-1ubuntu1.20.04.1 \
-    curl=7.68.0-1ubuntu2.23 \
+    curl=7.68.0-1ubuntu2.24 \
     git=1:2.25.1-1ubuntu3.13 \
     libgoogle-glog-dev=0.4.0-1build1 \
     libtool=2.4.6-14 \
