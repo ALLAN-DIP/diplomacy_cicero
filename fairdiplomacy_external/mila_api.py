@@ -124,6 +124,23 @@ power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUST
 af_dict = {'A':'AMY','F':'FLT'}
 possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive','sure','Alright','yes','yep','Awesome','Done','Works for me','Will do','Perfect','I agree','Fine','Agreed','yup','Absolutely','Understood','That\'s the plan','Deal']
 
+from abc import ABC
+from dataclasses import dataclass
+import random
+from typing import List, Sequence
+
+from chiron_utils.bots.baseline_bot import BaselineBot, BotType
+
+
+@dataclass
+class CiceroPlayer(BaselineBot, ABC):
+    bot_type = BotType.PLAYER
+
+    async def gen_orders(self) -> List[str]:
+        return []
+
+    async def do_messaging_round(self, orders: Sequence[str]) -> List[str]:
+        return []
 
 class milaWrapper:
 
