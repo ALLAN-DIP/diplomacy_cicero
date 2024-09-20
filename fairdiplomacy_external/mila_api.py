@@ -146,6 +146,7 @@ class milaWrapper:
 
     def __init__(self, is_deceptive):
         self.game: NetworkGame = None
+        self.chiron_player: Optional[CiceroPlayer] = None
         self.dipcc_game: Game = None
         self.prev_state = 0                                         # number of number received messages in the current phase
         self.dialogue_state = {}                                    # {phase: number of all (= received + new) messages for agent}
@@ -188,6 +189,8 @@ class milaWrapper:
             f"{dec}cicero_{power_name}", "password"
         )
         self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
+        
+        self.chiron_player = CiceroPlayer(power_name, self.game)
 
         # Wait while game is still being formed
         print(f"Waiting for game to start")
