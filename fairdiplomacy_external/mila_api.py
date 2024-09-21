@@ -8,13 +8,12 @@ import time
 from typing import Optional
 
 from conf.agents_pb2 import *
-from daide2eng.utils import create_daide_grammar, gen_English, is_daide
+from daide2eng.utils import gen_English, is_daide
 from diplomacy import Message, connect
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils import strings
 from diplomacy.utils.export import to_saved_game_format
 from discordwebhook import Discord
-import google.protobuf.message
 
 from fairdiplomacy.agents.bqre1p_agent import BQRE1PAgent as PyBQRE1PAgent
 from fairdiplomacy.agents.player import Player
