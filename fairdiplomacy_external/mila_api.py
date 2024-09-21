@@ -36,14 +36,8 @@ import heyhi
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
-ProtoMessage = google.protobuf.message.Message
 
 DEFAULT_DEADLINE = 5
-PRE_DEADLINE = 4
-
-power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
-af_dict = {'A':'AMY','F':'FLT'}
-possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive','sure','Alright','yes','yep','Awesome','Done','Works for me','Will do','Perfect','I agree','Fine','Agreed','yup','Absolutely','Understood','That\'s the plan','Deal']
 
 
 @dataclass
