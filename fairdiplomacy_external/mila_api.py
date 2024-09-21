@@ -56,7 +56,7 @@ class CiceroPlayer(CiceroBot):
 
 class milaWrapper:
 
-    def __init__(self, is_deceptive):
+    def __init__(self):
         self.game: NetworkGame = None
         self.chiron_agent: Optional[CiceroBot] = None
         self.dipcc_game: Game = None
@@ -68,14 +68,8 @@ class milaWrapper:
         self.reuse_stale_pseudo_after_n_seconds = 45                # seconds to reuse pseudo order to generate message
         self.last_comm_intent={'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None,'final':None}
         self.prev_received_msg_time_sent = {'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None}
-        self.deceptive = is_deceptive
         
-        if self.deceptive:
-            agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero_lie.prototxt')
-            print('CICERO deceptive')
-        else:
-            agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
-            print('Cicero')
+        agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         print(f"successfully load cicero config")
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
@@ -90,9 +84,8 @@ class milaWrapper:
         
         print(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port, use_ssl)
-        dec = 'Deceptive_' if self.deceptive else ''
         channel = await connection.authenticate(
-            f"{dec}cicero_{power_name}", "password"
+            f"cicero_{power_name}", "password"
         )
         self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
         
@@ -625,12 +618,6 @@ def main() -> None:
     #     help="path to prototxt with agent's configurations (default: %(default)s)",
     # )
     parser.add_argument(
-        "--deceptive",
-        default= False, 
-        action="store_true",
-        help="Is Cicero being deceptive? -- removing PO correspondence filter from message module?",
-    )
-    parser.add_argument(
         "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
     )
     
@@ -640,7 +627,6 @@ def main() -> None:
     use_ssl: int = args.use_ssl
     game_id: str = args.game_id
     power: str = args.power
-    deceptive: bool = args.deceptive
     outdir: Optional[Path] = args.outdir
     game_type : int = args.game_type
 
@@ -650,7 +636,7 @@ def main() -> None:
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
 
-    mila = milaWrapper(is_deceptive=deceptive)
+    mila = milaWrapper()
     discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
     discord.post(content=f"Cicero as power {power} is joining {game_id}.")
 
