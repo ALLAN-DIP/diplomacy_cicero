@@ -39,6 +39,9 @@ import random
 from typing import List, Sequence
 
 from chiron_utils.bots.baseline_bot import BaselineBot, BotType
+from chiron_utils.utils import return_logger
+
+logger = return_logger(__name__)
 
 
 @dataclass
@@ -67,7 +70,7 @@ class milaWrapper:
         self.prev_received_msg_time_sent = {'RUSSIA':None,'TURKEY':None,'ITALY':None,'ENGLAND':None,'FRANCE':None,'GERMANY':None,'AUSTRIA':None}
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
-        print(f"successfully load cicero config")
+        logger.info(f"successfully load cicero config")
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
@@ -79,7 +82,7 @@ class milaWrapper:
         power_name = args.power
         gamedir = args.outdir
         
-        print(f"Cicero joining game: {game_id} as {power_name}")
+        logger.info(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port, use_ssl)
         channel = await connection.authenticate(
             f"cicero_{power_name}", "password"
@@ -89,15 +92,15 @@ class milaWrapper:
         self.chiron_player = CiceroPlayer(power_name, self.game)
 
         # Wait while game is still being formed
-        print(f"Waiting for game to start")
+        logger.info(f"Waiting for game to start")
         while self.game.is_game_forming:
             await asyncio.sleep(2)
 
         # Playing game
-        print(f"Started playing")
+        logger.info(f"Started playing")
 
         self.dipcc_game = self.start_dipcc_game(power_name)
-        print(f"Started dipcc game")
+        logger.info(f"Started dipcc game")
 
         self.player = Player(self.agent, power_name)
         self.power_name = power_name
@@ -139,7 +142,7 @@ class milaWrapper:
                         should_presubmit = await self.get_should_presubmit()
                         if should_presubmit and not self.presubmit:
                             self.presubmit = True
-                            print(f"Pre-submit orders in {self.dipcc_current_phase}")
+                            logger.info(f"Pre-submit orders in {self.dipcc_current_phase}")
                             agent_orders = self.player.get_orders(self.dipcc_game)
                             self.game.set_orders(power_name=power_name, orders=agent_orders, wait=True)
 
@@ -151,7 +154,7 @@ class milaWrapper:
 
                     # reply/gen new message
                     msg = self.generate_message(power_name)
-                    print(f'msg from cicero to dipcc {msg}')
+                    logger.info(f'msg from cicero to dipcc {msg}')
                     
                     if msg is not None:
                         draw_token_message = self.is_draw_token_message(msg,power_name)
@@ -187,7 +190,7 @@ class milaWrapper:
 
                         if 'deceptive' in msg:
                             await self.send_log(msg['deceptive'])
-                            print(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
+                            logger.info(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
                            
                     should_stop = await self.get_should_stop()
                     randsleep = random.random()
@@ -196,7 +199,7 @@ class milaWrapper:
                 # ORDER
 
                 if not self.has_phase_changed():
-                    print(f"Submit orders in {self.dipcc_current_phase}")
+                    logger.info(f"Submit orders in {self.dipcc_current_phase}")
                     agent_orders = self.player.get_orders(self.dipcc_game)
 
                     # keep track of our final order
@@ -207,9 +210,9 @@ class milaWrapper:
                     self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
 
                 # wait until the phase changed
-                print(f"wait until {self.dipcc_current_phase} is done", end=" ")
+                logger.info(f"wait until {self.dipcc_current_phase} is done")
                 while not self.has_phase_changed():
-                    print("", end=".")
+                    logger.info(".")
                     await asyncio.sleep(0.5)
                 
                 # when the phase has changed, update submitted orders from Mila to dipcc
@@ -217,7 +220,7 @@ class milaWrapper:
                     self.phase_end_time = time.time()
                     self.update_and_process_dipcc_game()
                     self.init_phase()
-                    print(f"Process to {self.game.get_current_phase()}")
+                    logger.info(f"Process to {self.game.get_current_phase()}")
         if gamedir:
             with open(gamedir / f"{power_name}_{game_id}_output.json", mode="w") as file:
                 json.dump(
@@ -286,7 +289,7 @@ class milaWrapper:
         has_state_changed = self.prev_state != self.dialogue_state[mila_phase]
         self.prev_state = self.dialogue_state[mila_phase]
 
-        # print(f'current phase state: {self.dialogue_state}')
+        # logger.info(f'current phase state: {self.dialogue_state}')
 
         return has_state_changed
 
@@ -300,7 +303,7 @@ class milaWrapper:
         presubmit_second = 120
 
         if deadline_timer <= presubmit_second:
-            print(f'time to presubmit order')
+            logger.info(f'time to presubmit order')
             return True
         return False
 
@@ -330,7 +333,7 @@ class milaWrapper:
             server_end = self.scheduler_event.time_added + self.scheduler_event.delay
             server_remaining = server_end - self.scheduler_event.current_time
             deadline_timer = server_remaining * self.scheduler_event.time_unit
-            print(f'remaining time to play: {deadline_timer}')
+            logger.info(f'remaining time to play: {deadline_timer}')
         else:
             deadline = DEFAULT_DEADLINE*60
 
@@ -342,7 +345,7 @@ class milaWrapper:
         if has_deadline and deadline_timer <= no_message_second:
             return True
         if self.last_received_message_time != 0 and current_time - self.last_received_message_time >=no_message_second:
-            print(f'no incoming message for {current_time - self.last_received_message_time} seconds')
+            logger.info(f'no incoming message for {current_time - self.last_received_message_time} seconds')
             return True
         
         # check if reuse state psedo orders for too long
@@ -364,7 +367,7 @@ class milaWrapper:
             messages=self.game.messages, power=power_name
         )
         most_recent_mila = self.last_received_message_time
-        # print(f'most update message: {most_recent}')
+        # logger.info(f'most update message: {most_recent}')
 
         # update message in dipcc game
         for timesent, message in phase_messages.items():
@@ -376,14 +379,14 @@ class milaWrapper:
             if int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]):
                 dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
                 # dipcc_timesent =Timestamp.now()
-                # print(f'time_sent in dipcc {dipcc_timesent}')
+                # logger.info(f'time_sent in dipcc {dipcc_timesent}')
                 
 
                 if timesent > most_recent_mila:
                     most_recent_mila = timesent
 
                 # if the message is english, just send it to dipcc recipient
-                print(f'parising message from mila to dipcc {message}')
+                logger.info(f'parising message from mila to dipcc {message}')
                 self.dipcc_game.add_message(
                     message.sender,
                     message.recipient,
@@ -393,7 +396,7 @@ class milaWrapper:
                     increment_on_collision=True,
                 )
 
-                    # print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
+                    # logger.info(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
 
         # update last_received_message_time 
         self.last_received_message_time = most_recent_mila
@@ -503,7 +506,7 @@ class milaWrapper:
             self.game.send_game_message(message=mila_msg)
             timesend = mila_msg.time_sent
 
-        print(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
+        logger.info(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
         return timesend
 
     def get_messages(
@@ -551,7 +554,7 @@ class milaWrapper:
 
             if message.recipient not in self.game.powers:
                 continue
-            # print(f'load message from mila to dipcc {message}')
+            # logger.info(f'load message from mila to dipcc {message}')
 
             # if the message is english, just send it to dipcc recipient
             dipcc_game.add_message(
@@ -628,8 +631,8 @@ def main() -> None:
     outdir: Optional[Path] = args.outdir
     game_type : int = args.game_type
 
-    print(f"settings:")
-    print(f"host: {host}, port: {port}, use_ssl: {use_ssl}, game_id: {game_id}, power: {power}")
+    logger.info(f"settings:")
+    logger.info(f"host: {host}, port: {port}, use_ssl: {use_ssl}, game_id: {game_id}, power: {power}")
 
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
@@ -644,7 +647,7 @@ def main() -> None:
                 mila.play_mila(args)
                     )
         except Exception as e:
-            print(e)
+            logger.info(e)
             cicero_error = f"cicero controlling {power} has an error occured: \n {e}"
             discord.post(content=cicero_error)
 
