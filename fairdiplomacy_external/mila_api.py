@@ -133,7 +133,7 @@ class milaWrapper:
                 self.game.set_wait(power_name, wait=True)
 
                 # PRESS allows in movement phase (ONLY)
-                if not self.dipcc_game.get_current_phase().endswith("M"):
+                if self.dipcc_game.get_current_phase().endswith("M"):
                     await self.chiron_player.wait_for_comm_stage()
 
                 # PRESS
