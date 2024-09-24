@@ -87,7 +87,7 @@ class milaWrapper:
         channel = await connection.authenticate(
             f"cicero_{power_name}", "password"
         )
-        self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
+        self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name, player_type=self.chiron_player.player_type)
         
         self.chiron_player = CiceroPlayer(power_name, self.game)
 
