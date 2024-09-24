@@ -114,7 +114,7 @@ class milaWrapper:
 
             # fix issue that there is a chance where retreat phase appears in dipcc but not mila 
             while self.has_phase_changed():
-                self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
+                await self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
                 agent_orders = self.player.get_orders(self.dipcc_game)
                 self.dipcc_game.set_orders(power_name, agent_orders)
                 self.dipcc_game.process()
@@ -169,7 +169,7 @@ class milaWrapper:
                         
                         if not self.sent_self_intent:
                             self_pseudo_log = f'At the start of this phase, I intend to do: {self_po}'
-                            self.send_log(self_pseudo_log) 
+                            await self.send_log(self_pseudo_log) 
                             self.sent_self_intent = True
 
                         # keep track of intent that we talked to each recipient
@@ -180,10 +180,10 @@ class milaWrapper:
 
                         self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
                             My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
-                        self.send_log(self_pseudo_log) 
+                        await self.send_log(self_pseudo_log) 
 
                         if 'deceptive' in msg:
-                            self.send_log(msg['deceptive'])
+                            await self.send_log(msg['deceptive'])
                             print(f'Cicero logs if message is deceptive: {msg["deceptive"]}')
                            
                     should_stop = await self.get_should_stop()
@@ -198,7 +198,7 @@ class milaWrapper:
 
                     # keep track of our final order
                     self.set_comm_intent('final', agent_orders)
-                    self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
+                    await self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
 
                     # set order in Mila
                     self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
@@ -451,12 +451,11 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
-    def send_log(self, log: str):
+    async def send_log(self, log: str):
         """ 
         send log to mila games 
         """ 
-        log_data = self.game.new_log_data(body=log)
-        self.game.send_log_data(log=log_data)
+        await self.chiron_agent.send_intent_log(log)
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
