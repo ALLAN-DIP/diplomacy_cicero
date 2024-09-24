@@ -87,7 +87,7 @@ COPY run.py .
 
 # TODO: Remove lines added for efficiency
 RUN pip install -U --force-reinstall --no-deps 'diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@1f6ce8803bfd35a3ebbcf9ded7325434f72d966a'
-RUN pip install -U --force-reinstall --no-deps 'chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@62ac5beb55c952f87d68f953a7bcc083690cd835'
+RUN pip install -U --force-reinstall --no-deps 'chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@db43d9ee797a70791c1c833c8e53eba9517658b9'
 
 RUN apt-get -y update \
     && apt-get -y upgrade \
