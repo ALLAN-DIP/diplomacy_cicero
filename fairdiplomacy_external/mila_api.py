@@ -132,10 +132,15 @@ class milaWrapper:
                 # set wait to True: to avoid being skipped in R/A phase
                 self.game.set_wait(power_name, wait=True)
 
+                # PRESS allows in movement phase (ONLY)
+                if self.dipcc_game.get_current_phase().endswith("M"):
+                    await self.chiron_agent.wait_for_comm_stage()
+
                 # PRESS
                 has_deadline = self.game.deadline > 0 
                 should_stop = await self.get_should_stop()
                 while not should_stop :
+                    
                     if has_deadline:
                         # if times almost up but still can do some press, let's presubmit order
                         should_presubmit = await self.get_should_presubmit()
