@@ -35,8 +35,10 @@ RUN curl https://repo.anaconda.com/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh >
 WORKDIR /diplomacy_cicero
 
 # Update existing environment
+# `pip` needs to be updated separately to prevent version conflict
 COPY environment.yaml .
-RUN conda env update --file environment.yaml --prune
+RUN conda env update --file environment.yaml --prune \
+    && pip install --no-cache-dir pip==24.0
 
 # Install local pip packages
 COPY thirdparty/ thirdparty/
