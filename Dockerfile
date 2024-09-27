@@ -30,14 +30,14 @@ RUN curl https://repo.anaconda.com/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh >
     && /bin/bash ~/miniconda.sh -b -u -p /usr/local \
     && rm ~/miniconda.sh
 
+WORKDIR /diplomacy_cicero
+
 # Create env?
 COPY environment.yaml .
 RUN conda env update --file environment.yaml --prune
 
 # Install python requirements
 RUN pip install --no-cache-dir pip==24.0
-
-WORKDIR /diplomacy_cicero
 
 # Local pip installs
 COPY thirdparty/ thirdparty/
