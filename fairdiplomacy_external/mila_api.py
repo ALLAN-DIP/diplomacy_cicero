@@ -181,8 +181,8 @@ class milaWrapper:
                         # keep track of intent that we talked to each recipient
                         self.set_comm_intent(recipient_power, power_po)
 
-                        self.send_message(msg, 'dipcc')
-                        self.send_message(msg, 'mila')
+                        await self.send_message(msg, 'dipcc')
+                        await self.send_message(msg, 'mila')
 
                         self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
                             My response is {msg["message"]}. I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
@@ -463,7 +463,7 @@ class milaWrapper:
         """ 
         await self.chiron_player.send_intent_log(log)
 
-    def send_message(self, msg: MessageDict, engine: str) -> None:
+    async def send_message(self, msg: MessageDict, engine: str) -> None:
         """ 
         send message in dipcc and mila games 
         """ 
@@ -479,7 +479,7 @@ class milaWrapper:
                     )
 
         if engine =='mila':
-            self.chiron_player.send_message(
+            await self.chiron_player.send_message(
                 recipient=msg["recipient"],
                 message=msg["message"],
                 sender=msg["sender"],
