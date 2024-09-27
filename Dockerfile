@@ -36,9 +36,6 @@ WORKDIR /diplomacy_cicero
 COPY environment.yaml .
 RUN conda env update --file environment.yaml --prune
 
-# Install python requirements
-RUN pip install --no-cache-dir pip==24.0
-
 # Local pip installs
 COPY thirdparty/ thirdparty/
 RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/nest/
