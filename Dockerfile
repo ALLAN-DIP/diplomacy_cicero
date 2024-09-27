@@ -11,14 +11,14 @@ ENV IMG_NAME=11.1.1-cudnn8-devel-ubuntu20.04 \
 RUN apt-get -y update \
     && apt-get -y upgrade \
     && apt-get -y install --no-install-recommends \
-    autoconf=2.69-11.1 \
-    clang-format-8=1:8.0.1-9 \
-    cmake=3.16.3-1ubuntu1.20.04.1 \
-    curl=7.68.0-1ubuntu2.24 \
-    git=1:2.25.1-1ubuntu3.13 \
-    libgoogle-glog-dev=0.4.0-1build1 \
-    libtool=2.4.6-14 \
-    pkg-config=0.29.1-0ubuntu4 \
+    autoconf=2.69-* \
+    clang-format-8=1:8.0.1-* \
+    cmake=3.16.3-* \
+    curl=7.68.0-* \
+    git=1:2.25.1-* \
+    libgoogle-glog-dev=0.4.0-* \
+    libtool=2.4.6-* \
+    pkg-config=0.29.1-* \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
