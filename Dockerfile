@@ -12,9 +12,6 @@ RUN apt-get -y update \
     && apt-get -y upgrade \
     && apt-get -y install --no-install-recommends \
     autoconf=2.69-11.1 \
-    build-essential=12.8ubuntu1.1 \
-    bzip2=1.0.8-2 \
-    ca-certificates=20230311ubuntu0.20.04.1 \
     clang-format-8=1:8.0.1-9 \
     cmake=3.16.3-1ubuntu1.20.04.1 \
     curl=7.68.0-1ubuntu2.24 \
