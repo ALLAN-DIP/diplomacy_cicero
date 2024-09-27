@@ -86,11 +86,4 @@ COPY run.py .
 RUN pip install -U --force-reinstall --no-deps 'diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@1f6ce8803bfd35a3ebbcf9ded7325434f72d966a'
 RUN pip install -U --force-reinstall --no-deps 'chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@5f3095822c3958b89921cb0df7a925aeabb3ac52'
 
-RUN apt-get -y update \
-    && apt-get -y upgrade \
-    && apt-get -y install --no-install-recommends \
-    strace \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
 LABEL org.opencontainers.image.source=https://github.com/ALLAN-DIP/diplomacy_cicero
