@@ -1,12 +1,11 @@
 FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04
 
 # Declare the image name
-ENV IMG_NAME=11.1.1-cudnn8-devel-ubuntu20.04 \
-    # declare what jaxlib tag to use
-    # if a CI/CD system is expected to pass in these arguments
-    # the dockerfile should be modified accordingly
-    JAXLIB_VERSION=0.1.70 \
-    DEBIAN_FRONTEND=noninteractive
+ENV IMG_NAME=11.1.1-cudnn8-devel-ubuntu20.04
+# Declare what jaxlib tag to use
+ENV JAXLIB_VERSION=0.1.70
+# Use default answer for any questions asked by Debian tools
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Update and install OS packages
 RUN apt-get -y update \
