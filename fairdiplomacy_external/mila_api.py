@@ -184,11 +184,11 @@ class milaWrapper:
                         # keep track of intent that we talked to each recipient
                         self.set_comm_intent(recipient_power, power_po)
 
-                        self.send_message(msg, 'dipcc')
-                        mila_timesent = self.send_message(msg, 'mila')
+                        await self.send_message(msg, 'dipcc')
+                        await self.send_message(msg, 'mila')
 
                         self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
-                            My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
+                            My response is {msg["message"]}. I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
                         await self.send_log(self_pseudo_log) 
 
                         if 'deceptive' in msg:
@@ -466,7 +466,7 @@ class milaWrapper:
         """ 
         await self.chiron_agent.send_intent_log(log)
 
-    def send_message(self, msg: MessageDict, engine: str):
+    async def send_message(self, msg: MessageDict, engine: str) -> None:
         """ 
         send message in dipcc and mila games 
         """ 
@@ -482,17 +482,13 @@ class milaWrapper:
                     )
 
         if engine =='mila':
-            mila_msg = Message(
-                sender=msg["sender"],
+            await self.chiron_agent.send_message(
                 recipient=msg["recipient"],
                 message=msg["message"],
-                phase=self.game.get_current_phase(),
-                )
-            self.game.send_game_message(message=mila_msg)
-            timesend = mila_msg.time_sent
+                sender=msg["sender"],
+            )
 
         logger.info(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
-        return timesend
 
     def get_messages(
         self, 
