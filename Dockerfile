@@ -47,8 +47,8 @@ ENV Torch_DIR=/usr/local/lib/python3.7/site-packages/torch/share/cmake/Torch
 RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/postman/
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-RUN spacy download en_core_web_sm
+RUN pip install --no-cache-dir -r requirements.txt \
+    && spacy download en_core_web_sm
 
 COPY conf/ conf/
 COPY fairdiplomacy/ fairdiplomacy/
