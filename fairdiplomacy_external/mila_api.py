@@ -148,7 +148,7 @@ class milaWrapper:
                             self.presubmit = True
                             logger.info(f"Pre-submit orders in {self.dipcc_current_phase}")
                             agent_orders = self.player.get_orders(self.dipcc_game)
-                            self.game.set_orders(power_name=power_name, orders=agent_orders, wait=True)
+                            await self.chiron_agent.send_orders(agent_orders, wait=True)
 
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
@@ -210,7 +210,7 @@ class milaWrapper:
                     await self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
 
                     # set order in Mila
-                    self.game.set_orders(power_name=power_name, orders=agent_orders, wait=False)
+                    await self.chiron_agent.send_orders(agent_orders, wait=False)
 
                 # wait until the phase changed
                 logger.info(f"wait until {self.dipcc_current_phase} is done")
