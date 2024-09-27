@@ -38,13 +38,12 @@ RUN conda env update --file environment.yaml --prune
 
 # Local pip installs
 COPY thirdparty/ thirdparty/
-RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/nest/
-
 # NOTE: Postman here links against pytorch for tensors, for this to work you may
 # need to separately have installed cuda 11 on your own.
-RUN ln -s /usr/local/cuda /usr/local/nvidia
 ENV Torch_DIR=/usr/local/lib/python3.7/site-packages/torch/share/cmake/Torch
-RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/postman/
+RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/nest/ \
+    && ln -s /usr/local/cuda /usr/local/nvidia \
+    && pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/postman/
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt \
