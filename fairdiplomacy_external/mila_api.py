@@ -105,9 +105,6 @@ class milaWrapper:
         self.player = Player(self.agent, power_name)
         self.power_name = power_name
         
-        num_beams   = 4
-        batch_size  = 16
-        
         logging.basicConfig(filename=f'/diplomacy_cicero/fairdiplomacy_external/{game_id}_{power_name}.log', format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO)
 
         while not self.game.is_game_done:
@@ -144,7 +141,6 @@ class milaWrapper:
                             agent_orders = self.player.get_orders(self.dipcc_game)
                             self.game.set_orders(power_name=power_name, orders=agent_orders, wait=True)
 
-                    msg=None
                     # if there is new message incoming
                     if self.has_state_changed(power_name):
                         # update press in dipcc
@@ -287,8 +283,6 @@ class milaWrapper:
         has_state_changed = self.prev_state != self.dialogue_state[mila_phase]
         self.prev_state = self.dialogue_state[mila_phase]
 
-        # print(f'current phase state: {self.dialogue_state}')
-
         return has_state_changed
 
     async def get_should_presubmit(self)->bool:
@@ -357,15 +351,12 @@ class milaWrapper:
         update new messages that present in Mila to dipcc
         """
         assert self.game.get_current_phase() == self.dipcc_current_phase, "Phase in two engines are not synchronized"
-
-        mila_phase = self.game.get_current_phase()
         
         # new messages in current phase from Mila 
         phase_messages = self.get_messages(
             messages=self.game.messages, power=power_name
         )
         most_recent_mila = self.last_received_message_time
-        # print(f'most update message: {most_recent}')
 
         # update message in dipcc game
         for timesent, message in phase_messages.items():
@@ -375,11 +366,6 @@ class milaWrapper:
             
             self.prev_received_msg_time_sent[message.sender] = message.time_sent
             if int(str(timesent)[0:10]) > int(str(self.last_received_message_time)[0:10]):
-                dipcc_timesent = Timestamp.from_seconds(timesent * 1e-6)
-                # dipcc_timesent =Timestamp.now()
-                # print(f'time_sent in dipcc {dipcc_timesent}')
-                
-
                 if timesent > most_recent_mila:
                     most_recent_mila = timesent
 
@@ -389,12 +375,9 @@ class milaWrapper:
                     message.sender,
                     message.recipient,
                     message.message,
-                    # time_sent=dipcc_timesent,
                     time_sent=Timestamp.now(),
                     increment_on_collision=True,
                 )
-
-                    # print(f'update a message from: {message.sender} to: {message.recipient} timesent: {timesent} and body: {message.message}')
 
         # update last_received_message_time 
         self.last_received_message_time = most_recent_mila
@@ -428,7 +411,6 @@ class milaWrapper:
         # timestamp condition
         last_timestamp_this_phase = self.get_last_timestamp_this_phase(default=Timestamp.now())
         sleep_time = self.player.get_sleep_time(self.dipcc_game, recipient=None)
-        wakeup_time = last_timestamp_this_phase + sleep_time
 
         sleep_time_for_conditioning = (
             sleep_time if sleep_time < INF_SLEEP_TIME else MESSAGE_DELAY_IF_SLEEP_INF
@@ -441,10 +423,6 @@ class milaWrapper:
 
         # generate message using pseudo orders
         pseudo_orders = None
-        # if isinstance(self.player.state, SearchBotAgentState):
-        #     pseudo_orders = self.player.state.pseudo_orders_cache.maybe_get(
-        #         self.dipcc_game, self.player.power, True, True, None
-        #     ) 
 
         msg = self.player.generate_message(
             game=self.dipcc_game,
@@ -553,7 +531,6 @@ class milaWrapper:
 
             if message.recipient not in self.game.powers:
                 continue
-            # print(f'load message from mila to dipcc {message}')
 
             # if the message is english, just send it to dipcc recipient
             dipcc_game.add_message(
@@ -610,13 +587,6 @@ def main() -> None:
         default=0,
         help="0: AI-only game, 1: Human and AI game, 2: Human-only game, 3: silent, 4: human with eng-daide-eng Cicero",
     )
-    # parser.add_argument(
-    #     "--agent",
-    #     type=Path,
-    #     # default ="/diplomacy_cicero/conf/common/agents/cicero.prototxt",
-    #     default ="/diplomacy_cicero/conf/agents/bqre1p_parlai_20220819_cicero_2.prototxt",
-    #     help="path to prototxt with agent's configurations (default: %(default)s)",
-    # )
     parser.add_argument(
         "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
     )
@@ -628,7 +598,6 @@ def main() -> None:
     game_id: str = args.game_id
     power: str = args.power
     outdir: Optional[Path] = args.outdir
-    game_type : int = args.game_type
 
     print(f"settings:")
     print(f"host: {host}, port: {port}, use_ssl: {use_ssl}, game_id: {game_id}, power: {power}")
