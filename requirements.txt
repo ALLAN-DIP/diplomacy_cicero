@@ -51,7 +51,7 @@ markupsafe==2.0.1
 # Pinned `diplomacy` to `clean-up-branches`
 diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@1f6ce8803bfd35a3ebbcf9ded7325434f72d966a
 # Pinned `chiron-utils` to `alex-dev`
-chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@5f3095822c3958b89921cb0df7a925aeabb3ac52
+chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@216bb21cc1ac2f353de727e0ebaac31960471e95
 
 ujson==5.7.0
 discordwebhook==1.0.3

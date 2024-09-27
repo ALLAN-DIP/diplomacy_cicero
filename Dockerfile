@@ -79,6 +79,6 @@ COPY run.py .
 
 # TODO: Remove lines added for efficiency
 RUN pip install -U --no-cache-dir --force-reinstall --no-deps 'diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@1f6ce8803bfd35a3ebbcf9ded7325434f72d966a'
-RUN pip install -U --no-cache-dir --force-reinstall --no-deps 'chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@5f3095822c3958b89921cb0df7a925aeabb3ac52'
+RUN pip install -U --no-cache-dir --force-reinstall --no-deps 'chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@216bb21cc1ac2f353de727e0ebaac31960471e95'
 
 LABEL org.opencontainers.image.source=https://github.com/ALLAN-DIP/diplomacy_cicero
