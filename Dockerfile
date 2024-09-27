@@ -58,9 +58,7 @@ COPY parlai_diplomacy/ parlai_diplomacy/
 COPY pyproject.toml .
 COPY setup.py .
 COPY unit_tests/ unit_tests/
-RUN pip install --no-cache-dir -e . -vv
-
-# RUN scp wwongkam@ls6.tacc.utexas.edu:/corral/projects/DARPA-SHADE/Shared/UMD/best_model/pytorch_model.bin .
+RUN pip install --no-cache-dir -e .
 
 COPY Makefile .
 COPY dipcc/ dipcc/
