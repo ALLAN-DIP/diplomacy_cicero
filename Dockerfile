@@ -1,6 +1,6 @@
 FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04
 
-# declare the image name
+# Declare the image name
 ENV IMG_NAME=11.1.1-cudnn8-devel-ubuntu20.04 \
     # declare what jaxlib tag to use
     # if a CI/CD system is expected to pass in these arguments
@@ -8,6 +8,7 @@ ENV IMG_NAME=11.1.1-cudnn8-devel-ubuntu20.04 \
     JAXLIB_VERSION=0.1.70 \
     DEBIAN_FRONTEND=noninteractive
 
+# Update and install OS packages
 RUN apt-get -y update \
     && apt-get -y upgrade \
     && apt-get -y install --no-install-recommends \
@@ -30,13 +31,14 @@ RUN curl https://repo.anaconda.com/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh >
     && /bin/bash ~/miniconda.sh -b -u -p /usr/local \
     && rm ~/miniconda.sh
 
+# Switch to application directory
 WORKDIR /diplomacy_cicero
 
-# Create env?
+# Update existing environment
 COPY environment.yaml .
 RUN conda env update --file environment.yaml --prune
 
-# Local pip installs
+# Install local pip packages
 COPY thirdparty/ thirdparty/
 # NOTE: Postman here links against pytorch for tensors, for this to work you may
 # need to separately have installed cuda 11 on your own.
@@ -45,10 +47,12 @@ RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/nest/
     && ln -s /usr/local/cuda /usr/local/nvidia \
     && pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/postman/
 
+# Install application requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt \
     && spacy download en_core_web_sm
 
+# Install application itself
 COPY conf/ conf/
 COPY fairdiplomacy/ fairdiplomacy/
 COPY fairdiplomacy_external/ fairdiplomacy_external/
@@ -59,17 +63,16 @@ COPY setup.py .
 COPY unit_tests/ unit_tests/
 RUN pip install --no-cache-dir -e .
 
+# Build application
 COPY Makefile .
 COPY dipcc/ dipcc/
-
-# Make
 RUN make
 
-COPY slurm/ slurm/
-
 # Run unit tests
+COPY slurm/ slurm/
 RUN make test_fast
 
+# Copy remaining files
 COPY LICENSE.md .
 COPY LICENSE_FOR_MODEL_WEIGHTS.txt .
 COPY README.md .
