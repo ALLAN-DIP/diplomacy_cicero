@@ -1,101 +1,43 @@
-from collections import defaultdict
-from fnmatch import fnmatch
-import gc
-import html
-import http.client
-import math
-import pickle
-import traceback
-from requests.models import Response
-import requests
-import socket
-import urllib3.exceptions
-from fairdiplomacy.agents.parlai_message_handler import (
-    ParlaiMessageHandler,
-    pseudoorders_initiate_sleep_heuristics_should_trigger,
-)
-from fairdiplomacy.agents.player import Player
-from fairdiplomacy.models.consts import POWERS
-from fairdiplomacy.typedefs import (
-    Json,
-    MessageDict,
-    MessageHeuristicResult,
-    OutboundMessageDict,
-    Phase,
-    Power,
-    Timestamp,
-    Context,
-)
-import random
-import hashlib
-from pprint import pformat
-from typing import Any, Dict, List, Optional, Tuple, Union, Callable
-from datetime import datetime, timedelta
-import getpass
-import itertools
-import json
-import logging
-import os
-import pathlib
-import time
-from fairdiplomacy.data.build_dataset import (
-    DRAW_VOTE_TOKEN,
-    UNDRAW_VOTE_TOKEN,
-    DATASET_DRAW_MESSAGE,
-    DATASET_NODRAW_MESSAGE,
-)
-from fairdiplomacy.utils.agent_interruption import ShouldStopException, set_interruption_condition
-from fairdiplomacy.utils.atomicish_file import atomicish_open_for_writing_binary
-from fairdiplomacy.utils.slack import GLOBAL_SLACK_EXCEPTION_SWALLOWER
-from fairdiplomacy.utils.typedefs import build_message_dict, get_last_message
-from fairdiplomacy.utils.sampling import normalize_p_dict, sample_p_dict
-from fairdiplomacy.viz.meta_annotations.annotator import MetaAnnotator
-from parlai_diplomacy.utils.game2seq.format_helpers.misc import POT_TYPE_CONVERSION
-import torch
-from fairdiplomacy.utils.game import game_from_view_of
-from fairdiplomacy.viz.meta_annotations import api as meta_annotations
-from fairdiplomacy.pydipcc import Game
-from fairdiplomacy.agents import build_agent_from_cfg
-from fairdiplomacy.agents.base_agent import BaseAgent
-from fairdiplomacy.data.build_dataset import (
-    GameVariant,
-    TERR_ID_TO_LOC_BY_MAP,
-    COUNTRY_ID_TO_POWER_OR_ALL_MY_MAP,
-    COUNTRY_POWER_TO_ID,
-    get_valid_coastal_variant,
-)
-from fairdiplomacy.webdip.utils import turn_to_phase
-from fairdiplomacy.utils.slack import send_slack_message
-import heyhi
-from conf import conf_cfgs
-from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
-
-from fairdiplomacy.agents.searchbot_agent import SearchBotAgentState
-from fairdiplomacy.agents.bqre1p_agent import BQRE1PAgent as PyBQRE1PAgent
-
-from conf.agents_pb2 import *
-import google.protobuf.message
-import heyhi
-
-import sys
+from abc import ABC
 import argparse
 import asyncio
-import json as json
-import sys
-import time
+from dataclasses import dataclass
+import json
+import logging
 import math
+import os
 from pathlib import Path
-from typing import Optional
+import random
+import time
+from typing import List, Optional, Sequence
 
-from diplomacy import connect
-from diplomacy import Message
-from diplomacy.engine.log import Log
+from chiron_utils.bots.baseline_bot import BaselineBot, BotType
+from conf.agents_pb2 import *
+from daide2eng.utils import create_daide_grammar
+from diplomacy import Message, connect
 from diplomacy.client.network_game import NetworkGame
+from diplomacy.engine.log import Log
+from diplomacy.utils import strings
 from diplomacy.utils.constants import SuggestionType
 from diplomacy.utils.export import to_saved_game_format
-from diplomacy.utils import strings
-from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 from discordwebhook import Discord
+import google.protobuf.message
+
+from fairdiplomacy.agents.bqre1p_agent import BQRE1PAgent as PyBQRE1PAgent
+from fairdiplomacy.agents.player import Player
+from fairdiplomacy.data.build_dataset import (DATASET_DRAW_MESSAGE, DATASET_NODRAW_MESSAGE, DRAW_VOTE_TOKEN,
+                                              UNDRAW_VOTE_TOKEN)
+from fairdiplomacy.models.consts import POWERS
+from fairdiplomacy.pydipcc import Game
+from fairdiplomacy.typedefs import (
+    MessageDict,
+    Timestamp,
+)
+from fairdiplomacy.utils.game import game_from_view_of
+from fairdiplomacy.utils.sampling import normalize_p_dict, sample_p_dict
+from fairdiplomacy.utils.typedefs import get_last_message
+import heyhi
+from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 ProtoMessage = google.protobuf.message.Message
@@ -103,19 +45,8 @@ ProtoMessage = google.protobuf.message.Message
 DEFAULT_DEADLINE = 5
 PRE_DEADLINE = 4
 
-import json
-import regex
-
-
 power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
 af_dict = {'A':'AMY','F':'FLT'}
-
-from abc import ABC
-from dataclasses import dataclass
-import random
-from typing import List, Sequence
-
-from chiron_utils.bots.baseline_bot import BaselineBot, BotType
 
 
 @dataclass
