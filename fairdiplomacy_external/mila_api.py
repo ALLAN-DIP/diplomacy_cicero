@@ -13,7 +13,6 @@ from typing import List, Optional, Sequence
 
 from chiron_utils.bots.baseline_bot import BaselineBot, BotType
 from conf.agents_pb2 import *
-from daide2eng.utils import create_daide_grammar
 from diplomacy import Message, connect
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.engine.log import Log
@@ -21,7 +20,6 @@ from diplomacy.utils import strings
 from diplomacy.utils.constants import SuggestionType
 from diplomacy.utils.export import to_saved_game_format
 from discordwebhook import Discord
-import google.protobuf.message
 
 from fairdiplomacy.agents.bqre1p_agent import BQRE1PAgent as PyBQRE1PAgent
 from fairdiplomacy.agents.player import Player
