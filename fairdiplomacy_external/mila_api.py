@@ -40,13 +40,8 @@ import heyhi
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
-ProtoMessage = google.protobuf.message.Message
 
 DEFAULT_DEADLINE = 5
-PRE_DEADLINE = 4
-
-power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
-af_dict = {'A':'AMY','F':'FLT'}
 
 
 @dataclass
