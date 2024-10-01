@@ -224,7 +224,6 @@ class milaWrapper:
                 self.game.set_wait(power_name, wait=True)
 
                 # PRESS
-                has_deadline = self.game.deadline > 0 
                 should_stop = await self.get_should_stop()
                 if self.game_type==5 and self.chiron_type in [2,3]:
                     self.suggest_move(power_name)
@@ -247,7 +246,6 @@ class milaWrapper:
                     
                     if msg is not None:
                         draw_token_message = self.is_draw_token_message(msg,power_name)
-                        # proposal_response = self.check_PRP(msg,power_name)
 
                     # send message in dipcc and Mila
                     if msg is not None and not draw_token_message and msg['recipient'] in self.game.powers:
@@ -256,16 +254,6 @@ class milaWrapper:
                             self.dipcc_game, self.player.power, True, True, recipient_power) 
 
                         power_po = power_pseudo[self.dipcc_current_phase]
-                        for power in power_po.keys():
-                            if power == power_name:
-                                self_po = power_po[power]
-                            else:
-                                recp_po = power_po[power]
-                        
-                        # if not self.sent_self_intent:
-                        #     self_pseudo_log = f'At the start of this phase, I intend to do: {self_po}'
-                        #     self.send_log(self_pseudo_log) 
-                        #     self.sent_self_intent = True
 
                         # keep track of intent that we talked to each recipient
                         self.set_comm_intent(recipient_power, power_po)
@@ -287,15 +275,10 @@ class milaWrapper:
                                 for msg in msg_options:
                                     if msg is None:
                                         continue
-                                    # msg['message'] = f"{power_name} Cicero suggests a message to {msg['recipient']}: {msg['message']}"
                                     msg['message'] = f"{power_name}-{msg['recipient']}: {msg['message']}"
                                     msg['recipient'] = 'GLOBAL'
                                     msg['type'] = 'suggested_message'
                                     mila_timesent = self.send_message(msg, 'mila')
-
-                            # self_pseudo_log = f'After I got the message (prev msg time_sent: {self.prev_received_msg_time_sent[msg["recipient"]]}) from {recipient_power}. \
-                            #     My response is {msg["message"]} (msg time_sent: {mila_timesent}). I intend to do: {self_po}. I expect {recipient_power} to do: {recp_po}.'
-                            # self.send_log(self_pseudo_log) 
 
                     should_stop = await self.get_should_stop()
                     randsleep = random.random()
@@ -347,10 +330,8 @@ class milaWrapper:
         msg = {'sender': power_name}
         agent_orders = list(self.player.get_orders(self.dipcc_game))
         if agent_orders != self.prev_suggest_moves:
-            # msg['message'] = f"{power_name} Cicero suggests move: {', '.join(agent_orders)}"
             msg['message'] = f"{power_name}:{', '.join(agent_orders)}"
             msg['recipient'] = 'GLOBAL'
-            # msg['type'] = 'suggested_move'
             msg['type'] = 'suggested_move_full'
             print(f'sending move at {round(time.time() * 1000000)}')
             self.send_message(msg, 'mila')
@@ -374,12 +355,9 @@ class milaWrapper:
                     best_cond_action = action
             if hit and best_cond_action != self.prev_suggest_cond_moves:
                 cond_msg = {'sender': power_name}
-                # cond_msg['message'] = f"{power_name} Cicero suggests conditional move: {', '.join(best_cond_action)} condition on {cond_orders}"
                 new_order = [action for action in best_cond_action if action not in cond_orders]
-                # new_order = [best_cond_action[i] if new_order_index[i] for i in range(len(new_order_index))]
                 cond_msg['message'] = f"{power_name}:{', '.join(cond_orders)} : {', '.join(new_order)}"
                 cond_msg['recipient'] = 'GLOBAL'
-                # cond_msg['type'] = 'suggested_move'
                 cond_msg['type'] = 'suggested_move_partial'
                 print(f'sending move at {round(time.time() * 1000000)}')
                 self.send_message(cond_msg, 'mila')
@@ -439,8 +417,6 @@ class milaWrapper:
         has_state_changed = self.prev_state != self.dialogue_state[mila_phase]
         self.prev_state = self.dialogue_state[mila_phase]
 
-        # print(f'current phase state: {self.dialogue_state}')
-
         return has_state_changed
 
 
@@ -480,13 +456,6 @@ class milaWrapper:
             return True   
         if has_deadline and deadline_timer <= no_message_second:
             return True
-        # if self.last_received_message_time != 0 and current_time - self.last_received_message_time >=no_message_second:
-        #     print(f'no incoming message for {current_time - self.last_received_message_time} seconds')
-        #     return True
-        
-        # check if reuse state psedo orders for too long
-        # if self.reuse_stale_pseudo():
-        #     return True
 
         return False
 
@@ -496,15 +465,12 @@ class milaWrapper:
         """
         assert self.game.get_current_phase() == self.dipcc_current_phase, "Phase in two engines are not synchronized"
 
-        mila_phase = self.game.get_current_phase()
-        
         # new messages in current phase from Mila 
         phase_messages = self.get_messages(
             messages=self.game.messages, power=power_name
         )
         most_recent_mila = self.last_received_message_time
         most_recent_sent_mila = self.last_sent_message_time
-        # print(f'most update message: {most_recent}')
 
         # update message in dipcc game
         for timesent, message in phase_messages.items():
@@ -538,7 +504,6 @@ class milaWrapper:
                     message.sender,
                     message.recipient,
                     message.message,
-                    # time_sent=dipcc_timesent,
                     time_sent=Timestamp.now(),
                     increment_on_collision=True,
                 )
@@ -576,7 +541,6 @@ class milaWrapper:
         # timestamp condition
         last_timestamp_this_phase = self.get_last_timestamp_this_phase(default=Timestamp.now())
         sleep_time = self.player.get_sleep_time(self.dipcc_game, recipient=None)
-        wakeup_time = last_timestamp_this_phase + sleep_time
 
         sleep_time_for_conditioning = (
             sleep_time if sleep_time < INF_SLEEP_TIME else MESSAGE_DELAY_IF_SLEEP_INF
@@ -709,7 +673,6 @@ class milaWrapper:
 
             if message.recipient not in self.game.powers:
                 continue
-            # print(f'load message from mila to dipcc {message}')
 
             dipcc_game.add_message(
                 message.sender,
@@ -768,14 +731,6 @@ def main() -> None:
         default=3,
         help="Level of cicero controls 1: message only, 2: order only, 3: both",
     )
-    # parser.add_argument(
-    #     "--agent",
-    #     type=Path,
-    #     # default ="/diplomacy_cicero/conf/common/agents/cicero.prototxt",
-    #     default ="/diplomacy_cicero/conf/agents/bqre1p_parlai_20220819_cicero_2.prototxt",
-    #     help="path to prototxt with agent's configurations (default: %(default)s)",
-    # )
-
     parser.add_argument(
         "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
     )
