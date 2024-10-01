@@ -527,20 +527,6 @@ class milaWrapper:
 
         return has_state_changed
 
-    async def get_should_presubmit(self)->bool:
-        schedule = await self.game.query_schedule()
-        self.scheduler_event = schedule.schedule
-        server_end = self.scheduler_event.time_added + self.scheduler_event.delay
-        server_remaining = server_end - self.scheduler_event.current_time
-        deadline_timer = server_remaining * self.scheduler_event.time_unit
-
-        presubmit_second = 120
-
-        if deadline_timer <= presubmit_second and self.game_type != 5:
-            print(f'time to presubmit order')
-            return True
-        return False
-
 
     async def get_should_stop(self)->bool:
         """ 
@@ -710,14 +696,6 @@ class milaWrapper:
         self.last_successful_message_time = Timestamp.now()
         return msg
 
-    def reuse_stale_pseudo(self):
-        last_msg_time = self.last_successful_message_time
-        if last_msg_time:
-            delta = Timestamp.now() - last_msg_time
-            logging.info(f"reuse_stale_pseudo: delta= {delta / 100:.2f} s")
-            return delta > Timestamp.from_seconds(self.reuse_stale_pseudo_after_n_seconds)
-        else:
-            return False
 
     def get_last_timestamp_this_phase(
         self, default: Timestamp = Timestamp.from_seconds(0)
@@ -909,37 +887,6 @@ def main() -> None:
             cicero_error = f"centaur cicero controlling {args.human_powers} has an error occured: \n {e}"
             discord.post(content=cicero_error)
 
-        
-
-async def test_mila_function():
-    """ 
-    The function is to test ability that we can access Mila game on TACC 
-    Manually replace GAMEID and USERNAME to test accessing Mila game features
-    """
-
-    game_id = GAMEID
-    connection = await connect('shade.tacc.utexas.edu', 8432)
-    channel = await connection.authenticate(
-        USERNAME, "password"
-    )
-    game: NetworkGame = await channel.join_game(game_id=game_id, power_name="ENGLAND")
-
-    logging.info(f"Waiting for game to start")
-    # while game.is_game_forming:
-    #     await asyncio.sleep(2)
-    curr_phase = game.get_current_phase()
-    while not game.is_game_done:
-        print(f" game history {game.state_history}")
-        print(f" message history {game.message_history}")
-        print(f" order history {game.order_history}")
-        possible_orders = game.get_all_possible_orders()
-        ENG_orders = [random.choice(possible_orders[loc]) for loc in game.get_orderable_locations('ENGLAND')
-                    if possible_orders[loc]]
-        await game.set_orders(power_name='ENGLAND', orders=ENG_orders, wait=False)
-        while curr_phase == game.get_current_phase():
-            print(f" message in current phase {game.messages}")
-            await asyncio.sleep(1)
-        curr_phase = game.get_current_phase()
 
 if __name__ == "__main__":
     main()
