@@ -175,8 +175,7 @@ class milaWrapper:
 
         # Playing game
         print(f"Started playing")
-        self.game_type = args.game_type
-        
+
         while not self.game.is_game_done:
             self.phase_start_time = time.time()
             self.presubmit = False
@@ -225,12 +224,12 @@ class milaWrapper:
 
                 # PRESS
                 should_stop = await self.get_should_stop()
-                if self.game_type==5 and self.chiron_type in [2,3]:
+                if self.chiron_type in [2,3]:
                     self.suggest_move(power_name)
     
                 while not should_stop:
                     # suggest move to human
-                    if self.game_type==5 and self.chiron_type in [2,3]:
+                    if self.chiron_type in [2,3]:
                         self.suggest_move(power_name)
                         
                     msg=None
@@ -258,27 +257,26 @@ class milaWrapper:
                         # keep track of intent that we talked to each recipient
                         self.set_comm_intent(recipient_power, power_po)
 
-                        if self.game_type==5:
-                            current_time = time.time()
-                            if self.chiron_type in [1,3] and current_time - self.new_message[msg['recipient']]>=60:
-                                K = 2
-                                self.new_message[msg['recipient']] = current_time
-                                msg_options = [msg] 
-                                msg_str_options = {msg['message']}
-                                
-                                for i in range(K):
-                                    new_msg = self.generate_message(power_name)
-                                    if new_msg is not None and new_msg['message'] not in msg_str_options:
-                                        msg_options.append(new_msg)
-                                        msg_str_options.add(new_msg['message'])
+                        current_time = time.time()
+                        if self.chiron_type in [1,3] and current_time - self.new_message[msg['recipient']]>=60:
+                            K = 2
+                            self.new_message[msg['recipient']] = current_time
+                            msg_options = [msg] 
+                            msg_str_options = {msg['message']}
+                            
+                            for i in range(K):
+                                new_msg = self.generate_message(power_name)
+                                if new_msg is not None and new_msg['message'] not in msg_str_options:
+                                    msg_options.append(new_msg)
+                                    msg_str_options.add(new_msg['message'])
 
-                                for msg in msg_options:
-                                    if msg is None:
-                                        continue
-                                    msg['message'] = f"{power_name}-{msg['recipient']}: {msg['message']}"
-                                    msg['recipient'] = 'GLOBAL'
-                                    msg['type'] = 'suggested_message'
-                                    mila_timesent = self.send_message(msg, 'mila')
+                            for msg in msg_options:
+                                if msg is None:
+                                    continue
+                                msg['message'] = f"{power_name}-{msg['recipient']}: {msg['message']}"
+                                msg['recipient'] = 'GLOBAL'
+                                msg['type'] = 'suggested_message'
+                                mila_timesent = self.send_message(msg, 'mila')
 
                     should_stop = await self.get_should_stop()
                     randsleep = random.random()
@@ -590,13 +588,12 @@ class milaWrapper:
         """ 
         send log to mila games 
         """ 
-        if self.game_type !=5:
-            log_data = Log(phase=self.game.current_short_phase,
-                sender="omniscient_type",
-                recipient="OMNISCIENT",
-                message=log,
-                )
-            self.game.send_log_data(log=log_data)
+        log_data = Log(phase=self.game.current_short_phase,
+            sender="omniscient_type",
+            recipient="OMNISCIENT",
+            message=log,
+            )
+        self.game.send_log_data(log=log_data)
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
@@ -615,7 +612,7 @@ class milaWrapper:
 
         if engine =='mila':
             mila_msg = Message(
-                sender= "omniscient_type" if self.game_type ==5 else msg["sender"],
+                sender= "omniscient_type",
                 recipient=msg["recipient"],
                 message=msg["message"],
                 phase=self.game.get_current_phase(),
