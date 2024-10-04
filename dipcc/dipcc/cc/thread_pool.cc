@@ -376,7 +376,7 @@ void ThreadPool::encode_state_for_game(Game *game, int input_version,
 
   // encode x_stance_vectors
   memset(pointers.x_stance_vectors, 0, 49 * sizeof(float));
-  stance_map = game->get_stance_vectors();
+  std::unordered_map<Power, std::unordered_map<Power, float>> stance_map = game->get_stance_vectors();
   for (const auto& outer_pair : stance_map) {
     Power power1 = outer_pair.first;
     int index1 = static_cast<int>(power1) - 1;
