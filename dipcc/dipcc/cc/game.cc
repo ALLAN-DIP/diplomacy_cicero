@@ -91,7 +91,7 @@ void Game::process() {
 GameState &Game::get_state() { return *state_; }
 const GameState &Game::get_state() const { return *state_; }
 
-std::unordered_map<Power, std::unordered_map<Power, float>> &Game::get_stance_vectors() { return *stance_vectors_history_[state.get_phase().to_string()]; }
+std::unordered_map<Power, std::unordered_map<Power, float>> &Game::get_stance_vectors() { return stance_vectors_history_[state.get_phase().to_string()]; }
 
 std::unordered_map<Power, std::vector<Loc>> Game::get_orderable_locations() {
   return state_->get_orderable_locations();
