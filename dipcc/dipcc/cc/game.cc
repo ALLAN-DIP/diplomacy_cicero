@@ -319,7 +319,7 @@ Game::Game(const string &json_str) {
         Power power1 = power_from_str(it1.key());
         for (auto &it2 : j_phase["stance_vectors"][it1.key()].items()) {
           Power power2 = power_from_str(it2.key());
-            stance_vectors_history_[phase_str][power1][power2] = j_phase["stance_vectors"][it1.key()][it2.key()]
+            stance_vectors_history_[phase_str][power1][power2] = j_phase["stance_vectors"][it1.key()][it2.key()];
         }
       }
 
