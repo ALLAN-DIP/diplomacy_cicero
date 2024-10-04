@@ -315,9 +315,11 @@ Game::Game(const string &json_str) {
           std::make_shared<const std::unordered_map<Power, std::vector<Order>>>(
               orders_this_phase);
 
-      for (auto &it1 : j_phase["stance_vectors"].keys()){
-        for (auto &it2 : j_phase["stance_vectors"][it1].keys()) {
-            stance_vectors_history_[phase_str][it1][it2] = j_phase["stance_vectors"][it1][it2]
+      for (auto &it1 : j_phase["stance_vectors"].items()){
+        Power power1 = power_from_str(it1.key());
+        for (auto &it2 : j_phase["stance_vectors"][power1].items()) {
+          Power power2 = power_from_str(it2.key());
+            stance_vectors_history_[phase_str][power1][power2] = j_phase["stance_vectors"][power1][power2]
         }
       }
 
