@@ -1,0 +1,207 @@
+[
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "S1902M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "ENGLAND",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "RUSSIA",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "TURKEY",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "F1903M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "RUSSIA",
+        "phase": "F1903M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "TURKEY",
+        "phase": "F1903M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "TURKEY",
+        "phase": "S1904M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "ENGLAND",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "GERMANY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "RUSSIA",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "TURKEY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "AUSTRIA",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "AUSTRIA",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "ENGLAND",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "FRANCE",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "GERMANY",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "AUSTRIA",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "ENGLAND",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "FRANCE",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "GERMANY",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "RUSSIA",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "AUSTRIA",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "FRANCE",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "GERMANY",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "RUSSIA",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "FRANCE",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "GERMANY",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "RUSSIA",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "FRANCE",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "GERMANY",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "GERMANY",
+        "phase": "F1907M"
+    }
+]

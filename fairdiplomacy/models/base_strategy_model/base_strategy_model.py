@@ -47,6 +47,7 @@ class BaseStrategyModelV2(nn.Module):
     def __init__(
         self,
         *,
+        encoder_checkpoint, 
         inter_emb_size,  # 120
         board_map_size,  # number of diplomacy map locations, i.e. 81
         order_emb_size,  # 80
@@ -141,6 +142,7 @@ class BaseStrategyModelV2(nn.Module):
 
         # Power-keyed inputs
         self.build_numbers_emb_linear = nn.Linear(1, inter_emb_size * 2)
+        self.stance_vectors_emb_linear = nn.Linear(1, inter_emb_size * 2)
         self.player_ratings_emb_linear = None
         if use_player_ratings:
             self.player_ratings_emb_linear = nn.Linear(1, inter_emb_size * 2)
@@ -173,6 +175,19 @@ class BaseStrategyModelV2(nn.Module):
             inter_emb_size=inter_emb_size,
             encoder_cfg=trans_encoder_cfg,
         )
+        if encoder_checkpoint!= None:
+            checkpoint = torch.load(encoder_checkpoint, map_location="cuda:0")
+            missing, unexpected = self.encoder.load_state_dict(checkpoint, strict=False)
+            logging.info(f"loading encoder model.... missing keys (expected None): {missing} and unexpected keys (expected every except encoder) : {unexpected}")
+            self.encoder.requires_grad_ = False
+        
+        self.st_encoder = TransformerEncoder(
+            total_input_size=inter_emb_size * 2,
+            spatial_size=49,
+            inter_emb_size=inter_emb_size,
+            encoder_cfg=trans_encoder_cfg,
+        )
+
 
         if has_policy:
             if transformer_decoder is not None:
@@ -182,7 +197,7 @@ class BaseStrategyModelV2(nn.Module):
             else:
                 self.policy_decoder = LSTMBaseStrategyModelDecoder(
                     inter_emb_size=inter_emb_size,
-                    spatial_size=self.transformer_sequence_len,
+                    spatial_size=self.transformer_sequence_len + 49,
                     orders_vocab_size=orders_vocab_size,
                     lstm_size=lstm_size,
                     order_emb_size=order_emb_size,
@@ -197,7 +212,7 @@ class BaseStrategyModelV2(nn.Module):
         if has_value:
             self.value_decoder = ValueDecoder(
                 inter_emb_size=inter_emb_size,
-                spatial_size=self.transformer_sequence_len,
+                spatial_size=self.transformer_sequence_len + 49,
                 init_scale=value_decoder_init_scale,
                 dropout=value_dropout,
                 softmax=value_softmax,
@@ -264,6 +279,7 @@ class BaseStrategyModelV2(nn.Module):
         x_year_encoded,
         x_in_adj_phase,
         x_build_numbers,
+        x_stance_vectors,
         x_has_press=None,
         x_player_ratings=None,
         x_scoring_system=None,
@@ -280,6 +296,7 @@ class BaseStrategyModelV2(nn.Module):
         # if the inputs were built in an ad-hoc way when are trying to run in fp16.
         assert x_board_state.dtype == x_prev_state.dtype
         assert x_board_state.dtype == x_build_numbers.dtype
+        assert x_board_state.dtype == x_stance_vectors.dtype
         assert x_board_state.dtype == x_season.dtype
         if x_has_press is not None:
             assert x_board_state.dtype == x_has_press.dtype
@@ -313,6 +330,7 @@ class BaseStrategyModelV2(nn.Module):
         # [B, 7, inter_emb_size*2]
         assert x_build_numbers is not None and len(x_build_numbers.shape) == 2
         encoder_input_by_power = self.build_numbers_emb_linear(x_build_numbers.unsqueeze(-1))
+        
         if self.player_ratings_emb_linear:
             if x_player_ratings is not None:
                 assert len(x_player_ratings.shape) == 2
@@ -371,6 +389,10 @@ class BaseStrategyModelV2(nn.Module):
         if self.year_emb_linear is not None:
             encoder_input_global += self.year_emb_linear(x_year_encoded.unsqueeze(1))
 
+        # additional encode relationship
+        assert x_stance_vectors is not None and len(x_stance_vectors.shape) == 2
+        encoder_input_relationship = self.stance_vectors_emb_linear(x_stance_vectors.unsqueeze(-1))
+        
         # Concat everything.
         # [B, 81+7+1, inter_emb_size*2]
         encoder_input = torch.cat(
@@ -386,7 +408,8 @@ class BaseStrategyModelV2(nn.Module):
             )
 
         encoded = self.encoder(encoder_input)
-        return encoded
+        st_encoded = self.st_encoder(encoder_input_relationship)
+        return torch.cat([encoded, st_encoded], dim=1)
 
     def forward(
         self,
@@ -398,6 +421,7 @@ class BaseStrategyModelV2(nn.Module):
         x_year_encoded,
         x_in_adj_phase,
         x_build_numbers,
+        x_stance_vectors,
         x_loc_idxs,
         x_possible_actions,
         temperature,
@@ -529,6 +553,7 @@ class BaseStrategyModelV2(nn.Module):
                 x_year_encoded=x_year_encoded,
                 x_in_adj_phase=x_in_adj_phase,
                 x_build_numbers=x_build_numbers,
+                x_stance_vectors=x_stance_vectors,
                 x_has_press=x_has_press,
                 x_player_ratings=x_player_ratings,
                 x_scoring_system=x_scoring_system,

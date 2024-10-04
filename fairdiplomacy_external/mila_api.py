@@ -92,8 +92,6 @@ from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
 from daide2eng.utils import gen_English, create_daide_grammar, is_daide
-#stance vector
-from stance_vector import ActionBasedStance, ScoreBasedStance
 from discordwebhook import Discord
 from cicero_stance import CiceroStance
 
@@ -217,8 +215,9 @@ class milaWrapper:
         #         stance_vector.update_stance(power_name, power, float(recall_stance))
 
         # get init stance from stance lib
-        self.agent.set_stance_vector(stance_vector)
         self.player = Player(self.agent, power_name)
+        self.player.state.set_stance_vector(stance_vector)
+        self.player.state.set_mila_game(self.game, game_id)
         self.game_type = game_type
         
         num_beams   = 4
@@ -250,7 +249,7 @@ class milaWrapper:
                 # self.game.add_stance(new_stance)
                 # print(f'report stance log for this turn {self.game.get_current_phase()}: {stance_log}')
                 self.send_log(f'report stance log for this turn {self.game.get_current_phase()}: {stance_log[power_name]}')
-                self.agent.set_stance_vector(stance_vector)
+                self.player.state.set_stance_vector(stance_vector)
 
             self.phase_start_time = time.time()
             self.dipcc_current_phase = self.dipcc_game.get_current_phase()

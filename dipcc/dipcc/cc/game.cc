@@ -91,6 +91,8 @@ void Game::process() {
 GameState &Game::get_state() { return *state_; }
 const GameState &Game::get_state() const { return *state_; }
 
+std::unordered_map<Power, std::unordered_map<Power, float>> &Game::get_stance_vectors() { return *stance_vectors_history_[state.get_phase().to_string()]; }
+
 std::unordered_map<Power, std::vector<Loc>> Game::get_orderable_locations() {
   return state_->get_orderable_locations();
 }
@@ -312,6 +314,9 @@ Game::Game(const string &json_str) {
       order_history_[phase_str] =
           std::make_shared<const std::unordered_map<Power, std::vector<Order>>>(
               orders_this_phase);
+      
+      stance_vectors_history_[phase_str] = j_phase["stance_vectors"];
+      std::cout << " stance vector AUSTRIA : at "<< phase_str << ": " << stance_vectors_history_[phase_str]['AUSTRIA'] << std::endl;
 
       if (j_phase.find("messages") != j_phase.end()) {
         for (auto &j_msg : j_phase["messages"]) {

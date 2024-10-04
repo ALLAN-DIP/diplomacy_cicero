@@ -6,7 +6,7 @@
 #
 import logging
 from typing import Callable, Dict, Generic, Iterable, List, Optional, Tuple, TypeVar
-
+import copy
 import logging
 import numpy as np
 import torch
@@ -14,9 +14,11 @@ from typing import List, Tuple
 
 from conf import agents_cfgs
 from fairdiplomacy import pydipcc
+from fairdiplomacy.agents.base_agent import AgentState
 from fairdiplomacy.agents.base_search_agent import n_move_phases_later
 
 from fairdiplomacy.agents.base_strategy_model_wrapper import BaseStrategyModelWrapper
+from fairdiplomacy.agents.stance_utils import predict_stance_vector_from_to,is_neighbor
 from fairdiplomacy.game import sort_phase_key
 from fairdiplomacy.models.consts import POWERS
 from fairdiplomacy.typedefs import (
@@ -132,6 +134,8 @@ class BaseStrategyModelRollouts:
         override_max_rollout_length: Optional[int] = None,
         timings=None,
         log_timings=False,
+        agent_state: Optional[AgentState] = None,
+        stance_vector_mode: Optional[str] = 'og',
     ) -> torch.Tensor:
         """Computes actions of state-action pairs for a bunch of value functions.
 
@@ -140,7 +144,18 @@ class BaseStrategyModelRollouts:
 
         Returns array of shape [len(set_orders_dicts), num_powers, num_value_functions].
         """
-
+        if stance_vector_mode!= 'og':
+            print(f'checking in do_rollouts_multi if stance_vector_mode: {stance_vector_mode} works')
+            logging.info(f'stance vector mode {stance_vector_mode}')
+            print(f'plus agent_state stance: {agent_state.stance_vector.stance} and opponent: {agent_state.opponent}')
+            logging.info(f'agent_state stance: {agent_state.stance_vector.stance} and opponent: {agent_state.opponent}')
+            st = agent_state.stance_vector
+            st.set_rollout(is_rollout=True)
+            mila_game = agent_state.mila_game
+            opponent = agent_state.opponent
+            print(f'who is opponent? {opponent}')
+            logging.info(f'who is opponent? {opponent}')
+            
         all_value_functions = [self.base_strategy_model] + (
             [] if extra_base_strategy_models is None else extra_base_strategy_models
         )
@@ -156,6 +171,7 @@ class BaseStrategyModelRollouts:
             games = game_init.clone_n_times(len(set_orders_dicts) * self.average_n_rollouts)
         with timings("setup"):
             game_ids = [game.game_id for game in games]
+            logging.info(f'seting up rollout, len set_orders_dicts = {len(set_orders_dicts)}')
 
             # set orders if specified
             for game, set_orders_dict in zip(
@@ -163,6 +179,7 @@ class BaseStrategyModelRollouts:
             ):
                 for power, orders in set_orders_dict.items():
                     game.set_orders(power, list(orders))
+                    # logging.info(f'set game: {game.game_id} curr phase {game.current_short_phase} order, {power} = {list(orders)}')
 
             # for each game, a list of powers whose orders need to be generated
             # by the model on the first phase.
@@ -199,7 +216,8 @@ class BaseStrategyModelRollouts:
             rollout_end_phase_id = sort_phase_key(
                 n_move_phases_later(game_init.current_short_phase, max_rollout_length)
             )
-            max_steps = 1000000
+            # max_steps = 1000000
+            max_steps = 10000
         else:
             # Really far ahead.
             rollout_end_phase_id = sort_phase_key(
@@ -271,18 +289,87 @@ class BaseStrategyModelRollouts:
                     top_p=self.top_p,
                     timings=timings,
                 )
-
+                not_align_games = []
+                temp_power_orders = dict()
+                # while not align to stance mode:
                 with timings("env.set_orders"):
-                    assert len(games_to_step) == len(batch_orders)
-                    for game, orders_per_power in zip(games_to_step, batch_orders):
-                        for power, orders in zip(POWERS, orders_per_power):
+                    assert len(games_to_step) == len(batch_orders) == len(_logprobs)
+                    for game, orders_per_power, logprob_power_order in zip(games_to_step, batch_orders, _logprobs):
+                        for power, orders, logprob in zip(POWERS, orders_per_power, logprob_power_order):
                             if step_id == 0 and power not in missing_start_orders[game.game_id]:
                                 continue
-                            game.set_orders(power, list(orders))
+                        
+                            if stance_vector_mode!= 'og' and opponent==power and is_neighbor(game, agent_power, opponent):
+                                # st.set_rollout_game(game=game)
+                                # if new stance > stance and stance_vector_mode = 'foes' then reorder
+                                # if new stance < stance and stance_vector_mode = 'ally' then reorder
+                                
+                                # if in this current rollout game us neighbor, let's check if it aligns with st that we want to
+                                curr_stance = st.stance[agent_power][opponent]
+                                new_stance = predict_stance_vector_from_to(game, agent_power, opponent, st, orders)
+                                if (new_stance > curr_stance and stance_vector_mode == 'foes') or (new_stance < curr_stance and stance_vector_mode == 'ally'):
+                                    #if not align, add in not_align_games else set orders
+                                    game.clear_old_all_possible_orders()
+                                    not_align_games.append(game)
+                                    break  
 
+                            game.set_orders(power, list(orders))
+                            # logging.info(f'set game: {game.game_id} curr phase {game.current_short_phase} order, {power} = {list(orders)} with logprob: {logprob}')
+                    logging.info(f'not aligned games: {len(not_align_games)}/{len(games_to_step)}')    
+                    
+                
+                    # reorder
+                    max_reorder = 0
+                    reorder_time =0
+                    while reorder_time < max_reorder and len(not_align_games)>0:
+                        reorder_time+=1
+                        batch_orders, _logprobs = self.base_strategy_model.forward_policy(
+                        not_align_games,
+                        has_press=self.has_press,
+                        agent_power=agent_power,
+                        game_rating_dict=games_to_step_rating_dict,
+                        feature_encoder=self.feature_encoder,
+                        temperature=self.temperature,
+                        top_p=self.top_p,
+                        timings=timings,
+                        )
+                        new_not_align_games = []
+                        for game, orders_per_power, logprob_power_order in zip(not_align_games, batch_orders, _logprobs):
+                            for power, orders, logprob in zip(POWERS, orders_per_power, logprob_power_order):
+                                if step_id == 0 and power not in missing_start_orders[game.game_id]:
+                                    continue
+                                if stance_vector_mode!= 'og' and opponent==power and is_neighbor(game, agent_power, opponent):
+                                    # st.set_rollout_game(game=game)
+                                    # if new stance > stance and stance_vector_mode = 'foes' then reorder
+                                    # if new stance < stance and stance_vector_mode = 'ally' then reorder
+                                    
+                                    # if in this current rollout game us neighbor, let's check if it aligns with st that we want to
+                                    curr_stance = st.stance[agent_power][opponent]
+                                    new_stance = predict_stance_vector_from_to(game, agent_power, opponent, st, orders)
+                                    if (new_stance > curr_stance and stance_vector_mode == 'foes') or (new_stance < curr_stance and stance_vector_mode == 'ally'):
+                                        # if not align, add in not_align_games else set orders
+                                        game.clear_old_all_possible_orders()
+                                        new_not_align_games.append(game)
+                                        break  
+
+                                game.set_orders(power, list(orders))
+                                # logging.info(f'set game: {game.game_id} curr phase {game.current_short_phase} order, {power} = {list(orders)} with logprob: {logprob}')
+                        logging.info(f'not aligned games: {len(not_align_games)}/{len(games_to_step)}')  
+                        not_align_games=  new_not_align_games
+                        
+                for game in not_align_games:
+                    # everyone doing nothing in a game that is not aligned with our expected st
+                    for power in POWERS:
+                        game.set_orders(power, [])
+
+                
             with timings("env.step"):
                 self.feature_encoder.process_multi([game for game in games_to_step])
-
+                
+        if stance_vector_mode!= 'og':        
+            st.set_rollout(is_rollout=False)
+            st.set_rollout_game(game=None)
+        
         # Shape: [num_games, num_powers, num_value_functions].
         final_scores = torch.zeros((len(games), len(POWERS), len(all_value_functions)))
 

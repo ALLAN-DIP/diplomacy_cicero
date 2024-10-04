@@ -1,0 +1,1256 @@
+[
+      {
+            "time_sent": 1706817337737293,
+            "sender": "FRANCE",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "Maybe you can work with Turkey against Russia",
+            "truth": null,
+            "parsed-amr": "(p / possible-01\n      :ARG1 (a / ally-01\n            :ARG1 (a2 / and\n                  :op1 (c / country :name (n / name :op1 \"Austria\"))\n                  :op2 (c2 / country :name (n2 / name :op1 \"Turkey\"))\n                  :op3 (c3 / country :name (n3 / name :op1 \"Russia\")))\n            :ARG3 (c4 / country :name (n4 / name :op1 \"Turkey\"))))",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817366199773,
+            "sender": "AUSTRIA",
+            "recipient": "FRANCE",
+            "phase": "F1902M",
+            "message": "That's an interesting suggestion.",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817431615123,
+            "sender": "FRANCE",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "You could promise him Rumania",
+            "truth": null,
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"Austria\"))\n      :ARG1 (a / agree-01\n            :ARG0 (c2 / country :name (n2 / name :op1 \"France\"))\n            :ARG1 (h / have-03\n                  :ARG0 c2\n                  :ARG1 (p2 / province :name (n3 / name :op1 \"Romania\")))\n            :ARG2 (c3 / country)\n            :ARG3 c2))",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817464015435,
+            "sender": "AUSTRIA",
+            "recipient": "FRANCE",
+            "phase": "F1902M",
+            "message": "I'll see what I can do.",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817554957168,
+            "sender": "FRANCE",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "It seems like Turkey wants to work with you anyway",
+            "truth": null,
+            "parsed-amr": "(e / expect-01\n      :ARG0 (c / country :name (n / name :op1 \"France\"))\n      :ARG1 (a / ally-01\n            :ARG1 (c2 / country :name (n2 / name :op1 \"Turkey\"))\n            :ARG2 (c3 / country :name (n3 / name :op1 \"Austria\"))))",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817600822454,
+            "sender": "AUSTRIA",
+            "recipient": "FRANCE",
+            "phase": "F1902M",
+            "message": "That's true.",
+            "truth": null,
+            "parsed-amr": "(e / expect-01\n      :ARG0 (c / country :name (n / name :op1 \"Austria\"))\n      :ARG1 (a / attack-01\n            :ARG0 c\n            :ARG1 (c2 / country :name (n2 / name :op1 \"Turkey\"))))",
+            "extracted_moves": [
+                  {
+                        "country": "AUSTRIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": true
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817661241696,
+            "sender": "FRANCE",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "And he can help you with Italy",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817695212418,
+            "sender": "FRANCE",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "Eventually we can move on Italy",
+            "truth": null,
+            "parsed-amr": "(p / possible-01\n      :ARG1 (a / attack-01\n            :ARG0 (a2 / and\n                  :op1 (c / country :name (n / name :op1 \"France\"))\n                  :op2 (c2 / country :name (n2 / name :op1 \"Austria\")))\n            :ARG1 (c3 / country :name (n3 / name :op1 \"Italy\"))))",
+            "extracted_moves": [
+                  {
+                        "country": "FRANCE AUSTRIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817634187343,
+            "sender": "GERMANY",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "I hope you are working with Turkey.",
+            "truth": null,
+            "parsed-amr": "(p / possible-01\n      :ARG1 (a / ally-01\n            :ARG1 (a2 / and\n                  :op1 (c / country :name (n / name :op1 \"Austria\"))\n                  :op2 (c2 / country :name (n2 / name :op1 \"Turkey\")))))",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817433583137,
+            "sender": "ITALY",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "Sorry, I felt like this was the best move i could do given your proposals",
+            "truth": "Truth",
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817546376731,
+            "sender": "AUSTRIA",
+            "recipient": "ITALY",
+            "phase": "F1902M",
+            "message": "It's fine. You can still go after Turkey, though.",
+            "truth": null,
+            "parsed-amr": "(a / agree-01\n      :ARG0 (c / country :name (n / name :op1 \"Austria\"))\n      :ARG1 (a2 / attack-01\n            :ARG0 (c2 / country :name (n2 / name :op1 \"Italy\"))\n            :ARG1 (c3 / country :name (n3 / name :op1 \"Turkey\")))\n      :ARG2 c2)",
+            "extracted_moves": [
+                  {
+                        "country": "ITALY",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a2",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817586736125,
+            "sender": "ITALY",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "ok, do you want to support Ion-Aeg?",
+            "truth": "Neutral",
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"Italy\"))\n      :ARG1 (s / support-01\n            :ARG0 (c2 / country :name (n2 / name :op1 \"Austria\"))\n            :ARG1 (m / move-01\n                  :ARG1 (f / fleet\n                        :location (s2 / sea :name (n3 / name :op1 \"Ionian\" :op2 \"Sea\")))\n                  :ARG2 (s3 / sea :name (n4 / name :op1 \"Aegean\" :op2 \"Sea\"))))\n      :ARG3 c2)",
+            "extracted_moves": [
+                  {
+                        "support_country": "AUSTRIA",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "",
+                        "unit": "fleet",
+                        "from": "Ionian Sea",
+                        "to": "Aegean Sea",
+                        "action": "-",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817619230285,
+            "sender": "ITALY",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "by the way, Russia is attacking Bud this turn, please defend it",
+            "truth": "Truth",
+            "parsed-amr": "(a / attack-01\n      :ARG0 (c / country :name (n / name :op1 \"Russia\"))\n      :ARG1 (p / province :name (n2 / name :op1 \"Budapest\"))\n      :time (d / date-entity\n            :year \"1903\"\n            :season (f / fall)))",
+            "extracted_moves": [
+                  {
+                        "country": "RUSSIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "Budapest",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false,
+                        "year": "1903"
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817699267429,
+            "sender": "AUSTRIA",
+            "recipient": "ITALY",
+            "phase": "F1902M",
+            "message": "Thanks for the heads up. I'll support you to Aeg in the spring.",
+            "truth": null,
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"Austria\"))\n      :ARG1 (s / support-01\n            :ARG0 c\n            :ARG1 (m / move-01\n                  :ARG1 (f / fleet\n                        :mod (c2 / country :name (n2 / name :op1 \"Italy\")))\n                  :ARG2 (s2 / sea :name (n3 / name :op1 \"Aegean\" :op2 \"Sea\")))\n            :time (d / date-entity\n                  :year \"1904\"\n                  :season (s3 / spring)))\n      :ARG3 c2)",
+            "extracted_moves": [
+                  {
+                        "support_country": "AUSTRIA",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "ITALY",
+                        "unit": "fleet",
+                        "from": "",
+                        "to": "Aegean Sea",
+                        "action": "-",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false,
+                        "year": "1904"
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817725253322,
+            "sender": "ITALY",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "Please, I need it now haha, turkey is going there",
+            "truth": "Truth",
+            "parsed-amr": "(m / move-01\n      :ARG1 (u / unit\n            :mod (c / country :name (n / name :op1 \"Turkey\")))\n      :ARG2 (p / province :name (n2 / name :op1 \"Tyrolia\")))",
+            "extracted_moves": [
+                  {
+                        "country": "TURKEY",
+                        "unit": "",
+                        "from": "",
+                        "to": "Tyrolia",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817368452840,
+            "sender": "RUSSIA",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "Sorry about that, Turkey has made his intentions pretty clear",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817405340386,
+            "sender": "AUSTRIA",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "That's fine. I'm going to focus on holding Trieste and Greece. Next year we can take Bulgaria, and I'll try to see if I can move into the Aegean Sea.",
+            "truth": null,
+            "parsed-amr": "(a / and\n      :op1 (a2 / agree-01\n            :ARG0 (c / country :name (n / name :op1 \"Austria\"))\n            :ARG2 (c2 / country :name (n2 / name :op1 \"Russia\")))\n      :op2 (e / expect-01\n            :ARG0 c\n            :ARG1 (a3 / and\n                  :op1 (h / hold-03\n                        :ARG0 c\n                        :ARG1 (a4 / and\n                              :op1 (p / province :name (n3 / name :op1 \"Trieste\"))\n                              :op2 (p2 / province :name (n4 / name :op1 \"Greece\")))\n                        :time (d / date-entity\n                              :year \"1907\"))\n                  :op2 (m / move-01\n                        :ARG1 (f / fleet\n                              :mod c)\n                        :ARG2 (s / sea :name (n5 / name :op1 \"Aegean\" :op2 \"Sea\"))))))",
+            "extracted_moves": [
+                  {
+                        "country": "AUSTRIA",
+                        "unit": "",
+                        "from": "Trieste Greece",
+                        "action": "H",
+                        "concept": "hold-03",
+                        "variable": "h",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": true,
+                        "year": "1907"
+                  },
+                  {
+                        "country": "AUSTRIA",
+                        "unit": "fleet",
+                        "from": "",
+                        "to": "Aegean Sea",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": true
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817523907951,
+            "sender": "AUSTRIA",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "Awesome. I'm going to try to hold Greece and Trieste for now. I'll see if I can help you into Rumania next year. Can you move to Aegean Sea to help me, too?",
+            "truth": null,
+            "parsed-amr": "(a / and\n      :op1 (h / hold-03\n            :ARG0 (c / country :name (n / name :op1 \"Austria\"))\n            :ARG1 (a2 / and\n                  :op1 (p / province :name (n2 / name :op1 \"Greece\"))\n                  :op2 (p2 / province :name (n3 / name :op1 \"Trieste\"))))\n      :op2 (p3 / propose-01\n            :ARG0 c\n            :ARG1 (m / move-01\n                  :ARG1 (u / unit\n                        :mod (c2 / country :name (n4 / name :op1 \"Turkey\")))\n                  :ARG2 (p4 / province :name (n5 / name :op1 \"Romania\"))\n                  :time (d / date-entity\n                        :year \"1904\"))\n            :ARG3 c2)\n      :op3 (p5 / propose-01\n            :ARG0 c\n            :ARG1 (m2 / move-01\n                  :ARG1 (f / fleet\n                        :mod c2)\n                  :ARG2 (s / sea :name (n6 / name :op1 \"Aegean\" :op2 \"Sea\")))\n            :ARG3 c2))",
+            "extracted_moves": [
+                  {
+                        "country": "AUSTRIA",
+                        "unit": "",
+                        "from": "Greece Trieste",
+                        "action": "H",
+                        "concept": "hold-03",
+                        "variable": "h",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  },
+                  {
+                        "country": "TURKEY",
+                        "unit": "",
+                        "from": "",
+                        "to": "Romania",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false,
+                        "year": "1904"
+                  },
+                  {
+                        "country": "TURKEY",
+                        "unit": "fleet",
+                        "from": "",
+                        "to": "Aegean Sea",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m2",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817641393569,
+            "sender": "TURKEY",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "Sounds good. Just so you know, Russia told me he's going to move into Budapest, but I don't know whether or not I believe him",
+            "truth": null,
+            "parsed-amr": "(a / and\n      :op1 (t / tell-01\n            :ARG0 (c / country :name (n / name :op1 \"Russia\"))\n            :ARG1 (m / move-01\n                  :ARG1 (u / unit\n                        :mod c)\n                  :ARG2 (p / province :name (n2 / name :op1 \"Budapest\")))\n            :ARG2 (c2 / country :name (n3 / name :op1 \"Turkey\")))\n      :op2 (p2 / possible-01\n            :ARG1 (t2 / trust-01\n                  :ARG0 c2\n                  :ARG2 c\n                  :polarity (a2 / amr-unknown))))",
+            "extracted_moves": [
+                  {
+                        "country": "RUSSIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "Budapest",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817701193344,
+            "sender": "TURKEY",
+            "recipient": "AUSTRIA",
+            "phase": "F1902M",
+            "message": "Can't hurt to be careful though",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817496679768,
+            "sender": "FRANCE",
+            "recipient": "ENGLAND",
+            "phase": "F1902M",
+            "message": "I'm moving ENG to NTH",
+            "truth": null,
+            "parsed-amr": "(m / move-01\n      :ARG1 (f / fleet\n            :mod (c / country :name (n / name :op1 \"France\"))\n            :location (s / sea :name (n2 / name :op1 \"English\" :op2 \"Channel\")))\n      :ARG2 (s2 / sea :name (n3 / name :op1 \"North\" :op2 \"Sea\")))",
+            "extracted_moves": [
+                  {
+                        "country": "FRANCE ",
+                        "unit": "fleet",
+                        "from": "English Channel",
+                        "to": "North Sea",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817578216999,
+            "sender": "FRANCE",
+            "recipient": "ENGLAND",
+            "phase": "F1902M",
+            "message": "Is that alright with you?",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817676427178,
+            "sender": "ENGLAND",
+            "recipient": "FRANCE",
+            "phase": "F1902M",
+            "message": "Ok I need your help taking over SWE now",
+            "truth": "Truth",
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"England\"))\n      :ARG1 (s / support-01\n            :ARG0 (c2 / country :name (n2 / name :op1 \"France\"))\n            :ARG1 (h / have-03\n                  :ARG0 c\n                  :ARG1 (p2 / province :name (n3 / name :op1 \"SWE\"))))\n      :ARG3 c2)",
+            "extracted_moves": [
+                  {
+                        "support_country": "FRANCE",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817401376437,
+            "sender": "GERMANY",
+            "recipient": "ENGLAND",
+            "phase": "F1902M",
+            "message": "You could have gotten Sweden. Why not work with me?",
+            "truth": null,
+            "parsed-amr": "(a / agree-01\n      :ARG0 (c / country :name (n / name :op1 \"England\"))\n      :ARG1 (h / have-03\n            :ARG0 (c2 / country :name (n2 / name :op1 \"Germany\"))\n            :ARG1 (p / province :name (n3 / name :op1 \"Sweden\")))\n      :ARG2 c2)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817718148962,
+            "sender": "ENGLAND",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "I am taking over SWE. Now I will support you with France.",
+            "truth": "Lie",
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817405022157,
+            "sender": "RUSSIA",
+            "recipient": "ENGLAND",
+            "phase": "F1902M",
+            "message": "Hey, that wasn't very nice",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817638504433,
+            "sender": "FRANCE",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "Well I suppose that you don't want to ally with me",
+            "truth": null,
+            "parsed-amr": "(e / expect-01\n      :ARG0 (c / country :name (n / name :op1 \"France\"))\n      :ARG1 (a / ally-01\n            :polarity \"-\"\n            :ARG1 (c2 / country :name (n2 / name :op1 \"Germany\"))\n            :ARG2 c))",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817660226131,
+            "sender": "GERMANY",
+            "recipient": "FRANCE",
+            "phase": "F1902M",
+            "message": "It looks like England is much more vulnerable. You should take his centers.",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817713111694,
+            "sender": "GERMANY",
+            "recipient": "FRANCE",
+            "phase": "F1902M",
+            "message": "I do. I have not attacked you.",
+            "truth": null,
+            "parsed-amr": "(a / attack-01\n      :polarity \"-\"\n      :ARG0 (c / country :name (n / name :op1 \"Germany\"))\n      :ARG1 (c2 / country :name (n2 / name :op1 \"France\")))",
+            "extracted_moves": [
+                  {
+                        "country": "GERMANY",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a",
+                        "polarity": true,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817655099300,
+            "sender": "ITALY",
+            "recipient": "FRANCE",
+            "phase": "F1902M",
+            "message": "By the way, I'm still not moving against you as we agreed",
+            "truth": "Truth",
+            "parsed-amr": "(a / attack-01\n      :polarity \"-\"\n      :ARG0 (c / country :name (n / name :op1 \"Italy\"))\n      :ARG1 (c2 / country :name (n2 / name :op1 \"France\")))",
+            "extracted_moves": [
+                  {
+                        "country": "ITALY",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a",
+                        "polarity": true,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817401897217,
+            "sender": "FRANCE",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "Hey do you think you could work with Austria against Russia?",
+            "truth": null,
+            "parsed-amr": "(p / possible-01\n      :ARG1 (a / ally-01\n            :ARG1 (a2 / and\n                  :op1 (c / country :name (n / name :op1 \"Turkey\"))\n                  :op2 (c2 / country :name (n2 / name :op1 \"Austria\"))\n                  :op3 (c3 / country :name (n3 / name :op1 \"France\")))\n            :ARG3 (c4 / country :name (n4 / name :op1 \"Russia\")))\n      :polarity (a3 / amr-unknown))",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817508888129,
+            "sender": "TURKEY",
+            "recipient": "FRANCE",
+            "phase": "F1902M",
+            "message": "It's what I'm working on",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817342210160,
+            "sender": "GERMANY",
+            "recipient": "ITALY",
+            "phase": "F1902M",
+            "message": "I hope you're moving to Gol. I won't be able to defend myself without your help.",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817557532669,
+            "sender": "ITALY",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "I don't know if I can, but I will if I can spare the units. Hang in there!",
+            "truth": "Truth",
+            "parsed-amr": "(p / possible-01\n      :ARG1 (s / support-01\n            :ARG0 (c / country :name (n / name :op1 \"Italy\"))\n            :ARG1 (m / move-01\n                  :ARG1 (u / unit\n                        :mod c)\n                  :ARG2 (p2 / province :name (n2 / name :op1 \"Moscow\")))\n            :condition (p3 / prevent-01\n                  :ARG0 c\n                  :ARG1 m\n                  :ARG1 (f / fleet)\n                  :ARG2 p2)))",
+            "extracted_moves": [
+                  {
+                        "support_country": "ITALY",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "ITALY",
+                        "unit": "",
+                        "from": "",
+                        "to": "Moscow",
+                        "action": "-",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817681548645,
+            "sender": "GERMANY",
+            "recipient": "ITALY",
+            "phase": "F1902M",
+            "message": "Okay. Good luck against Austria.",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817698293317,
+            "sender": "ITALY",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "thanks",
+            "truth": "Neutral",
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817464399435,
+            "sender": "GERMANY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "I am support holding Sweden.",
+            "truth": null,
+            "parsed-amr": "(s / support-01\n      :ARG0 (c / country :name (n / name :op1 \"Germany\"))\n      :ARG1 (h / hold-03\n            :ARG0 c\n            :ARG1 (p / province :name (n2 / name :op1 \"Sweden\"))))",
+            "extracted_moves": [
+                  {
+                        "support_country": "GERMANY",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "GERMANY",
+                        "unit": "",
+                        "from": "Sweden",
+                        "to": "",
+                        "action": "H",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817475873791,
+            "sender": "RUSSIA",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "Thanks for the support",
+            "truth": null,
+            "parsed-amr": "(s / support-01\n      :ARG0 (c / country :name (n / name :op1 \"Germany\"))\n      :ARG1 (c2 / country :name (n2 / name :op1 \"Russia\")))",
+            "extracted_moves": [
+                  {
+                        "support_country": "GERMANY",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817484229443,
+            "sender": "GERMANY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "I hope you take Norway. It would be a big help to me.",
+            "truth": null,
+            "parsed-amr": "(p / possible-01\n      :ARG1 (h / have-03\n            :ARG0 (c / country :name (n / name :op1 \"Russia\"))\n            :ARG1 (p2 / province :name (n2 / name :op1 \"Norway\"))))",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817508413808,
+            "sender": "RUSSIA",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "How can I return the favor?",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817512989327,
+            "sender": "GERMANY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "No problem.",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817575830997,
+            "sender": "RUSSIA",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "I'm going to try",
+            "truth": null,
+            "parsed-amr": "(m / move-01\n      :ARG1 (u / unit\n            :mod (c / country :name (n / name :op1 \"Russia\")))\n      :ARG2 (p / province :name (n2 / name :op1 \"Moscow\")))",
+            "extracted_moves": [
+                  {
+                        "country": "RUSSIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "Moscow",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817604284963,
+            "sender": "GERMANY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "Just taking Norway would be great. I will support hold Sweden.",
+            "truth": null,
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"Germany\"))\n      :ARG1 (a / and\n            :op1 (h / have-03\n                  :ARG0 (c2 / country :name (n2 / name :op1 \"Russia\"))\n                  :ARG1 (p2 / province :name (n3 / name :op1 \"Norway\")))\n            :op2 (s / support-01\n                  :ARG0 c\n                  :ARG1 (h2 / hold-03\n                        :ARG1 (p3 / province :name (n4 / name :op1 \"Sweden\")))))\n      :ARG3 c2)",
+            "extracted_moves": [
+                  {
+                        "support_country": "GERMANY",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "",
+                        "unit": "",
+                        "from": "Sweden",
+                        "to": "",
+                        "action": "H",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817673056931,
+            "sender": "RUSSIA",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "Thanks, I appreciate it",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817375033419,
+            "sender": "GERMANY",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "It looks like you've decided to attack Russia. I might be able to help you after this turn.",
+            "truth": null,
+            "parsed-amr": "(a / and\n      :op1 (a2 / attack-01\n            :ARG0 (c / country :name (n / name :op1 \"Turkey\"))\n            :ARG1 (c2 / country :name (n2 / name :op1 \"Russia\")))\n      :op2 (p / possible-01\n            :ARG1 (s / support-01\n                  :ARG0 c\n                  :ARG1 c2\n                  :time (d / date-entity\n                        :year \"1903\"\n                        :season (f / fall)))))",
+            "extracted_moves": [
+                  {
+                        "country": "TURKEY",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a2",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  },
+                  {
+                        "support_country": "TURKEY",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false,
+                        "year": "1903"
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817477520531,
+            "sender": "TURKEY",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "If you can send an army his way, I'd be forever grateful",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817569870901,
+            "sender": "GERMANY",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "It's not likely this turn but if England and France continue to attack me I may be able to next turn.",
+            "truth": null,
+            "parsed-amr": "(p / possible-01\n      :ARG1 (h / have-03\n            :ARG0 (c / country :name (n / name :op1 \"Germany\"))\n            :ARG1 (p2 / province :name (n2 / name :op1 \"Liverpool\"))\n            :time (d / date-entity\n                  :year \"1903\"\n                  :season (f / fall))\n            :condition (a / attack-01\n                  :ARG0 (a2 / and\n                        :op1 (c2 / country :name (n3 / name :op1 \"England\"))\n                        :op2 (c3 / country :name (n4 / name :op1 \"France\")))\n                  :ARG1 c)))",
+            "extracted_moves": [
+                  {
+                        "country": "ENGLAND FRANCE",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817672384802,
+            "sender": "TURKEY",
+            "recipient": "GERMANY",
+            "phase": "F1902M",
+            "message": "That's fair",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817342703800,
+            "sender": "RUSSIA",
+            "recipient": "ITALY",
+            "phase": "F1902M",
+            "message": "Well Turkey has made his intentions pretty clear",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817450028823,
+            "sender": "ITALY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "Yep",
+            "truth": "Neutral",
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817477860414,
+            "sender": "ITALY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "so, can you move to Ser or support Alb to ser? if you can do either, I will put pressure on Turkey right now",
+            "truth": "Truth",
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"Italy\"))\n      :ARG1 (o / or\n            :op1 (m / move-01\n                  :ARG1 (u / unit\n                        :mod (c2 / country :name (n2 / name :op1 \"Russia\")))\n                  :ARG2 (p2 / province :name (n3 / name :op1 \"Serbia\")))\n            :op2 (s / support-01\n                  :ARG0 c2\n                  :ARG1 (m2 / move-01\n                        :ARG1 (u2 / unit\n                              :location (p3 / province :name (n4 / name :op1 \"Albania\")))\n                        :ARG2 (p4 / province :name (n5 / name :op1 \"Serbia\"))))\n            :ARG3 c2))",
+            "extracted_moves": [
+                  {
+                        "country": "RUSSIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "Serbia",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  },
+                  {
+                        "support_country": "RUSSIA",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "",
+                        "unit": "",
+                        "from": "Albania",
+                        "to": "Serbia",
+                        "action": "-",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817542985592,
+            "sender": "RUSSIA",
+            "recipient": "ITALY",
+            "phase": "F1902M",
+            "message": "I'm going to try and take Bud, and then we can go for Serbia next turn",
+            "truth": null,
+            "parsed-amr": "(a / and\n      :op1 (a2 / attack-01\n            :ARG0 (c / country :name (n / name :op1 \"Russia\"))\n            :ARG1 (p / province :name (n2 / name :op1 \"Budapest\")))\n      :op2 (m / move-01\n            :ARG1 (u / unit\n                  :mod c)\n            :ARG2 (p2 / province :name (n3 / name :op1 \"Serbia\")))\n      :op3 (a3 / attack-01\n            :ARG0 (a4 / and\n                  :op1 c\n                  :op2 (c2 / country :name (n4 / name :op1 \"Italy\")))\n            :ARG1 (c3 / country :name (n5 / name :op1 \"Austria\"))\n            :time (d / date-entity)))",
+            "extracted_moves": [
+                  {
+                        "country": "RUSSIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "Budapest",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a2",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  },
+                  {
+                        "country": "RUSSIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "Serbia",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  },
+                  {
+                        "country": "RUSSIA ITALY",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a3",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817565790665,
+            "sender": "ITALY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "ok",
+            "truth": "Neutral",
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817646471027,
+            "sender": "RUSSIA",
+            "recipient": "ITALY",
+            "phase": "F1902M",
+            "message": "But I need Rum to support Sev",
+            "truth": null,
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"Russia\"))\n      :ARG1 (s / support-01\n            :ARG0 (c2 / country :name (n2 / name :op1 \"Italy\"))\n            :ARG1 (p2 / province :name (n3 / name :op1 \"Sevastopol\"))\n            :instrument (u / unit\n                  :location (p3 / province :name (n4 / name :op1 \"Romania\"))\n                  :mod c))\n      :ARG3 c2)",
+            "extracted_moves": [
+                  {
+                        "support_country": "RUSSIA",
+                        "support_unit": "",
+                        "support_from": "Romania ",
+                        "support_action": "S",
+                        "country": "",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817673828435,
+            "sender": "ITALY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "ok, then move Gal to Vie",
+            "truth": "Neutral",
+            "parsed-amr": "(a / and\n      :op1 (m / move-01\n            :ARG1 (u / unit\n                  :mod (c / country :name (n / name :op1 \"Italy\"))\n                  :location (p / province :name (n2 / name :op1 \"Galicia\")))\n            :ARG2 (p2 / province :name (n3 / name :op1 \"Vienna\")))\n      :op2 (m2 / move-01\n            :ARG1 (u2 / unit\n                  :mod c\n                  :location (p3 / province :name (n4 / name :op1 \"Galicia\")))\n            :ARG2 p))",
+            "extracted_moves": [
+                  {
+                        "country": "ITALY ",
+                        "unit": "",
+                        "from": "Galicia",
+                        "to": "Vienna",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  },
+                  {
+                        "country": "ITALY ",
+                        "unit": "",
+                        "from": "Galicia",
+                        "to": "",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m2",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817689237559,
+            "sender": "ITALY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "either you get Vie or I retake Tri that way. Win win",
+            "truth": "Truth",
+            "parsed-amr": "(p / possible-01\n      :ARG1 (o / or\n            :op1 (h / have-03\n                  :ARG0 (c / country :name (n / name :op1 \"Russia\"))\n                  :ARG1 (p2 / province :name (n2 / name :op1 \"Vienna\")))\n            :op2 (h2 / have-03\n                  :ARG0 c\n                  :ARG1 (p3 / province :name (n3 / name :op1 \"Trieste\")))))",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817340447602,
+            "sender": "TURKEY",
+            "recipient": "ITALY",
+            "phase": "F1902M",
+            "message": "Do you want me to send a fleet into the Aegean?",
+            "truth": null,
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"Turkey\"))\n      :ARG1 (m / move-01\n            :ARG1 (f / fleet\n                  :mod c)\n            :ARG2 (s / sea :name (n2 / name :op1 \"Aegean\" :op2 \"Sea\")))\n      :ARG3 (c2 / country :name (n3 / name :op1 \"Italy\")))",
+            "extracted_moves": [
+                  {
+                        "country": "TURKEY",
+                        "unit": "fleet",
+                        "from": "",
+                        "to": "Aegean Sea",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817391420857,
+            "sender": "ITALY",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "No, actually I wanted to ask you for permission to move to Aeg myself",
+            "truth": "Truth",
+            "parsed-amr": "(r / reject-01\n      :ARG0 (c / country :name (n / name :op1 \"Italy\"))\n      :ARG1 (p / propose-01\n            :ARG0 (c2 / country :name (n2 / name :op1 \"Turkey\"))\n            :ARG1 (m / move-01\n                  :ARG1 (f / fleet\n                        :mod c)\n                  :ARG2 (s / sea :name (n3 / name :op1 \"Aegean\" :op2 \"Sea\")))\n            :ARG3 c))",
+            "extracted_moves": [
+                  {
+                        "country": "ITALY",
+                        "unit": "fleet",
+                        "from": "",
+                        "to": "Aegean Sea",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817410492735,
+            "sender": "ITALY",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "Can you move to Ser this turn? I can support it",
+            "truth": "Lie",
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"Italy\"))\n      :ARG1 (s / support-01\n            :ARG0 c\n            :ARG1 (m / move-01\n                  :ARG1 (u / unit\n                        :mod (c2 / country :name (n2 / name :op1 \"Turkey\")))\n                  :ARG2 (p2 / province :name (n3 / name :op1 \"Serbia\")))\n            :time (d / date-entity\n                  :year \"1901\"\n                  :season (f / fall)))\n      :ARG3 c2)",
+            "extracted_moves": [
+                  {
+                        "support_country": "ITALY",
+                        "support_unit": "",
+                        "support_from": "",
+                        "support_action": "S",
+                        "country": "TURKEY",
+                        "unit": "",
+                        "from": "",
+                        "to": "Serbia",
+                        "action": "-",
+                        "concept": "support-01",
+                        "variable": "s",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false,
+                        "year": "1901"
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817445897295,
+            "sender": "TURKEY",
+            "recipient": "ITALY",
+            "phase": "F1902M",
+            "message": "I think it would be best if I were in the Aegean so that Austria can't make a move on Bulgaria",
+            "truth": null,
+            "parsed-amr": "(p / propose-01\n      :ARG0 (c / country :name (n / name :op1 \"Turkey\"))\n      :ARG1 (m / move-01\n            :ARG1 (f / fleet\n                  :mod (c2 / country :name (n2 / name :op1 \"Italy\")))\n            :ARG2 (s / sea :name (n3 / name :op1 \"Aegean\" :op2 \"Sea\"))\n            :purpose (a / attack-01\n                  :polarity \"-\"\n                  :ARG0 (c3 / country :name (n4 / name :op1 \"Austria\"))\n                  :ARG1 (p2 / province :name (n5 / name :op1 \"Bulgaria\"))))\n      :ARG3 c2)",
+            "extracted_moves": [
+                  {
+                        "country": "ITALY",
+                        "unit": "fleet",
+                        "from": "",
+                        "to": "Aegean Sea",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817508148998,
+            "sender": "ITALY",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "Ok, and what about Serbia, can you move there?",
+            "truth": "Neutral",
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817375834825,
+            "sender": "TURKEY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "I'm so sorry. I really thought you were going to move against me",
+            "truth": null,
+            "parsed-amr": "(e / expect-01\n      :ARG0 (c / country :name (n / name :op1 \"Turkey\"))\n      :ARG1 (a / attack-01\n            :ARG0 (c2 / country :name (n2 / name :op1 \"Russia\"))\n            :ARG1 c))",
+            "extracted_moves": [
+                  {
+                        "country": "RUSSIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "",
+                        "action": "-",
+                        "concept": "attack-01",
+                        "variable": "a",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": true
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817433680590,
+            "sender": "RUSSIA",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "We could work through this if you're willing to move back",
+            "truth": null,
+            "parsed-amr": "(a / amr-empty)",
+            "extracted_moves": []
+      },
+      {
+            "time_sent": 1706817448865425,
+            "sender": "RUSSIA",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "I can move into Bud this turn, and we can go from there",
+            "truth": null,
+            "parsed-amr": "(p / possible-01\n      :ARG1 (a / and\n            :op1 (m / move-01\n                  :ARG1 (u / unit\n                        :mod (c / country :name (n / name :op1 \"Russia\")))\n                  :ARG2 (p2 / province :name (n2 / name :op1 \"Budapest\"))\n                  :time (d / date-entity\n                        :year \"1901\"\n                        :season (f / fall)))\n            :op2 (m2 / move-01\n                  :ARG1 (u2 / unit\n                        :mod (c2 / country :name (n3 / name :op1 \"Turkey\")))\n                  :ARG2 (p3 / province :name (n4 / name :op1 \"Galicia\"))\n                  :time d\n                  :year \"1901\"\n                  :season (s / spring))))",
+            "extracted_moves": [
+                  {
+                        "country": "RUSSIA",
+                        "unit": "",
+                        "from": "",
+                        "to": "Budapest",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false,
+                        "year": "1901"
+                  },
+                  {
+                        "country": "TURKEY",
+                        "unit": "",
+                        "from": "",
+                        "to": "Galicia",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m2",
+                        "polarity": false,
+                        "question": true,
+                        "emotion": false,
+                        "year": "1901"
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817573529321,
+            "sender": "TURKEY",
+            "recipient": "RUSSIA",
+            "phase": "F1902M",
+            "message": "Yeah, that's what I'm thinking",
+            "truth": null,
+            "parsed-amr": "(a / and\n      :op1 (m / move-01\n            :polarity \"-\"\n            :ARG1 (f / fleet\n                  :mod (c / country :name (n / name :op1 \"Turkey\")))\n            :ARG2 (s / sea :name (n2 / name :op1 \"Irish\" :op2 \"Sea\")))\n      :op2 (h / hold-03\n            :ARG0 c\n            :ARG1 (s2 / sea :name (n3 / name :op1 \"English\" :op2 \"Channel\"))))",
+            "extracted_moves": [
+                  {
+                        "country": "TURKEY",
+                        "unit": "fleet",
+                        "from": "",
+                        "to": "Irish Sea",
+                        "action": "-",
+                        "concept": "move-01",
+                        "variable": "m",
+                        "polarity": true,
+                        "question": false,
+                        "emotion": false
+                  },
+                  {
+                        "country": "TURKEY",
+                        "unit": "",
+                        "from": "English Channel",
+                        "action": "H",
+                        "concept": "hold-03",
+                        "variable": "h",
+                        "polarity": false,
+                        "question": false,
+                        "emotion": false
+                  }
+            ]
+      },
+      {
+            "time_sent": 1706817604770073,
+            "sender": "RUSSIA",
+            "recipient": "TURKEY",
+            "phase": "F1902M",
+            "message": "Perfect",
+            "truth": null,
+            "parsed-amr": "(a / agree-01\n      :ARG0 (c / country :name (n / name :op1 \"Russia\"))\n      :ARG2 (c2 / country :name (n2 / name :op1 \"Turkey\")))",
+            "extracted_moves": []
+      },
+      {
+            "sender": "AUSTRIA",
+            "recipient": "ITALY",
+            "message": "He told you that?",
+            "phase": "F1902M",
+            "time_sent": 171099758728,
+            "deceptive": "A truth to Cicero: He told you that?",
+            "test_lie": true
+      }
+]

@@ -8,12 +8,13 @@ from collections import defaultdict
 import logging
 import itertools
 from typing import DefaultDict, Dict, List, Optional, Tuple
-
+import copy
 import numpy as np
 import torch
 from fairdiplomacy.agents.plausible_order_sampling import PlausibleOrderSampler
 
 from fairdiplomacy import pydipcc
+from fairdiplomacy.agents.base_agent import AgentState
 from fairdiplomacy.agents.base_search_agent import SearchResult
 from fairdiplomacy.agents.bilateral_stats import WeightedAverager
 from fairdiplomacy.models.base_strategy_model.load_model import SomeBaseStrategyModel
@@ -33,6 +34,7 @@ from fairdiplomacy.utils.base_strategy_model_multi_gpu_wrappers import (
 from fairdiplomacy.utils.sampling import sample_p_dict
 from fairdiplomacy.utils.order_idxs import ORDER_VOCABULARY_TO_IDX
 from fairdiplomacy.utils.game import game_from_two_party_view
+
 
 class BRCorrBilateralSearchResult(SearchResult):
     def __init__(
@@ -89,15 +91,19 @@ class BRCorrBilateralSearchResult(SearchResult):
                 ].item()
                 self.value_to_me[power, action].accum(value, 1)
 
-    def set_policy_and_value_for_other_power(self, other_power: Power, avg_action: Action):
+    def set_policy_and_value_for_other_power(self, other_power: Power, avg_action: Action, extra_me_action= []):
         """
         Set the value_to_them for my and opponents' actions.
         """
-        assert len(self.value_to_them) == 0, self.value_to_them
+        # assert len(self.value_to_them) == 0, self.value_to_them
+        self.value_to_them= {}
         
         agent_power_idx = POWERS.index(self.agent_power)
         other_power_idx = POWERS.index(other_power)
-        policy = self.bp_policies[self.agent_power]
+        if len(extra_me_action) > 0:
+            policy = list(self.bp_policies[self.agent_power].keys()) + extra_me_action
+        else:
+            policy = self.bp_policies[self.agent_power]
 
         for action in policy:
             self.value_to_them[self.agent_power, action] = WeightedAverager()
@@ -399,6 +405,8 @@ def compute_payoff_matrix_for_all_opponents(
     has_press: bool,
     player_rating: Optional[float],
     value_table_cache: Optional[DefaultDict[Power, BilateralConditionalValueTable]],
+    agent_state: Optional[AgentState] = None,
+    stance_vector_mode: Optional[str] = 'og',
 ) -> Dict[Power, BilateralConditionalValueTable]:
     """Compute payoff matrix for all (agent_power, opponent) pairs
 
@@ -416,6 +424,10 @@ def compute_payoff_matrix_for_all_opponents(
     """
     if value_table_cache is None:
         value_table_cache = defaultdict(dict)
+        
+    # ally / foes value_table_cache
+    ally_value_table_cache = defaultdict(dict) 
+    foes_value_table_cache = defaultdict(dict)
 
     num_bilateral_joint_action_per_opponent: List[Tuple[Power, int]] = []
     cache_hits = 0
@@ -443,10 +455,16 @@ def compute_payoff_matrix_for_all_opponents(
     logging.info(
         f"payoff_matrix: {cache_hits}/{len(bilateral_joint_actions) + cache_hits} joint actions cached"
     )
+    
+    # logging.info(f"bp_policy = {bp_policy}") 
+    # logging.info(f"OG bilateral_joint_actions = {bilateral_joint_actions}")
+                    
 
     if len(bilateral_joint_actions) == 0:
         # call cached, nothing to compute
         return value_table_cache
+    
+    # add code to filter according to curr stance vector -> bilateral_joint_actions
 
     joint_actions = _sample_conditional_joint_actions(
         all_power_base_strategy_model,
@@ -457,14 +475,18 @@ def compute_payoff_matrix_for_all_opponents(
         num_sample,
         has_press,
     )
+    
+    # logging.info(f"joint_actions = {joint_actions}")
+    # assert agent_state is None or isinstance(agent_state, SearchBotAgentState), 'in br_corr compute'
+    
     # compute values for these joint actions
     rollout_results = _multi_gpu_base_strategy_model_rollouts(
-        game, all_power_base_strategy_model, agent_power, joint_actions, player_rating
+        game, all_power_base_strategy_model, agent_power, joint_actions, player_rating, agent_state, stance_vector_mode
     )
     rollout_results = rollout_results.view(
         num_sample, len(bilateral_joint_actions), len(POWERS), 1
     ).mean(0)
-    logging.info(f"len joint_actions: {len(joint_actions)}, {len(bilateral_joint_actions)}")
+    # logging.info(f"len joint_actions: {len(joint_actions)}, {len(bilateral_joint_actions)}")
     start = 0
     for opponent, count in num_bilateral_joint_action_per_opponent:
         if count == 0:
@@ -476,10 +498,56 @@ def compute_payoff_matrix_for_all_opponents(
             value_table_cache[opponent][bilateral_joint_action] = opponent_rollout_results[idx]
 
         start += count
+    
+        
+    # if stance_vector_mode!='og':
+    #     assert agent_state.stance_vector and agent_state.mila_game  
+    #     st = agent_state.stance_vector
+    #     mila_game = agent_state.mila_game
+    #     # check if this power is neighbor
+    #     mila_opponent = mila_game.powers[opponent]
+    #     mila_agent_power = mila_game.powers[agent_power]
+    #     opponents_territories = mila_opponent.centers + [unit[2:5] for unit in mila_opponent.units]
+    #     is_neighbor = False
+        
+    #     for unit in mila_agent_power.units:
+    #         for loc in opponents_territories:
+    #             if mila_game._abuts(unit[0], unit[2:], "-", loc):
+    #                 is_neighbor = True
+    #                 break
+        
+    #     if is_neighbor:
+    #         start = 0
+    #         for opponent, count in num_bilateral_joint_action_per_opponent:
+    #             if count == 0:
+    #                 continue
+                
+    #             curr_st = st.stance[agent_power][opponent]
+    #             logging.info(f'current stance vector that agent power sees opp: {curr_st}')
+                
+    #             opponent_bilateral_joint_actions = bilateral_joint_actions[start : start + count]
+    #             opponent_rollout_results = rollout_results[start : start + count]
+    #             for idx, bilateral_joint_action in enumerate(opponent_bilateral_joint_actions):
+    #                 x,y = bilateral_joint_action
+    #                 new_stance = predict_stance_vector_from_to(mila_game, agent_power, opponent, st, x)
+    #                 if new_stance >= curr_st:
+    #                     # quite the same or better relationship
+    #                     ally_value_table_cache[opponent][bilateral_joint_action] = opponent_rollout_results[idx]
+                        
+    #                 if new_stance <= curr_st:
+    #                     # we attack them
+    #                     foes_value_table_cache[opponent][bilateral_joint_action] = opponent_rollout_results[idx]
+
+    #             start += count
+        
     assert start == len(
         bilateral_joint_actions
     ), f"{start * num_sample}, {len(bilateral_joint_actions)}"
-
+    
+    # if stance_vector_mode=='ally':
+    #     return ally_value_table_cache
+    # if stance_vector_mode=='foes':
+    #     return foes_value_table_cache
     return value_table_cache
 
 
@@ -592,6 +660,8 @@ def _multi_gpu_base_strategy_model_rollouts(
     agent_power: Power,
     joint_actions: List[JointAction],
     player_rating: Optional[float],
+    agent_state: Optional[AgentState] = None,
+    stance_vector_mode: Optional[str] = 'og',
 ) -> torch.Tensor:
     """Compute base_strategy_model rollouts on for joint_actions with MultiProcessBaseStrategyModelExecutor
 
@@ -613,6 +683,8 @@ def _multi_gpu_base_strategy_model_rollouts(
                 agent_power=agent_power,
                 set_orders_dicts=joint_actions_per_worker,
                 player_rating=player_rating,
+                agent_state=agent_state,
+                stance_vector_mode=stance_vector_mode,
             )
         )
 
@@ -620,3 +692,4 @@ def _multi_gpu_base_strategy_model_rollouts(
     for future in futures:
         rollout_results.append(future.result())
     return torch.cat(rollout_results, 0)
+

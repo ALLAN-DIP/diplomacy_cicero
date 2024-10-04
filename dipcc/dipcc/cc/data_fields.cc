@@ -35,6 +35,7 @@ TensorDict new_data_fields(long B, int input_version, long max_seq_len,
   if (include_power) {
     fields["x_power"] = torch::full({B, 7, max_seq_len}, -1, torch::kLong);
   }
+  fields["x_stance_vectors"] = torch::empty({B, 49}, torch::kFloat32)
 
   return fields;
 }

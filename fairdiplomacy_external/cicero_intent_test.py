@@ -51,6 +51,7 @@ from fairdiplomacy.utils.slack import GLOBAL_SLACK_EXCEPTION_SWALLOWER
 from fairdiplomacy.utils.typedefs import build_message_dict, get_last_message
 from fairdiplomacy.viz.meta_annotations.annotator import MetaAnnotator
 from parlai_diplomacy.utils.game2seq.format_helpers.misc import POT_TYPE_CONVERSION
+from fairdiplomacy.utils.order_idxs import is_action_valid
 import torch
 from fairdiplomacy.utils.game import game_from_view_of
 from fairdiplomacy.viz.meta_annotations import api as meta_annotations
@@ -156,7 +157,7 @@ def update_past_phase(mila_game, dipcc_game: Game, phase: str, power: Power):
         for power, orders in phase_order.items():
             dipcc_game.set_orders(power, orders)
         
-        dipcc_game.process()
+    dipcc_game.process()
 
 def get_last_timestamp_this_phase(dipcc_game: Game, default: Timestamp = Timestamp.from_seconds(0)) -> Timestamp:
     """
@@ -404,13 +405,14 @@ def load_mila_game(mila_game, stop_phase):
     logging.info(f'load mila game to phase {game.get_current_phase()}')
     return game
 
-def test_lie_message(game_id, gamepath, convpath, save_path, year, cutoff, sender: Power, recipient: Power):
+def test_lie_message(game_id, gamepath, convpath, year, cutoff, sender: Power, recipient: Power):
     extracted_game_file = convpath
-    K=5
+    K=3
     list_msg = []
+    date_str = datetime.today().strftime('%Y-%m-%d')
     # load agent
     # new_mila_game to feed in agents
-    logging.basicConfig(filename=f'./fairdiplomacy_external/lie/{game_id}_possible_lie_{year}_{sender}_{cutoff}.log', format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO)
+    logging.basicConfig(filename=f'./fairdiplomacy_external/lie/{date_str}_{game_id}_possible_lie_{year}_{sender}_{cutoff}.log', format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO)
 
     # logging.info(f'=================== test_lie sample {i} ==================')
     mila_game, dipcc_game, stance_vector = load_game(gamepath, year, sender)
@@ -419,8 +421,10 @@ def test_lie_message(game_id, gamepath, convpath, save_path, year, cutoff, sende
     agent = load_cicero()
 
     sender_player = Player(agent, sender)
-    sender_player.agent.set_stance_vector(stance_vector)
+    sender_player.state.set_stance_vector(stance_vector)
+    sender_player.state.set_mila_game(new_mila_game, game_id)
     sender_player.agent.set_mila_game(new_mila_game, game_id)
+    
     sender_player.agent.local_game = True
     
     if cutoff>0:
@@ -433,6 +437,7 @@ def test_lie_message(game_id, gamepath, convpath, save_path, year, cutoff, sende
             print(f'msg is none, we are skipping this {i} sample')
             logging.info(f'Lie or Deception None')
             continue
+        
         dipcc_game.add_message(
                 msg1['sender'], 
                 msg1['recipient'], 
@@ -440,13 +445,165 @@ def test_lie_message(game_id, gamepath, convpath, save_path, year, cutoff, sende
                 time_sent=Timestamp.now(),
                 increment_on_collision=True,
             )
-        logging.info(f'Lie or Deception {msg1["sender"]} -> {msg1["recipient"]}: {msg1["message"]}')
+        logging.info(f'sample {i}: Lie or Deception  {msg1["sender"]} -> {msg1["recipient"]}: {msg1["message"]}')
         # msg1['test_lie'] = True
         # list_msg.append(msg1)       
         # out_file = open(f"{save_path}/{game_id}_possible_lie_{year}_{cutoff}.json", "w") 
         # json.dump(list_msg, out_file, indent = 6) 
         # out_file.close() 
+
+def test_st_value_table(game_id, gamepath, year, sender: Power, recipient: Power):
+    import pathlib
+    import heyhi
+    import numpy as np
+    import sys
+    from fairdiplomacy.utils.game import game_from_two_party_view
+    from diplomacy import Game, GamePhaseData
+    from fairdiplomacy_external.cicero_stance import CiceroStance
+    from datetime import datetime, timedelta
+    from fairdiplomacy.agents.br_corr_bilateral_search import (
+        extract_bp_policy_for_powers,
+        compute_weights_for_opponent_joint_actions,
+        compute_best_action_against_reweighted_opponent_joint_actions,
+        sample_joint_actions,
+        filter_invalid_actions_from_policy,
+        rescore_bp_from_bilateral_views,
+        compute_payoff_matrix_for_all_opponents,
+        BRCorrBilateralSearchResult,
+    )
+
+    # logging.basicConfig(format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO)
+    date_str = datetime.today().strftime('%Y-%m-%d')
+    logging.basicConfig(filename=f'./fairdiplomacy_external/lie/{date_str}_{game_id}_test_stance_br_foes.log', format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO)
+
+    np.random.seed(0)  # type:ignore
+    torch.manual_seed(0)
+
+    mila_game, game, stance_vector = load_game(gamepath, year, sender)
+    # cfg = heyhi.load_config(
+    #     pathlib.Path(__file__).resolve().parents[2]
+    #     / "conf/common/agents/bqre1p_20210723.prototxt",
+    #     overrides=["bqre1p.base_searchbot_cfg.n_rollouts=64"] + sys.argv[1:],
+    # )
+    agent_power = sender
+    recipient = recipient
     
+    cfg = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
+    print(cfg.bqre1p)
+    agent = PyBQRE1PAgent(cfg.bqre1p)
+    agent_state = agent.initialize_state(power=agent_power)
+    
+    stance_vector = CiceroStance(agent_power ,mila_game,conflict_coef=1.0, conflict_support_coef=1.0, unrealized_coef = 0.0
+                , discount_factor=1.0, random_betrayal=False)
+    logging.info(f'stance vector before game starting : {stance_vector.stance}')
+    
+    stance_vector.is_rollout = True
+    
+    agent_state.set_stance_vector(stance_vector)
+    agent_state.set_opponent(recipient)
+    
+    # print(agent.get_orders(game, power="AUSTRIA", state=agent.initialize_state(power="AUSTRIA")))
+    
+    logging.info('------ test stance vector in rollout and results ------')
+    game_2p = game_from_two_party_view(game, agent_power, recipient, add_message_to_all=False)
+    # base_policy = agent.maybe_get_incremental_bp(
+    #                 game_2p, agent_power=agent_power, agent_state=agent_state,
+    #                 )
+    # if base_policy is None:
+    #     base_policy = agent.order_sampler.sample_orders(
+    #         game_2p,
+    #         agent_power=agent_power,
+    #         speaking_power=agent_power,
+    #         player_rating=agent.player_rating if agent.set_player_rating else None
+    #     )
+    # base_policy = extract_bp_policy_for_powers(base_policy, [agent_power, recipient])
+    
+    # recipient_value_table = compute_payoff_matrix_for_all_opponents(
+    #                     game_2p,
+    #                     agent.all_power_base_strategy_model_executor,
+    #                     base_policy,
+    #                     agent_power,
+    #                     agent.br_corr_bilateral_search_cfg.bilateral_search_num_cond_sample,
+    #                     agent.has_press,
+    #                     None,
+    #                     None,
+    #                     )[recipient]
+    # logging.info('------ recipient_value_table ------')
+    # logging.info(f'{recipient_value_table}')
+    
+    # ally_recipient_value_table = compute_payoff_matrix_for_all_opponents(
+    #                     game_2p,
+    #                     agent.all_power_base_strategy_model_executor,
+    #                     base_policy,
+    #                     agent_power,
+    #                     agent.br_corr_bilateral_search_cfg.bilateral_search_num_cond_sample,
+    #                     agent.has_press,
+    #                     None,
+    #                     None,
+    #                     agent_state = agent_state,
+    #                     stance_vector_mode = 'ally',
+    #                 )[recipient]
+    
+    # logging.info('------ ally - recipient_value_table ------')
+    # logging.info(f'{ally_recipient_value_table}')
+    
+    # foes_recipient_value_table = compute_payoff_matrix_for_all_opponents(
+    #                 game_2p,
+    #                 agent.all_power_base_strategy_model_executor,
+    #                 base_policy,
+    #                 agent_power,
+    #                 agent.br_corr_bilateral_search_cfg.bilateral_search_num_cond_sample,
+    #                 agent.has_press,
+    #                 None,
+    #                 None,
+    #                 agent_state = agent_state,
+    #                 stance_vector_mode = 'foes',
+    #             )[recipient]
+    
+    # logging.info('------ foes - recipient_value_table ------')
+    # logging.info(f'{foes_recipient_value_table}')
+    
+    model_pseudo_orders = agent.message_handler.model_pseudo_orders
+    old_args = model_pseudo_orders.set_generation_args("greedy")
+    pseudo_orders = model_pseudo_orders.produce_joint_action_bilateral(
+            game, agent_power, recipient=recipient
+        )
+    extra_plausible_orders = {
+            pwr: ([a] if is_action_valid(game, pwr, a) else []) for pwr, a in pseudo_orders.items()
+        }
+
+    bp_policy = agent.order_sampler.sample_orders(
+        game,
+        agent_power=agent_power,
+        speaking_power=agent_power,
+        player_rating=agent.player_rating if agent.set_player_rating else None,
+        extra_plausible_orders=extra_plausible_orders,
+    )
+    
+#     deceptive_search_result = agent.run_best_response_against_correlated_bilateral_search(
+#     game,
+#     agent_state=agent_state,
+#     bp_policy=bp_policy,
+#     agent_power=agent_power,
+# )
+#     logging.info('------ BR deceptive / persuasion for those moves ------')
+#     logging.info(f'value_to_me: {deceptive_search_result.value_to_me}')
+#     logging.info(f'sample action: {deceptive_search_result.sample_action(agent_power)}')
+    
+    
+    foes_deceptive_search_result = agent.run_best_response_against_correlated_bilateral_search(
+        game,
+        agent_state=agent_state,
+        bp_policy=bp_policy,
+        agent_power=agent_power,
+        stance_vector_mode = 'foes',
+    )
+    
+    logging.info('------ BR deceptive / persuasion for those moves IF assuming that rec is foes! ------')
+    logging.info(f'value_to_me: {foes_deceptive_search_result.value_to_me}')
+    logging.info(f'sample action: {foes_deceptive_search_result.sample_action(agent_power)}')
+    
+
 def test_stab_message(game_id, game_path, stab_path, save_path, year, sender, recipient):
     K=3 # rounds
     M=5 # number of interactions (from each side)
@@ -591,7 +748,8 @@ def send_message(msg: MessageDict, engine: str, dipcc_game=None, mila_game=None)
         
 POWERS = ['AUSTRIA', 'ENGLAND', 'FRANCE', 'GERMANY', 'ITALY', 'RUSSIA', 'TURKEY']
 # PHASES = ['S1902M', 'F1902M', 'S1903M', 'F1903M'] 
-PHASES = ['S1902M', 'F1902M', 'S1903M', 'F1903M', 'S1904M', 'F1904M', 'S1905M', 'F1905M']            
+PHASES = ['S1903M', 'F1903M', 'S1904M', 'F1904M', 'S1905M', 'F1905M']       
+# PHASES = [ 'S1905M', 'F1905M']      
 # asyncio.run(test_intent_from_game('RUSSIA','TURKEY'))
 # test_val_table('GERMANY','FRANCE')
 # test two situations
@@ -602,9 +760,10 @@ game_path = f'./fairdiplomacy_external/human_games/{gameid}.json'
 extract_path = f'./fairdiplomacy_external/human_games/extracted_moves/{gameid}.json'
 save_path = './fairdiplomacy_external/stab/'
 
-for phase in PHASES:
-    for power in POWERS:
-        test_lie_message(gameid, game_path, extract_path, save_path, phase, -1, power, None)
-# test_lie_message(gameid, game_path, extract_path, save_path, 'F1902M', -1, 'AUSTRIA', 'ITALY')
+# for phase in PHASES:
+#     for power in POWERS:
+#         test_lie_message(gameid, game_path, extract_path, phase, -1, power, None)
+# test_lie_message(gameid, game_path, extract_path, 'F1901M', -1, 'AUSTRIA', 'TURKEY')
+test_st_value_table(gameid, game_path, 'F1904M', 'AUSTRIA', 'TURKEY')
 # detect_stab('./fairdiplomacy_external/human_games/AIGame_21.json', './fairdiplomacy_external/stab/AIGame_21.json')
 # test_stab_message(game_id, game_path, stab_path, save_path)

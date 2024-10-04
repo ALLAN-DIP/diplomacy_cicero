@@ -1,0 +1,587 @@
+[
+    {
+        "stabber": "ITALY",
+        "stabbee": "AUSTRIA",
+        "phase": "F1901M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "GERMANY",
+        "phase": "F1901M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "RUSSIA",
+        "phase": "F1901M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "F1901M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "F1901M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "ENGLAND",
+        "phase": "S1902M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "S1902M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "S1902M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "S1902M"
+    },
+    {
+        "stabber": "ENGLAND",
+        "stabbee": "RUSSIA",
+        "phase": "S1902M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "AUSTRIA",
+        "phase": "F1902M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "AUSTRIA",
+        "phase": "F1902M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "ENGLAND",
+        "phase": "F1902M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "F1902M"
+    },
+    {
+        "stabber": "ENGLAND",
+        "stabbee": "RUSSIA",
+        "phase": "F1902M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "F1902M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "TURKEY",
+        "phase": "F1902M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "AUSTRIA",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "AUSTRIA",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "ENGLAND",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "ENGLAND",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "S1903M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "AUSTRIA",
+        "phase": "F1903M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "ENGLAND",
+        "phase": "F1903M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "F1903M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "F1903M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "F1903M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "AUSTRIA",
+        "phase": "S1904M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "AUSTRIA",
+        "phase": "S1904M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "ENGLAND",
+        "phase": "S1904M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "S1904M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "S1904M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "S1904M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "S1904M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "S1904M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "AUSTRIA",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "AUSTRIA",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "FRANCE",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "ENGLAND",
+        "stabbee": "GERMANY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "ITALY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "TURKEY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "F1904M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "AUSTRIA",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "TURKEY",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "S1905M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "AUSTRIA",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "ENGLAND",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "ENGLAND",
+        "stabbee": "GERMANY",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "ITALY",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "F1905M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "FRANCE",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "ITALY",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "RUSSIA",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "TURKEY",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "S1906M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "AUSTRIA",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "RUSSIA",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "F1906M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "FRANCE",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "RUSSIA",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "RUSSIA",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "S1907M"
+    },
+    {
+        "stabber": "ENGLAND",
+        "stabbee": "FRANCE",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "RUSSIA",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "RUSSIA",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "TURKEY",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "F1907M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "ENGLAND",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "FRANCE",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "FRANCE",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "RUSSIA",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "RUSSIA",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "RUSSIA",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "TURKEY",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "TURKEY",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "TURKEY",
+        "phase": "S1908M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "AUSTRIA",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "GERMANY",
+        "stabbee": "FRANCE",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "ENGLAND",
+        "stabbee": "GERMANY",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "GERMANY",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "RUSSIA",
+        "stabbee": "ITALY",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "ITALY",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "RUSSIA",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "TURKEY",
+        "stabbee": "RUSSIA",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "AUSTRIA",
+        "stabbee": "TURKEY",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "FRANCE",
+        "stabbee": "TURKEY",
+        "phase": "F1908M"
+    },
+    {
+        "stabber": "ITALY",
+        "stabbee": "TURKEY",
+        "phase": "F1908M"
+    }
+]

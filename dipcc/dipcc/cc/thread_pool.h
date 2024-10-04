@@ -34,6 +34,7 @@ struct EncodingArrayPointers {
   float *x_year_encoded;
   float *x_in_adj_phase;
   float *x_build_numbers;
+  float *x_stance_vectors;
   float *x_scoring_system;
   int8_t *x_loc_idxs;
   int32_t *x_possible_actions;

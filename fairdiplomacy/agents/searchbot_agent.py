@@ -63,8 +63,12 @@ from fairdiplomacy.agents.br_corr_bilateral_search import (
     compute_payoff_matrix_for_all_opponents,
     extract_bp_policy_for_powers,
 )
+from fairdiplomacy.agents.stance_utils import (
+    predict_stance_vector_from_to,
+    __game_deepcopy__,
+)
 from fairdiplomacy.models.consts import POWER2IDX, POWERS
-from fairdiplomacy.utils.game import game_from_two_party_view, get_last_message_from, next_M_phase
+from fairdiplomacy.utils.game import game_from_two_party_view, get_last_message_from, next_M_phase, is_friendly_xpower_support_or_convoy, action_has_any_direct_attack
 from fairdiplomacy.utils.parse_device import device_id_to_str
 from fairdiplomacy.utils.sampling import sample_p_dict, argmax_p_dict
 from fairdiplomacy.utils.timing_ctx import TimingCtx
@@ -99,42 +103,13 @@ from fairdiplomacy.agents.parlai_message_handler import (
     SleepSixTimesCache,
     pseudoorders_initiate_sleep_heuristics_should_trigger,
     joint_action_contains_xpower_support_or_convoy,
+    get_all_possible_orders_by_power
 )
 import copy
 from diplomacy.utils import strings,  common
 from diplomacy import Game as milaGame
 
 ActionDict = Dict[Tuple[Power, Action], float]
-
-default_is_bot ={
-            'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'ENGLAND': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'FRANCE': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'GERMANY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'ITALY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'RUSSIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'TURKEY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False}
-        }
-default_stance ={
-            'AUSTRIA': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
-            'ENGLAND': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
-            'FRANCE': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
-            'GERMANY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
-            'ITALY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
-            'RUSSIA': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0},
-            'TURKEY': {'AUSTRIA': 0, 'ENGLAND': 0, 'FRANCE': 0, 'GERMANY': 0, 'ITALY': 0, 'RUSSIA': 0, 'TURKEY': 0}
-        }
-default_order_log ={00000:'default'}  
-default_deceiving = {
-            'AUSTRIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'ENGLAND': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'FRANCE': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'GERMANY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'ITALY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'RUSSIA': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False},
-            'TURKEY': {'AUSTRIA': False, 'ENGLAND': False, 'FRANCE': False, 'GERMANY': False, 'ITALY': False, 'RUSSIA': False, 'TURKEY': False}
-        }
-
 
 def color_order_logprobs(a: Action, lp: Optional[Dict[Action, List[float]]]) -> str:
     if not _is_interactive() or lp is None:
@@ -168,6 +143,42 @@ def filter_logprob_ratio(action_logprobs: Policy, min_ratio: float) -> Set[Actio
     return {a for a, p in action_logprobs.items() if p - max_logprob >= math.log(min_ratio)}
 
 
+def render_intents(mila_game, game_id, og_pseudo_orders, new_pseudo_orders, note='dec'):
+    sim_game = __game_deepcopy__(mila_game)
+    sim_game.renderer = None
+    powers = []
+    
+    time_created = common.timestamp_microseconds()
+    # render og_po
+    for power, orders in og_pseudo_orders.items():
+        # sim_game.set_orders(power_name=power, orders=list(orders))
+        order_dict = dict()
+        for order in list(orders):
+            tokens = order.split()
+            unit = '{} {}'.format(tokens[0], tokens[1])
+            unit_order = ' '.join(tokens[2:])
+            order_dict[unit] = unit_order
+        sim_game.get_power(power).orders = order_dict.copy()
+        print(f'{power} orders : {list(orders)}')
+        powers.append(power)
+        print(f'set og intent in sim game and render : {sim_game.get_power(power).orders}')
+    sim_game.render(incl_orders=True, incl_abbrev=True, output_format='svg', output_path=f'/diplomacy_cicero/fairdiplomacy_external/renders/{game_id}_{mila_game.get_current_phase()}_{powers[0]}_{powers[1]}_{time_created}_br.svg')
+        
+    # render new_po
+    for power, orders in new_pseudo_orders.items():
+        # sim_game.set_orders(power_name=power, orders=list(orders))
+        order_dict = dict()
+        for order in list(orders):
+            tokens = order.split()
+            unit = '{} {}'.format(tokens[0], tokens[1])
+            unit_order = ' '.join(tokens[2:])
+            order_dict[unit] = unit_order
+        sim_game.get_power(power).orders = order_dict.copy()
+        print(f'set new intent in sim game and render : {sim_game.get_power(power).orders}')
+    savepath = f'{game_id}_{mila_game.get_current_phase()}_{powers[0]}_{powers[1]}_{time_created}_{note}.svg'
+    sim_game.render(incl_orders=True, incl_abbrev=True, output_format='svg', output_path='/diplomacy_cicero/fairdiplomacy_external/renders/'+savepath)
+    logging.info(f'rendered possible {note} as {savepath}')
+    
 class CFRResult(SearchResult):
     def __init__(
         self,
@@ -369,6 +380,19 @@ class SearchBotAgentState(AgentState):
         ] = defaultdict(functools.partial(defaultdict, dict))
 
         self.pseudo_orders_cache = ParlaiMessagePseudoOrdersCache()
+        self.stance_vector = None
+        self.mila_game = None
+        self.opponent = None
+        
+    def set_opponent(self, opponent):
+        self.opponent = opponent
+        
+    def set_stance_vector(self, stance_vector):
+        self.stance_vector = stance_vector
+        
+    def set_mila_game(self, game, game_id):
+        self.mila_game = game
+        self.game_id = game_id
 
     def _get_phase_key(self, game: Game) -> PhaseKey:
         return (
@@ -491,7 +515,6 @@ class SearchBotAgent(BaseSearchAgent):
         self.br_corr_bilateral_search_cfg = cfg.br_corr_bilateral_search
         self.message_search_cfg = cfg.message_search
         self.mila_game = None
-        self.stance_vector = None
         self.local_game = False
 
         self.all_power_base_strategy_model_executor = None
@@ -1695,77 +1718,245 @@ class SearchBotAgent(BaseSearchAgent):
         #with assumtpion that recipient will move = og_pseudo_orders[recipient]
         K=10
         lie_country = 'ALL'
-        self.tau = 0.04
+        self.tau = 0.0
+        alpha = 1.0 
+        beta = 0.0
         log = ''
         first_turn = True if self.mila_game.get_current_phase()=='S1901M' else False
-        their_po_list = [pseudo_orders[recipient]] + [self.sample_action(opponent) for i in range(K)] #maybe need to extend this list
-        log += f"consider candidate {recipient} PO that we can persuade/deceive {their_po_list}"
-        best_their_po = None
-        best_their_po_value = -1
+        support_action_list = set()
+        
+        # # check if agent_power and recipient has close territories
+        # power_possible_orders = get_all_possible_orders_by_power(game)[agent_power]
+        
+        # print(f'power possible order {power_possible_orders}')
+
+        # power_loc_orders = {} 
+        
+        # all_possible_orders = game.get_all_possible_orders()
+        # all_orderable_locs = game.get_orderable_locations() 
+        
+        # for loc in all_orderable_locs.get(agent_power, []):
+        #     for order in all_possible_orders.get(loc, []):
+        #         if loc not in power_loc_orders:
+        #             power_loc_orders[loc] = []
+        #         power_loc_orders[loc].append(order)
+        
+        # is_close_territory = False      
+        # # filter move that attack recipient
+        # for loc, loc_possible_orders in power_possible_orders:
+        #     filter_orders = []
+        #     for order in loc_possible_orders:
+        #         if not action_has_any_direct_attack(game, [order], recipient):
+        #             filter_orders.append(order)
+        #         else:
+        #             is_close_territory = True
+        # power_possible_orders[loc] = filter_orders.copy()
         
         if not first_turn:
+            num_search_support = 10
+            min_search_support = 20
+            i = 0
+            while len(support_action_list) < min_search_support and i <= num_search_support:
+                possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(game, agent_power, max_actions=10)
+                for order_set in possible_orders:
+                    for order in order_set:
+                        if is_friendly_xpower_support_or_convoy(game, order, recipient):
+                            support_action_list.add(order_set)
+                            break
+                i+=1
+            print(f'support action list {support_action_list}')
+            log += f'support action list {support_action_list}'
+            game_2p = game_from_two_party_view(game, agent_power, recipient, add_message_to_all=False)
+            
             #get curr stance
-            pair_curr_sv = self.stance_vector.stance[recipient][agent_power]
+            pair_curr_sv = state.stance_vector.stance[recipient][agent_power]
             #check new stance if we do this intent 
-            new_stance_vector = self.predict_stance_vector_from_to(recipient, agent_power, self.stance_vector, og_pseudo_orders[agent_power])
+            new_stance_vector = predict_stance_vector_from_to(self.mila_game, recipient, agent_power, state.stance_vector, og_pseudo_orders[agent_power])
             
-            log += f'with PO: {og_pseudo_orders[agent_power]} a new predicted stance vector from {recipient} to {agent_power}: {pair_curr_sv}->{new_stance_vector} and betray if {pair_curr_sv} - {new_stance_vector} >= {self.stance_vector.alpha2} \n'
-            
-            
-            
+            log += f'with PO: {og_pseudo_orders[agent_power]} a new predicted stance vector from {recipient} to {agent_power}: {pair_curr_sv}->{new_stance_vector} and betray if {pair_curr_sv} - {new_stance_vector} >= {state.stance_vector.alpha2} \n'
+
             #alpha2 = lowerbound when there is a conflict (conflict move and support )
-            is_betray = pair_curr_sv - new_stance_vector >= self.stance_vector.alpha2 
+            is_betray = pair_curr_sv - new_stance_vector >= state.stance_vector.alpha2 
+            change_our_po = is_betray
+            
+            search_result.set_policy_and_value_for_other_power(recipient, og_pseudo_orders[recipient])
+            value_to_them = search_result.value_to_them
+            lie_policy = [action for action in search_result.get_agent_policy()[agent_power]]
+            
+            #do we need to hide our betray -> attacking ally
+            v_them_og = value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
+
+            lie_po = max(
+                lie_policy, key=lambda a: beta * value_to_them[recipient, a].get_avg() + alpha * value_to_them[agent_power, a].get_avg()
+            )
+                
+            their_po_list = [pseudo_orders[recipient]] \
+                            + [action for action in bp_policy[recipient]] \
+                            # + fairdiplomacy.action_generation.get_all_possible_orders(game_2p, recipient, max_actions=5) #maybe need to extend this list
+            # logging.info(f'checking their_po_list {their_po_list}')
+            their_po_list = {x for x in their_po_list}
+            their_po_list = list(their_po_list)
+            log += f"consider candidate {recipient} PO that we can persuade/deceive {their_po_list}"
+            best_lie_po = (None,None)
+            best_lie_po_value = -1
+            change_their_po = False
+            st_lie_pseudo_orders = {agent_power: tuple(), recipient: tuple()}
+            st_br_pseudo_orders = {agent_power: tuple(), recipient: tuple()}
+            max_foes_best_action_value = -1.0
+            state.set_opponent(recipient)
             
             #for each possible action of victim, find one that sounds really good to them
             for curr_their_po in their_po_list:
-                
-                change_our_po = is_betray
-                change_their_po = False
-                their_po = og_pseudo_orders[recipient]
+                if curr_their_po == og_pseudo_orders[recipient]:
+                    continue
 
-                log += f"try to find {recipient} PO: {curr_their_po} that better with our value: {curr_their_po} ({value_to_me[recipient, pseudo_orders[recipient]].get_avg()}) (previously: {og_pseudo_orders[recipient]} ({value_to_me[recipient, og_pseudo_orders[recipient]].get_avg()})) \n"
+                # log += f"try to find {recipient} PO that better with our value: {curr_their_po} \n"
 
-                search_result.set_policy_and_value_for_other_power(recipient, curr_their_po)
-                value_to_them = search_result.value_to_them
-                lie_policy = search_result.get_bp_policy()[agent_power]
+                # search_result.set_policy_and_value_for_other_power(recipient, curr_their_po)
+                # value_to_them = search_result.value_to_them
+                # lie_policy = search_result.get_bp_policy()[agent_power]
+                # print(f'lie_policy : {lie_policy}')
                 
                 #find the best lie to persuade them to do such action
-                v_me_og =  value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()
-                v_them_og = value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
+                # v_me_og =  value_to_them[agent_power, og_pseudo_orders[agent_power]].get_avg()
+                # v_them_og = value_to_them[recipient, og_pseudo_orders[agent_power]].get_avg()
 
-                lie_po = max(
-                    lie_policy, key=lambda a: value_to_them[recipient, a].get_avg() - v_them_og
-                )
-                best_their_po = curr_their_po if value_to_them[recipient, lie_po].get_avg() - best_their_po_value else best_their_po
-                best_their_po_value = max(best_their_po_value, value_to_them[recipient, lie_po].get_avg())
+                # candidate_lie_po = max(
+                #     lie_policy, key=lambda a: beta * value_to_them[recipient, a].get_avg() + alpha * value_to_them[agent_power, a].get_avg()
+                # )
+                # any_lie_value = value_to_them[recipient, candidate_lie_po].get_avg()
+                # candidate_lie_value = any_lie_value
                 
-                log += f'argmax lie_po: {lie_po} and og PO: {og_pseudo_orders[agent_power]} with value_to_them (lie_po,OG): ({value_to_them[recipient, lie_po].get_avg()}, {v_them_og}) \n'
-            
-            if best_their_po!=None:
-                log += f'joint action that values best for THEM is (our, their) = ({lie_po},{best_their_po})'
                 
-                # get our best response correponding to our persuasion/deception and see if it worths doing
-                deceptive_bp_policy[recipient] = {best_their_po : 1.0}
+                extra_possible_ord = fairdiplomacy.action_generation.get_all_possible_orders(game, agent_power, max_actions=5)
+                action_list = list(support_action_list) + lie_policy + possible_orders + extra_possible_ord
+                
+                if len(action_list) > 0:
+                    # expand lie_policy with support possible actions (when we want to deceive)
+                    sim_policy = {agent_power: action_list, recipient: [curr_their_po, og_pseudo_orders[recipient]]}
+                    # make sure to do best action to their value
+                    # ally_recipient_value_table = compute_payoff_matrix_for_all_opponents(
+                    #     game_2p,
+                    #     self.all_power_base_strategy_model_executor,
+                    #     sim_policy,
+                    #     agent_power,
+                    #     self.br_corr_bilateral_search_cfg.bilateral_search_num_cond_sample,
+                    #     self.has_press,
+                    #     None,
+                    #     None,
+                    # )[recipient]
+                    print(f'computing payoff matrix for ally mode')
+                    ally_recipient_value_table = compute_payoff_matrix_for_all_opponents(
+                        game_2p,
+                        self.all_power_base_strategy_model_executor,
+                        sim_policy,
+                        agent_power,
+                        self.br_corr_bilateral_search_cfg.bilateral_search_num_cond_sample,
+                        self.has_press,
+                        None,
+                        None,
+                        agent_state = state,
+                        stance_vector_mode = 'ally',
+                    )[recipient]
+                    
+                    
+                    # print(recipient_value_table)
+                    # print(value_to_them)
+                    
+                    recipient_idx = POWERS.index(recipient)
+                    sender_idx = POWERS.index(agent_power)
+                    ally_candidate_lie_po = max(
+                        action_list, key=lambda a: beta * ally_recipient_value_table[(a, curr_their_po)][recipient_idx] + 
+                        alpha * ally_recipient_value_table[(a, curr_their_po)][sender_idx]
+                    )
+                    # candidate_lie_po = max(
+                    #     action_list, key=lambda a: beta * recipient_value_table[(a, curr_their_po)][recipient_idx] + 
+                    #     alpha * recipient_value_table[(a, curr_their_po)][sender_idx]
+                    # )
+                    
+                    # candidate_lie_value = recipient_value_table[(candidate_lie_po, curr_their_po)][recipient_idx].item()
+                    ally_candidate_lie_value = recipient_value_table[(ally_candidate_lie_po, curr_their_po)][recipient_idx].item()
+
+                    # log += f'our lie PO: {candidate_lie_po}: val_to_them ({candidate_lie_value})\n'
+                    log += f'our (ally) lie PO: {ally_candidate_lie_po}: val_to_them ({ally_candidate_lie_value})\n'
+                    # print(f'our lie PO: {candidate_lie_po} ({any_lie_value}) and our support lie PO: {candidate_support_lie_po} ({support_lie_value}) \n')
+                    
+                    # if support_lie_value - any_lie_value>=0.0:
+                    #     candidate_lie_po = candidate_support_lie_po
+                    #     candidate_lie_value = support_lie_value
+                        
+                # log += f'joint action OG PO: ({og_pseudo_orders[agent_power]},{og_pseudo_orders[recipient]})'
+                # log += f'joint deceptive action we are considering is (ours, theirs) = ({candidate_lie_po, curr_their_po}) \n'
+                
+                # get our best response correponding to our persuasion/deception and see if it worths doing 
+                # possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(game, agent_power, max_actions=10)
+                deceptive_bp_policy = search_result.get_agent_policy().copy()
+                # possible_deceptive_orders =list(deceptive_bp_policy[agent_power].keys()) + possible_orders
+                # deceptive_bp_policy[agent_power] = {d_order: 1/len(possible_deceptive_orders) for d_order in possible_deceptive_orders}
+                deceptive_bp_policy[recipient] = {curr_their_po : 1.0}
                 
                 with timings.create_subcontext("br_against_bilateral_search") as subtimings:
-                deceptive_search_result = self.run_best_response_against_correlated_bilateral_search(
-                    game,
-                    agent_state=state,
-                    bp_policy=deceptive_bp_policy,
-                    agent_power=agent_power,
-                    timings=subtimings,
-                )
-                deceptive_value_to_me = deceptive_search_result.value_to_me
+                    print(f'computing BR for foes mode')
+                    foes_deceptive_search_result = self.run_best_response_against_correlated_bilateral_search(
+                        game,
+                        agent_state=state,
+                        bp_policy=deceptive_bp_policy,
+                        agent_power=agent_power,
+                        timings=subtimings,
+                        stance_vector_mode = 'foes',
+                    )
+                    # foes_deceptive_search_result = self.run_best_response_against_correlated_bilateral_search(
+                    #     game,
+                    #     agent_state=state,
+                    #     bp_policy=deceptive_bp_policy,
+                    #     agent_power=agent_power,
+                    #     timings=subtimings,
+                    # )
+                foes_deceptive_value_to_me = foes_deceptive_search_result.value_to_me
+                # deceptive_value_to_me = deceptive_search_result.value_to_me
                 
-                deceptive_value = deceptive_value_to_me[recipient, best_their_po].get_avg()
+                # deceptive_value = deceptive_value_to_me[recipient, curr_their_po].get_avg()
+                foes_deceptive_value = foes_deceptive_value_to_me[recipient, curr_their_po].get_avg()
+                
                 truth_value = value_to_me[recipient, og_pseudo_orders[recipient]].get_avg()
                 
-                log += f'with deception, we get value {deceptive_value}. w/o deception, we get {truth_value} and we will deceive if {deceptive_value} - {truth_value} >= {self.tau} '
+                # br_action = deceptive_search_result.sample_action(agent_power)
+                foes_br_action = foes_deceptive_search_result.sample_action(agent_power)
                 
-                if deceptive_value - truth_value >= self.tau
+                # log += f'with deception, (us doing BR {br_action}) we get value {deceptive_value}. w/o deception (us doing OG), we get {truth_value} and we will deceive if {deceptive_value} - {truth_value} >= {self.tau} \n'
+                log += f'with deception, (us doing BR {foes_br_action}) we get value {foes_deceptive_value}. w/o deception (us doing OG), we get {truth_value} and we will deceive if {foes_deceptive_value} - {truth_value} >= {self.tau} \n'
+                
+                if foes_deceptive_value > max_foes_best_action_value:
                     change_our_po = True
                     change_their_po = True 
-                    pseudo_orders[recipient] = best_their_po
+                    st_lie_pseudo_orders[agent_power] = ally_candidate_lie_po
+                    st_lie_pseudo_orders[recipient] = curr_their_po
+                    st_br_pseudo_orders[agent_power] = foes_br_action
+                    max_foes_best_action_value = foes_deceptive_value
+                    lie_po = ally_candidate_lie_po
+
+                # if it makes sense to lie (we gain something)
+                # if deceptive_value - truth_value >= self.tau:
+                #     change_our_po = True
+                #     change_their_po = True 
+                    
+                #     good_to_them = candidate_lie_value - recipient_value_table[(candidate_lie_po, og_pseudo_orders[recipient])][recipient_idx].item()
+                    
+                #     # if good_to_them > best_lie_po_value:
+                #     #     best_lie_po_value = good_to_them 
+                #     # maximize good to them
+                #     # may be I can try maximize my benefit?
+                #     benefit = deceptive_value - truth_value
+                #     if alpha * benefit + beta * good_to_them > best_lie_po_value:
+                #         best_lie_po_value = alpha * benefit + beta * good_to_them
+                    
+            
+                #         pseudo_orders[recipient] = curr_their_po
+                #         pseudo_orders[agent_power] = candidate_lie_po
+                #         lie_po = candidate_lie_po
+                #         og_pseudo_orders[agent_power] = br_action
+                #         log += f'we select to do deception with BR {br_action}, lying that we are doing {lie_po} while asking them to do {curr_their_po} \n'
+                #         log += f'val_to_them when we do lie_po and BR: {candidate_lie_value}, {value_to_them[recipient, br_action].get_avg()}\n'
 
             if change_our_po:
                 pseudo_orders[agent_power] = lie_po
@@ -1773,23 +1964,25 @@ class SearchBotAgent(BaseSearchAgent):
             #===================================================
             
             if (lie_country == 'ALL' or agent_power== lie_country) and change_their_po and change_our_po:
-                assert pseudo_orders != og_pseudo_orders, "(two-way) deceived pseudo_orders cannot be the same as original"
+                # assert pseudo_orders != og_pseudo_orders, "(two-way) deceived pseudo_orders cannot be the same as original"
 
                 log += f'(Persuasion) changing our and their PO to Deceptive PO. PO: {og_pseudo_orders} and Deceptive PO: {pseudo_orders}'
                 self.send_log(log)
-                self.render_intents(og_pseudo_orders, pseudo_orders)
+                og_pseudo_orders[recipient] = tuple()
+                # render_intents(self.mila_game, self.game_id, og_pseudo_orders, pseudo_orders)
+                render_intents(self.mila_game, self.game_id, st_br_pseudo_orders, st_lie_pseudo_orders, note='stance_vector_rollout_dec')
 
             elif (lie_country == 'ALL' or agent_power== lie_country) and change_their_po and not change_our_po:
                 log += f'(recipient PO) changing PO to Deceptive PO. PO: {og_pseudo_orders[recipient]} and Deceptive PO: {pseudo_orders[recipient]}'
                 self.send_log(log)
                 pseudo_orders[agent_power] = og_pseudo_orders[agent_power]
-                self.render_intents(og_pseudo_orders, pseudo_orders)
+                render_intents(self.mila_game, self.game_id,og_pseudo_orders, pseudo_orders)
 
             elif (lie_country == 'ALL' or agent_power== lie_country) and not change_their_po and change_our_po:
                 log += f'(Our PO) changing PO to Deceptive PO. PO: {og_pseudo_orders[agent_power]} and Deceptive PO: {pseudo_orders[agent_power]}'
                 self.send_log(log)
                 pseudo_orders[recipient] = og_pseudo_orders[recipient]
-                self.render_intents(og_pseudo_orders, pseudo_orders)
+                render_intents(self.mila_game, self.game_id,og_pseudo_orders, pseudo_orders)
 
                 # self.send_log("We didn't lie and change PO to OG")
                 # pseudo_orders[agent_power] = og_pseudo_orders[agent_power]
@@ -2234,115 +2427,11 @@ class SearchBotAgent(BaseSearchAgent):
                     return MessageHeuristicResult.FORCE
         return MessageHeuristicResult.NONE
 
-    def __game_deepcopy__(self, game: milaGame) -> None:
-        """Fast deep copy implementation, from Paquette's game engine https://github.com/diplomacy/diplomacy"""
-        if game.__class__.__name__ != milaGame.__name__:
-            # NetworkGame
-            cls = list(game.__class__.__bases__)[0]
-            result = cls.__new__(cls)
-            print('----networkgame----')
-        else:
-            # local game
-            cls = game.__class__
-            result = cls.__new__(cls)
-            print('----localgame----')
-        # Deep copying
-        for key in game._slots:
-            if key in [
-                "map",
-                "renderer",
-                "powers",
-                "channel",
-                "notification_callbacks",
-                "data",
-                "__weakref__",
-            ]:
-                continue
-            setattr(result, key, copy.deepcopy(getattr(game, key)))
-        setattr(result, "map", game.map)
-        setattr(result, "powers", {})
-        for power in game.powers.values():
-            result.powers[power.name] = copy.deepcopy(power)
-            setattr(result.powers[power.name], "game", result)
-        result.role = strings.SERVER_TYPE
-        return result
-
+    
     def set_mila_game(self, game, game_id):
         self.mila_game = game
         self.game_id = game_id
-
-    def set_stance_vector(self, stance_vector):
-        self.stance_vector = stance_vector
-
-    def predict_stance_vector_from_to(self, from_power, to_power, curr_stance_vector, orders):
-        #save current stance
-        sim_stance_vector = copy.deepcopy(self.stance_vector)
-        #create a sim that to_power submit "order" 
-        sim_game = self.__game_deepcopy__(self.mila_game)
-        print(f'simgame phase: {sim_game.get_current_phase()} and power {to_power} units: {sim_game.powers[to_power].units} with orders: {list(orders)}')
-        logging.info(f'predict new stance from {from_power} ({sim_game.powers[from_power].units}) to {to_power} with {to_power} action {list(orders)}')
         
-        #submit order
-        sim_game.clear_orders()
-        order_dict = dict()
-        # sim_game.set_orders(power_name=to_power, orders=list(orders))
-        for order in list(orders):
-            tokens = order.split()
-            unit = '{} {}'.format(tokens[0], tokens[1])
-            unit_order = ' '.join(tokens[2:])
-            order_dict[unit] = unit_order
-        sim_game.get_power(to_power).orders = order_dict.copy()
-        # print(f'{sim_game.orders}')
-
-        sim_game.process()
-
-        if sim_game.get_current_phase() not in sim_game.order_log_history:
-            sim_game.order_log_history.put(sim_game._phase_wrapper_type(sim_game.get_current_phase()), default_order_log)
-        if sim_game.get_current_phase() not in sim_game.is_bot_history:
-            sim_game.is_bot_history.put(sim_game._phase_wrapper_type(sim_game.get_current_phase()), default_is_bot)
-        if sim_game.get_current_phase() not in sim_game.deceiving_history:
-            sim_game.deceiving_history.put(sim_game._phase_wrapper_type(sim_game.get_current_phase()), default_deceiving)
-        #retreive new stance
-        predict_stance_vector = copy.deepcopy(sim_stance_vector.get_stance(sim_game))
-        # print(f'{sim_game.get_current_phase()} and prev order {sim_game.order_history}')
-        
-        return predict_stance_vector[from_power][to_power]
-    
-    def render_intents(self, og_pseudo_orders, new_pseudo_orders):
-        sim_game = self.__game_deepcopy__(self.mila_game)
-        sim_game.renderer = None
-        powers = []
-        
-        time_created = common.timestamp_microseconds()
-        # render og_po
-        for power, orders in og_pseudo_orders.items():
-            # sim_game.set_orders(power_name=power, orders=list(orders))
-            order_dict = dict()
-            for order in list(orders):
-                tokens = order.split()
-                unit = '{} {}'.format(tokens[0], tokens[1])
-                unit_order = ' '.join(tokens[2:])
-                order_dict[unit] = unit_order
-            sim_game.get_power(power).orders = order_dict.copy()
-            print(f'{power} orders : {list(orders)}')
-            powers.append(power)
-            print(f'set og intent in sim game and render : {sim_game.get_power(power).orders}')
-        sim_game.render(incl_orders=True, incl_abbrev=True, output_format='svg', output_path=f'/diplomacy_cicero/fairdiplomacy_external/renders/{self.game_id}_{self.mila_game.get_current_phase()}_{powers[0]}_{powers[1]}_{time_created}_og.svg')
-            
-        # render new_po
-        for power, orders in new_pseudo_orders.items():
-            # sim_game.set_orders(power_name=power, orders=list(orders))
-            order_dict = dict()
-            for order in list(orders):
-                tokens = order.split()
-                unit = '{} {}'.format(tokens[0], tokens[1])
-                unit_order = ' '.join(tokens[2:])
-                order_dict[unit] = unit_order
-            sim_game.get_power(power).orders = order_dict.copy()
-            print(f'set new intent in sim game and render : {sim_game.get_power(power).orders}')
-        savepath = f'{self.game_id}_{self.mila_game.get_current_phase()}_{powers[0]}_{powers[1]}_{time_created}_dec.svg'
-        sim_game.render(incl_orders=True, incl_abbrev=True, output_format='svg', output_path='/diplomacy_cicero/fairdiplomacy_external/renders/'+savepath)
-        logging.info(f'rendered possible lie or deception as {savepath}')
    
     def send_log(self, data):
         if not self.local_game:
@@ -2447,7 +2536,6 @@ def get_action_consistency_frac(a1: Action, a2: Action) -> float:
     common = set(a1) & set(a2)
     return len(common) / max(len(a1), len(a2))
 
-
 if __name__ == "__main__":
     import pathlib
     import heyhi
@@ -2465,3 +2553,6 @@ if __name__ == "__main__":
     )
     agent = SearchBotAgent(cfg.searchbot)
     print(agent.get_orders(game, power="AUSTRIA", state=agent.initialize_state(power="AUSTRIA")))
+    
+
+                    

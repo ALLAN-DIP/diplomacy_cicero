@@ -1048,6 +1048,8 @@ class BQRE1PAgent(SearchBotAgent):
         extra_plausible_orders: Optional[PlausibleOrders] = None,
         agent_power: Power,
         agent_state: Optional[AgentState] = None,
+        stance_vector_mode: str = 'og',
+        
     ) -> SearchResult:
         assert agent_power is not None
         assert self.all_power_base_strategy_model_executor is not None
@@ -1091,9 +1093,7 @@ class BQRE1PAgent(SearchBotAgent):
 
         # power_value_matrices[pwr] stores the values of the joint actions between agent_power and pwr
         # each value matrix is a map from frozenset((pwr, action), (agent_pwr, action)) -> Tensor [7, 1]
-        power_value_matrices: Dict[
-            Power, BilateralConditionalValueTable
-        ] = compute_payoff_matrix_for_all_opponents(
+        power_value_matrices = compute_payoff_matrix_for_all_opponents(
             game,
             all_power_base_strategy_model=self.all_power_base_strategy_model_executor,
             bp_policy=bp_policy,
@@ -1102,6 +1102,8 @@ class BQRE1PAgent(SearchBotAgent):
             has_press=self.has_press,
             player_rating=self.player_rating,
             value_table_cache=value_table_cache,
+            agent_state = agent_state,
+            stance_vector_mode = stance_vector_mode,
         )
 
         timings.start("corr_search_pairwise_cfr")
@@ -1285,18 +1287,116 @@ if __name__ == "__main__":
     import pathlib
     import heyhi
     import sys
+    from fairdiplomacy.utils.game import game_from_two_party_view
+    from diplomacy import Game, GamePhaseData
+    from fairdiplomacy_external.cicero_stance import CiceroStance
+    from datetime import datetime, timedelta
 
-    logging.basicConfig(format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO)
+    # logging.basicConfig(format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO)
+    date_str = datetime.today().strftime('%Y-%m-%d')
+    logging.basicConfig(filename=f'./fairdiplomacy_external/lie/{date_str}_test_stance.log', format="%(asctime)s [%(levelname)s]: %(message)s", level=logging.INFO)
 
     np.random.seed(0)  # type:ignore
     torch.manual_seed(0)
 
     game = pydipcc.Game()
-    cfg = heyhi.load_config(
-        pathlib.Path(__file__).resolve().parents[2]
-        / "conf/common/agents/bqre1p_20210723.prototxt",
-        overrides=["bqre1p.base_searchbot_cfg.n_rollouts=64"] + sys.argv[1:],
-    )
+    mila_game = Game()
+    # cfg = heyhi.load_config(
+    #     pathlib.Path(__file__).resolve().parents[2]
+    #     / "conf/common/agents/bqre1p_20210723.prototxt",
+    #     overrides=["bqre1p.base_searchbot_cfg.n_rollouts=64"] + sys.argv[1:],
+    # )
+    cfg = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
     print(cfg.bqre1p)
     agent = BQRE1PAgent(cfg.bqre1p)
-    print(agent.get_orders(game, power="AUSTRIA", state=agent.initialize_state(power="AUSTRIA")))
+    agent_state = agent.initialize_state(power="AUSTRIA")
+    
+    stance_vector = CiceroStance('AUSTRIA' ,mila_game,conflict_coef=1.0, conflict_support_coef=1.0, unrealized_coef = 0.0
+                , discount_factor=1.0, random_betrayal=False)
+    logging.info(f'stance vector before game starting : {stance_vector.stance}')
+    
+    stance_vector.is_rollout = True
+    dipcc_game = game
+    
+    agent_power = 'AUSTRIA'
+    recipient = 'ITALY'
+    
+    agent_state.set_stance_vector(stance_vector)
+    agent_state.set_opponent(recipient)
+    
+    # print(agent.get_orders(game, power="AUSTRIA", state=agent.initialize_state(power="AUSTRIA")))
+    
+    logging.info('------ test stance vector in rollout and results ------')
+    game_2p = game_from_two_party_view(game, agent_power, recipient, add_message_to_all=False)
+    base_policy = agent.maybe_get_incremental_bp(
+                    game_2p, agent_power=agent_power, agent_state=agent_state,
+                    )
+    if base_policy is None:
+        base_policy = agent.order_sampler.sample_orders(
+            game_2p,
+            agent_power=agent_power,
+            speaking_power=agent_power,
+            player_rating=agent.player_rating if agent.set_player_rating else None
+        )
+    base_policy = extract_bp_policy_for_powers(base_policy, [agent_power, recipient])
+    
+    recipient_value_table = compute_payoff_matrix_for_all_opponents(
+                        game_2p,
+                        agent.all_power_base_strategy_model_executor,
+                        base_policy,
+                        agent_power,
+                        agent.br_corr_bilateral_search_cfg.bilateral_search_num_cond_sample,
+                        agent.has_press,
+                        None,
+                        None,
+                        )[recipient]
+    
+    ally_recipient_value_table = compute_payoff_matrix_for_all_opponents(
+                        game_2p,
+                        agent.all_power_base_strategy_model_executor,
+                        base_policy,
+                        agent_power,
+                        agent.br_corr_bilateral_search_cfg.bilateral_search_num_cond_sample,
+                        agent.has_press,
+                        None,
+                        None,
+                        agent_state = agent_state,
+                        stance_vector_mode = 'ally',
+                    )[recipient]
+    
+    foes_recipient_value_table = compute_payoff_matrix_for_all_opponents(
+                    game_2p,
+                    agent.all_power_base_strategy_model_executor,
+                    base_policy,
+                    agent_power,
+                    agent.br_corr_bilateral_search_cfg.bilateral_search_num_cond_sample,
+                    agent.has_press,
+                    None,
+                    None,
+                    agent_state = agent_state,
+                    stance_vector_mode = 'foes',
+                )[recipient]
+    logging.info('------ recipient_value_table ------')
+    logging.info(f'{recipient_value_table}')
+    
+    logging.info('------ ally - recipient_value_table ------')
+    logging.info(f'{ally_recipient_value_table}')
+    
+    logging.info('------ foes - recipient_value_table ------')
+    logging.info(f'{foes_recipient_value_table}')
+    
+    # search_result = agent.run_best_response_against_correlated_bilateral_search(
+    #                     game,
+    #                     agent_state=agent_state,
+    #                     bp_policy=base_policy,
+    #                     agent_power=agent_power,
+    #                 )
+    
+    # foes_deceptive_search_result = agent.run_best_response_against_correlated_bilateral_search(
+    #                     game,
+    #                     agent_state=agent_state,
+    #                     bp_policy=base_policy,
+    #                     agent_power=agent_power,
+    #                     stance_vector_mode = 'foes',
+    #                 )
+    

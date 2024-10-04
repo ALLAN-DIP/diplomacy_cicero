@@ -136,6 +136,7 @@ TensorDict ThreadPool::encode_inputs_state_only_multi(vector<Game *> &games,
             fields["x_year_encoded"].index({i}).data_ptr<float>(),
             fields["x_in_adj_phase"].index({i}).data_ptr<float>(),
             fields["x_build_numbers"].index({i}).data_ptr<float>(),
+            fields["x_stance_vectors"].index({i}).data_ptr<float>(),
             fields["x_scoring_system"].index({i}).data_ptr<float>(),
             nullptr, // x_loc_idxs
             nullptr, // x_possible_actions
@@ -168,6 +169,7 @@ TensorDict ThreadPool::encode_inputs_all_powers_multi(vector<Game *> &games,
             fields["x_year_encoded"].index({i}).data_ptr<float>(),
             fields["x_in_adj_phase"].index({i}).data_ptr<float>(),
             fields["x_build_numbers"].index({i}).data_ptr<float>(),
+            fields["x_stance_vectors"].index({i}).data_ptr<float>(),
             fields["x_scoring_system"].index({i}).data_ptr<float>(),
             fields["x_loc_idxs"].index({i}).data_ptr<int8_t>(),
             fields["x_possible_actions"].index({i}).data_ptr<int32_t>(),
@@ -199,6 +201,7 @@ TensorDict ThreadPool::encode_inputs_multi(vector<Game *> &games,
             fields["x_year_encoded"].index({i}).data_ptr<float>(),
             fields["x_in_adj_phase"].index({i}).data_ptr<float>(),
             fields["x_build_numbers"].index({i}).data_ptr<float>(),
+            fields["x_stance_vectors"].index({i}).data_ptr<float>(),
             fields["x_scoring_system"].index({i}).data_ptr<float>(),
             fields["x_loc_idxs"].index({i}).data_ptr<int8_t>(),
             fields["x_possible_actions"].index({i}).data_ptr<int32_t>(),
@@ -370,6 +373,23 @@ void ThreadPool::encode_state_for_game(Game *game, int input_version,
   memset(pointers.x_year_encoded, 0, 1 * sizeof(float));
   pointers.x_year_encoded[0] =
       std::clamp(0.1 * (current_phase.year - 1901), 0.0, 5.0);
+
+  // encode x_stance_vectors
+  memset(pointers.x_stance_vectors, 0, 49 * sizeof(float));
+  stance_map = game->get_stance_vectors();
+  for (const auto& outer_pair : stance_map) {
+    Power power1 = outer_pair.first;
+    int index1 = static_cast<int>(power1) - 1;
+
+    for (const auto& inner_pair : outer_pair.second) {
+        Power power2 = inner_pair.first;
+        int index2 = static_cast<int>(power2) - 1;
+
+        // Map 2D coordinates (index1, index2) to 1D array index
+        int arrayIndex = index1 * 7 + index2;
+        pointers.x_stance_vectors[arrayIndex] = inner_pair.second;
+    }
+  }
 
   // encode x_in_adj_phase, x_build_numbers
   if (current_phase.phase_type == 'A') {

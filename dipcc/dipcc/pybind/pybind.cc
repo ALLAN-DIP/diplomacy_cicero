@@ -53,6 +53,7 @@ PYBIND11_MODULE(pydipcc, m) {
            py::return_value_policy::move,
            "Gets the phase data for all past phases, not including the current "
            "staged phase.")
+      .def("get_stance_vectors", &Game::get_stance_vectors)
       .def("get_staged_phase_data", &Game::get_staged_phase_data,
            py::return_value_policy::move,
            "Gets the phase data for the current staged phase that is not "

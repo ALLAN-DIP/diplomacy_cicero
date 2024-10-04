@@ -71,7 +71,8 @@ class MultiProcessBaseStrategyModelExecutor:
                 _compute, func_name, [game.to_json() for game in games], *args, **kwargs
             )
 
-    def rollout(self, game: pydipcc.Game, agent_power, set_orders_dicts, player_rating):
+    def rollout(self, game: pydipcc.Game, agent_power, set_orders_dicts, player_rating, agent_state, stance_vector_mode):
+        # assert agent_state is None or isinstance(agent_state, SearchBotAgentState), 'in base strat rollout multi gpu'
         if player_rating is not None:
             player_ratings = [player_rating] * len(set_orders_dicts)
         else:
@@ -86,6 +87,8 @@ class MultiProcessBaseStrategyModelExecutor:
                     agent_power=agent_power,
                     set_orders_dicts=set_orders_dicts,
                     player_ratings=player_ratings,
+                    agent_state=agent_state, 
+                    stance_vector_mode=stance_vector_mode,
                 )
             )
         else:

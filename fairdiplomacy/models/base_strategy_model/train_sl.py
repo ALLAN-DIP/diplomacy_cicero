@@ -82,6 +82,7 @@ def process_batch(
     """
     assert p_teacher_force == 1
     device = next(net.parameters()).device
+    assert 'x_stance_vectors' in batch.keys(), f'no x_stance_vectors in batch!: {batch.keys()}'
 
     if shuffle_locs:
         batch = shuffle_locations(batch)
@@ -540,7 +541,10 @@ def _main_subproc(
         return metric_logging.log_metrics(scalars, step=global_step, sanitize=True)
 
     logging.info("Init model...")
-    net = new_model(args)
+    
+    # directly set encoder path
+    encoder_checkpoint = "/diplomacy_cicero/models/human_imitation_joint_policy_for_rl_test.ckpt"
+    net = new_model(args, encoder_checkpoint)
 
     if is_master:
         if initialize_wandb_if_enabled(args, "train_sl"):
@@ -578,7 +582,7 @@ def _main_subproc(
     # load from checkpoint if specified
     if checkpoint:
         logging.debug("net.load_state_dict")
-        net.load_state_dict(checkpoint["model"], strict=True)
+        net.load_state_dict(checkpoint["model"], strict=False)
 
     assert args.value_loss_weight is not None
     assert args.num_epochs is not None
@@ -602,9 +606,9 @@ def _main_subproc(
         ),
     )
 
-    if checkpoint:
-        optim.load_state_dict(checkpoint["optim"])
-        lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
+    # if checkpoint:
+    #     optim.load_state_dict(checkpoint["optim"])
+    #     lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
 
     scaler = None
     if args.auto_mixed_precision:
@@ -830,16 +834,16 @@ def _main_subproc(
 
 
 def mp_setup(local_rank, world_size, seed):
-    if "SLURM_JOB_NODELIST" in os.environ:
-        hostnames = subprocess.check_output(
-            ["scontrol", "show", "hostnames", os.environ["SLURM_JOB_NODELIST"]]
-        )
-        master_addr = hostnames.split()[0].decode("utf-8")
-        # We are just assuming if we use > 1 machine, then we use 8 gpus per machine.
-        rank = heyhi.get_job_env().global_rank * 8 + local_rank
-    else:
-        master_addr = "localhost"
-        rank = local_rank
+    # if "SLURM_JOB_NODELIST" in os.environ:
+    #     hostnames = subprocess.check_output(
+    #         ["scontrol", "show", "hostnames", os.environ["SLURM_JOB_NODELIST"]]
+    #     )
+    #     master_addr = hostnames.split()[0].decode("utf-8")
+    #     # We are just assuming if we use > 1 machine, then we use 8 gpus per machine.
+    #     rank = heyhi.get_job_env().global_rank * 8 + local_rank
+    # else:
+    master_addr = "localhost"
+    rank = local_rank
 
     logging.info("MASTER_ADDR=%s local_rank=%s global_rank=%s", master_addr, local_rank, rank)
 

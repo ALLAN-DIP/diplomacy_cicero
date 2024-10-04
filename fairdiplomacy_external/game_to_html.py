@@ -65,6 +65,7 @@ def game_to_html(
         fixed=True, filter1=filter1
     )
     phase_names = [p.name for p in game.get_phase_history()]
+    print(phase_names)
     rendered_phases = [
         fairdiplomacy_external.ui.render.render_phase(game, phase, annotations)
         for phase in phase_names
@@ -76,6 +77,9 @@ def game_to_html(
 
 
 def main():
+    import json
+    import diplomacy.engine.renderer
+    import diplomacy.utils.export
     parser = argparse.ArgumentParser()
     parser.add_argument("json_path")
     parser.add_argument("-o", default="game.html")
@@ -102,6 +106,7 @@ def main():
     else:
         title = os.path.abspath(args.json_path)
     html = game_to_html(game, title=title, annotations=annotations, filter1=args.filter1)
+    
 
     with open(args.o, "w") as f:
         f.write(html)

@@ -31,7 +31,7 @@ PREV_ORDER_EMB_SIZE = 20
 SomeBaseStrategyModel = Union[BaseStrategyModel, BaseStrategyModelV2]
 
 
-def new_model(args: conf.conf_cfgs.TrainTask) -> SomeBaseStrategyModel:
+def new_model(args: conf.conf_cfgs.TrainTask, encoder_checkpoint=None) -> SomeBaseStrategyModel:
     assert not args.avg_embedding
     assert not args.learnable_A
     assert not args.learnable_alignments
@@ -39,6 +39,7 @@ def new_model(args: conf.conf_cfgs.TrainTask) -> SomeBaseStrategyModel:
     assert not args.separate_value_encoder
     if args.use_v2_base_strategy_model:
         base_strategy_model = BaseStrategyModelV2(
+            encoder_checkpoint=encoder_checkpoint, 
             inter_emb_size=args.inter_emb_size,
             board_map_size=len(LOCS),
             order_emb_size=ORDER_EMB_SIZE,

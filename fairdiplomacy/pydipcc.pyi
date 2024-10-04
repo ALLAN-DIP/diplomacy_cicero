@@ -70,6 +70,7 @@ class Game:
         """
         NOTE: get_phase_data, bizarrely, omits the staged orders and messagesof the current phase. This can lead to unexpected bugs, for exampleattempting to walk through the phase-by-phase messages of a game by playingthrough get_phase_history and then get_phase_data will NOT find all messages.Use get_all_phases or get_staged_phase_data, which do not have this behavior.
         """
+    def get_stance_vectors(self) -> typing.Dict[Power, typing.Dict[Power, float]]: ...
     def get_phase_history(self) -> typing.List[PhaseData]:
         """
         Gets the phase data for all past phases, not including the current staged phase.

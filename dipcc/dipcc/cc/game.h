@@ -228,6 +228,7 @@ private:
       order_history_;
   std::map<Phase, std::vector<std::shared_ptr<const std::string>>> logs_;
   std::map<Phase, std::map<uint64_t, Message>> message_history_;
+  std::map<Phase, std::unordered_map<Power, std::unordered_map<Power, float>>> stance_vectors_history_;
   int draw_on_stalemate_years_ = -1;
   bool exception_on_convoy_paradox_ = false;
   std::unordered_map<std::string, std::string> metadata_;
