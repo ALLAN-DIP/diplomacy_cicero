@@ -316,7 +316,6 @@ Game::Game(const string &json_str) {
               orders_this_phase);
       
       stance_vectors_history_[phase_str] = j_phase["stance_vectors"];
-      std::cout << " stance vector AUSTRIA : at "<< phase_str << ": " << stance_vectors_history_[phase_str]['AUSTRIA'] << std::endl;
 
       if (j_phase.find("messages") != j_phase.end()) {
         for (auto &j_msg : j_phase["messages"]) {
