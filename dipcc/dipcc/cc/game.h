@@ -156,6 +156,7 @@ public:
   pybind11::dict py_get_state();
   pybind11::dict py_get_orderable_locations();
   std::vector<PhaseData> get_phase_history();
+  std::unordered_map<Power, std::unordered_map<Power, float>> ::get_stance_vectors();
   PhaseData get_phase_data()
       const; // Deliberately weird - does NOT return staged orders and messages
   PhaseData get_staged_phase_data()
