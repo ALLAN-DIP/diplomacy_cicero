@@ -225,6 +225,10 @@ class milaWrapper:
                 # set wait to True: to avoid being skipped in R/A phase
                 self.game.set_wait(power_name, wait=True)
 
+                # PRESS allowed in movement phase (ONLY)
+                if self.dipcc_game.get_current_phase().endswith("M"):
+                    await self.chiron_agent.wait_for_comm_stage()
+
                 # PRESS
                 should_stop = await self.get_should_stop()
                 if self.chiron_type in [2,3]:
