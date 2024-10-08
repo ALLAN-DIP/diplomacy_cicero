@@ -15,7 +15,6 @@ from chiron_utils.bots.baseline_bot import BaselineBot, BotType
 from conf.agents_pb2 import *
 from diplomacy import Message, connect
 from diplomacy.client.network_game import NetworkGame
-from diplomacy.engine.log import Log
 from diplomacy.utils import strings
 from diplomacy.utils.constants import SuggestionType
 from diplomacy.utils.export import to_saved_game_format
@@ -87,7 +86,7 @@ class milaWrapper:
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
         
-    def assign_advisor(self, file_dir, power_dist, advice_levels):
+    async def assign_advisor(self, file_dir, power_dist, advice_levels):
         # random N powers
         # random level 
         self.power_to_advise = sample_p_dict(power_dist)
@@ -99,7 +98,7 @@ class milaWrapper:
         self.advice_level = random.choice(advice_levels)
         print(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
         print("Note: level of cicero advice 1: message only, 2: order only, 3: both")
-        self.send_log(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
+        await self.send_log(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
         # write to json
         with open(file_dir, 'w') as f:
             advisor_dict = {'assign_phase': self.game.get_current_phase(), 'power_to_advise':self.power_to_advise, 'advice_level':self.advice_level}
@@ -112,7 +111,7 @@ class milaWrapper:
         self.weight_powers = power_dist
         print(f'to: {power_dist} (check if equal: {self.weight_powers})')
         
-    def reload_or_assign_advisor(self, file_dir, power_dist, advice_levels):
+    async def reload_or_assign_advisor(self, file_dir, power_dist, advice_levels):
         if os.path.exists(file_dir):
             with open(file_dir, mode="r") as file:
                 advisor_json = json.load(file)
@@ -127,7 +126,7 @@ class milaWrapper:
                 print("Note: level of cicero advice 1: message only, 2: order only, 3: both")
                 return True
 
-        self.assign_advisor(file_dir, power_dist, advice_levels)
+        await self.assign_advisor(file_dir, power_dist, advice_levels)
         return False
 
     
@@ -184,7 +183,7 @@ class milaWrapper:
 
             # fix issue that there is a chance where retreat phase appears in dipcc but not mila 
             while self.dipcc_game and self.has_phase_changed():
-                self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
+                await self.send_log(f'process dipcc game {self.dipcc_current_phase} to catch up with a current phase in mila {self.game.get_current_phase()}') 
                 agent_orders = self.player.get_orders(self.dipcc_game)
                 if power_name is None:
                     power_name = self.get_curr_power_to_advise()
@@ -199,7 +198,7 @@ class milaWrapper:
             if len(playable_powers) != len(self.weight_powers):
                 self.weight_powers = {power:  1/len(playable_powers) for power in playable_powers}
             # then assign power and level of advice
-            is_reload_advisor = self.reload_or_assign_advisor(file_advisor, self.weight_powers, advice_levels)
+            is_reload_advisor = await self.reload_or_assign_advisor(file_advisor, self.weight_powers, advice_levels)
 
             # if newly assign or fist time loading cicero
             if not is_reload_advisor or power_name is None:
@@ -288,7 +287,7 @@ class milaWrapper:
                     # keep track of our final order
                     agent_orders = self.game.get_orders(power_name)
                     self.set_comm_intent('final', agent_orders)
-                    self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
+                    await self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
 
                 # wait until the phase changed
                 print(f"wait until {self.dipcc_current_phase} is done", end=" ")
@@ -584,16 +583,11 @@ class milaWrapper:
         all_timestamps = self.dipcc_game.messages.keys()
         return max(all_timestamps) if len(all_timestamps) > 0 else default
 
-    def send_log(self, log: str):
+    async def send_log(self, log: str):
         """ 
         send log to mila games 
         """ 
-        log_data = Log(phase=self.game.current_short_phase,
-            sender="omniscient_type",
-            recipient="OMNISCIENT",
-            message=log,
-            )
-        self.game.send_log_data(log=log_data)
+        await self.chiron_agent.send_intent_log(log)
 
     def send_message(self, msg: MessageDict, engine: str):
         """ 
