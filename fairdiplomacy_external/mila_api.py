@@ -95,8 +95,8 @@ class milaWrapper:
         self.power_to_advise = sample_p_dict(power_dist)
         if len(power_dist) ==1 and len(advice_levels)>1:
             logger.info(f'we left with only one power {power_dist}, let\'s add 0 as no advice to advice levels')
-            if 0 not in advice_levels:
-                advice_levels.append(0)
+            # if 0 not in advice_levels:
+            #     advice_levels.append(0)
         logger.info(f'randoming from advice choices {advice_levels}')
         self.advice_level = random.choice(advice_levels)
         logger.info(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
