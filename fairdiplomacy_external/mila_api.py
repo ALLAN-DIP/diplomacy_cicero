@@ -172,8 +172,8 @@ class milaWrapper:
         # Wait while game is still being formed
         logger.info(f"Waiting for game to start")
         while self.game.is_game_forming:
-            logger.info("", end=".")
             await asyncio.sleep(2)
+            logger.info("Still waiting")
 
         # Playing game
         logger.info(f"Started playing")
