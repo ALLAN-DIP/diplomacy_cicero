@@ -748,7 +748,7 @@ def main() -> None:
                 mila.play_mila(args)
             )
         except Exception as e:
-            logger.info(e)
+            logger.exception(f"Error running {milaWrapper.play_mila.__name__}(): ")
             cicero_error = f"centaur cicero controlling {args.human_powers} has an error occured: \n {e}"
             discord.post(content=cicero_error)
 
