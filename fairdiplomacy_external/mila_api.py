@@ -91,6 +91,7 @@ from diplomacy import connect
 from diplomacy import Message
 from diplomacy.engine.log import Log
 from diplomacy.client.network_game import NetworkGame
+from diplomacy.utils.constants import SuggestionType
 from diplomacy.utils.export import to_saved_game_format
 from diplomacy.utils import strings
 from daide2eng.utils import gen_English, create_daide_grammar, is_daide
@@ -109,11 +110,36 @@ import regex
 power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUSTRIA':'AUS','RUSSIA':'RUS','TURKEY':'TUR'}
 af_dict = {'A':'AMY','F':'FLT'}
 
+from abc import ABC
+from dataclasses import dataclass
+import random
+from typing import List, Sequence
+
+from chiron_utils.bots.baseline_bot import BaselineBot, BotType
+
+
+@dataclass
+class CiceroBot(BaselineBot, ABC):
+    async def gen_orders(self) -> List[str]:
+        return []
+
+    async def do_messaging_round(self, orders: Sequence[str]) -> List[str]:
+        return []
+
+
+@dataclass
+class CiceroAdvisor(CiceroBot):
+    """Advisor form of `CiceroBot`."""
+
+    bot_type = BotType.ADVISOR
+    suggestion_type = SuggestionType.MESSAGE_AND_MOVE
+
 
 class milaWrapper:
 
     def __init__(self):
         self.game: NetworkGame = None
+        self.chiron_agent: Optional[CiceroBot] = None
         self.dipcc_game: Game = None
         self.prev_state = 0                                         # number of number received messages in the current phase
         self.dialogue_state = {}                                    # {phase: number of all (= received + new) messages for agent}
@@ -219,6 +245,8 @@ class milaWrapper:
             f"admin", "password"
         )
         self.game: NetworkGame = await channel.join_game(game_id=game_id)
+
+        self.chiron_agent = CiceroAdvisor(power_name, self.game)
 
         # Wait while game is still being formed
         print(f"Waiting for game to start")
