@@ -207,6 +207,7 @@ class milaWrapper:
             if not is_reload_advisor or power_name is None:
                 power_name = self.get_curr_power_to_advise()
                 self.chiron_type = self.get_curr_advice_level()
+                self.chiron_agent.power_name = power_name
                 self.dipcc_game = self.start_dipcc_game(power_name)
                 self.player = Player(self.agent, power_name)
                 self.dipcc_current_phase = self.dipcc_game.get_current_phase()
