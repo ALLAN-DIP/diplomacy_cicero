@@ -211,11 +211,8 @@ class milaWrapper:
                 self.dipcc_game = self.start_dipcc_game(power_name)
                 self.player = Player(self.agent, power_name)
                 self.dipcc_current_phase = self.dipcc_game.get_current_phase()
-                
-            # update curr and send advisor level to sys   
-            update_str = f'{power_name}: {self.chiron_type}'
-            update_msg = {'sender':power_name, 'recipient':'GLOBAL','type':"has_suggestions",'message':update_str}
-            self.send_message(update_msg, 'mila')
+
+            await self.chiron_agent.declare_suggestion_type()
 
             # While agent is not eliminated
             if not self.game.powers[power_name].is_eliminated():
