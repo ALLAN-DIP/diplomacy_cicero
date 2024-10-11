@@ -229,12 +229,12 @@ class milaWrapper:
                 # PRESS
                 should_stop = await self.get_should_stop()
                 if self.chiron_type in [2,3]:
-                    self.suggest_move(power_name)
+                    await self.suggest_move(power_name)
     
                 while not should_stop:
                     # suggest move to human
                     if self.chiron_type in [2,3]:
-                        self.suggest_move(power_name)
+                        await self.suggest_move(power_name)
                         
                     msg=None
                     # if there is new message incoming
@@ -328,15 +328,11 @@ class milaWrapper:
         self.last_comm_intent[recipient] = pseudo_orders
         
             
-    def suggest_move(self, power_name):
-        msg = {'sender': power_name}
+    async def suggest_move(self, power_name):
         agent_orders = list(self.player.get_orders(self.dipcc_game))
         if agent_orders != self.prev_suggest_moves:
-            msg['message'] = f"{power_name}:{', '.join(agent_orders)}"
-            msg['recipient'] = 'GLOBAL'
-            msg['type'] = 'suggested_move_full'
             logger.info(f'sending move at {round(time.time() * 1000000)}')
-            self.send_message(msg, 'mila')
+            await self.chiron_agent.suggest_orders(agent_orders)
             self.prev_suggest_moves = agent_orders
         
         # what if humans already set partial order and want to conditional on it
@@ -356,13 +352,9 @@ class milaWrapper:
                     hit = True
                     best_cond_action = action
             if hit and best_cond_action != self.prev_suggest_cond_moves:
-                cond_msg = {'sender': power_name}
                 new_order = [action for action in best_cond_action if action not in cond_orders]
-                cond_msg['message'] = f"{power_name}:{', '.join(cond_orders)} : {', '.join(new_order)}"
-                cond_msg['recipient'] = 'GLOBAL'
-                cond_msg['type'] = 'suggested_move_partial'
                 logger.info(f'sending move at {round(time.time() * 1000000)}')
-                self.send_message(cond_msg, 'mila')
+                await self.chiron_agent.suggest_orders(new_order, partial_orders=cond_orders)
                 self.prev_suggest_cond_moves = best_cond_action
             else:
                 logger.info(f'we can\'t find conditional move in policy')
