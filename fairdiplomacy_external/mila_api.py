@@ -14,7 +14,7 @@ from typing import List, Optional, Sequence
 from chiron_utils.bots.baseline_bot import BaselineBot, BotType
 from chiron_utils.utils import return_logger
 from conf.agents_pb2 import *
-from diplomacy import Message, connect
+from diplomacy import connect
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils import strings
 from diplomacy.utils.constants import SuggestionType
@@ -582,36 +582,6 @@ class milaWrapper:
         send log to mila games 
         """ 
         await self.chiron_agent.send_intent_log(log)
-
-    def send_message(self, msg: MessageDict, engine: str):
-        """ 
-        send message in dipcc and mila games 
-        """ 
-        
-        if engine =='dipcc':
-            timesend = Timestamp.now()
-            self.dipcc_game.add_message(
-                        msg['sender'], 
-                        msg['recipient'], 
-                        msg['message'], 
-                        time_sent=timesend,
-                        increment_on_collision=True,
-                    )
-
-        if engine =='mila':
-            mila_msg = Message(
-                sender= "omniscient_type",
-                recipient=msg["recipient"],
-                message=msg["message"],
-                phase=self.game.get_current_phase(),
-                type = msg['type']
-                )
-            self.game.send_game_message(message=mila_msg)
-            timesend = mila_msg.time_sent
-
-        logger.info(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
-        
-        return timesend
 
     def get_messages(
         self, 
