@@ -5,7 +5,6 @@ CMAKE_TARGET := cmake_build/postman/Makefile
 all: compile
 
 $(CMAKE_TARGET):
-	git submodule update --init --recursive
 	mkdir -p cmake_build/postman && cd cmake_build/postman && cmake -DCMAKE_BUILD_TYPE=Release ../../postman -DPYTHON_EXECUTABLE=$(shell which python) -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=../../postman/python/postman
 
 compile: $(CMAKE_TARGET)
