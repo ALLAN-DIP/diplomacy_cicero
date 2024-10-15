@@ -124,11 +124,35 @@ power_dict = {'ENGLAND':'ENG','FRANCE':'FRA','GERMANY':'GER','ITALY':'ITA','AUST
 af_dict = {'A':'AMY','F':'FLT'}
 possible_positive_response = ["yeah","okay","agree",'agreement','good','great',"I'm in",'count me in','like','down','perfect','Brilliant','ok','Ok','Good','Great','positive','sure','Alright','yes','yep','Awesome','Done','Works for me','Will do','Perfect','I agree','Fine','Agreed','yup','Absolutely','Understood','That\'s the plan','Deal']
 
+from abc import ABC
+from dataclasses import dataclass
+import random
+from typing import List, Sequence
+
+from chiron_utils.bots.baseline_bot import BaselineBot, BotType
+
+
+@dataclass
+class CiceroBot(BaselineBot, ABC):
+    async def gen_orders(self) -> List[str]:
+        return []
+
+    async def do_messaging_round(self, orders: Sequence[str]) -> List[str]:
+        return []
+
+
+@dataclass
+class CiceroPlayer(CiceroBot):
+    """Player form of `CiceroBot`."""
+
+    bot_type = BotType.PLAYER
+
 
 class milaWrapper:
 
     def __init__(self, is_deceptive):
         self.game: NetworkGame = None
+        self.chiron_agent: Optional[CiceroBot] = None
         self.dipcc_game: Game = None
         self.prev_state = 0                                         # number of number received messages in the current phase
         self.dialogue_state = {}                                    # {phase: number of all (= received + new) messages for agent}
@@ -171,6 +195,8 @@ class milaWrapper:
             f"{dec}cicero_{power_name}", "password"
         )
         self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name)
+        
+        self.chiron_agent = CiceroPlayer(power_name, self.game)
 
         # Wait while game is still being formed
         print(f"Waiting for game to start")
