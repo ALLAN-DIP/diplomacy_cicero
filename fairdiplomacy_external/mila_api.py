@@ -277,10 +277,7 @@ class milaWrapper:
                             for msg in msg_options:
                                 if msg is None:
                                     continue
-                                msg['message'] = f"{power_name}-{msg['recipient']}: {msg['message']}"
-                                msg['recipient'] = 'GLOBAL'
-                                msg['type'] = 'suggested_message'
-                                mila_timesent = self.send_message(msg, 'mila')
+                                await self.chiron_agent.suggest_message(msg['recipient'], msg['message'])
 
                     should_stop = await self.get_should_stop()
                     randsleep = random.random()
