@@ -1,0 +1,17 @@
+name: base
+prefix: /usr/local
+channels:
+  - pytorch
+  - defaults
+dependencies:
+  # Install go for boringssl in grpc
+  - go=1.21.5
+  # We have some hacky patching code for protobuf that is not guaranteed
+  # to work on versions other than this.
+  - protobuf=3.19.1
+  - pybind11=2.9.1
+  # Other requirements
+  - python=3.7.3
+  - pytorch=1.7.1
+  - torchaudio=0.7.2
+  - torchvision=0.8.2
