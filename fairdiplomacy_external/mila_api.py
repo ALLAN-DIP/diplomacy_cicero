@@ -12,6 +12,7 @@ import time
 from typing import List, Optional, Sequence
 
 from chiron_utils.bots.baseline_bot import BaselineBot, BotType
+from chiron_utils.utils import return_logger
 from conf.agents_pb2 import *
 from diplomacy import Message, connect
 from diplomacy.client.network_game import NetworkGame
@@ -35,6 +36,8 @@ from fairdiplomacy.utils.sampling import normalize_p_dict, sample_p_dict
 from fairdiplomacy.utils.typedefs import get_last_message
 import heyhi
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
+
+logger = return_logger(__name__)
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 
@@ -81,8 +84,8 @@ class milaWrapper:
         self.decrement_value = 0.2
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
-        print('Cicero')
-        print(f"successfully load cicero config")
+        logger.info('Cicero')
+        logger.info(f"successfully load cicero config")
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
         
@@ -91,13 +94,13 @@ class milaWrapper:
         # random level 
         self.power_to_advise = sample_p_dict(power_dist)
         if len(power_dist) ==1 and len(advice_levels)>1:
-            print(f'we left with only one power {power_dist}, let\'s add 0 as no advice to advice levels')
+            logger.info(f'we left with only one power {power_dist}, let\'s add 0 as no advice to advice levels')
             if 0 not in advice_levels:
                 advice_levels.append(0)
-        print(f'randoming from advice choices {advice_levels}')
+        logger.info(f'randoming from advice choices {advice_levels}')
         self.advice_level = random.choice(advice_levels)
-        print(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
-        print("Note: level of cicero advice 1: message only, 2: order only, 3: both")
+        logger.info(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
+        logger.info("Note: level of cicero advice 1: message only, 2: order only, 3: both")
         await self.send_log(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
         # write to json
         with open(file_dir, 'w') as f:
@@ -105,11 +108,11 @@ class milaWrapper:
             json.dump(advisor_dict, f, indent=4)
             
         #adjust prob dist
-        print(f'adjusting power distribution from: {power_dist}')
+        logger.info(f'adjusting power distribution from: {power_dist}')
         power_dist[self.power_to_advise] = max(0, power_dist[self.power_to_advise] - self.decrement_value)
         power_dist = normalize_p_dict(power_dist)
         self.weight_powers = power_dist
-        print(f'to: {power_dist} (check if equal: {self.weight_powers})')
+        logger.info(f'to: {power_dist} (check if equal: {self.weight_powers})')
         
     async def reload_or_assign_advisor(self, file_dir, power_dist, advice_levels):
         if os.path.exists(file_dir):
@@ -122,8 +125,8 @@ class milaWrapper:
             if game_phase != 'S1901M' and game_phase[1:5] == phase_file[1:5]:
                 self.power_to_advise = advisor_json['power_to_advise']
                 self.advice_level = advisor_json['advice_level']
-                print(f'RE-assigning Cicero to {self.power_to_advise} and advicing {self.advice_level}')
-                print("Note: level of cicero advice 1: message only, 2: order only, 3: both")
+                logger.info(f'RE-assigning Cicero to {self.power_to_advise} and advicing {self.advice_level}')
+                logger.info("Note: level of cicero advice 1: message only, 2: order only, 3: both")
                 return True
 
         await self.assign_advisor(file_dir, power_dist, advice_levels)
@@ -155,8 +158,8 @@ class milaWrapper:
         advice_levels = [int(l) for l in args.advice_levels]
         power_name = None
 
-        print(f"settings:")
-        print(f"host: {hostname}, port: {port}, game_id: {game_id}, human_powers to advise: {human_powers}")
+        logger.info(f"settings:")
+        logger.info(f"host: {hostname}, port: {port}, game_id: {game_id}, human_powers to advise: {human_powers}")
 
         connection = await connect(hostname, port, use_ssl)
         channel = await connection.authenticate(
@@ -167,13 +170,13 @@ class milaWrapper:
         self.chiron_agent = CiceroAdvisor(power_name, self.game)
 
         # Wait while game is still being formed
-        print(f"Waiting for game to start")
+        logger.info(f"Waiting for game to start")
         while self.game.is_game_forming:
-            print("", end=".")
+            logger.info("", end=".")
             await asyncio.sleep(2)
 
         # Playing game
-        print(f"Started playing")
+        logger.info(f"Started playing")
 
         while not self.game.is_game_done:
             self.phase_start_time = time.time()
@@ -240,7 +243,7 @@ class milaWrapper:
                     if self.chiron_type in [1,3]:
                         # reply/gen new message
                         msg = self.generate_message(power_name)
-                        print(f'msg from cicero to dipcc {msg}')
+                        logger.info(f'msg from cicero to dipcc {msg}')
                     
                     if msg is not None:
                         draw_token_message = self.is_draw_token_message(msg,power_name)
@@ -290,9 +293,9 @@ class milaWrapper:
                     await self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
 
                 # wait until the phase changed
-                print(f"wait until {self.dipcc_current_phase} is done", end=" ")
+                logger.info(f"wait until {self.dipcc_current_phase} is done")
                 while not self.has_phase_changed():
-                    print("", end=".")
+                    logger.info("Still waiting")
                     await asyncio.sleep(0.5)
                 
                 # when the phase has changed, update submitted orders from Mila to dipcc
@@ -300,7 +303,7 @@ class milaWrapper:
                     self.phase_end_time = time.time()
                     self.update_and_process_dipcc_game()
                     self.init_phase()
-                    print(f"Process to {self.game.get_current_phase()}")
+                    logger.info(f"Process to {self.game.get_current_phase()}")
                     await asyncio.sleep(5)
         
         if gamedir is not None and not gamedir.is_dir():
@@ -330,18 +333,18 @@ class milaWrapper:
             msg['message'] = f"{power_name}:{', '.join(agent_orders)}"
             msg['recipient'] = 'GLOBAL'
             msg['type'] = 'suggested_move_full'
-            print(f'sending move at {round(time.time() * 1000000)}')
+            logger.info(f'sending move at {round(time.time() * 1000000)}')
             self.send_message(msg, 'mila')
             self.prev_suggest_moves = agent_orders
         
         # what if humans already set partial order and want to conditional on it
         cond_orders = self.game.get_orders(power_name)
         orderable_locs = self.game.get_orderable_locations(power_name=power_name)
-        print(f'we have condition order from human: {cond_orders} check if all: {orderable_locs} are set')
+        logger.info(f'we have condition order from human: {cond_orders} check if all: {orderable_locs} are set')
         if len(cond_orders) != 0 and len(cond_orders) != len(orderable_locs):
             # find if cond_orders are partially presented in bp_policy or rl_policy
             policy = self.player.get_plausible_orders_policy(self.dipcc_game)[power_name]
-            print(f'we are finding conditional orders using {cond_orders} in {power_name}\'s policy: {policy}')
+            logger.info(f'we are finding conditional orders using {cond_orders} in {power_name}\'s policy: {policy}')
             hit = False
             best_cond_action = None
             max_prob = 0.0
@@ -356,11 +359,11 @@ class milaWrapper:
                 cond_msg['message'] = f"{power_name}:{', '.join(cond_orders)} : {', '.join(new_order)}"
                 cond_msg['recipient'] = 'GLOBAL'
                 cond_msg['type'] = 'suggested_move_partial'
-                print(f'sending move at {round(time.time() * 1000000)}')
+                logger.info(f'sending move at {round(time.time() * 1000000)}')
                 self.send_message(cond_msg, 'mila')
                 self.prev_suggest_cond_moves = best_cond_action
             else:
-                print(f'we can\'t find conditional move in policy')
+                logger.info(f'we can\'t find conditional move in policy')
 
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:
@@ -442,7 +445,7 @@ class milaWrapper:
             server_end = self.scheduler_event.time_added + self.scheduler_event.delay
             server_remaining = server_end - self.scheduler_event.current_time
             deadline_timer = server_remaining * self.scheduler_event.time_unit
-            print(f'remaining time to play: {deadline_timer}')
+            logger.info(f'remaining time to play: {deadline_timer}')
         else:
             deadline = DEFAULT_DEADLINE*60
 
@@ -495,7 +498,7 @@ class milaWrapper:
                 # then just keep message body as original
 
 
-                print(f'message from mila to dipcc (chiron cicero): {message}')
+                logger.info(f'message from mila to dipcc (chiron cicero): {message}')
 
                 self.dipcc_game.add_message(
                     message.sender,
@@ -556,7 +559,7 @@ class milaWrapper:
         orderable_locs = self.game.get_orderable_locations(power_name=power_name)
         
         if human_intent:
-            print(f'set intent to {tuple(human_intent)}')
+            logger.info(f'set intent to {tuple(human_intent)}')
             self.agent.set_power_po(human_intent)
         
         msg = self.player.generate_message(
@@ -567,7 +570,7 @@ class milaWrapper:
         
         # if human doesn't set a complete order then we won't gen message (avoid leaked move suggestion)
         if self.chiron_type == 1 and (human_intent is None or len(human_intent) != len(orderable_locs)):
-            print(f"we gen sth {msg} but still wait for human to complete order, which currently is {human_intent}")
+            logger.info(f"we gen sth {msg} but still wait for human to complete order, which currently is {human_intent}")
             return None
 
         self.last_successful_message_time = Timestamp.now()
@@ -615,7 +618,7 @@ class milaWrapper:
             self.game.send_game_message(message=mila_msg)
             timesend = mila_msg.time_sent
 
-        print(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
+        logger.info(f'update a message in {engine}, {msg["sender"] }->{ msg["recipient"]}: {msg["message"]}')
         
         return timesend
 
@@ -745,7 +748,7 @@ def main() -> None:
                 mila.play_mila(args)
             )
         except Exception as e:
-            print(e)
+            logger.info(e)
             cicero_error = f"centaur cicero controlling {args.human_powers} has an error occured: \n {e}"
             discord.post(content=cicero_error)
 
