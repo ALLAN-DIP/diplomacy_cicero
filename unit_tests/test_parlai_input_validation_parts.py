@@ -17,7 +17,7 @@ class InputValidationPartsTests(unittest.TestCase):
         for loc in LOCS:
             R.validate(R.InputValidator([], "", {}, 1).LOC, loc)
         self.assertRaises(
-            ValueError, R.validate, R.InputValidator([], "", {}, 1).LOC, "F LON"
+            ValueError, R.validate, R.InputValidator([], "", {}, 1).LOC, "F LON", throw_on_failure=True
         )  # unit is not valid loc
 
     def test_unit(self):
@@ -51,7 +51,7 @@ class InputValidationPartsTests(unittest.TestCase):
             "F STP/NC B STP/NC",
         ]:
             self.assertRaises(
-                ValueError, R.validate, R.InputValidator([], "", {}, 1).ORDER, invalid_order
+                ValueError, R.validate, R.InputValidator([], "", {}, 1).ORDER, invalid_order, throw_on_failure=True
             )
 
         # Version 2
@@ -62,7 +62,7 @@ class InputValidationPartsTests(unittest.TestCase):
             "F STP/NC B STP/NC",
         ]:
             self.assertRaises(
-                ValueError, R.validate, R.InputValidator([], "", {}, 2).ORDER, invalid_order
+                ValueError, R.validate, R.InputValidator([], "", {}, 2).ORDER, invalid_order, throw_on_failure=True
             )
 
     def test_message(self):
@@ -77,7 +77,7 @@ class InputValidationPartsTests(unittest.TestCase):
             ValueError,
             R.validate,
             R.InputValidator([], "", {}, 1).MESSAGE,
-            "England -> Turkey: msg\n[EO_M]",
+            "England -> Turkey: msg\n[EO_M]", throw_on_failure=True
         )  # no newlines
 
         # Version 2
@@ -85,7 +85,7 @@ class InputValidationPartsTests(unittest.TestCase):
             ValueError,
             R.validate,
             R.InputValidator([], "", {}, 1).MESSAGE,
-            "England -> TURKEY: msg",
+            "England -> TURKEY: msg", throw_on_failure=True
         )  # no capitalization
 
     def test_phase(self):
@@ -93,7 +93,7 @@ class InputValidationPartsTests(unittest.TestCase):
             R.validate(R.InputValidator([], "", {}, 1).PHASE, valid_phase)
         for invalid_phase in ["S1901", "1901", "[EO_M]"]:
             self.assertRaises(
-                ValueError, R.validate, R.InputValidator([], "", {}, 1).PHASE, invalid_phase
+                ValueError, R.validate, R.InputValidator([], "", {}, 1).PHASE, invalid_phase, throw_on_failure=True
             )
 
     def test_power_action(self):
@@ -538,4 +538,4 @@ builds: ENGLAND -1 FRANCE 1 ITALY 1 RUSSIA -1 TURKEY 1"""
         bad = "1652330920 RUSSIA -> TURKEY: hello"
         regex = R.InputValidator([], "", {"add_sleep_times": True}, 3).MESSAGE
         R.validate(regex, good)
-        self.assertRaises(R.InputValidationException, R.validate, regex, bad)
+        self.assertRaises(R.InputValidationException, R.validate, regex, bad, throw_on_failure=True)
