@@ -117,14 +117,21 @@ def test_stance_vector_dipcc():
     from fairdiplomacy.pydipcc import Game as CiceroGame
     # start mila_game
     game = Game()
-    stance_vector = CiceroStance('AUSTRIA' ,game,conflict_coef=1.0, conflict_support_coef=1.0, unrealized_coef = 0.0
-                , discount_factor=1.0, random_betrayal=False)
+    stance_vector = CiceroStance('AUSTRIA' ,
+                                 game,
+                                invasion_coef = 0.05,
+                                conflict_coef = 0.05,
+                                invasive_support_coef = 0.05,
+                                conflict_support_coef = 0.05,
+                                friendly_coef = 0.05,
+                                unrealized_coef = 0.0,
+                discount_factor=1.0, random_betrayal=False)
     print(f'stance vector before game starting : {stance_vector.stance}')
     
     stance_vector.is_rollout = True
     dipcc_game = CiceroGame()
     dipcc_game.set_orders('AUSTRIA', ['A VIE - GAL','F TRI - ALB', 'A BUD - SER'])
-    dipcc_game.set_orders('ITALY', ['A ROM - APU','F NAP - ION', 'A VEN - TRI'])
+    dipcc_game.set_orders('ITALY', ['A ROM - APU','F NAP - ION', 'A VEN S F TRI - ALB'])
     dipcc_game.set_orders('ENGLAND', [])
     dipcc_game.set_orders('FRANCE', [])
     dipcc_game.set_orders('GERMANY', [])
@@ -133,6 +140,7 @@ def test_stance_vector_dipcc():
     dipcc_game.process()
     stance_vector.rollout_dipcc_game = dipcc_game
     
-    stance_vector.get_stance(game)
+    _, log = stance_vector.get_stance(game, verbose=True)
     print(f'stance vector at starting of {dipcc_game.get_current_phase()} expecting AUS->ITA to decrease: {stance_vector.stance}')
-    
+    # print(log)
+# test_stance_vector_dipcc()

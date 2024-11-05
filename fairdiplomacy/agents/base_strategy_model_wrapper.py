@@ -133,6 +133,7 @@ class BaseStrategyModelWrapper:
                 batch = feature_encoder.encode_inputs_all_powers(
                     games, self.get_policy_input_version()
                 )
+                print(f"test_st: {batch['x_stance_vectors']}")
             else:
                 batch = feature_encoder.encode_inputs(games, self.get_policy_input_version())
             if conditional_orders is not None:
@@ -843,3 +844,20 @@ def create_conditional_teacher_force_orders(batch: DataFields) -> torch.Tensor:
                 ]  # Loc id (global) -> local loc idx.
                 teacher_force_orders[batch_idx, power_idx, local_loc_id] = order_id
     return teacher_force_orders
+
+def test_action_from_policy(game_path,phase_name, model_type='ft'):
+    device = 'cuda:0'
+    game = pydipcc.Game.from_json(game_path)
+    rolled_back_game = game.rolled_back_to_phase_start(phase_name)
+    if model_type!='ft':
+        model = BaseStrategyModelWrapper(
+                        model_path='/diplomacy_cicero/models/human_imitation_joint_policy.ckpt'
+                    )
+    
+    action, actionprob = model.forward_policy([game])
+    print(action)
+    print(actionprob)
+    
+game_path = '/data/games_stance/normalized_game_111.json'
+phase = 'S1903M'
+test_action_from_policy(game_path, phase, model_type='sl')

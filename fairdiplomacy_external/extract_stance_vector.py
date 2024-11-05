@@ -123,8 +123,15 @@ def add_stance_vectors_to_phases(game_data):
     from diplomacy import Game as milaGame
     powers = ["AUSTRIA", "ENGLAND", "FRANCE", "GERMANY", "ITALY", "RUSSIA", "TURKEY"]
     mila = milaGame()
-    stance_vector = CiceroStance('AUSTRIA', mila, conflict_coef=1.0, conflict_support_coef=1.0, unrealized_coef = 0.0
-                , discount_factor=1.0, random_betrayal=False)
+    stance_vector = CiceroStance('AUSTRIA' ,
+                                mila,
+                                invasion_coef = 0.05,
+                                conflict_coef = 0.05,
+                                invasive_support_coef = 0.05,
+                                conflict_support_coef = 0.05,
+                                friendly_coef = 0.05,
+                                unrealized_coef = 0.0,
+                discount_factor=1.0, random_betrayal=False)
     game = Game()
     
     for phase in game_data['phases']:
@@ -151,23 +158,29 @@ def add_stance_vectors_to_phases(game_data):
     return game_data
 
 def max_abs_scaling_global(phases):
-    all_values = []
+    def clip_value(value):
+        if value < -1.0:
+            return -1.0
+        elif value > 1.0:
+            return 1.0
+        else:
+            return round(value, 2)
+    # all_values = []
 
     # Collect all stance values from all phases
-    for phase in phases:
-        if 'stance_vectors' in phase:
-            for stances in phase['stance_vectors'].values():
-                all_values.extend(stances.values())
+    # for phase in phases:
+    #     if 'stance_vectors' in phase:
+    #         for stances in phase['stance_vectors'].values():
+    #             all_values.extend(stances.values())
 
-    # Find the global maximum absolute value
-    global_max_abs = max(abs(value) for value in all_values)
+    # # Find the global maximum absolute value
+    # global_max_abs = max(abs(value) for value in all_values)
 
     # Scale each stance value by the global maximum absolute value
     for phase in phases:
         if 'stance_vectors' in phase:
             for power, stances in phase['stance_vectors'].items():
-                phase['stance_vectors'][power] = {other_power: value / global_max_abs if global_max_abs != 0 else 0
-                                                  for other_power, value in stances.items()}
+                phase['stance_vectors'][power] = {other_power: clip_value(value) for other_power, value in stances.items()}
 
 
 def update_game_with_stance_vectors(input_file, output_file):
@@ -183,11 +196,12 @@ def update_game_with_stance_vectors(input_file, output_file):
     save_game_file(output_file, game_data)
 
 # Example usage:
-for game_number in range(102527, 200000):
-    input_file = f'/data/games/all_games/game_{game_number}.json'  # Replace with your input file path
+for game_number in range(24160, 200000):
+    input_file = f'/data/games_fix/all_games/game_{game_number}.json'  # Replace with your input file path
     output_file = f'/data/games_stance/normalized_game_{game_number}.json'  # Replace with your desired output file path
     if not os.path.exists(input_file):
         continue
     if os.path.exists(output_file):
         continue
+    print(game_number)
     update_game_with_stance_vectors(input_file, output_file)

@@ -176,10 +176,30 @@ class BaseStrategyModelV2(nn.Module):
             encoder_cfg=trans_encoder_cfg,
         )
         if encoder_checkpoint!= None:
-            checkpoint = torch.load(encoder_checkpoint, map_location="cuda:0")
-            missing, unexpected = self.encoder.load_state_dict(checkpoint, strict=False)
-            logging.info(f"loading encoder model.... missing keys (expected None): {missing} and unexpected keys (expected every except encoder) : {unexpected}")
-            self.encoder.requires_grad_ = False
+            self.encoder.requires_grad_(requires_grad=False)
+            self.board_emb_linear.requires_grad_(requires_grad=False)
+            self.prev_board_emb_linear.requires_grad_(requires_grad=False)
+            self.prev_order_emb_linear.requires_grad_(requires_grad=False)
+
+            if with_order_conditioning:
+                self.this_order_emb_linear.requires_grad_(requires_grad=False)
+
+            # Power-keyed inputs
+            self.build_numbers_emb_linear.requires_grad_(requires_grad=False)
+            self.stance_vectors_emb_linear.requires_grad_(requires_grad=False)
+            if use_player_ratings:
+                self.player_ratings_emb_linear.requires_grad_(requires_grad=False)
+            if use_agent_power:
+                self.agent_power_emb_linear.requires_grad_(requires_grad=False)
+
+            # Global inputs
+            self.season_emb_linear.requires_grad_(requires_grad=False)
+            self.in_adj_phase_emb_linear.requires_grad_(requires_grad=False)
+            self.has_press_emb_linear.requires_grad_(requires_grad=False)
+            if self.num_scoring_systems > 1:
+                self.scoring_system_emb_linear.requires_grad_(requires_grad=False)
+            if use_year:
+                self.year_emb_linear.requires_grad_(requires_grad=False)
         
         self.st_encoder = TransformerEncoder(
             total_input_size=inter_emb_size * 2,

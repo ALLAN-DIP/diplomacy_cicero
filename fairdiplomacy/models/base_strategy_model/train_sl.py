@@ -181,6 +181,12 @@ def process_batch(
     assert len(batch["y_final_scores"].shape) == 2, batch["y_final_scores"].shape
     assert batch["y_final_scores"].shape[1] == len(POWERS)
     y_final_scores = batch["y_final_scores"].float().squeeze(1)
+    
+    probs = logits.softmax(-1)
+    if logits.shape[-1] != 469:
+        stance_weights = batch["stance_weights"][:,:logits.shape[-2],:logits.shape[-1]]
+    stance_loss = stance_weights
+    stance_weights = probs
 
     if value_loss_use_cross_entropy:
         # not the most numerically stable, but since final_sos is already softmaxed
@@ -218,6 +224,8 @@ def process_batch(
         policy_loss_weights,
         value_loss,
         value_loss_weights,
+        stance_loss,
+        stance_weights,
         local_order_idxs,
         final_sos,
     )
@@ -409,6 +417,8 @@ def validate(
                 policy_loss_weights,
                 value_losses,
                 value_loss_weights,
+                stance_losses,
+                stance_weights,
                 local_order_idxs,
                 final_sos,
             ) = process_batch(
@@ -427,6 +437,8 @@ def validate(
                     float(torch.sum(policy_loss_weights).item()),
                     float(torch.sum(value_losses * value_loss_weights).item()),
                     float(torch.sum(value_loss_weights).item()),
+                    float(torch.sum(stance_losses * stance_weights).item()),
+                    float(torch.sum(stance_weights).item()),
                 )
             )
             batch_value_accuracy_weighted_counts.append(
@@ -462,12 +474,14 @@ def validate(
     #   weighted uniformly across all phases. In case of equal-sos draw, you get full credit
     #   for guessing any of those powers. This means that full accuracy would be 1, but random
     #   guessing will be better than 1/7.
-    ploss_weighted_sum, ploss_total_weight, vloss_weighted_sum, vloss_total_weight = np.sum(
+    ploss_weighted_sum, ploss_total_weight, vloss_weighted_sum, vloss_total_weight, stloss_weighted_sum, stloss_total_weight  = np.sum(
         np.array(batch_loss_sums_and_weights), axis=0
     ).tolist()
     p_loss = ploss_weighted_sum / ploss_total_weight
     v_loss = vloss_weighted_sum / vloss_total_weight
-    valid_loss = (1 - value_loss_weight) * p_loss + value_loss_weight * v_loss
+    st_loss = stloss_weighted_sum /stloss_total_weight
+    st_param = 0.2
+    valid_loss = (1 - value_loss_weight) * p_loss + (value_loss_weight - st_param) * v_loss + st_param * st_loss
 
     # validation accuracy
     valid_v_accuracy = sum(batch_value_accuracy_weighted_counts) / vloss_total_weight
@@ -496,7 +510,7 @@ def validate(
     # total policy accuracy is computed in the splits
     valid_p_accuracy = split_pcts["total"]
 
-    return valid_loss, p_loss, v_loss, valid_p_accuracy, valid_v_accuracy, split_pcts, value_splits
+    return valid_loss, p_loss, v_loss, valid_p_accuracy, valid_v_accuracy, split_pcts, value_splits, st_loss
 
 
 def main_subproc(*args, **kwargs):
@@ -582,8 +596,9 @@ def _main_subproc(
     # load from checkpoint if specified
     if checkpoint:
         logging.debug("net.load_state_dict")
-        net.load_state_dict(checkpoint["model"], strict=False)
-
+        missing, unexpected = net.load_state_dict(checkpoint["model"], strict=False)
+        logging.info(f"loading model.... missing keys (expected st_encoder): {missing} and unexpected keys (None) : {unexpected}")   
+        # print(f"loading model.... missing keys (expected st_encoder): {missing} and unexpected keys (None) : {unexpected}")    
     assert args.value_loss_weight is not None
     assert args.num_epochs is not None
     assert args.clip_grad_norm is not None
@@ -635,6 +650,9 @@ def _main_subproc(
         ploss_weight_since_last_log = 0.0
         vloss_weighted_sum_since_last_log = 0.0
         vloss_weight_since_last_log = 0.0
+        stloss_weighted_sum_since_last_log = 0.0
+        stloss_weight_since_last_log = 0.0
+
 
         for batch_i, batch_idxs in enumerate(batches):
             batch = train_set[batch_idxs]
@@ -670,6 +688,8 @@ def _main_subproc(
                     policy_loss_weights,
                     value_losses,
                     value_loss_weights,
+                    stance_losses,
+                    stance_weights,
                     _,
                     _,
                 ) = process_batch(
@@ -688,13 +708,15 @@ def _main_subproc(
                 p_loss_opt = torch.sum(policy_losses * policy_loss_weights) / torch.sum(
                     policy_loss_weights > 0.0
                 )
+                st_param = 0.2
+                st_loss_opt = torch.sum(stance_losses * stance_weights)  / args.batch_size
                 # sum + Explicit division by batch size instead of mean ensures that we don't massively
                 # overweight data that happens to fall into the last batch when the last batch has fewer
                 # than the full batch size amount of data.
                 v_loss_opt = torch.sum(value_losses * value_loss_weights) / args.batch_size
                 loss_opt = (
                     1 - args.value_loss_weight
-                ) * p_loss_opt + args.value_loss_weight * v_loss_opt
+                ) * p_loss_opt + (args.value_loss_weight - st_param) * v_loss_opt + st_param * st_loss_opt
             # backward
             if scaler:
                 scaler.scale(loss_opt).backward()
@@ -733,7 +755,10 @@ def _main_subproc(
                 torch.sum(value_losses * value_loss_weights).item()
             )
             vloss_weight_since_last_log += float(torch.sum(value_loss_weights).item())
-
+            stloss_weighted_sum_since_last_log += float(
+                torch.sum(stance_losses * stance_weights).item()
+            )
+            stloss_weight_since_last_log += float(torch.sum(stance_weights).item())
             # log diagnostics
             LOG_EVERY_BATCHES = 10
             if is_master and batch_i % LOG_EVERY_BATCHES == 0:
@@ -747,11 +772,14 @@ def _main_subproc(
                     / ploss_weight_since_last_log,
                     "train/v_loss": vloss_weighted_sum_since_last_log
                     / vloss_weight_since_last_log,
-                }
+                    "train/st_loss": stloss_weighted_sum_since_last_log
+                    / stloss_weight_since_last_log, }
                 ploss_weighted_sum_since_last_log = 0.0
                 ploss_weight_since_last_log = 0.0
                 vloss_weighted_sum_since_last_log = 0.0
                 vloss_weight_since_last_log = 0.0
+                stloss_weighted_sum_since_last_log = 0.0
+                stloss_weight_since_last_log = 0.0
 
                 log_scalars(**scalars)
                 logging.info(
@@ -778,6 +806,7 @@ def _main_subproc(
                     valid_v_accuracy,
                     split_pcts,
                     value_splits,
+                    valid_st_loss,
                 ) = validate(
                     net,
                     val_set,
@@ -794,6 +823,7 @@ def _main_subproc(
                     f"valid{suffix}/v_loss": valid_v_loss,
                     f"valid{suffix}/p_accuracy": valid_p_accuracy,
                     f"valid{suffix}/v_accuracy": valid_v_accuracy,
+                    f"valid{suffix}/st_loss": valid_st_loss,
                 }
 
                 log_scalars(**scalars)

@@ -41,6 +41,14 @@ from fairdiplomacy.utils.order_idxs import (
     OrderIdxConversionException,
     local_order_idxs_to_global,
 )
+from fairdiplomacy.utils.orders import (
+    is_move,
+    is_support,
+    is_support_move,
+    get_supported_unit_location,
+    get_supported_unit_destination,
+    get_move_or_retreat_destination,
+)
 from fairdiplomacy.utils.sampling import sample_p_dict
 from fairdiplomacy.utils.tensorlist import TensorList
 from fairdiplomacy.utils.thread_pool_encoding import FeatureEncoder, DEFAULT_INPUT_VERSION
@@ -81,7 +89,7 @@ class Dataset(torch.utils.data.Dataset):  # type:ignore
         self.cf_agent = None
 
         self.game_metadata = None
-        if cfg.metadata_path is not None:
+        if cfg.metadata_path != 'PATH_TO_METADATA.json':
             logging.info(f"Reading metadata from {cfg.metadata_path}")
             with open(cfg.metadata_path) as meta_f:
                 self.game_metadata = json.load(meta_f)
@@ -230,6 +238,17 @@ class Dataset(torch.utils.data.Dataset):  # type:ignore
         fields["x_possible_actions"] = x_possible_actions_padded.view(
             len(idx), max_seq_len, MAX_VALID_LEN
         ).long()
+        
+        stance_weights = self.encoded_games["stance_weights"][
+            possible_actions_idx.view(-1)
+        ]
+        stance_weights_padded = stance_weights.to_padded(
+            total_length=MAX_VALID_LEN, padding_value=0.0
+        )
+        fields["stance_weights"] = stance_weights_padded.view(
+            len(idx), max_seq_len, MAX_VALID_LEN
+        )
+
 
         # for these fields we need to select out the correct power
         for f in ("x_power", "x_loc_idxs", "y_actions"):
@@ -340,6 +359,7 @@ def encode_game(
         phase_encoding = encode_phase(
             encoder,
             game,
+            game_json,
             game_id,
             phase_idx,
             phase_names[phase_idx],
@@ -429,6 +449,7 @@ def load_power_values(value_dir: Optional[str], game_id: int) -> Optional[Precom
 def encode_phase(
     encoder: FeatureEncoder,
     game: Game,
+    game_json: str,
     game_id: str,
     phase_idx: int,
     phase_name: str,
@@ -454,6 +475,45 @@ def encode_phase(
 
     Returns: DataFields, including y_actions and (y_final_score or sos_scores and dss_scores)
     """
+    def is_conflict_to_st_batch(orders, power_sen, stance_vectors, phase_json):
+        conflicts = []
+        for seq_orders in orders:
+            seq_conflicts = []
+            for order in seq_orders:
+                order_conflicts = {}
+                for power_rec, stance in stance_vectors[power_sen].items():
+                    if power_rec == power_sen:
+                        order_conflicts[power_rec] = False
+                        continue
+                    if abs(stance) < 0.05 or order =='':
+                        order_conflicts[power_rec] = False
+                        continue
+                    
+                    # Get unit locations and territories for power_rec
+                    power_rec_unit_locs = [unit_loc[2:] for unit_loc in phase_json['state']['units'][power_rec]]
+                    power_rec_territories = set(phase_json['state']['centers'].get(power_rec, []) + power_rec_unit_locs)
+                    # print(f'{power_rec}\'s ter: {power_rec_territories}')
+                    # print(f'considering {order}')
+                    
+                    is_conflict = False
+                    if stance > 0.05:
+                        if is_move(order):
+                            is_conflict = get_move_or_retreat_destination(order) in power_rec_territories
+                        elif is_support_move(order):
+                            is_conflict = get_supported_unit_destination(order) in power_rec_territories
+                        # if is_conflict:
+                            # print(f'conflict: being hostile to {power_rec} while stance is ally')
+                    elif stance < -0.05:
+                        if is_support(order):
+                            is_conflict = get_supported_unit_location(order) in power_rec_unit_locs
+                        # if is_conflict:
+                            # print(f'conflict: support {power_rec} while stance is enemy')
+                    
+                    order_conflicts[power_rec] = is_conflict
+                seq_conflicts.append(order_conflicts)
+            conflicts.append(seq_conflicts)
+        
+        return conflicts
 
     # keep track of which powers are invalid, and which powers are valid but
     # weak (by min-rating and min-score)
@@ -461,12 +521,57 @@ def encode_phase(
     valid_power_idxs = torch.ones_like(strong_power_idxs, dtype=torch.bool)
 
     phase = game.get_phase_history()[phase_idx]
+    
+    load_stance_weights = True and phase.name[-1] == 'M'
 
     rolled_back_game = game.rolled_back_to_phase_start(phase.name)
 
     encode_fn = encoder.encode_inputs_all_powers if all_powers else encoder.encode_inputs
     data_fields = encode_fn([rolled_back_game], input_version=input_version)
+    
+    data_fields["stance_weights"] = torch.zeros(data_fields["x_possible_actions"].shape, dtype=torch.float16)
+    if load_stance_weights:
+        batchsize, _, seq_len, order_len = data_fields["x_possible_actions"].shape[:4]
+        phase_json = next((p for p in json.loads(game_json)['phases'] if p['name'] == phase.name), None)
+        if phase_json:
+            stance_vectors = phase_json['stance_vectors']
+            # print(stance_vectors)
 
+            actions_tensor = data_fields["x_possible_actions"]
+            
+            for bz in range(batchsize):
+                for pow_id, power_sen in enumerate(POWERS):
+                    power_units = phase_json['state']['units'][power_sen]
+                    batch_orders = []
+                    
+                    for seq_id in range(seq_len):
+                        orders = []
+                        for order_id in range(order_len):
+                            global_id = actions_tensor[bz, pow_id, seq_id, order_id]
+                            if global_id == -1:
+                                break
+                            order_str_list = global_order_idxs_to_str([global_id])     
+                            if len(order_str_list) == 0 or order_str_list[0][:5] not in power_units:
+                                orders.append('')
+                                continue
+                            orders.append(order_str_list[0])
+                        
+                        batch_orders.append(orders)
+
+                    # Run conflict check in batch
+                    conflicts = is_conflict_to_st_batch(batch_orders, power_sen, stance_vectors, phase_json)
+                    
+                    for seq_id in range(seq_len):
+                        for order_id, order_conflicts in enumerate(conflicts[seq_id]):
+                            adjustment = 0.0
+                            for power_rec, is_conflict in order_conflicts.items():
+                                stance_value = stance_vectors[power_sen][power_rec]
+                                adjustment += 0.05 / abs(stance_value) if is_conflict else 0.0 
+                            
+                            data_fields["stance_weights"][bz, pow_id, seq_id, order_id] = adjustment 
+                            
+    # print(f'stace_weights test: {data_fields["stance_weights"][0,3,:,:]}')
+    
     # encode final scores
     if loaded_power_values is not None:
         data_fields["sos_scores"] = torch.tensor(
@@ -541,6 +646,9 @@ def encode_phase(
     data_fields["y_actions"] = y_actions.unsqueeze(0)
     data_fields["x_possible_actions"] = TensorList.from_padded(
         data_fields["x_possible_actions"].view(-1, MAX_VALID_LEN), padding_value=EOS_IDX
+    )
+    data_fields["stance_weights"] = TensorList.from_padded(
+        data_fields["stance_weights"].view(-1, MAX_VALID_LEN), padding_value=0.0
     )
     data_fields["valid_power_idxs"] = valid_power_idxs.unsqueeze(0) & strong_power_idxs
     data_fields["valid_power_idxs_any_strength"] = valid_power_idxs.unsqueeze(0)
@@ -741,6 +849,16 @@ def reorder_locations(batch: DataFields, perm: torch.Tensor) -> DataFields:
         batch["x_possible_actions"] = batch["x_possible_actions"].gather(
             -2, perm.unsqueeze(-1).repeat(1, 1, 1, 469)
         )
+        
+    if len(batch["stance_weights"].shape) == 3:
+        batch["stance_weights"] = batch["stance_weights"].gather(
+            -2, perm.unsqueeze(-1).repeat(1, 1, 469)
+        )
+    else:
+        assert len(batch["stance_weights"].shape) == 4
+        batch["stance_weights"] = batch["stance_weights"].gather(
+            -2, perm.unsqueeze(-1).repeat(1, 1, 1, 469)
+        )
 
     # In case if a move phase, x_loc_idxs is B x 81 or B x 7 x 81, where the
     # value in each loc is which order in the sequence it is (or -1 if not in
@@ -842,6 +960,7 @@ def maybe_augment_targets_inplace(
                 selected_powers,
                 batch["x_power"][i],
                 batch["x_possible_actions"][i],
+                batch["stance_weights"][i],
                 batch["x_loc_idxs"][i],
                 y_actions=batch["y_actions"][i],
             )
@@ -851,6 +970,7 @@ def maybe_augment_targets_inplace(
                 selected_powers,
                 batch["x_power"][i][power_id],
                 batch["x_possible_actions"][i][power_id],
+                batch["stance_weights"][i][power_id],
                 batch["x_loc_idxs"][i][power_id],
                 y_actions=batch["y_actions"][i][power_id],
             )
@@ -928,6 +1048,7 @@ def select_powers_inplace(
     selected_powers: torch.Tensor,
     x_power: torch.Tensor,
     x_possible_actions: torch.Tensor,
+    stance_weights: torch.Tensor,
     x_loc_idxs: torch.Tensor,
     *,
     y_actions: Optional[torch.Tensor] = None,
@@ -943,6 +1064,9 @@ def select_powers_inplace(
 
     x_possible_actions[:num_locs] = x_possible_actions[selected_timestamps_mask]
     x_possible_actions[num_locs:] = EOS_IDX
+    
+    stance_weights[:num_locs] = stance_weights[selected_timestamps_mask]
+    stance_weights[num_locs:] = 0.0
 
     # Set all location to selected_power. To need to mask, it will be masked by y_actions.
     x_power[:num_locs] = x_power[selected_timestamps_mask]
