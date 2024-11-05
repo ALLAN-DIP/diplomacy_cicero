@@ -23,7 +23,7 @@ botocore==1.33.13
 cachetools==5.5.0
 catalogue==2.0.10
 cfgv==3.3.1
-chiron-utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@8ce116b078b3d9a1dcb1d5e4d9ca00d631ca8a72
+chiron-utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@100d391cb0ad5b355f1c9981f8adf5607e1db8d2
 click==7.1.2
 cloudpathlib==0.18.1
 cloudpickle==2.2.1
@@ -45,7 +45,7 @@ decorator==5.1.1
 defusedxml==0.7.1
 Deprecated==1.2.14
 dill==0.3.7
-diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@33414ee202cd6c83ba33b8867669ad03611dc05c
+diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@3cf9282044bf4ccb532fcece7419547e09b50fa5
 discordwebhook==1.0.3
 distlib==0.3.8
 docformatter==1.4

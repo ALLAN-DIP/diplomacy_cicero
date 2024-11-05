@@ -4,13 +4,13 @@
 attrs==20.2.0
 black==19.10b0
 # Pinned `chiron-utils` to `main`
-chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@8ce116b078b3d9a1dcb1d5e4d9ca00d631ca8a72
+chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@100d391cb0ad5b355f1c9981f8adf5607e1db8d2
 colored==1.4.3
 datasets==1.18.4
 dacite==1.6.0
 daide2eng @ git+https://github.com/ALLAN-DIP/daide2eng.git@e4fa27071c52408817946598d3463f20bf064f6e
 # Pinned `diplomacy` to `clean-up-branches`
-diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@33414ee202cd6c83ba33b8867669ad03611dc05c
+diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@3cf9282044bf4ccb532fcece7419547e09b50fa5
 discordwebhook==1.0.3
 ephemeral-port-reserve==1.1.4
 fairseq==0.10.2
