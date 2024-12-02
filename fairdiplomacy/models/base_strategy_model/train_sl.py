@@ -44,7 +44,7 @@ from fairdiplomacy.models.state_space import (
 )
 from fairdiplomacy.selfplay.metrics import Logger
 from fairdiplomacy.selfplay.wandb import initialize_wandb_if_enabled
-from fairdiplomacy.utils.order_idxs import local_order_idxs_to_global
+from fairdiplomacy.utils.order_idxs import local_order_idxs_to_global, global_order_idxs_to_str
 
 MAIN_VALIDATION_SET_SUFFIX = ""
 ORDER_VOCABULARY = get_order_vocabulary()
@@ -182,7 +182,19 @@ def process_batch(
     assert batch["y_final_scores"].shape[1] == len(POWERS)
     y_final_scores = batch["y_final_scores"].float().squeeze(1)
     
+    _,_, order_len = batch['x_possible_actions'].shape
+    
     probs = logits.softmax(-1)
+    
+    for i in range(0,batch_size):
+        for j in range(0, seq_len):
+            global_idxs = batch['x_possible_actions'][i,j,:] 
+            possible_action_list = global_order_idxs_to_str(global_idxs)
+            print(f'in train sl possible_action_list {possible_action_list}')
+            print(f'in train sl stance_weights {batch["stance_weights"][i,j,:]}')
+            print(f'in train sl probs (from logits) {probs[i,j,:]}')
+    
+    
     if logits.shape[-1] != 469:
         stance_weights = batch["stance_weights"][:,:logits.shape[-2],:logits.shape[-1]]
     stance_loss = stance_weights
@@ -480,7 +492,7 @@ def validate(
     p_loss = ploss_weighted_sum / ploss_total_weight
     v_loss = vloss_weighted_sum / vloss_total_weight
     st_loss = stloss_weighted_sum /stloss_total_weight
-    st_param = 0.2
+    st_param = 0.4
     valid_loss = (1 - value_loss_weight) * p_loss + (value_loss_weight - st_param) * v_loss + st_param * st_loss
 
     # validation accuracy
@@ -708,7 +720,7 @@ def _main_subproc(
                 p_loss_opt = torch.sum(policy_losses * policy_loss_weights) / torch.sum(
                     policy_loss_weights > 0.0
                 )
-                st_param = 0.2
+                st_param = 0.4
                 st_loss_opt = torch.sum(stance_losses * stance_weights)  / args.batch_size
                 # sum + Explicit division by batch size instead of mean ensures that we don't massively
                 # overweight data that happens to fall into the last batch when the last batch has fewer

@@ -34,6 +34,7 @@ from fairdiplomacy.utils.order_idxs import (
 )
 from fairdiplomacy.utils.thread_pool_encoding import FeatureEncoder
 from fairdiplomacy.utils.timing_ctx import DummyCtx, TimingCtx
+import json
 
 
 class BaseStrategyModelWrapper:
@@ -133,7 +134,6 @@ class BaseStrategyModelWrapper:
                 batch = feature_encoder.encode_inputs_all_powers(
                     games, self.get_policy_input_version()
                 )
-                print(f"test_st: {batch['x_stance_vectors']}")
             else:
                 batch = feature_encoder.encode_inputs(games, self.get_policy_input_version())
             if conditional_orders is not None:
@@ -170,6 +170,8 @@ class BaseStrategyModelWrapper:
                 agent_power=agent_power,
                 game_rating_dict=game_rating_dict,
             )
+        if 'x_stance_vectors' in batch:
+            print(f"test_st: {batch['x_stance_vectors']}")
 
         return self.forward_policy_from_datafields(
             batch,
@@ -845,19 +847,48 @@ def create_conditional_teacher_force_orders(batch: DataFields) -> torch.Tensor:
                 teacher_force_orders[batch_idx, power_idx, local_loc_id] = order_id
     return teacher_force_orders
 
+def edit_stance(stance_vectors, power_sen, power_rec, stance_value):
+    stance_vectors[power_sen][power_rec] = stance_value
+    
+    
 def test_action_from_policy(game_path,phase_name, model_type='ft'):
-    device = 'cuda:0'
-    game = pydipcc.Game.from_json(game_path)
+    with open(game_path) as f:
+        game_string = f.read()
+        game_json = json.loads(game_string)
+        
+    phase_json = next((p for p in game_json['phases'] if p['name'] == phase_name), None)
+    
+    game = pydipcc.Game.from_json(game_string)
     rolled_back_game = game.rolled_back_to_phase_start(phase_name)
+    power_sen = 'FRANCE'
+    power_rec = 'GERMANY'
+    force = False
     if model_type!='ft':
         model = BaseStrategyModelWrapper(
-                        model_path='/diplomacy_cicero/models/human_imitation_joint_policy.ckpt'
+                        model_path='/diplomacy_cicero/models/human_imitation_joint_policy.ckpt',
                     )
-    
-    action, actionprob = model.forward_policy([game])
+
+    else:
+        model = BaseStrategyModelWrapper(
+                model_path='/diplomacy_cicero/models/human_imitation_joint_policy_stance_5000_04_1.ckpt',
+            )
+        if force:
+            stance_vectors = phase_json['stance_vectors']
+            print(f'stance_vectors_before: {power_sen}->{power_rec}: {stance_vectors[power_sen][power_rec]}')
+            print(f'stance_vectors_before: {power_rec}->{power_sen}: {stance_vectors[power_rec][power_sen]}')
+            stance_vectors[power_sen][power_rec] = 1.0
+            stance_vectors[power_rec][power_sen] = 1.0
+            print(f'stance_vectors_after: {power_sen}->{power_rec}: {stance_vectors[power_sen][power_rec]}')
+            print(f'stance_vectors_after: {power_rec}->{power_sen}: {stance_vectors[power_rec][power_sen]}')
+            game_string = json.dumps(game_json, indent=4)
+            game = pydipcc.Game.from_json(game_string)
+            rolled_back_game = game.rolled_back_to_phase_start(phase_name)
+        
+    action, actionprob = model.forward_policy([rolled_back_game], has_press=False, agent_power=power_sen,temperature=0.2,top_p=0.9)
     print(action)
-    print(actionprob)
+    print(torch.exp(actionprob))
     
-game_path = '/data/games_stance/normalized_game_111.json'
-phase = 'S1903M'
-test_action_from_policy(game_path, phase, model_type='sl')
+game_path = '/data/games_stance/game_111.json'
+phase = 'S1902M'
+# test_action_from_policy(game_path, phase, model_type='sl')
+test_action_from_policy(game_path, phase, model_type='ft')

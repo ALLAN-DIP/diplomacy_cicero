@@ -299,13 +299,17 @@ def get_paths_and_jsons(
         files = os.listdir(game_data_path)
         files = [file for file in files if file.endswith(".json")]
         files = sorted(files)
+        j=0
         for i, file in enumerate(files):
-            if limit_n_games is not None and limit_n_games >= 0 and i >= limit_n_games:
+            if i<0:
+                continue
+            if limit_n_games is not None and limit_n_games >= 0 and j >= limit_n_games:
                 break
             game_path = os.path.join(game_data_path, file)
             with open(game_path) as f:
                 game_json = f.read()
             paths_and_jsons.append((game_path, game_json))
+            j+=1
     else:
         with open(game_data_path) as f:
             for i, line in enumerate(f.readlines()):
@@ -475,6 +479,7 @@ def encode_phase(
 
     Returns: DataFields, including y_actions and (y_final_score or sos_scores and dss_scores)
     """
+    print(f'gameid: {game_id}')
     def is_conflict_to_st_batch(orders, power_sen, stance_vectors, phase_json):
         conflicts = []
         for seq_orders in orders:
@@ -566,7 +571,7 @@ def encode_phase(
                             adjustment = 0.0
                             for power_rec, is_conflict in order_conflicts.items():
                                 stance_value = stance_vectors[power_sen][power_rec]
-                                adjustment += 0.05 / abs(stance_value) if is_conflict else 0.0 
+                                adjustment += 0.05 / abs(stance_value) if is_conflict else -1e-7 / 7
                             
                             data_fields["stance_weights"][bz, pow_id, seq_id, order_id] = adjustment 
                             
@@ -656,6 +661,10 @@ def encode_phase(
     if not all_powers:
         data_fields["x_power"] = torch.arange(len(POWERS)).view(1, -1, 1).repeat(1, 1, MAX_SEQ_LEN)
 
+    # for i, global_idxs in enumerate(data_fields['x_possible_actions']):
+    #     possible_action_list = global_order_idxs_to_str(global_idxs)
+    #     print(f'in dataset possible_action_list {possible_action_list}')
+    #     print(f'in dataset stance_weights {data_fields["stance_weights"][i]}')
     return data_fields
 
 
