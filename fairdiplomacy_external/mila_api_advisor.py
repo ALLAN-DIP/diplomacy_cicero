@@ -520,7 +520,7 @@ class milaWrapper:
 
         dipcc_game.process() # processing the orders set and moving on to the next phase of the dipcc game
 
-    def generate_message(self, power_name: POWERS)-> MessageDict:
+    def generate_message(self, power_name: POWERS)-> Optional[MessageDict]:
         """     
         call CICERO to generate message (reference from generate_message_for_approval function - webdip_api.py)
         """
