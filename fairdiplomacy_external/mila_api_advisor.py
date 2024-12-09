@@ -44,6 +44,13 @@ MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 
 DEFAULT_DEADLINE = 5
 
+ADVICE_LEVELS_MESSAGE = (
+    "Levels of advice: "
+    f"{int(SuggestionType.NONE)}: none, "
+    f"{int(SuggestionType.MESSAGE)}: message only, "
+    f"{int(SuggestionType.MOVE)}: order only, "
+    f"{int(SuggestionType.MESSAGE | SuggestionType.MOVE)}: both message and order"
+)
 
 @dataclass
 class CiceroBot(BaselineBot, ABC):
@@ -59,7 +66,7 @@ class CiceroAdvisor(CiceroBot):
     """Advisor form of `CiceroBot`."""
 
     bot_type = BotType.ADVISOR
-    suggestion_type = SuggestionType.MESSAGE_AND_MOVE
+    suggestion_type = SuggestionType.MESSAGE | SuggestionType.MOVE
 
 
 class milaWrapper:
@@ -95,13 +102,13 @@ class milaWrapper:
         # random level 
         self.power_to_advise = sample_p_dict(power_dist)
         if len(power_dist) ==1 and len(advice_levels)>1:
-            logger.info(f'we left with only one power {power_dist}, let\'s add 0 as no advice to advice levels')
-            if 0 not in advice_levels:
-                advice_levels.append(0)
+            logger.info(f'we left with only one power {power_dist}, let\'s add {int(SuggestionType.NONE)} as no advice to advice levels')
+            if int(SuggestionType.NONE) not in advice_levels:
+                advice_levels.append(int(SuggestionType.NONE))
         logger.info(f'randoming from advice choices {advice_levels}')
         self.advice_level = random.choice(advice_levels)
         logger.info(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
-        logger.info("Note: level of cicero advice 1: message only, 2: order only, 3: both")
+        logger.info(f"Note: {ADVICE_LEVELS_MESSAGE}")
         await self.send_log(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
         # write to json
         with open(file_dir, 'w') as f:
@@ -127,7 +134,7 @@ class milaWrapper:
                 self.power_to_advise = advisor_json['power_to_advise']
                 self.advice_level = advisor_json['advice_level']
                 logger.info(f'RE-assigning Cicero to {self.power_to_advise} and advicing {self.advice_level}')
-                logger.info("Note: level of cicero advice 1: message only, 2: order only, 3: both")
+                logger.info(f"Note: {ADVICE_LEVELS_MESSAGE}")
                 return True
 
         await self.assign_advisor(file_dir, power_dist, advice_levels)
@@ -229,12 +236,12 @@ class milaWrapper:
 
                 # PRESS
                 should_stop = await self.get_should_stop()
-                if self.chiron_type in [2,3]:
+                if self.chiron_type & SuggestionType.MOVE:
                     await self.suggest_move(power_name)
     
                 while not should_stop:
                     # suggest move to human
-                    if self.chiron_type in [2,3]:
+                    if self.chiron_type & SuggestionType.MOVE:
                         await self.suggest_move(power_name)
                         
                     msg=None
@@ -243,7 +250,7 @@ class milaWrapper:
                         # update press in dipcc
                         await self.update_press_dipcc_game(power_name)
 
-                    if self.chiron_type in [1,3]:
+                    if self.chiron_type & SuggestionType.MESSAGE:
                         # reply/gen new message
                         msg = self.generate_message(power_name)
                         logger.info(f'msg from cicero to dipcc {msg}')
@@ -263,7 +270,7 @@ class milaWrapper:
                         self.set_comm_intent(recipient_power, power_po)
 
                         current_time = time.time()
-                        if self.chiron_type in [1,3] and current_time - self.new_message[msg['recipient']]>=60:
+                        if self.chiron_type & SuggestionType.MESSAGE and current_time - self.new_message[msg['recipient']]>=60:
                             K = 2
                             self.new_message[msg['recipient']] = current_time
                             msg_options = [msg] 
@@ -561,7 +568,7 @@ class milaWrapper:
         )
         
         # if human doesn't set a complete order then we won't gen message (avoid leaked move suggestion)
-        if self.chiron_type == 1 and (human_intent is None or len(human_intent) != len(orderable_locs)):
+        if self.chiron_type == SuggestionType.MESSAGE and (human_intent is None or len(human_intent) != len(orderable_locs)):
             logger.info(f"we gen sth {msg} but still wait for human to complete order, which currently is {human_intent}")
             return None
 
@@ -682,12 +689,6 @@ def main() -> None:
         help="0: AI-only game, 1: Human and AI game, 2: Human-only game, 3: silent, 4: human with eng-daide-eng Cicero, 5: chiron",
     )
     parser.add_argument(
-        "--chiron_type",
-        type=int, 
-        default=3,
-        help="Level of cicero controls 1: message only, 2: order only, 3: both",
-    )
-    parser.add_argument(
         "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
     )
     parser.add_argument(
@@ -695,7 +696,7 @@ def main() -> None:
     )
     
     parser.add_argument(
-        "--advice_levels", default= "", type=list_of_strings, help="given levels of advising from Cicero 1: message only, 2: order only, 3: both"
+        "--advice_levels", default= "", type=list_of_strings, help=ADVICE_LEVELS_MESSAGE
     )
     
     
