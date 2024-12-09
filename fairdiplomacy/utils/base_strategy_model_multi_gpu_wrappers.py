@@ -37,7 +37,7 @@ class MultiProcessBaseStrategyModelExecutor:
         if allow_multi_gpu and torch.cuda.device_count() > 2:
             # Will not use GPU:0, >2 so that we don't run on devfair.
             self._num_workers = torch.cuda.device_count() - 1
-            logging.info("Buillding MultiProcessParlaiExecutor for %d devices", self._num_workers)
+            logging.info("Building MultiProcessParlaiExecutor for %d devices", self._num_workers)
             self._executor = concurrent.futures.ProcessPoolExecutor(
                 max_workers=self._num_workers, mp_context=mp,
             )

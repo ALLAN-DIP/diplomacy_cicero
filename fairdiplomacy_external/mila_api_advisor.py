@@ -1,6 +1,7 @@
 from abc import ABC
 import argparse
 import asyncio
+import copy
 from dataclasses import dataclass
 import json
 import logging
@@ -92,8 +93,7 @@ class milaWrapper:
         self.decrement_value = 0.2
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
-        logger.info('Cicero')
-        logger.info(f"successfully load cicero config")
+        logger.info("Successfully loaded CICERO config")
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
         
@@ -101,26 +101,25 @@ class milaWrapper:
         # random N powers
         # random level 
         self.power_to_advise = sample_p_dict(power_dist)
-        if len(power_dist) ==1 and len(advice_levels)>1:
-            logger.info(f'we left with only one power {power_dist}, let\'s add {int(SuggestionType.NONE)} as no advice to advice levels')
-            if int(SuggestionType.NONE) not in advice_levels:
-                advice_levels.append(int(SuggestionType.NONE))
-        logger.info(f'randoming from advice choices {advice_levels}')
+        if len(power_dist) ==1 and len(advice_levels)>1 and int(SuggestionType.NONE) not in advice_levels:
+            logger.info(f'We are left with only one power ({list(power_dist)[0]}), '
+                        f'so let\'s add {int(SuggestionType.NONE)} as no advice to advice levels')
+            advice_levels.append(int(SuggestionType.NONE))
+        logger.info(f'Randomly choosing from advice levels: {advice_levels}')
         self.advice_level = random.choice(advice_levels)
-        logger.info(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
+        await self.send_log(f'Assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
         logger.info(f"Note: {ADVICE_LEVELS_MESSAGE}")
-        await self.send_log(f'assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
         # write to json
         with open(file_dir, 'w') as f:
             advisor_dict = {'assign_phase': self.game.get_current_phase(), 'power_to_advise':self.power_to_advise, 'advice_level':self.advice_level}
             json.dump(advisor_dict, f, indent=4)
             
         #adjust prob dist
-        logger.info(f'adjusting power distribution from: {power_dist}')
+        old_power_dist = copy.deepcopy(power_dist)
         power_dist[self.power_to_advise] = max(0, power_dist[self.power_to_advise] - self.decrement_value)
         power_dist = normalize_p_dict(power_dist)
         self.weight_powers = power_dist
-        logger.info(f'to: {power_dist} (check if equal: {self.weight_powers})')
+        logger.info(f'Adjusting power distribution from {old_power_dist} to {power_dist}')
         
     async def reload_or_assign_advisor(self, file_dir, power_dist, advice_levels):
         if os.path.exists(file_dir):
@@ -133,7 +132,7 @@ class milaWrapper:
             if game_phase != 'S1901M' and game_phase[1:5] == phase_file[1:5]:
                 self.power_to_advise = advisor_json['power_to_advise']
                 self.advice_level = advisor_json['advice_level']
-                logger.info(f'RE-assigning Cicero to {self.power_to_advise} and advicing {self.advice_level}')
+                logger.info(f'Re-assigning Cicero to {self.power_to_advise} and advising {self.advice_level}')
                 logger.info(f"Note: {ADVICE_LEVELS_MESSAGE}")
                 return True
 
@@ -166,8 +165,15 @@ class milaWrapper:
         advice_levels = [int(l) for l in args.advice_levels]
         power_name = None
 
-        logger.info(f"settings:")
-        logger.info(f"host: {hostname}, port: {port}, game_id: {game_id}, human_powers to advise: {human_powers}")
+        logger.info(f"Settings:")
+        logger.info(
+            f"hostname: {hostname}, "
+            f"port: {port}, "
+            f"use_ssl: {use_ssl}, "
+            f"game_id: {game_id}, "
+            f"human_powers to advise: {human_powers}, "
+            f"advice_levels: {advice_levels}"
+        )
 
         connection = await connect(hostname, port, use_ssl)
         channel = await connection.authenticate(
@@ -253,7 +259,7 @@ class milaWrapper:
                     if self.chiron_type & SuggestionType.MESSAGE:
                         # reply/gen new message
                         msg = self.generate_message(power_name)
-                        logger.info(f'msg from cicero to dipcc {msg}')
+                        logger.info(f'Possible message suggestion: {msg!r}')
                     
                     if msg is not None:
                         draw_token_message = self.is_draw_token_message(msg,power_name)
@@ -300,7 +306,7 @@ class milaWrapper:
                     await self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
 
                 # wait until the phase changed
-                logger.info(f"wait until {self.dipcc_current_phase} is done")
+                logger.info(f"Waiting until {self.dipcc_current_phase} is done")
                 while not self.has_phase_changed():
                     logger.info("Still waiting")
                     await asyncio.sleep(0.5)
@@ -310,7 +316,7 @@ class milaWrapper:
                     self.phase_end_time = time.time()
                     self.update_and_process_dipcc_game()
                     self.init_phase()
-                    logger.info(f"Process to {self.game.get_current_phase()}")
+                    logger.info(f"Proceeding to {self.game.get_current_phase()}")
                     await asyncio.sleep(5)
         
         if gamedir is not None and not gamedir.is_dir():
@@ -336,18 +342,18 @@ class milaWrapper:
     async def suggest_move(self, power_name):
         agent_orders = list(self.player.get_orders(self.dipcc_game))
         if agent_orders != self.prev_suggest_moves:
-            logger.info(f'sending move at {round(time.time() * 1000000)}')
+            logger.info(f'Sending move advice at {round(time.time() * 1_000_000)}')
             await self.chiron_agent.suggest_orders(agent_orders)
             self.prev_suggest_moves = agent_orders
         
         # what if humans already set partial order and want to conditional on it
         cond_orders = self.game.get_orders(power_name)
         orderable_locs = self.game.get_orderable_locations(power_name=power_name)
-        logger.info(f'we have condition order from human: {cond_orders} check if all: {orderable_locs} are set')
+        logger.info(f'Human has set orders: {cond_orders}; check if all orderable locations ({orderable_locs}) are set')
         if len(cond_orders) != 0 and len(cond_orders) != len(orderable_locs):
             # find if cond_orders are partially presented in bp_policy or rl_policy
             policy = self.player.get_plausible_orders_policy(self.dipcc_game)[power_name]
-            logger.info(f'we are finding conditional orders using {cond_orders} in {power_name}\'s policy: {policy}')
+            logger.info(f'Searching for conditional orders using {cond_orders} in {power_name}\'s policy: {policy}')
             hit = False
             best_cond_action = None
             max_prob = 0.0
@@ -358,11 +364,11 @@ class milaWrapper:
                     best_cond_action = action
             if hit and best_cond_action != self.prev_suggest_cond_moves:
                 new_order = [action for action in best_cond_action if action not in cond_orders]
-                logger.info(f'sending move at {round(time.time() * 1000000)}')
+                logger.info(f'Sending move advice at {round(time.time() * 1_000_000)}')
                 await self.chiron_agent.suggest_orders(new_order, partial_orders=cond_orders)
                 self.prev_suggest_cond_moves = best_cond_action
             else:
-                logger.info(f'we can\'t find conditional move in policy')
+                logger.info(f'Cannot find conditional orders in policy')
 
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:
@@ -444,7 +450,7 @@ class milaWrapper:
             server_end = self.scheduler_event.time_added + self.scheduler_event.delay
             server_remaining = server_end - self.scheduler_event.current_time
             deadline_timer = server_remaining * self.scheduler_event.time_unit
-            logger.info(f'remaining time to play: {deadline_timer}')
+            logger.info(f'Remaining time to play: {deadline_timer} s')
         else:
             deadline = DEFAULT_DEADLINE*60
 
@@ -497,7 +503,7 @@ class milaWrapper:
                 # then just keep message body as original
 
 
-                logger.info(f'message from mila to dipcc (chiron cicero): {message}')
+                logger.info(f'Forwarding message from MILA to dipcc: {message}')
 
                 self.dipcc_game.add_message(
                     message.sender,
@@ -558,7 +564,7 @@ class milaWrapper:
         orderable_locs = self.game.get_orderable_locations(power_name=power_name)
         
         if human_intent:
-            logger.info(f'set intent to {tuple(human_intent)}')
+            logger.info(f'Set player\'s intended moves to {tuple(human_intent)}')
             self.agent.set_power_po(human_intent)
         
         msg = self.player.generate_message(
