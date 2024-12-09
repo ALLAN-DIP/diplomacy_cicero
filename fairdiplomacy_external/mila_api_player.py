@@ -11,6 +11,7 @@ import time
 from typing import List, Optional, Sequence
 
 from chiron_utils.bots.baseline_bot import BaselineBot, BotType
+import chiron_utils.game_utils
 from chiron_utils.utils import return_logger
 from conf.agents_pb2 import *
 from diplomacy import connect
@@ -559,13 +560,13 @@ def main() -> None:
     parser.add_argument(
         "--host",
         type=str,
-        default="localhost",
+        default=chiron_utils.game_utils.DEFAULT_HOST,
         help="host IP address (default: %(default)s)",
     )
     parser.add_argument(
         "--port",
         type=int,
-        default=8433,
+        default=chiron_utils.game_utils.DEFAULT_PORT,
         help="port to connect to the game (default: %(default)s)",
     )
     parser.add_argument(
