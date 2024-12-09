@@ -13,7 +13,7 @@ from typing import List, Optional, Sequence
 from chiron_utils.bots.baseline_bot import BaselineBot, BotType
 from chiron_utils.utils import return_logger
 from conf.agents_pb2 import *
-from diplomacy import Message, connect
+from diplomacy import connect
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils import strings
 from diplomacy.utils.export import to_saved_game_format
