@@ -50,7 +50,9 @@ ADVICE_LEVELS_MESSAGE = (
     f"{int(SuggestionType.NONE)}: none, "
     f"{int(SuggestionType.MESSAGE)}: message only, "
     f"{int(SuggestionType.MOVE)}: order only, "
-    f"{int(SuggestionType.MESSAGE | SuggestionType.MOVE)}: both message and order"
+    f"{int(SuggestionType.MESSAGE | SuggestionType.MOVE)}: both message and order, "
+    f"{int(SuggestionType.OPPONENT_MOVE)}: opponent moves, "
+    f"{int(SuggestionType.MESSAGE | SuggestionType.MOVE | SuggestionType.OPPONENT_MOVE)}: messages, moves, and opponent moves"
 )
 
 @dataclass
@@ -243,6 +245,9 @@ class milaWrapper:
                 if self.dipcc_game.get_current_phase().endswith("M"):
                     await self.chiron_agent.wait_for_comm_stage()
 
+                if self.chiron_type & SuggestionType.OPPONENT_MOVE:
+                    await self.predict_opponent_moves(power_name)
+
                 # PRESS
                 should_stop = await self.get_should_stop()
                 if self.chiron_type & SuggestionType.MOVE:
@@ -342,6 +347,20 @@ class milaWrapper:
         self.last_comm_intent[recipient] = pseudo_orders
         
             
+    async def predict_opponent_moves(self, power_name: str) -> None:
+        policies = self.player.get_plausible_orders_policy(self.dipcc_game)
+
+        predicted_orders = {}
+        for power, policy in policies.items():
+            # Do not provide policy for the current power
+            if power == power_name:
+                continue
+
+            best_orders = max(policy.items(), key=lambda x: (x[1], x))[0]
+            predicted_orders[power] = best_orders
+
+        await self.chiron_agent.suggest_opponent_orders(predicted_orders)
+
     async def suggest_move(self, power_name):
         agent_orders = list(self.player.get_orders(self.dipcc_game))
         if agent_orders != self.prev_suggest_moves:
