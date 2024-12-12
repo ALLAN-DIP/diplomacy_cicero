@@ -67,7 +67,7 @@ class CiceroAdvisor(CiceroBot):
     """Advisor form of `CiceroBot`."""
 
     bot_type = BotType.ADVISOR
-    suggestion_type = SuggestionType.MESSAGE | SuggestionType.MOVE
+    suggestion_type = None
 
 
 class milaWrapper:
@@ -221,6 +221,9 @@ class milaWrapper:
             if not is_reload_advisor or power_name is None:
                 power_name = self.get_curr_power_to_advise()
                 self.chiron_type = self.get_curr_advice_level()
+                # Only one instance of `ChironAdvisor` exists at a time,
+                # so this is actually safe
+                self.chiron_agent.suggestion_type = self.chiron_type
                 self.chiron_agent.power_name = power_name
                 self.dipcc_game = self.start_dipcc_game(power_name)
                 self.player = Player(self.agent, power_name)
