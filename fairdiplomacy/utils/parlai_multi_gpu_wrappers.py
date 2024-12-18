@@ -75,7 +75,7 @@ def wrap_parlai_model_to_executor(parlai_model: BaseWrapper,) -> ParlaiExecutor:
 
 class PseudoParlaiExecutor(ParlaiExecutor):
     def __init__(self, parlai_model: BaseWrapper):
-        logging.info("Buillding PseudoParlaiExecutor (no parallelizm)")
+        logging.info("Building PseudoParlaiExecutor (no parallelism)")
         self._model = parlai_model
 
     def is_loaded(self) -> bool:
