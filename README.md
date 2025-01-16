@@ -31,80 +31,54 @@ You can play the game online on [webDiplomacy](https://webdiplomacy.net/) either
 
 ### Installation
 
-Most of the code of the project implemented in Python with some parts in C++. The snippet below show how to install and build all required components within a conda environment on Ubuntu system. You would need C++ compiler with C++11 support. We use gcc 9.4.
+To limit differences when used on various systems, CICERO is built in and run from an OCI image. Use the following commands to build the image: 
 
-```
-# Clone the repo with submodules:
-git clone --recursive git@github.com:facebookresearch/diplomacy_cicero.git diplomacy_cicero
-cd diplomacy_cicero
+```bash
+# Clone the repository
+git clone --recurse-submodules git@github.com:ALLAN-DIP/diplomacy_cicero.git diplomacy_cicero
+cd diplomacy_cicero/
 
-# Apt installs
-apt-get install -y wget bzip2 ca-certificates curl git build-essential clang-format-8 git wget cmake build-essential autoconf libtool pkg-config libgoogle-glog-dev
-
-# Install conda
-wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh -O ~/miniconda.sh
-/bin/bash ~/miniconda.sh -b
-
-# Create conda env
-conda create --yes -n diplomacy_cicero python=3.7
-conda activate diplomacy_cicero
-
-# Install pytorch, pybind11
-conda install --yes pytorch=1.7.1 torchvision cudatoolkit=11.0 -c pytorch
-conda install --yes pybind11
-
-# Install go for boringssl in grpc
-# We have some hacky patching code for protobuf that is not guaranteed
-# to work on versions other than this.
-conda install --yes go protobuf=3.19.1
-
-# Install python requirements
-pip install -r requirements.txt
-
-# Local pip installs
-pip install -e ./thirdparty/github/fairinternal/postman/nest/
-# NOTE: Postman here links against pytorch for tensors, for this to work you may
-# need to separately have installed cuda 11 on your own.
-pip install -e ./thirdparty/github/fairinternal/postman/postman/
-pip install -e . -vv
-
-# Make
-make
-
-# Run unit tests
-make test_fast
+# Build OCI image
+make build
 ```
 
-After each pull it's recommended to run `make` to re-compile internal C++ and protobuf code.
+In addition, <https://js2.jetstream-cloud.org/project/shares/534a349e-9d9a-4757-b820-12d2cb30c76c/> should be mounted at `/media/volume/cicero-base-models`. If it is mounted elsewhere, change the hardcoded path for `CICERO_DIR` in [`run_cicero.sh`](run_cicero.sh) accordingly.
 
-### Run CICERO on TACC with Mila engine
+### Run CICERO on Jetstream2
 
+If you have not already done so, follow the instructions in the "[Installation](#installation)" section of this documentation.
+
+To use the advisor, run a command similar to the following:
+
+```bash
+./run_cicero.sh \
+  latest \
+  advisor \
+  --host diplomacy.example.org \
+  --use-ssl \
+  --game_id test_game \
+  --human_powers AUSTRIA \
+  --advice_levels 11
 ```
-# We assume that $WORK is your work path
 
-module load tacc-singularity
-git clone --recursive https://github.com/ALLAN-DIP/diplomacy_cicero.git
+To use the player, run a command similar to the following:
 
-cp -r /corral/projects/DARPA-SHADE/Shared/cicero $WORK
-cp /corral/projects/DARPA-SHADE/Shared/UMD/pytorch_model.bin "$WORK"/diplomacy_cicero/fairdiplomacy/AMR/amrlib/amrlib/data/model_parse_xfm/checkpoint-9920/
-export CICERO=$WORK/cicero
-
-cd $CICERO
-singularity run  --nv \
-  --bind "$WORK"/diplomacy_cicero/fairdiplomacy/agents/:/diplomacy_cicero/fairdiplomacy/agent \
-  --bind "$WORK"/diplomacy_cicero/fairdiplomacy_external:/diplomacy_cicero/fairdiplomacy_external \
-  --bind "$WORK"/diplomacy_cicero/fairdiplomacy/AMR/:/diplomacy_cicero/fairdiplomacy/AMR/ \
-  --bind "$CICERO"/agents:/diplomacy_cicero/conf/common/agents \
-  --bind "$CICERO"/models:/diplomacy_cicero/models \
-  --bind "$CICERO"/gpt2:/usr/local/lib/python3.7/site-packages/data/gpt2 \
-  --pwd /diplomacy_cicero cicero_latest.sif
-
-pip install ujson
-pip install git+https://github.com/SiddarGu/daidepp.git
-
-export GAME_COMMAND="python fairdiplomacy_external/mila_api.py --game_id GAME_ID --host HOST --power POWER --outdir $WORK/diplomacy_cicero/fairdiplomacy_external/out"
-$GAME_COMMAND
+```bash
+./run_cicero.sh \
+  latest \
+  player \
+  --host diplomacy.example.org \
+  --use-ssl \
+  --game_id test_game \
+  --power AUSTRIA
 ```
+
+Use the following guidance when modifying arguments:
+
+- `--host` should be set to whichever domain the server is hosted at.
+- If your server is not using SSL, then drop the `--use-ssl` argument.
+- `--game_id` must match an existing game.
+- `--advice_levels` is the sum of the values for each advice type. For example, `11` means to provide advice for messages (`1`), moves (`2`), and opponent moves (`8`). For more information, see the output of `./run_cicero.sh latest advisor --help`.
 
 ### Downloading model files
 
