@@ -44,9 +44,9 @@ GAME_COMMAND=(
   "$@"
 )
 
-mkdir -p data/logs/
+mkdir -p logs/
 NOW=$(date -u +'%Y_%m_%d_%H_%M_%S')
-LOG_FILE=data/logs/$NOW.txt
+LOG_FILE=logs/$NOW.txt
 
 time docker run \
   --rm \
