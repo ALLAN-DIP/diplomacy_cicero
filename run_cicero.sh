@@ -10,7 +10,7 @@ function show_usage() {
     echo "usage: bash $SCRIPT_NAME [--help] BOT_TAG BOT_TYPE BOT_ARGS..."
     echo
     echo 'Run CICERO from an OCI image using Docker.'
-    echo '- BOT_TAG is the tag assigned when building the image.'
+    echo '- BOT_TAG is the tag assigned when building the image ("latest" by default).'
     echo '- BOT_TYPE is the type of bot to run and must be either "advisor" or "player".'
     echo '- BOT_ARGS are passed as arguments to the script within the running container.'
   } >&2
