@@ -35,7 +35,7 @@ To limit differences when used on various systems, CICERO is built in and run fr
 
 ```bash
 # Clone the repository
-git clone --recurse-submodules git@github.com:ALLAN-DIP/diplomacy_cicero.git diplomacy_cicero
+git clone --recurse-submodules https://github.com/ALLAN-DIP/diplomacy_cicero.git
 cd diplomacy_cicero/
 
 # Build OCI image
