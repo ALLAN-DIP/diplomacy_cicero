@@ -21,9 +21,8 @@ from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils import strings
 from diplomacy.utils.constants import SuggestionType
 from diplomacy.utils.export import to_saved_game_format
-from discordwebhook import Discord
 
-from fairdiplomacy.agents.bqre1p_agent import BQRE1PAgent as PyBQRE1PAgent
+from fairdiplomacy.agents.searchbot_agent import SearchBotAgent as SearchBotAgent
 from fairdiplomacy.agents.player import Player
 from fairdiplomacy.data.build_dataset import (DATASET_DRAW_MESSAGE, DATASET_NODRAW_MESSAGE, DRAW_VOTE_TOKEN,
                                               UNDRAW_VOTE_TOKEN)
@@ -94,10 +93,10 @@ class milaWrapper:
         self.weight_powers = dict()
         self.decrement_value = 0.2
         
-        agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
+        agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/searchbot.prototxt')
         logger.info("Successfully loaded CICERO config")
 
-        self.agent = PyBQRE1PAgent(agent_config.bqre1p)
+        self.agent = SearchBotAgent(agent_config.searchbot)
         
     async def assign_advisor(self, file_dir, power_dist, advice_levels):
         # random N powers
@@ -731,7 +730,6 @@ def main() -> None:
     args = parser.parse_args()
 
     mila = milaWrapper()
-    discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
 
     while True:
         try:
@@ -741,7 +739,6 @@ def main() -> None:
         except Exception as e:
             logger.exception(f"Error running {milaWrapper.play_mila.__name__}(): ")
             cicero_error = f"centaur cicero controlling {args.human_powers} has an error occured: \n {e}"
-            discord.post(content=cicero_error)
 
 
 if __name__ == "__main__":
