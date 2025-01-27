@@ -250,16 +250,86 @@ def load_state_sadra_data(input_directory):
         load_state_and_predict_move(input_file, output_file)
         print(f'Finished processing {input_file}.')
 
-def load_state_denis_data(input_directory):
-    json_files_list = get_json_files(input_directory)
-    # Example usage:
-    for input_file in json_files_list:
-        output_file = f"{os.path.splitext(input_file)[0]}_stance.json"  # Replace with your desired output file path
-        if not os.path.exists(input_file):
-            continue
-        if os.path.exists(output_file):
-            continue
-        update_game_with_stance_vectors(input_file, output_file)
-        print(f'Finished processing {input_file}.')
+def load_whole_game_and_predict_move(input_file, target_phase='S1901M', target_message='None', our_power='AUSTRIA',target_power='AUSTRIA', stance_power_orders=None, proposal=None):
+    import fairdiplomacy.action_generation
+    # work with Sadra (input = one phase data)
+    with open(input_file, 'r', encoding='utf-8') as file:
+        data = json.load(file)
 
-load_state_sadra_data('/diplomacy_cicero/data/lr5')
+    dipcc_game = Game()
+    
+    found = False
+    for phase in data['phases']:
+        while dipcc_game.get_current_phase() != phase['name']:
+            print(f"catch up phase {dipcc_game.get_current_phase()} to game data {phase['name']}")
+            dipcc_game.process()
+        else:
+            print(phase['name'])
+        for msg in phase['messages']:
+            dipcc_game.add_message(
+                        msg['sender'],
+                        msg['recipient'],
+                        msg['message'],
+                        time_sent=Timestamp.now(),
+                        increment_on_collision=True,
+                    )
+            if phase['name'] == target_phase and target_message in msg['message']:
+                print("FOUND")
+                found = True
+                break
+        if found:
+            break
+        else:
+            for power, orders in phase['moves'].items():
+                print(f'set order {power}\'s {orders}')
+                dipcc_game.set_orders(power, orders)
+            dipcc_game.process()
+        
+    dipcc_game = game_from_view_of(dipcc_game, our_power)
+    agent = load_cicero()
+    power=our_power
+    cicero_player = Player(agent, power)
+    bp_policy = cicero_player.agent.get_plausible_orders_policy(
+                dipcc_game, agent_power=power, agent_state=cicero_player.state
+            )
+    for order, prob in stance_power_orders.items():
+        bp_policy[target_power][order] = prob
+    
+    our_power_possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(dipcc_game, our_power, max_actions=100)
+    proposal_orders= dict()
+    for action in our_power_possible_orders:
+        # print('possible orders')
+        # print(action)
+        for unit_order in list(action):
+            if proposal in unit_order:
+                proposal_orders[action]=0.2
+                print(f'found align action! {action}')
+    
+    for order, prob in proposal_orders.items():
+        bp_policy[our_power][order] = prob
+    # stance_orders[target_power] = [stance_power_orders] # order that stance controlled SL return for target power
+    # PlausibleOrders = Dict[Power, List[Action]]
+    # search_result = cicero_player.agent.run_best_response_against_correlated_bilateral_search(game=dipcc_game, agent_power=power, agent_state=cicero_player.state)
+    search_result = cicero_player.agent.run_best_response_against_correlated_bilateral_search(game=dipcc_game, agent_power=power,bp_policy=bp_policy, agent_state=cicero_player.state)
+    print(f'expect to see stance-controlled order {stance_power_orders} in the following policy')
+    print(f'cicero {our_power}\'s policy: {search_result.get_agent_policy()[our_power]}')
+    print(f'cicero {target_power}\'s policy: {search_result.get_agent_policy()[target_power]}')
+    our_policy = search_result.get_agent_policy()[our_power]
+    our_best_action = max(our_policy.items(), key=lambda item: item[1])[0]
+    target_policy = search_result.get_agent_policy()[target_power]
+    target_best_action = max(target_policy.items(), key=lambda item: item[1])[0]
+    
+    joint_table = search_result.power_value_matrices[target_power]
+    for our_action in list(proposal_orders.keys()) + [our_best_action]:
+        for target_action in list(stance_power_orders.keys()) + [target_best_action]:
+            print(f'cicero bilateral condition ({our_action}, {target_action}) : {joint_table[our_action,target_action]}')
+
+# load_state_sadra_data('/diplomacy_cicero/data/lr5')
+game_file = '/diplomacy_cicero/data/denis/game1.json'
+target_phase = 'F1902M'
+our_power = 'ENGLAND'
+target_power = 'FRANCE'
+stance_power_orders = {tuple(['F ENG - MAO', 'A BEL H', 'F MAR H','F MAO - POR', 'A BUR S A GAS - MAR', 'A GAS - MAR']): 0.2, tuple(['F ENG - MAO', 'A BEL H','F MAR H', 'F MAO - POR', 'A BUR - MAR', 'A GAS - SPA']): 0.2}
+proposal = 'A YOR - HOL'
+target_message = "Germany's told me that he'll just support his centers"
+load_whole_game_and_predict_move(game_file, target_phase=target_phase, target_message=target_message, our_power= our_power,target_power=target_power, stance_power_orders=stance_power_orders,proposal=proposal)
