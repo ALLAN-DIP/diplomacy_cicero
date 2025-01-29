@@ -296,17 +296,40 @@ def load_whole_game_and_predict_move(input_file, target_phase='S1901M', target_m
         bp_policy[target_power][order] = prob
     
     our_power_possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(dipcc_game, our_power, max_actions=100)
-    proposal_orders= dict()
+    our_proposal_orders= dict()
     for action in our_power_possible_orders:
         # print('possible orders')
         # print(action)
-        for unit_order in list(action):
-            if proposal in unit_order:
-                proposal_orders[action]=0.2
-                print(f'found align action! {action}')
+        not_found = [True for i in range (len(proposal[our_power]))]
+        for i in range (len(proposal[our_power])):
+            for unit_order in list(action):
+                if proposal[our_power][i] in unit_order:
+                    not_found[i] = False
+                    
+        if all(not x for x in not_found):         
+            our_proposal_orders[action]=0.2
+            print(f'found align action! {action}')
+            
+    target_power_possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(dipcc_game, target_power, max_actions=100)
+    target_proposal_orders= dict()
+    for action in target_power_possible_orders:
+        # print('possible orders')
+        # print(action)
+        not_found = [True for i in range (len(proposal[target_power]))]
+        for i in range (len(proposal[target_power])):
+            for unit_order in list(action):
+                if proposal[target_power][i] in unit_order:
+                    not_found[i] = False
+                    
+        if all(not x for x in not_found):        
+            target_proposal_orders[action]=0.2
+            print(f'found align action! {action}')
     
-    for order, prob in proposal_orders.items():
+    for order, prob in our_proposal_orders.items():
         bp_policy[our_power][order] = prob
+    for order, prob in target_proposal_orders.items():
+        bp_policy[target_power][order] = prob
+        
     # stance_orders[target_power] = [stance_power_orders] # order that stance controlled SL return for target power
     # PlausibleOrders = Dict[Power, List[Action]]
     # search_result = cicero_player.agent.run_best_response_against_correlated_bilateral_search(game=dipcc_game, agent_power=power, agent_state=cicero_player.state)
@@ -318,10 +341,10 @@ def load_whole_game_and_predict_move(input_file, target_phase='S1901M', target_m
     our_best_action = max(our_policy.items(), key=lambda item: item[1])[0]
     target_policy = search_result.get_agent_policy()[target_power]
     target_best_action = max(target_policy.items(), key=lambda item: item[1])[0]
-    
+    # list(stance_power_orders.keys())
     joint_table = search_result.power_value_matrices[target_power]
-    for our_action in list(proposal_orders.keys()) + [our_best_action]:
-        for target_action in list(stance_power_orders.keys()) + [target_best_action]:
+    for our_action in list(our_proposal_orders.keys()) + [our_best_action]:
+        for target_action in list(target_proposal_orders.keys()) + [target_best_action]:
             print(f'cicero bilateral condition ({our_action}, {target_action}) : {joint_table[our_action,target_action]}')
 
 # load_state_sadra_data('/diplomacy_cicero/data/lr5')
@@ -330,6 +353,6 @@ target_phase = 'F1902M'
 our_power = 'ENGLAND'
 target_power = 'FRANCE'
 stance_power_orders = {tuple(['F ENG - MAO', 'A BEL H', 'F MAR H','F MAO - POR', 'A BUR S A GAS - MAR', 'A GAS - MAR']): 0.2, tuple(['F ENG - MAO', 'A BEL H','F MAR H', 'F MAO - POR', 'A BUR - MAR', 'A GAS - SPA']): 0.2}
-proposal = 'A YOR - HOL'
+proposal = {our_power: ['A YOR - HOL'], target_power:['A YOR - HOL', '- RUH']}
 target_message = "Germany's told me that he'll just support his centers"
 load_whole_game_and_predict_move(game_file, target_phase=target_phase, target_message=target_message, our_power= our_power,target_power=target_power, stance_power_orders=stance_power_orders,proposal=proposal)
