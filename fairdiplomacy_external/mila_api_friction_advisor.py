@@ -39,7 +39,7 @@ from fairdiplomacy.utils.typedefs import get_last_message
 import heyhi
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
 from fairdiplomacy_external.amr_utils.amr_moves import parse_single_message_to_amr
-from fairdiplomacy_external.amr_utils.amr_to_dict import amr_single_message_to_dict
+from fairdiplomacy_external.amr_utils.amr_to_dict import amr_single_message_to_dict, is_move_in_order_set, is_prov_in_units, is_power_unit
 
 logger = return_logger(__name__)
 
@@ -464,40 +464,59 @@ class milaWrapper:
 
             #if move is about recipient:
             if possible:
-                in_units = False if 'to' not in move else is_prov_in_units(power_units, move['to'])
-            
-                if in_units:
-                    continue
                 
-                # if move is about previous m orders 
-                in_prev_m_move = is_move_in_order_set(rec_prev_m_orders, move, recipient) and move['action'] =='-'
-                # if move is even possible to do
-                in_possible_orders = is_move_in_order_set(rec_possible_orders, move, recipient)
+                if  'support_action' in move or'transport_action' in move:
+                    # if recipient is asked to support/convoy any units
+                    new_move_info = dict()
+                    for key, value in move.items():
+                        if key in ['unit', 'from','to','action','country']:
+                            new_move_info[key] = value
+                    for key in ['concept','variable','polarity']:
+                        new_move_info[key] = ''
 
-                # if move has not enough info, just disregard it
-                if in_possible_orders== 'not enough info':
-                    continue
+                    # support/convoy rec's own unit or sender unit
+                    in_sen_possible_orders = is_move_in_order_set(sen_possible_orders, new_move_info, sender) and move['action'] =='-'
+                    in_rec_possible_orders = is_move_in_order_set(rec_possible_orders, new_move_info, recipient) and move['action'] =='-'
 
-                # if in previous m orders, also disregard it
-                if in_prev_m_move:
-                    continue
+                    if in_sen_possible_orders== 'not enough info' and in_rec_possible_orders=='not enough info':
+                        continue
 
-                # if it is possible, then let's count as proposal!
-                if in_possible_orders:
-                    proposals.append(move)
+                    # if it is possible, then let's count move and new_move to proposal!
+                    if in_sen_possible_orders == True or in_rec_possible_orders ==True:
+                        proposals.append(move)
+                        proposals.append(new_move_info)
+                else:
+                    # if recipient is asked to do any move
+                    in_units = False if 'to' not in move else is_prov_in_units(power_units, move['to'])
+                
+                    if in_units:
+                        continue
+                    
+                    # if move is about previous m orders 
+                    in_prev_m_move = is_move_in_order_set(rec_prev_m_orders, move, recipient) and move['action'] =='-'
+                    # if move is even possible to do
+                    in_possible_orders = is_move_in_order_set(rec_possible_orders, move, recipient)
+
+                    # if move has not enough info, just disregard it
+                    if in_possible_orders== 'not enough info':
+                        continue
+
+                    # if in previous m orders, also disregard it
+                    if in_prev_m_move:
+                        continue
+
+                    # if it is possible, then let's count as proposal!
+                    if in_possible_orders:
+                        proposals.append(move)
 
             
             else:
                 #if move is about sender doing something
-                possible =True
-
-                if not is_power_unit(sender_units, unit_loc_key):
-                    possible = False
-
+                
                 #if it is not sender and not recipient then we not considering it in deception detection (it's hard to tell if it is lie about the third country or the sender is being lied to)
-                if not possible:
+                if not is_power_unit(sender_units, unit_loc_key):
                     continue
-
+                
                 if  'support_action' in move or'transport_action' in move:
                     # if sender promise to support/convoy recipient units
                     new_move_info = dict()
@@ -507,18 +526,20 @@ class milaWrapper:
                     for key in ['concept','variable','polarity']:
                         new_move_info[key] = ''
 
-                    in_possible_orders = is_move_in_order_set(rec_possible_orders, new_move_info, recipient) and move['action'] =='-'
+                    # support/convoy rec's own unit or sender unit
+                    in_sen_possible_orders = is_move_in_order_set(sen_possible_orders, new_move_info, sender) and move['action'] =='-'
+                    in_rec_possible_orders = is_move_in_order_set(rec_possible_orders, new_move_info, recipient) and move['action'] =='-'
 
-                    if in_possible_orders== 'not enough info':
+                    if in_sen_possible_orders== 'not enough info' and in_rec_possible_orders=='not enough info':
                         continue
 
                     # if it is possible, then let's count move and new_move to proposal!
-                    if in_possible_orders:
+                    if in_sen_possible_orders == True or in_rec_possible_orders ==True:
                         proposals.append(move)
                         proposals.append(new_move_info)
                 
                 else: 
-                    # if sender promise to do regular move
+                    # if sender promise to do a regular move
                     in_units = False if 'to' not in move else is_prov_in_units(sender_units, move['to'])
             
                     if in_units:
@@ -527,7 +548,7 @@ class milaWrapper:
                     # if move is about previous m orders 
                     in_prev_m_move = is_move_in_order_set(sen_prev_m_orders, move, recipient) and move['action'] =='-'
                     # if move is even possible to do
-                    in_possible_orders = is_move_in_order_set(sen_possible_orders, move, recipient)
+                    in_possible_orders = is_move_in_order_set(sen_possible_orders, move, sender)
 
                     # if move has not enough info, just disregard it
                     if in_possible_orders== 'not enough info':
@@ -549,29 +570,30 @@ class milaWrapper:
         """
         a function to parse NL to AMR then capture AMR to extract moves
         """
-        msg = msg_to_AMR(msg)
-        msg = AMR_to_move_dict(msg)
+        msg = self.msg_to_AMR(msg)
+        msg = self.AMR_to_move_dict(msg)
         return msg
     
     def msg_to_AMR(self, msg):
-        return parse_single_message_to_amr(msg)
+        return self.parse_single_message_to_amr(msg)
     
     def AMR_to_move_dict(self, msg):
-        return amr_single_message_to_dict(msg, self.prev_extracted_moves, self.prev_message)
+        return self.amr_single_message_to_dict(msg, self.prev_extracted_moves, self.prev_message)
     
     def generate_friction(self, msg):
         '''TODO: should call suggest_friction(str?)'''
         # you should do this in chiron utils with new bot!!
         
-        if is_friction_in_proposal(msg):
+        if self.is_friction_in_proposal(msg):
             print('friction')
         else:
             print('not friction')
     
     def is_friction_in_proposal(self, msg):
         # arrange move_dict_list into proposal (function to filter proposal?)
-        msg = get_proposal_move_dict(msg)
+        msg = self.get_proposal_move_dict(msg)
         # translate move dict to diplomacy order e.g. A VIE - TRI
+        dip_moves = self.get_diplomacy_moves(msg['proposals'])
         # do RL part using those proposal from msg['extract_moves']
         return False
     
