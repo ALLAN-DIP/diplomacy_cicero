@@ -69,7 +69,11 @@ class CiceroAdvisor(CiceroBot):
     """Advisor form of `CiceroBot`."""
 
     bot_type = BotType.ADVISOR
-    suggestion_type = None
+    default_suggestion_type = (
+        SuggestionType.MESSAGE
+        | SuggestionType.MOVE
+        | SuggestionType.OPPONENT_MOVE
+    )
 
 
 class milaWrapper:
