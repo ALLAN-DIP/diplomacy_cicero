@@ -39,13 +39,15 @@ from fairdiplomacy.utils.typedefs import get_last_message
 import heyhi
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
 from fairdiplomacy_external.amr_utils.amr_moves import parse_single_message_to_amr
-from fairdiplomacy_external.amr_utils.amr_to_dict import amr_single_message_to_dict, is_move_in_order_set, is_prov_in_units, is_power_unit
+from fairdiplomacy_external.amr_utils.amr_to_dict import amr_single_message_to_dict, is_move_in_order_set, is_prov_in_units, is_power_unit, get_move_in_order_set
 
 logger = return_logger(__name__)
 
 MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 
 DEFAULT_DEADLINE = 5
+
+POWER_TO_INDEX: dict[str, int] = {power: index for index, power in enumerate(POWERS)}
 
 ADVICE_LEVELS_MESSAGE = (
     "Levels of advice: "
@@ -427,7 +429,7 @@ class milaWrapper:
         rec_possible_orders = [order for unit in recipient_units for order in all_possible_orders[unit[2:]]]
         sen_possible_orders = [order for unit in sender_units for order in all_possible_orders[unit[2:]]]
         
-        proposals = []
+        proposals = {sender: [], recipient: []}
         for move in extracted_moves:
             if 'action' not in move or ('from' not in move and 'to' not in move):
                 continue
@@ -480,8 +482,13 @@ class milaWrapper:
 
                     # if it is possible, then let's count move and new_move to proposal!
                     if in_sen_possible_orders == True or in_rec_possible_orders ==True:
-                        proposals.append(move)
-                        proposals.append(new_move_info)
+                        # A VIE S A TRI - VEN --- first assign to recipient
+                        proposals[recipient].append(move)
+                        # then assign A TRI - VEN --- to sender/recipient that A TRI belongs to
+                        if  is_power_unit(sender_units, new_move_info['from']):
+                            proposals[sender].append(new_move_info)
+                        else if is_power_unit(recipient_units, new_move_info['from']):
+                            proposals[recipient].append(new_move_info)
                 else:
                     # if recipient is asked to do any move
                     in_units = False if 'to' not in move else is_prov_in_units(power_units, move['to'])
@@ -504,7 +511,7 @@ class milaWrapper:
 
                     # if it is possible, then let's count as proposal!
                     if in_possible_orders:
-                        proposals.append(move)
+                        proposals[recipient].append(move)
 
             
             else:
@@ -532,8 +539,13 @@ class milaWrapper:
 
                     # if it is possible, then let's count move and new_move to proposal!
                     if in_sen_possible_orders == True or in_rec_possible_orders ==True:
-                        proposals.append(move)
-                        proposals.append(new_move_info)
+                        # A VIE S A TRI - VEN --- first assign to sender
+                        proposals[sender].append(move)
+                        # then assign A TRI - VEN --- to sender/recipient that A TRI belongs to
+                        if  is_power_unit(sender_units, new_move_info['from']):
+                            proposals[sender].append(new_move_info)
+                        else if is_power_unit(recipient_units, new_move_info['from']):
+                            proposals[recipient].append(new_move_info)
                 
                 else: 
                     # if sender promise to do a regular move
@@ -557,7 +569,7 @@ class milaWrapper:
 
                     # if it is possible, then let's count as proposal!
                     if in_possible_orders:
-                        proposals.append(move)
+                        proposals[sender].append(move)
         
         msg['proposals'] = proposals
         
@@ -582,9 +594,78 @@ class milaWrapper:
         msg = self.get_proposal_move_dict(msg)
         # retrieving proposal orders by matching move in dict to any move in possible orders
         # matching reversing- if action move/hold -> 1. to 2. from , if support_action/convoy_action in dict 1. to 2. from 3. S/C 4. support_from/convoy_from
+        our_power = self.get_curr_power_to_advise()
+        our_power_dipcc_game = game_from_view_of(dipcc_game, our_power)
         
+        bp_policy = self.player.agent.get_plausible_orders_policy(
+            our_power_dipcc_game, agent_power=our_power, agent_state=self.player.state
+        )
+        our_power_possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(our_power_dipcc_game, our_power, max_actions=100)
+        our_proposal_orders= dict()
+        
+        proposals = msg['proposals']
         
         # do RL part using those proposal from msg['extract_moves']
+        for action in our_power_possible_orders:
+            # print('possible orders')
+            # print(action)
+            not_found = [True for i in range (len(proposal[our_power]))]
+            for i in range (len(proposal[our_power])):
+                for unit_order in list(action):
+                    is_valid = is_move_in_order_set([unit_order], proposals[our_power][i])
+                    if is_valid and is_valid != 'not enough info':
+                        not_found[i] = False
+                        
+            if all(not x for x in not_found):         
+                our_proposal_orders[action]=0.2
+                print(f'found align action! {action}')
+        target_power_possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(dipcc_game, target_power, max_actions=100)
+        target_proposal_orders= dict()
+        for action in target_power_possible_orders:
+            # print('possible orders')
+            # print(action)
+            not_found = [True for i in range (len(proposal[target_power]))]
+            for i in range (len(proposal[target_power])):
+                for unit_order in list(action):
+                    is_valid = is_move_in_order_set([unit_order], proposals[target_power][i])
+                    if is_valid and is_valid != 'not enough info':
+                        not_found[i] = False
+                        
+            if all(not x for x in not_found):        
+                target_proposal_orders[action]=0.2
+                print(f'found align action! {action}')
+        
+        for order, prob in our_proposal_orders.items():
+            bp_policy[our_power][order] = prob
+        for order, prob in target_proposal_orders.items():
+            bp_policy[target_power][order] = prob
+            
+        search_result = self.player.agent.run_best_response_against_correlated_bilateral_search(game=our_power_dipcc_game, agent_power=our_power,bp_policy=bp_policy, agent_state=self.player.state)
+        our_policy = search_result.get_agent_policy()[our_power]
+        V = max(our_policy.items(), key=lambda item: item[1])[0]
+        target_policy = search_result.get_agent_policy()[target_power]
+        D_stab = max(target_policy.items(), key=lambda item: item[1])[0]
+        
+        joint_table = search_result.power_value_matrices[target_power]
+        
+        for our_action in list(our_proposal_orders.keys()):
+            for target_action in list(target_proposal_orders.keys()):
+                V_prime = our_action
+                D_lie = target_action
+                # val_to_vic(D_lie, V_prime)
+                val_vic_D_lie_V_prime = joint_table[D_lie, V_prime].squeeze().tolist()[POWER_TO_INDEX[our_power]]
+                # val_to_vic(D_stab, V_prime)
+                val_vic_D_stab_V_prime = joint_table[D_stab, V_prime].squeeze().tolist()[POWER_TO_INDEX[our_power]]
+                # val_to_vic(D_lie, V)
+                val_vic_D_lie_V = joint_table[D_lie, V].squeeze().tolist()[POWER_TO_INDEX[our_power]]
+                # val_to_dec(D_stab, V_prime)
+                val_dec_D_stab_V_prime = joint_table[D_stab, V_prime].squeeze().tolist()[POWER_TO_INDEX[target_power]]
+                # val_to_dec(D_stab, V)
+                val_dec_D_stab_V = joint_table[D_stab, V].squeeze().tolist()[POWER_TO_INDEX[target_power]]
+                if (val_vic_D_lie_V_prime - val_vic_D_stab_V_prime > 0 and
+                    val_dec_D_stab_V_prime - val_dec_D_stab_V >= 0 and
+                    val_vic_D_lie_V_prime - val_vic_D_lie_V >=0):
+                    return True          
         return False
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:
