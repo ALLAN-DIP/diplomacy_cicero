@@ -394,22 +394,19 @@ class milaWrapper:
             else:
                 logger.info(f'Cannot find conditional orders in policy')
     
-    async def predict_friction(self, power_name: str) -> None:
-        '''TODO: should call suggest_friction(str?)'''
-        policies = self.player.get_plausible_orders_policy(self.dipcc_game)
+    async def suggest_friction(self, power_name: str) -> None:
+        '''send commentary to interface'''
+        
+        if self.is_friction_in_proposal(msg):
+            await self.chiron_agent.suggest_commentary(power_name, 'friction')
+        else:
+            print('not friction')
 
-        predicted_orders = {}
-        for power, policy in policies.items():
-            # Do not provide policy for the current power
-            if power == power_name:
-                continue
-
-            best_orders = max(policy.items(), key=lambda x: (x[1], x))[0]
-            predicted_orders[power] = best_orders
-
-        await self.chiron_agent.suggest_opponent_orders(predicted_orders)
         
     def get_proposal_move_dict(self, msg):
+        """mainly checking move dicts whether they are proposal to do such move in the current turn.
+        The code is partly from deception/persuasion detection in our prior paper (https://aclanthology.org/2024.acl-long.672.pdf)
+        """
         # check if extracted_moves relate to sender or recipient
         # copy from deception detection
         extracted_moves = msg['extracted_moves']
@@ -580,23 +577,15 @@ class milaWrapper:
     def AMR_to_move_dict(self, msg):
         return self.amr_single_message_to_dict(msg, self.prev_extracted_moves, self.prev_message)
     
-    def generate_friction(self, msg):
-        '''TODO: should call suggest_friction(str?)'''
-        # you should do this in chiron utils with new bot!!
-        
-        if self.is_friction_in_proposal(msg):
-            print('friction')
-        else:
-            print('not friction')
-    
     def is_friction_in_proposal(self, msg):
         # arrange move_dict_list into proposal (function to filter proposal?)
         msg = self.get_proposal_move_dict(msg)
-        # translate move dict to diplomacy order e.g. A VIE - TRI
-        dip_moves = self.get_diplomacy_moves(msg['proposals'])
+        # retrieving proposal orders by matching move in dict to any move in possible orders
+        # matching reversing- if action move/hold -> 1. to 2. from , if support_action/convoy_action in dict 1. to 2. from 3. S/C 4. support_from/convoy_from
+        
+        
         # do RL part using those proposal from msg['extract_moves']
         return False
-    
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:
             self.game.powers[power_name].vote = strings.YES
@@ -756,7 +745,7 @@ class milaWrapper:
                 msg_tuple = self.msg_to_move_dict(msg_tuple)
                 self.prev_extracted_moves[pair_power_str] = copy.deepcopy(msg_tuple['extracted_moves'])
                 self.prev_message[pair_power_str] = copy.deepcopy(msg_tuple)
-                self.generate_friction(msg_tuple)
+                self.suggest_friction(msg_tuple)
                 
 
         # update last_received_message_time 
