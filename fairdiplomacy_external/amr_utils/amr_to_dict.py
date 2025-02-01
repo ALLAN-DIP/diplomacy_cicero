@@ -569,7 +569,6 @@ def remove_bounce_order_in_prev_m(order_set, bounce):
 
 
 def amr_phase_messages_to_dict(amr_phase_data):
-    amr = AMR()
     msg_amr = amr_phase_data['messages']
 
     prev_message = {
@@ -582,6 +581,9 @@ def amr_phase_messages_to_dict(amr_phase_data):
     }
 
     for msg_tuple in msg_amr:
+        sender = msg_tuple['sender']
+        recipient = msg_tuple['recipient']
+        pair_power_str = '-'.join(sorted([sender, recipient]))
         # assign msg_tuple['extracted_moves'] in-place if msg_tuple['parsed-amr']!= '(a / amr-empty)':
         amr_single_message_to_dict(msg_tuple, prev_extracted_moves, prev_message)
 
@@ -593,48 +595,48 @@ def amr_phase_messages_to_dict(amr_phase_data):
     
     return amr_phase_data
   
-  def amr_single_message_to_dict(msg_tuple, prev_extracted_moves, prev_message):
-      amr = AMR()
+def amr_single_message_to_dict(msg_tuple, prev_extracted_moves, prev_message):
+    amr = AMR()
 
-      sender = msg_tuple['sender']
-      recipient = msg_tuple['recipient']
-      incomplete_AMR = msg_tuple['parsed-amr']
-      # print(incomplete_AMR)
-      pair_power_str = '-'.join(sorted([sender, recipient]))
+    sender = msg_tuple['sender']
+    recipient = msg_tuple['recipient']
+    incomplete_AMR = msg_tuple['parsed-amr']
+    # print(incomplete_AMR)
+    pair_power_str = '-'.join(sorted([sender, recipient]))
 
-      if incomplete_AMR != '(a / amr-empty)':
-          # print(msg_tuple['message'])
-          # print(incomplete_AMR)
+    if incomplete_AMR != '(a / amr-empty)':
+        # print(msg_tuple['message'])
+        # print(incomplete_AMR)
 
-          amr_tuple = amr.string_to_amr(incomplete_AMR)
-          # print(amr_tuple)
-          root_node = amr_tuple[0]
-          prev_context = []
-          if root_node.concept == 'agree-01' and not any(role == 'polarity' for role,sub in root_node.subs):
-              for move in prev_extracted_moves[pair_power_str]:
-                  move_country = move_country =  move.get('support_country', move.get('transport_country', move.get('country', '')))
-                  if move_country == msg_tuple['sender'] and 'sender' in prev_message[pair_power_str] and prev_message[pair_power_str]['sender']!=msg_tuple['sender']: #avoid agree to themselves
-                      new_move = copy.deepcopy(move)
-                      prev_context.append(new_move)
-                      new_move['agree_to_prev_context'] = True
-                      new_move['question'] = False
-          try:
-            msg_tuple['extracted_moves'] = dfs_missing_info_recursive(root_node) + prev_context
-          # print(msg_tuple['extracted_moves'])
-          except:
-            msg_tuple['extracted_moves'] = []
+        amr_tuple = amr.string_to_amr(incomplete_AMR)
+        # print(amr_tuple)
+        root_node = amr_tuple[0]
+        prev_context = []
+        if root_node.concept == 'agree-01' and not any(role == 'polarity' for role,sub in root_node.subs):
+            for move in prev_extracted_moves[pair_power_str]:
+                move_country = move_country =  move.get('support_country', move.get('transport_country', move.get('country', '')))
+                if move_country == msg_tuple['sender'] and 'sender' in prev_message[pair_power_str] and prev_message[pair_power_str]['sender']!=msg_tuple['sender']: #avoid agree to themselves
+                    new_move = copy.deepcopy(move)
+                    prev_context.append(new_move)
+                    new_move['agree_to_prev_context'] = True
+                    new_move['question'] = False
+        try:
+          msg_tuple['extracted_moves'] = dfs_missing_info_recursive(root_node) + prev_context
+        # print(msg_tuple['extracted_moves'])
+        except:
+          msg_tuple['extracted_moves'] = []
 
-          for m in msg_tuple['extracted_moves']:
-              if 'action' not in m:
-                  continue
-              if 'support_country' in m:
-                  m['support_country'] = short_POWERS[m['support_country'].upper()] if m['support_country'].upper() in short_POWERS else m['support_country'].upper()
-              if 'transport_country' in m:
-                  m['transport_country'] = short_POWERS[m['transport_country'].upper()] if m['transport_country'].upper() in short_POWERS else m['transport_country'].upper()
-              m['country'] = short_POWERS[m['country'].upper()] if m['country'].upper() in short_POWERS else m['country'].upper()
-          
-          fix_dmz_case(msg_tuple['extracted_moves'], msg_tuple)
-          msg_tuple['extracted_moves'] = clean_move_dict(msg_tuple['extracted_moves'])
-          msg_tuple['extracted_moves'] = remove_emotion(msg_tuple['extracted_moves'])
-          msg_tuple['extracted_moves'] = remove_duplicate(msg_tuple['extracted_moves'])
+        for m in msg_tuple['extracted_moves']:
+            if 'action' not in m:
+                continue
+            if 'support_country' in m:
+                m['support_country'] = short_POWERS[m['support_country'].upper()] if m['support_country'].upper() in short_POWERS else m['support_country'].upper()
+            if 'transport_country' in m:
+                m['transport_country'] = short_POWERS[m['transport_country'].upper()] if m['transport_country'].upper() in short_POWERS else m['transport_country'].upper()
+            m['country'] = short_POWERS[m['country'].upper()] if m['country'].upper() in short_POWERS else m['country'].upper()
+        
+        fix_dmz_case(msg_tuple['extracted_moves'], msg_tuple)
+        msg_tuple['extracted_moves'] = clean_move_dict(msg_tuple['extracted_moves'])
+        msg_tuple['extracted_moves'] = remove_emotion(msg_tuple['extracted_moves'])
+        msg_tuple['extracted_moves'] = remove_duplicate(msg_tuple['extracted_moves'])
     return msg_tuple
