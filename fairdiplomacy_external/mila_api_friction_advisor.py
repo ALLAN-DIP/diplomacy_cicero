@@ -40,6 +40,7 @@ import heyhi
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
 from fairdiplomacy_external.amr_utils.amr_moves import parse_single_message_to_amr
 from fairdiplomacy_external.amr_utils.amr_to_dict import amr_single_message_to_dict, is_move_in_order_set, is_prov_in_units, is_power_unit, get_move_in_order_set
+import fairdiplomacy.action_generation
 
 logger = return_logger(__name__)
 
@@ -69,7 +70,7 @@ class CiceroBot(BaselineBot, ABC):
 
 
 @dataclass
-class CiceroFrictionAdvisor(CiceroBot):
+class CiceroAdvisor(CiceroBot):
     """Advisor form of `CiceroBot`."""
 
     bot_type = BotType.ADVISOR
@@ -396,13 +397,12 @@ class milaWrapper:
             else:
                 logger.info(f'Cannot find conditional orders in policy')
     
-    async def suggest_friction(self, power_name: str) -> None:
+    async def suggest_friction(self, msg) -> None:
         '''send commentary to interface'''
-        
+        our_power = self.get_curr_power_to_advise()
         if self.is_friction_in_proposal(msg):
-            await self.chiron_agent.suggest_commentary(power_name, 'friction')
-        else:
-            print('not friction')
+            logger.info(f'Sending friction advice at {round(time.time() * 1_000_000)}')
+            await self.chiron_agent.suggest_commentary(our_power, 'friction')
 
         
     def get_proposal_move_dict(self, msg):
@@ -487,7 +487,7 @@ class milaWrapper:
                         # then assign A TRI - VEN --- to sender/recipient that A TRI belongs to
                         if  is_power_unit(sender_units, new_move_info['from']):
                             proposals[sender].append(new_move_info)
-                        else if is_power_unit(recipient_units, new_move_info['from']):
+                        elif is_power_unit(recipient_units, new_move_info['from']):
                             proposals[recipient].append(new_move_info)
                 else:
                     # if recipient is asked to do any move
@@ -544,7 +544,7 @@ class milaWrapper:
                         # then assign A TRI - VEN --- to sender/recipient that A TRI belongs to
                         if  is_power_unit(sender_units, new_move_info['from']):
                             proposals[sender].append(new_move_info)
-                        else if is_power_unit(recipient_units, new_move_info['from']):
+                        elif is_power_unit(recipient_units, new_move_info['from']):
                             proposals[recipient].append(new_move_info)
                 
                 else: 
@@ -572,7 +572,8 @@ class milaWrapper:
                         proposals[sender].append(move)
         
         msg['proposals'] = proposals
-        
+        logger.info(f"get proposals from extracted_moves {msg['extracted_moves']}")
+        logger.info(f"proposals: {msg['proposals']}")
         return msg
     
     def msg_to_move_dict(self, msg):
@@ -584,18 +585,34 @@ class milaWrapper:
         return msg
     
     def msg_to_AMR(self, msg):
-        return self.parse_single_message_to_amr(msg)
+        msg = self.parse_single_message_to_amr(msg)
+        logger.info(f"parsing msg to AMR {msg['message']}")
+        logger.info(f"{msg['parsed-amr']}")
+        return msg
     
     def AMR_to_move_dict(self, msg):
-        return self.amr_single_message_to_dict(msg, self.prev_extracted_moves, self.prev_message)
+        msg = self.amr_single_message_to_dict(msg, self.prev_extracted_moves, self.prev_message)
+        logger.info(f"parsing AMR to move dict {msg['parsed-amr']}")
+        logger.info(f"{msg['extracted_moves']}")
+        return msg
     
     def is_friction_in_proposal(self, msg):
         # arrange move_dict_list into proposal (function to filter proposal?)
         msg = self.get_proposal_move_dict(msg)
+        
         # retrieving proposal orders by matching move in dict to any move in possible orders
         # matching reversing- if action move/hold -> 1. to 2. from , if support_action/convoy_action in dict 1. to 2. from 3. S/C 4. support_from/convoy_from
         our_power = self.get_curr_power_to_advise()
-        our_power_dipcc_game = game_from_view_of(dipcc_game, our_power)
+        target_power = msg['sender']
+        
+        # we need proposal two ways - agreement of two parties
+        if our_power != msg['recipient'] or msg['proposals'][our_power] == [] or msg['proposals'][target_power] == []:
+            logger.info(f"current power to advise ({our_power}) should be the same msg recipient (msg['recipient'])")
+            logger.info(f"we need proposal two ways {msg['proposals']}")
+            return False
+        
+        logger.info(f"checking friction in proposal {msg['proposals']}...")
+        our_power_dipcc_game = game_from_view_of(self.dipcc_game, our_power)
         
         bp_policy = self.player.agent.get_plausible_orders_policy(
             our_power_dipcc_game, agent_power=our_power, agent_state=self.player.state
@@ -603,7 +620,7 @@ class milaWrapper:
         our_power_possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(our_power_dipcc_game, our_power, max_actions=100)
         our_proposal_orders= dict()
         
-        proposals = msg['proposals']
+        proposal = msg['proposals']
         
         # do RL part using those proposal from msg['extract_moves']
         for action in our_power_possible_orders:
@@ -612,14 +629,15 @@ class milaWrapper:
             not_found = [True for i in range (len(proposal[our_power]))]
             for i in range (len(proposal[our_power])):
                 for unit_order in list(action):
-                    is_valid = is_move_in_order_set([unit_order], proposals[our_power][i])
+                    is_valid = is_move_in_order_set([unit_order], proposal[our_power][i])
                     if is_valid and is_valid != 'not enough info':
                         not_found[i] = False
                         
             if all(not x for x in not_found):         
                 our_proposal_orders[action]=0.2
-                print(f'found align action! {action}')
-        target_power_possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(dipcc_game, target_power, max_actions=100)
+                logger.info(f'found align action! {action} to our power proposal {proposal[our_power][i]}')
+        
+        target_power_possible_orders = fairdiplomacy.action_generation.get_all_possible_orders(self.dipcc_game, target_power, max_actions=100)
         target_proposal_orders= dict()
         for action in target_power_possible_orders:
             # print('possible orders')
@@ -627,13 +645,18 @@ class milaWrapper:
             not_found = [True for i in range (len(proposal[target_power]))]
             for i in range (len(proposal[target_power])):
                 for unit_order in list(action):
-                    is_valid = is_move_in_order_set([unit_order], proposals[target_power][i])
+                    is_valid = is_move_in_order_set([unit_order], proposal[target_power][i])
                     if is_valid and is_valid != 'not enough info':
                         not_found[i] = False
                         
             if all(not x for x in not_found):        
                 target_proposal_orders[action]=0.2
-                print(f'found align action! {action}')
+                logger.info(f'found align action! {action} to target power proposal {proposal[target_power][i]}')
+        
+        # we need proposal in Diplomacy orders
+        if len(our_proposal_orders.keys()) ==0 or len(target_proposal_orders.keys()) ==0:
+            logger.info(f"we need proposal in Diplomacy orders our: {our_proposal_orders} and target: {target_proposal_orders}")
+            return False
         
         for order, prob in our_proposal_orders.items():
             bp_policy[our_power][order] = prob
@@ -642,9 +665,9 @@ class milaWrapper:
             
         search_result = self.player.agent.run_best_response_against_correlated_bilateral_search(game=our_power_dipcc_game, agent_power=our_power,bp_policy=bp_policy, agent_state=self.player.state)
         our_policy = search_result.get_agent_policy()[our_power]
-        V = max(our_policy.items(), key=lambda item: item[1])[0]
+        V_best = max(our_policy.items(), key=lambda item: item[1])[0]
         target_policy = search_result.get_agent_policy()[target_power]
-        D_stab = max(target_policy.items(), key=lambda item: item[1])[0]
+        D_best = max(target_policy.items(), key=lambda item: item[1])[0]
         
         joint_table = search_result.power_value_matrices[target_power]
         
@@ -653,19 +676,29 @@ class milaWrapper:
                 V_prime = our_action
                 D_lie = target_action
                 # val_to_vic(D_lie, V_prime)
-                val_vic_D_lie_V_prime = joint_table[D_lie, V_prime].squeeze().tolist()[POWER_TO_INDEX[our_power]]
-                # val_to_vic(D_stab, V_prime)
-                val_vic_D_stab_V_prime = joint_table[D_stab, V_prime].squeeze().tolist()[POWER_TO_INDEX[our_power]]
-                # val_to_vic(D_lie, V)
-                val_vic_D_lie_V = joint_table[D_lie, V].squeeze().tolist()[POWER_TO_INDEX[our_power]]
-                # val_to_dec(D_stab, V_prime)
-                val_dec_D_stab_V_prime = joint_table[D_stab, V_prime].squeeze().tolist()[POWER_TO_INDEX[target_power]]
-                # val_to_dec(D_stab, V)
-                val_dec_D_stab_V = joint_table[D_stab, V].squeeze().tolist()[POWER_TO_INDEX[target_power]]
-                if (val_vic_D_lie_V_prime - val_vic_D_stab_V_prime > 0 and
-                    val_dec_D_stab_V_prime - val_dec_D_stab_V >= 0 and
-                    val_vic_D_lie_V_prime - val_vic_D_lie_V >=0):
-                    return True          
+                val_vic_D_lie_V_prime = joint_table[V_prime, D_lie].squeeze().tolist()[POWER_TO_INDEX[our_power]]
+                # val_to_vic(D_best, V_prime)
+                val_vic_D_best_V_prime = joint_table[V_prime, D_best].squeeze().tolist()[POWER_TO_INDEX[our_power]]
+                # val_to_vic(D_lie, V_best)
+                val_vic_D_lie_V_best = joint_table[V_best, D_lie].squeeze().tolist()[POWER_TO_INDEX[our_power]]
+                # val_to_dec(D_best, V_prime)
+                val_dec_D_best_V_prime = joint_table[V_prime, D_best].squeeze().tolist()[POWER_TO_INDEX[target_power]]
+                # val_to_dec(D_best, V_best)
+                val_dec_D_best_V_best = joint_table[V_best, D_best].squeeze().tolist()[POWER_TO_INDEX[target_power]]
+                if (val_vic_D_lie_V_prime - val_vic_D_best_V_prime > 0 and
+                    val_dec_D_best_V_prime - val_dec_D_best_V_best >= 0 and
+                    val_vic_D_lie_V_prime - val_vic_D_lie_V_best >=0):
+                    logger.info(f"Friction detected! passing all criteria:")
+                    logger.info(f"too good to be true {val_vic_D_lie_V_prime - val_vic_D_best_V_prime} > 0")
+                    logger.info(f"deceiver receives better value when stab {val_dec_D_best_V_prime - val_dec_D_best_V_best} >= 0")
+                    logger.info(f"a lie that increases victim's value {val_vic_D_lie_V_prime - val_vic_D_lie_V_best} >= 0")
+                    return True 
+                else:
+                    logger.info(f"Friction not detected! not passing some criteria:")
+                    logger.info(f"too good to be true {val_vic_D_lie_V_prime - val_vic_D_best_V_prime} > 0")
+                    logger.info(f"deceiver receives better value when stab {val_dec_D_best_V_prime - val_dec_D_best_V_best} >= 0")
+                    logger.info(f"a lie that increases victim's value {val_vic_D_lie_V_prime - val_vic_D_lie_V_best} >= 0")   
+                        
         return False
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:
@@ -1026,7 +1059,7 @@ def main() -> None:
     args = parser.parse_args()
 
     mila = milaWrapper()
-    discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
+    discord = Discord(url="https://discord.com/api/webhooks/1326004133844619316/tpreKLsR6yrcN4o2trIhDl-A0w3Whhir0dJcIGRpZ4IeF6AabWOTp5fKw6nOPc-vCuMK")
 
     while True:
         try:
