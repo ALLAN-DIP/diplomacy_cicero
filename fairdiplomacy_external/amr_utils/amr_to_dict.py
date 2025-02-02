@@ -7,6 +7,8 @@ import re
 import regex
 import sys
 from typing import Optional, Tuple, Union
+sys.path.insert(0, './fairdiplomacy_external/')
+sys.path.insert(0, './fairdiplomacy_external/AMR/')
 from AMR.AMR_graph import AMR, AMRnode
 import copy
 
@@ -462,6 +464,8 @@ def remove_duplicate(extracted_moves):
   seen = set()
   unique_moves = []
   for move in extracted_moves:
+      #remove variable
+      move.pop('variable', None)
       # Make a hashable version of the dictionary
       move_tuple = tuple(sorted(move.items()))
       if move_tuple not in seen:
@@ -603,7 +607,9 @@ def amr_single_message_to_dict(msg_tuple, prev_extracted_moves, prev_message):
     incomplete_AMR = msg_tuple['parsed-amr']
     # print(incomplete_AMR)
     pair_power_str = '-'.join(sorted([sender, recipient]))
-
+    
+    msg_tuple['extracted_moves'] = []
+    
     if incomplete_AMR != '(a / amr-empty)':
         # print(msg_tuple['message'])
         # print(incomplete_AMR)
