@@ -40,7 +40,6 @@ CICERO_DIR=/media/volume/cicero-base-models
 
 GAME_COMMAND=(
   python fairdiplomacy_external/mila_api_"$BOT_TYPE".py
-  --game_type 2
   "$@"
 )
 
