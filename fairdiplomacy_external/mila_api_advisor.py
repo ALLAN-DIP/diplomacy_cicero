@@ -715,12 +715,6 @@ def main() -> None:
         help="game id of game created in DATC diplomacy game",
     )
     parser.add_argument(
-        "--game_type",
-        type=int, 
-        default=0,
-        help="0: AI-only game, 1: Human and AI game, 2: Human-only game, 3: silent, 4: human with eng-daide-eng Cicero, 5: chiron",
-    )
-    parser.add_argument(
         "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
     )
     parser.add_argument(

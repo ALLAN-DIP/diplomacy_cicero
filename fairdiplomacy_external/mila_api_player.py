@@ -587,12 +587,6 @@ def main() -> None:
         help="power name",
     )
     parser.add_argument(
-        "--game_type",
-        type=int, 
-        default=0,
-        help="0: AI-only game, 1: Human and AI game, 2: Human-only game, 3: silent, 4: human with eng-daide-eng Cicero",
-    )
-    parser.add_argument(
         "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
     )
     
