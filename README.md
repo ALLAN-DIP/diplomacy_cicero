@@ -57,8 +57,8 @@ To use the advisor, run a command similar to the following:
   --host diplomacy.example.org \
   --use-ssl \
   --game_id test_game \
-  --human_powers AUSTRIA \
-  --advice_levels 11
+  --human_powers AUSTRIA ENGLAND \
+  --advice_levels 10 11
 ```
 
 To use the player, run a command similar to the following:
