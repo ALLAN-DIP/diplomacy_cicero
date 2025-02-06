@@ -686,10 +686,6 @@ class milaWrapper:
 
             
 def main() -> None:
-    
-    def list_of_strings(arg):
-        return arg.split(',')
-
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--host",
@@ -716,14 +712,12 @@ def main() -> None:
     )
     parser.add_argument(
         "--human_powers",
-        default="",
-        type=list_of_strings,
+        nargs="+",
         help="human - controlled powers that we provide an advisor to",
     )
     parser.add_argument(
         "--advice_levels",
-        default= "",
-        type=list_of_strings,
+        nargs="+",
         help=ADVICE_LEVELS_MESSAGE,
     )
     parser.add_argument(
