@@ -448,6 +448,11 @@ def clean_move_dict(extracted_moves):
       for key in ['support_country', 'transport_country','country','support_from','transport_from','from','to']:
 
           info_key = move.get(key, '')
+          
+          # fix weird country with white space 
+          if key in ['support_country', 'transport_country','country'] and key in move:
+            move[key] = info_key.strip()
+            
           info_key = info_key.split()
           if len(info_key)>1:
             if 'to' in key or 'from' in key:
@@ -544,6 +549,7 @@ def is_move_in_order_set(order_set, move, order_country=''):
         order_tokens = order.split()
         is_exist = check_moves(move, order_tokens, order_country)
         if is_exist=='not enough info':
+          # print(f'not enough info {move} {order_tokens} {order_country}')
           return is_exist
         # if is_exist:
         #   print(order_tokens)
