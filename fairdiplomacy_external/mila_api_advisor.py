@@ -142,7 +142,7 @@ class milaWrapper:
         return False
 
     
-    def get_playble_human_powers(self, game, human_powers):
+    def get_playable_human_powers(self, game, human_powers):
         playable_powers = []
         
         for power in human_powers:
@@ -213,7 +213,7 @@ class milaWrapper:
             file_advisor = gamedir / f"{game_id}_{'_'.join(human_powers)}.json"
             #for every m turn -> reassign advisor
             # get whom to advice (not eliminated and human powers)
-            playable_powers = self.get_playble_human_powers(self.game, human_powers)
+            playable_powers = self.get_playable_human_powers(self.game, human_powers)
             if len(playable_powers) != len(self.weight_powers):
                 self.weight_powers = {power:  1/len(playable_powers) for power in playable_powers}
             # then assign power and level of advice
@@ -740,7 +740,7 @@ def main() -> None:
             )
         except Exception as e:
             logger.exception(f"Error running {milaWrapper.play_mila.__name__}(): ")
-            cicero_error = f"centaur cicero controlling {args.human_powers} has an error occured: \n {e}"
+            cicero_error = f"centaur cicero controlling {args.human_powers} has an error occurred: \n {e}"
             discord.post(content=cicero_error)
 
 
