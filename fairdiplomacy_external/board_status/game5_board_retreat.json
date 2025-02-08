@@ -1,0 +1,137 @@
+[
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": ["A BER R SIL","A KIE R RUH"],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": ["F TUN R ION"],
+        "RUSSIA": ["A ARM R SYR","F SWE R BOT"],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": ["A TUS R PIE"],
+        "GERMANY": ["F HOL R HEL"],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": ["A MUN D"],
+        "ITALY": [],
+        "RUSSIA": ["F BAL R PRU"],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": ["A NAP D"],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": ["F GRE R ALB"],
+        "ENGLAND": ["A LVN R WAR"],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": ["A WAR D"],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": ["A TUS D"],
+        "RUSSIA": [],
+        "TURKEY": ["A SER R RUM"]
+    },
+    {
+        "AUSTRIA": ["A MUN D","A SER D"],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": ["A VEN D"],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": ["A VEN R TRI"],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": ["A MOS R SEV"],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": ["A KIE D"],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": ["A BER D"],
+        "GERMANY": ["F ENG D"],
+        "ITALY": [],
+        "RUSSIA": ["A SEV R UKR"],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": ["A TYR R BOH"],
+        "ENGLAND": [],
+        "FRANCE": ["A HOL D"],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": ["A TYR R PIE"],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": ["F ENG D"],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": ["F BRE R PIC"],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": ["A WAR R PRU"],
+        "TURKEY": []
+    }
+]

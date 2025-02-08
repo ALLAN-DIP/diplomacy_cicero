@@ -1,0 +1,1094 @@
+[
+    {
+        "AUSTRIA": [
+            "F TRI - ALB",
+            "A BUD - SER",
+            "A VIE - GAL"
+        ],
+        "ENGLAND": [
+            "F EDI - NTH",
+            "F LON - ENG",
+            "A LVP - WAL"
+        ],
+        "FRANCE": [
+            "A PAR - PIC",
+            "A MAR - PIE",
+            "F BRE - MAO"
+        ],
+        "GERMANY": [
+            "A BER - MUN",
+            "A MUN - RUH",
+            "F KIE - DEN"
+        ],
+        "ITALY": [
+            "A VEN H",
+            "F NAP - ION",
+            "A ROM - APU"
+        ],
+        "RUSSIA": [
+            "A MOS - UKR",
+            "F SEV - BLA",
+            "F STP/SC - BOT",
+            "A WAR - GAL"
+        ],
+        "TURKEY": [
+            "F ANK - BLA",
+            "A SMY - CON",
+            "A CON - BUL"
+        ]
+    },
+    {
+        "AUSTRIA": [
+            "F ALB - GRE",
+            "A SER S A UKR - RUM",
+            "A VIE - GAL"
+        ],
+        "ENGLAND": [
+            "F NTH - NWY",
+            "A WAL - BEL",
+            "F ENG C A WAL - BEL"
+        ],
+        "FRANCE": [
+            "A PIC - BRE",
+            "A PIE - MAR",
+            "F MAO - SPA/SC"
+        ],
+        "GERMANY": [
+            "A RUH - HOL",
+            "A MUN - BUR",
+            "F DEN - SWE"
+        ],
+        "ITALY": [
+            "A VEN H",
+            "F ION C A APU - TUN",
+            "A APU - TUN"
+        ],
+        "RUSSIA": [
+            "F SEV - BLA",
+            "F BOT - SWE",
+            "A UKR - RUM",
+            "A WAR - BUD"
+        ],
+        "TURKEY": [
+            "F ANK H",
+            "A BUL H",
+            "A CON H"
+        ]
+    },
+    {
+        "AUSTRIA": [
+            "A BUD B",
+            "A VIE B"
+        ],
+        "ENGLAND": [
+            "F LON B",
+            "F LVP B"
+        ],
+        "FRANCE": [
+            "A PAR B"
+        ],
+        "GERMANY": [
+            "F BER B",
+            "A MUN B"
+        ],
+        "ITALY": [
+            "F NAP B"
+        ],
+        "RUSSIA": [
+            "A SEV B"
+        ],
+        "TURKEY": [
+            "A SMY B"
+        ]
+    },
+    {
+        "AUSTRIA": [
+            "A GAL - BUD",
+            "F GRE S A SER - BUL",
+            "A SER - BUL",
+            "A BUD - SER",
+            "A VIE H"
+        ],
+        "ENGLAND": [
+            "F NWY - NWG",
+            "F LON - NTH",
+            "F LVP - IRI",
+            "A BEL - PIC",
+            "F ENG - MAO"
+        ],
+        "FRANCE": [
+            "F SPA/SC - MAO",
+            "A PAR - GAS",
+            "A MAR - BUR",
+            "A BRE - GAS"
+        ],
+        "GERMANY": [
+            "A BUR S A BEL - PIC",
+            "F BER - BAL",
+            "A HOL - KIE",
+            "A MUN S A BUR",
+            "F DEN S F BER - BAL"
+        ],
+        "ITALY": [
+            "A VEN - PIE",
+            "F ION - EAS",
+            "F NAP - ION",
+            "A TUN H"
+        ],
+        "RUSSIA": [
+            "F BLA S A SEV - ARM",
+            "A SEV - ARM",
+            "F BOT S F DEN - SWE",
+            "A WAR - LVN",
+            "A RUM S A SER - BUL"
+        ],
+        "TURKEY": [
+            "F ANK - BLA",
+            "A BUL H",
+            "A SMY - ARM",
+            "A CON S A BUL"
+        ]
+    },
+    {
+        "AUSTRIA": [
+            "F GRE - AEG",
+            "A BUD - SER",
+            "A SER - GRE",
+            "A BUL S A SER - GRE",
+            "A VIE - BUD"
+        ],
+        "ENGLAND": [
+            "F IRI - MAO",
+            "F NTH - BEL",
+            "F NWG - NAO",
+            "A PIC - BRE",
+            "F ENG S A PIC - BRE"
+        ],
+        "FRANCE": [
+            "F SPA/SC S A MAR",
+            "A PAR - BUR",
+            "A MAR S A PAR - BUR",
+            "A BRE - PIC"
+        ],
+        "GERMANY": [
+            "A BUR - MAR",
+            "F BAL S F DEN - SWE",
+            "A MUN - BUR",
+            "F DEN - SWE",
+            "A KIE - RUH"
+        ],
+        "ITALY": [
+            "F ION C A TUN - SYR",
+            "F EAS C A TUN - SYR",
+            "A PIE S A BUR - MAR",
+            "A TUN - SYR"
+        ],
+        "RUSSIA": [
+            "F BLA S A SEV - ARM",
+            "A SEV - ARM",
+            "A LVN - WAR",
+            "F BOT - SWE",
+            "A RUM H"
+        ],
+        "TURKEY": [
+            "F ANK - CON",
+            "A SMY - SYR",
+            "A CON - SMY"
+        ]
+    },
+    {
+        "AUSTRIA": [
+            "A VIE B"
+        ],
+        "ENGLAND": [
+            "F EDI B"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BER B",
+            "A KIE B"
+        ],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "F AEG C A GRE - CON",
+            "A VIE - BOH",
+            "A GRE - CON",
+            "A BUL S A GRE - CON",
+            "A BUD - VIE",
+            "A SER S A BUL"
+        ],
+        "ENGLAND": [
+            "F BEL H",
+            "F ENG S F NAO - MAO",
+            "F EDI - NWG",
+            "F NAO - MAO",
+            "A BRE - PAR",
+            "F MAO - WES"
+        ],
+        "FRANCE": [
+            "A BUR - PAR",
+            "F SPA/SC S A MAR",
+            "A MAR H"
+        ],
+        "GERMANY": [
+            "A RUH - BUR",
+            "F SWE H",
+            "A BER - PRU",
+            "F BAL C A KIE - LVN",
+            "A MUN S A RUH - BUR",
+            "A KIE - LVN"
+        ],
+        "ITALY": [
+            "F ION - TYS",
+            "F EAS - ION",
+            "A PIE H",
+            "A TUN H"
+        ],
+        "RUSSIA": [
+            "F BLA C A RUM - ANK",
+            "A ARM S A RUM - ANK",
+            "F BOT - LVN",
+            "A WAR H",
+            "A RUM - ANK"
+        ],
+        "TURKEY": [
+            "F ANK S A CON",
+            "A SMY S A CON",
+            "A CON H"
+        ]
+    },
+    {
+        "AUSTRIA": [
+            "F AEG S A ARM - SMY",
+            "A VIE - TYR",
+            "A BOH S A VIE - TYR",
+            "A GRE H",
+            "A BUL - CON",
+            "A SER - BUD"
+        ],
+        "ENGLAND": [
+            "F BEL - ENG",
+            "F ENG - MAO",
+            "F WES - TYS",
+            "F NWG - NTH",
+            "A BRE S A BUR - PAR",
+            "F MAO - POR"
+        ],
+        "FRANCE": [
+            "F SPA/SC - POR",
+            "A MAR - BUR",
+            "A GAS - PAR"
+        ],
+        "GERMANY": [
+            "A BUR - PAR",
+            "F SWE H",
+            "A PRU - LVN",
+            "F BAL S A PRU - LVN",
+            "A MUN H",
+            "A KIE - BER"
+        ],
+        "ITALY": [
+            "F ION - TYS",
+            "A PIE H",
+            "A TUN H",
+            "F TYS - LYO"
+        ],
+        "RUSSIA": [
+            "F BLA S A BUL - CON",
+            "A ARM - SMY",
+            "F BOT - LVN",
+            "A WAR H",
+            "A ANK S A ARM - SMY"
+        ],
+        "TURKEY": [
+            "A SMY S A CON",
+            "A CON H"
+        ]
+    },
+    {
+        "AUSTRIA": [
+            "F TRI B"
+        ],
+        "ENGLAND": [],
+        "FRANCE": [
+            "A GAS D"
+        ],
+        "GERMANY": [
+            "A KIE B"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A MOS B",
+            "F STP/SC B"
+        ],
+        "TURKEY": [
+            "A SYR D"
+        ]
+    },
+    {
+        "AUSTRIA": [
+            "F TRI - ADR",
+            "A BOH S A BUR - MUN",
+            "A GRE - ALB",
+            "A BUD - GAL",
+            "F AEG C A CON - GRE",
+            "A TYR S A BUR - MUN",
+            "A CON - GRE"
+        ],
+        "ENGLAND": [
+            "F BEL H",
+            "F ENG - MAO",
+            "F WES - SPA/SC",
+            "F NTH - NWY",
+            "A BRE - GAS",
+            "F MAO - NAF"
+        ],
+        "FRANCE": [
+            "A BUR - MUN",
+            "F SPA/SC H"
+        ],
+        "GERMANY": [
+            "A PAR S A BRE - GAS",
+            "A LVN - PRU",
+            "F SWE H",
+            "A BER - SIL",
+            "F BAL S A LVN - PRU",
+            "A MUN S A KIE - RUH",
+            "A KIE - RUH"
+        ],
+        "ITALY": [
+            "F ION - TYS",
+            "F LYO S F SPA/SC",
+            "A PIE - MAR",
+            "A TUN H"
+        ],
+        "RUSSIA": [
+            "A SMY H",
+            "A MOS - LVN",
+            "F BOT S A MOS - LVN",
+            "A ANK - RUM",
+            "F STP/SC S A MOS - LVN",
+            "F BLA C A ANK - RUM",
+            "A WAR S A MOS - LVN"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A GRE - BUL",
+            "A ALB - TRI",
+            "A BOH - SIL",
+            "A GAL - VIE",
+            "F AEG - ION",
+            "F ADR S F AEG - ION",
+            "A TYR - PIE"
+        ],
+        "ENGLAND": [
+            "F NAF S F WES - TUN",
+            "F BEL - ENG",
+            "A GAS S F MAO - SPA/SC",
+            "F NWY H",
+            "F WES - TUN",
+            "F MAO - SPA/SC"
+        ],
+        "FRANCE": [
+            "F SPA/SC S F TYS - WES",
+            "A MUN - BER"
+        ],
+        "GERMANY": [
+            "A RUH S A SIL - MUN",
+            "F SWE H",
+            "A PAR - BUR",
+            "A PRU - SIL",
+            "A BER S A SIL - MUN",
+            "F BAL - KIE",
+            "A SIL - MUN"
+        ],
+        "ITALY": [
+            "F LYO S F TYS - WES",
+            "A MAR S F SPA/SC",
+            "A TUN - NAF",
+            "F TYS - WES"
+        ],
+        "RUSSIA": [
+            "A SMY - ANK",
+            "A RUM - GAL",
+            "F BOT - BAL",
+            "F STP/SC H",
+            "A LVN - PRU",
+            "F BLA H",
+            "A WAR S A LVN - PRU"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [
+            "F LON B"
+        ],
+        "FRANCE": [
+            "A TYR D"
+        ],
+        "GERMANY": [],
+        "ITALY": [
+            "F ROM B"
+        ],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A TRI S A VIE - TYR",
+            "F ADR - ION",
+            "A VIE - TYR",
+            "A PIE S A MAR",
+            "A BOH - MUN",
+            "F ION - TUN",
+            "A BUL - GRE"
+        ],
+        "ENGLAND": [
+            "F NAF S F TUN",
+            "F ENG - MAO",
+            "A GAS - SPA",
+            "F LON - ENG",
+            "F NWY - SKA",
+            "F TUN H",
+            "F MAO - POR"
+        ],
+        "FRANCE": [
+            "F SPA/SC S F WES"
+        ],
+        "GERMANY": [
+            "A RUH - MUN",
+            "A BUR - MAR",
+            "F SWE - DEN",
+            "A BER H",
+            "A MUN - SIL",
+            "F KIE - DEN"
+        ],
+        "ITALY": [
+            "F WES S F ION - TUN",
+            "F LYO S F WES",
+            "A MAR H",
+            "F ROM - TYS"
+        ],
+        "RUSSIA": [
+            "A ANK - SEV",
+            "A PRU S F BAL - BER",
+            "A GAL - SIL",
+            "F STP/SC H",
+            "F BAL - BER",
+            "F BLA C A ANK - SEV",
+            "A WAR S A GAL - SIL"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A TRI - VEN",
+            "F ADR - APU",
+            "A PIE - MAR",
+            "A BOH S A SIL - MUN",
+            "F ION S F TYS - TUN",
+            "A GRE H",
+            "A TYR S A SIL - MUN"
+        ],
+        "ENGLAND": [
+            "F NAF S F TUN - WES",
+            "F ENG - NTH",
+            "A GAS S F MAO - SPA/SC",
+            "F POR S F MAO - SPA/SC",
+            "F SKA H",
+            "F TUN - WES",
+            "F MAO - SPA/SC"
+        ],
+        "FRANCE": [
+            "F SPA/SC S F WES"
+        ],
+        "GERMANY": [
+            "A BUR S A MUN",
+            "A RUH - KIE",
+            "A MUN S A RUH - KIE",
+            "F SWE - BOT",
+            "F KIE - BAL"
+        ],
+        "ITALY": [
+            "F WES - NAF",
+            "F LYO - MAR",
+            "A MAR - BUR",
+            "F TYS - TUN"
+        ],
+        "RUSSIA": [
+            "A SEV - MOS",
+            "A PRU - SIL",
+            "F STP/SC - BOT",
+            "F BER - KIE",
+            "F BLA H",
+            "A WAR H",
+            "A SIL - MUN"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "F TRI B"
+        ],
+        "ENGLAND": [
+            "F LVP B"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A KIE B"
+        ],
+        "ITALY": [
+            "F ROM B"
+        ],
+        "RUSSIA": [
+            "A SEV B"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "F TRI - ADR",
+            "A PIE - TUS",
+            "F APU S A GRE - NAP",
+            "A BOH S A MUN",
+            "F ION C A GRE - NAP",
+            "A GRE - NAP",
+            "A VEN S A PIE - TUS",
+            "A TYR S A MUN"
+        ],
+        "ENGLAND": [
+            "F NAF S F WES - TUN",
+            "F LVP - IRI",
+            "A GAS S F POR - SPA/SC",
+            "F POR - SPA/SC",
+            "F WES - TUN",
+            "F NTH - ENG",
+            "F SKA - NWY",
+            "F SPA/SC - WES"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BUR S A RUH",
+            "F BAL - BOT",
+            "F SWE - BOT",
+            "A RUH S A KIE",
+            "A KIE S A RUH"
+        ],
+        "ITALY": [
+            "F LYO S F ROM - TYS",
+            "A MAR H",
+            "F ROM - TYS",
+            "F TUN - NAF"
+        ],
+        "RUSSIA": [
+            "A SEV H",
+            "A MOS H",
+            "F STP/SC H",
+            "F BER H",
+            "A MUN H",
+            "F BLA H",
+            "A WAR H",
+            "A SIL H"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "F ADR S F ION",
+            "A TUS - ROM",
+            "F APU S F ION",
+            "A BOH S A MUN",
+            "F ION S A NAP",
+            "A NAP S A TUS - ROM",
+            "A VEN - PIE",
+            "A TYR S A MUN"
+        ],
+        "ENGLAND": [
+            "F NAF - TUN",
+            "F ENG H",
+            "A GAS - MAR",
+            "F NWY - NTH",
+            "F WES - LYO",
+            "F IRI - MAO",
+            "F TUN - TYS",
+            "F SPA/SC S F WES - LYO"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BUR S A GAS - MAR",
+            "F BAL - BER",
+            "F SWE H",
+            "A RUH S A KIE",
+            "A KIE S F BAL - BER"
+        ],
+        "ITALY": [
+            "F LYO S A MAR",
+            "A MAR H",
+            "F TYS - TUN"
+        ],
+        "RUSSIA": [
+            "A SEV - MOS",
+            "A MOS - LVN",
+            "F STP/SC - FIN",
+            "F BER H",
+            "A MUN H",
+            "F BLA H",
+            "A WAR S A MOS - LVN",
+            "A SIL S F BER"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A TRI B",
+            "A BUD B"
+        ],
+        "ENGLAND": [
+            "A EDI B",
+            "F LVP B"
+        ],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [
+            "F TYS D"
+        ],
+        "RUSSIA": [
+            "F STP/NC B"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A TRI - SER",
+            "F ADR - ION",
+            "A ROM - TUS",
+            "A PIE S A ROM - TUS",
+            "F APU S F ADR - ION",
+            "A BOH S A SIL - MUN",
+            "F ION - NAP",
+            "A NAP - ROM",
+            "A TYR S A SIL - MUN",
+            "A BUD - RUM"
+        ],
+        "ENGLAND": [
+            "A MAR - PIE",
+            "F NAF - TUN",
+            "F LVP - NAO",
+            "F ENG - MAO",
+            "A EDI - NWY",
+            "F NTH C A EDI - NWY",
+            "F TUN - TYS",
+            "F SPA/SC - LYO",
+            "F LYO - TUS",
+            "F MAO - WES"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BUR - MUN",
+            "F BAL - BER",
+            "F SWE S A EDI - NWY",
+            "A RUH S A KIE",
+            "A KIE S F BAL - BER"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A LVN H",
+            "A MOS - WAR",
+            "F BLA - BUL/EC",
+            "F STP/NC H",
+            "F BER - PRU",
+            "A MUN - BER",
+            "F FIN - BOT",
+            "A WAR - SIL",
+            "A SIL - MUN"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "F ADR - ION",
+            "A ROM - TUS",
+            "A RUM - BUL",
+            "A PIE S A ROM - TUS",
+            "F APU S F ADR - ION",
+            "A BOH S A SIL - MUN",
+            "F ION - NAP",
+            "A NAP - ROM",
+            "A TYR S A PIE",
+            "A SER S A RUM - BUL"
+        ],
+        "ENGLAND": [
+            "A MAR - PIE",
+            "F NAO - NWG",
+            "A NWY - FIN",
+            "F WES - TYS",
+            "F NTH - NWY",
+            "F TUN S F WES - TYS",
+            "F SPA/SC - WES",
+            "F LYO S F TYS - TUS",
+            "F MAO - NAF",
+            "F TYS - TUS"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BUR S A KIE - MUN",
+            "F BER H",
+            "A RUH S A KIE - MUN",
+            "F SWE S A NWY - FIN",
+            "A KIE - MUN"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A LVN H",
+            "A MOS H",
+            "F BOT H",
+            "F PRU H",
+            "F STP/NC H",
+            "F BUL/EC H",
+            "A MUN H",
+            "A WAR H",
+            "A SIL H"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "F ADR - ALB",
+            "A SER - RUM",
+            "A PIE - TUS",
+            "F APU S F ION",
+            "A BOH - GAL",
+            "F ION H",
+            "A NAP S A ROM",
+            "A BUL - CON",
+            "A TYR - PIE",
+            "A ROM S A PIE - TUS"
+        ],
+        "ENGLAND": [
+            "A MAR S F TUS - PIE",
+            "F NAF - WES",
+            "F TUS - PIE",
+            "F NWY S F NWG - BAR",
+            "F WES - TYS",
+            "F NWG - BAR",
+            "F TUN S F WES - TYS",
+            "F LYO S F TUS - PIE",
+            "A FIN H",
+            "F TYS - TUS"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BUR - MUN",
+            "F BER - BAL",
+            "A RUH S A BUR - MUN",
+            "A MUN - BER",
+            "F SWE S F BER - BAL"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A MOS S F STP/NC",
+            "F BOT S F PRU - BAL",
+            "F PRU - BAL",
+            "F STP/NC H",
+            "A LVN S F STP/NC",
+            "A WAR H",
+            "A SIL S A WAR - PRU"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A ROM H",
+            "A RUM - SEV",
+            "F ALB - ION",
+            "F APU S F ALB - ION",
+            "F ION - AEG",
+            "A NAP S A ROM",
+            "A GAL - UKR",
+            "A VEN S A TYR",
+            "A TYR S A VEN",
+            "A CON - ANK"
+        ],
+        "ENGLAND": [
+            "A MAR - PIE",
+            "F BAR S A FIN - STP",
+            "F TUS H",
+            "F NWY S A FIN - STP",
+            "F PIE - LYO",
+            "F WES - TYS",
+            "F TUN - ION",
+            "F LYO - MAR",
+            "A FIN - STP",
+            "F TYS - NAP"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BUR - MUN",
+            "F BER - BAL",
+            "A RUH - KIE",
+            "A MUN - BOH",
+            "F SWE S F BER - BAL"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A MOS - SEV",
+            "F BOT H",
+            "F PRU - BAL",
+            "F STP/NC H",
+            "A LVN H",
+            "A WAR - GAL",
+            "A SIL S A WAR - GAL"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A BUD B",
+            "A VIE B"
+        ],
+        "ENGLAND": [
+            "A LON B"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BER B"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A GAL D",
+            "A SIL D"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A ROM H",
+            "A RUM S A BUD - GAL",
+            "A VIE S A TYR",
+            "A UKR - WAR",
+            "A ANK - ARM",
+            "F ION H",
+            "A NAP S A ROM",
+            "A TYR H",
+            "F AEG S F ION",
+            "A VEN S A TYR",
+            "F APU - ADR",
+            "A BUD - GAL"
+        ],
+        "ENGLAND": [
+            "F MAR S A PIE",
+            "F BAR S A STP",
+            "F TUS S A PIE",
+            "A LON H",
+            "A PIE S A MUN - TYR",
+            "F NWY S A STP",
+            "F WES - MAO",
+            "A STP S A MOS",
+            "F TUN - ION",
+            "F LYO S F TUS",
+            "F TYS S F TUN - ION"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "F SWE H",
+            "A BOH - VIE",
+            "A BER - SIL",
+            "F BAL H",
+            "A MUN - TYR",
+            "A KIE - BER"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A MOS H",
+            "F PRU H",
+            "A LVN H",
+            "F BOT H"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "F ADR S F ION",
+            "A ROM H",
+            "A RUM S A WAR - GAL",
+            "A VIE S A TYR",
+            "A ARM - SEV",
+            "F ION H",
+            "A NAP S A ROM",
+            "A GAL - BOH",
+            "F AEG - SMY",
+            "A VEN S A TYR",
+            "A WAR - GAL",
+            "A TYR S A GAL - BOH"
+        ],
+        "ENGLAND": [
+            "F MAR - PIE",
+            "F BAR S A STP",
+            "F TUS S F MAR - PIE",
+            "A LON H",
+            "F NWY S A STP",
+            "A PIE - TYR",
+            "A STP S F BAL - LVN",
+            "F TUN - ION",
+            "F LYO S F MAR - PIE",
+            "F MAO - ENG",
+            "F TYS S F TUS"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "F SWE H",
+            "A BOH S A SIL - GAL",
+            "A BER - PRU",
+            "F BAL S A BER - PRU",
+            "A MUN - TYR",
+            "A SIL - GAL"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A MOS - SEV",
+            "F PRU - LVN",
+            "A LVN - MOS",
+            "F BOT S F PRU - LVN"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A TRI B",
+            "A BUD B"
+        ],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BER B"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "F BOT D"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A TRI S A TYR",
+            "F ADR S F ION",
+            "A ROM H",
+            "F SMY - AEG",
+            "A RUM S A ARM - SEV",
+            "A VIE S A TYR",
+            "A ARM - SEV",
+            "F ION H",
+            "A NAP S A ROM",
+            "A GAL S A WAR",
+            "A BUD S A GAL",
+            "A VEN S A TYR",
+            "A WAR S A GAL",
+            "A TYR H"
+        ],
+        "ENGLAND": [
+            "F MAR - PIE",
+            "F BAR S A STP",
+            "F ENG - NTH",
+            "F TUS - ROM",
+            "A LON H",
+            "A PIE - TYR",
+            "F NWY - NWG",
+            "A STP S A MOS",
+            "F TUN - ION",
+            "F LYO S F MAR - PIE",
+            "F TYS S F TUS - ROM"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A PRU S A SIL - WAR",
+            "F SWE H",
+            "A BOH - GAL",
+            "A BER - SIL",
+            "F BAL H",
+            "A MUN - TYR",
+            "A SIL - WAR"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A MOS - SEV",
+            "A LVN - MOS"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [
+            "A TRI S A TYR",
+            "A SEV S A UKR",
+            "F ADR H",
+            "A ROM H",
+            "A RUM S A GAL",
+            "A VIE S A GAL",
+            "A UKR S A MOS",
+            "F ION H",
+            "A NAP S A ROM",
+            "A GAL S A UKR",
+            "A BUD S A GAL",
+            "F AEG S F ION",
+            "A VEN S A TYR",
+            "A TYR H"
+        ],
+        "ENGLAND": [
+            "F MAR - PIE",
+            "F BAR S A STP",
+            "F TUS S F TYS - ROM",
+            "A LON - NWY",
+            "A PIE - TYR",
+            "F NTH C A LON - NWY",
+            "F NWG - NAO",
+            "A STP S A MOS",
+            "F TUN - ION",
+            "F LYO S F MAR - PIE",
+            "F TYS - ROM"
+        ],
+        "FRANCE": [],
+        "GERMANY": [
+            "A PRU S A WAR",
+            "F SWE H",
+            "A BOH - GAL",
+            "F BAL H",
+            "A MUN - TYR",
+            "A WAR H",
+            "A SIL S A WAR"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A MOS H",
+            "A LVN H"
+        ],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [
+            "A BER B"
+        ],
+        "ITALY": [],
+        "RUSSIA": [
+            "A LVN D"
+        ],
+        "TURKEY": []
+    }
+]

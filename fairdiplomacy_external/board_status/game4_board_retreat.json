@@ -1,0 +1,92 @@
+[
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": ["A RUH D"],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": ["A GAL R BOH","F SEV D"],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": ["A BEL D","F HOL D","A MUN D"],
+        "ITALY": ["F ION R NAP"],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": ["A GAL R UKR"],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": ["A BER D"],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": ["A SEV R ARM"]
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": ["A RUM D"]
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": ["F NTH R EDI"],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": ["A RUM D"],
+        "ENGLAND": ["F HOL D","F KIE D"],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": ["A KIE R MUN"],
+        "TURKEY": ["F TUN R TYS"]
+    },
+    {
+        "AUSTRIA": [],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": ["F NAP D"],
+        "RUSSIA": ["A MUN D","A RUM D"],
+        "TURKEY": []
+    },
+    {
+        "AUSTRIA": ["A BUD D","A SER R GRE"],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": [],
+        "TURKEY": ["F NAP R APU"]
+    },
+    {
+        "AUSTRIA": ["A GRE D"],
+        "ENGLAND": [],
+        "FRANCE": [],
+        "GERMANY": [],
+        "ITALY": [],
+        "RUSSIA": ["A NWY R FIN","A VIE D"],
+        "TURKEY": []
+    }
+]
