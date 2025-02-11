@@ -596,10 +596,10 @@ def main() -> None:
     args = parser.parse_args()
     host: str = args.host
     port: int = args.port
-    use_ssl: int = args.use_ssl
+    use_ssl: bool = args.use_ssl
     game_id: str = args.game_id
     power: str = args.power
-    outdir: Optional[Path] = args.outdir
+    outdir: Path = args.outdir
 
     logger.info(f"settings:")
     logger.info(f"host: {host}, port: {port}, use_ssl: {use_ssl}, game_id: {game_id}, power: {power}")
