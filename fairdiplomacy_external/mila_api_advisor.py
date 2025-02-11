@@ -717,7 +717,9 @@ def main() -> None:
     )
     parser.add_argument(
         "--advice_levels",
-        nargs="+",
+        nargs="*",
+        default=CiceroAdvisor.default_suggestion_type.to_parsable(),
+        type=SuggestionType.parse,
         help=ADVICE_LEVELS_MESSAGE,
     )
     parser.add_argument(
