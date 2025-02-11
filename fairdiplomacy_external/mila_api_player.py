@@ -601,8 +601,15 @@ def main() -> None:
     power: str = args.power
     outdir: Path = args.outdir
 
-    logger.info(f"settings:")
-    logger.info(f"host: {host}, port: {port}, use_ssl: {use_ssl}, game_id: {game_id}, power: {power}")
+    logger.info(
+        "Arguments:\n"
+        f"\thost: {host}\n"
+        f"\tport: {port}\n"
+        f"\tuse_ssl: {use_ssl}\n"
+        f"\tgame_id: {game_id}\n"
+        f"\tpower: {power}\n"
+        f"\toutdir: {outdir}\n"
+    )
 
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
