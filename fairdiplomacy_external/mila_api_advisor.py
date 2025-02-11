@@ -713,6 +713,7 @@ def main() -> None:
     parser.add_argument(
         "--human_powers",
         nargs="+",
+        choices=POWERS,
         help="human - controlled powers that we provide an advisor to",
     )
     parser.add_argument(
