@@ -587,9 +587,12 @@ def main() -> None:
         help="power name",
     )
     parser.add_argument(
-        "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
+        "--outdir",
+        default="./fairdiplomacy_external/out",
+        type=Path,
+        help="output directory for game json to be stored",
     )
-    
+
     args = parser.parse_args()
     host: str = args.host
     port: int = args.port

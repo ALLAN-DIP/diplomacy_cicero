@@ -715,17 +715,24 @@ def main() -> None:
         help="game id of game created in DATC diplomacy game",
     )
     parser.add_argument(
-        "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
+        "--human_powers",
+        default="",
+        type=list_of_strings,
+        help="human - controlled powers that we provide an advisor to",
     )
     parser.add_argument(
-        "--human_powers", default= "", type=list_of_strings, help="human - controlled powers that we provide an advisor to"
+        "--advice_levels",
+        default= "",
+        type=list_of_strings,
+        help=ADVICE_LEVELS_MESSAGE,
     )
-    
     parser.add_argument(
-        "--advice_levels", default= "", type=list_of_strings, help=ADVICE_LEVELS_MESSAGE
+        "--outdir",
+        default="./fairdiplomacy_external/out",
+        type=Path,
+        help="output directory for game json to be stored",
     )
-    
-    
+
     args = parser.parse_args()
 
     mila = milaWrapper()
