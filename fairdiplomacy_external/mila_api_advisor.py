@@ -171,16 +171,6 @@ class milaWrapper:
         advice_levels = [int(l) for l in args.advice_levels]
         power_name = None
 
-        logger.info(f"Settings:")
-        logger.info(
-            f"hostname: {hostname}, "
-            f"port: {port}, "
-            f"use_ssl: {use_ssl}, "
-            f"game_id: {game_id}, "
-            f"human_powers to advise: {human_powers}, "
-            f"advice_levels: {advice_levels}"
-        )
-
         connection = await connect(hostname, port, use_ssl)
         channel = await connection.authenticate(
             f"admin", "password"
@@ -729,6 +719,24 @@ def main() -> None:
     )
 
     args = parser.parse_args()
+    host: str = args.host
+    port: int = args.port
+    use_ssl: bool = args.use_ssl
+    game_id: str = args.game_id
+    outdir: Path = args.outdir
+    human_powers: List[str] = args.human_powers
+    advice_levels: List[str] = args.advice_levels
+
+    logger.info(
+        "Arguments:"
+        f"\thost: {host}\n"
+        f"\tport: {port}\n"
+        f"\tuse_ssl: {use_ssl}\n"
+        f"\tgame_id: {game_id}\n"
+        f"\toutdir: {outdir}\n"
+        f"\thuman_powers: {human_powers}\n"
+        f"\tadvice_levels: {advice_levels}\n"
+    )
 
     mila = milaWrapper()
     discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
