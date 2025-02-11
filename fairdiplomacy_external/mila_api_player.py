@@ -78,14 +78,15 @@ class milaWrapper:
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
-    async def play_mila(self, args) -> None:
-        hostname = args.host
-        port = args.port
-        use_ssl = args.use_ssl
-        game_id = args.game_id
-        power_name = args.power
-        gamedir = args.outdir
-        
+    async def play_mila(
+        self,
+        hostname: str,
+        port: int,
+        use_ssl: bool,
+        game_id: str,
+        power_name: str,
+        gamedir: Path,
+    ) -> None:
         logger.info(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port, use_ssl)
         channel = await connection.authenticate(
@@ -621,7 +622,14 @@ def main() -> None:
     while True:
         try:
             asyncio.run(
-                mila.play_mila(args)
+                mila.play_mila(
+                    hostname=host,
+                    port=port,
+                    use_ssl=use_ssl,
+                    game_id=game_id,
+                    power_name=power,
+                    gamedir=outdir,
+                )
                     )
         except Exception as e:
             logger.exception(f"Error running {milaWrapper.play_mila.__name__}(): ")

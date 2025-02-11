@@ -161,14 +161,17 @@ class milaWrapper:
     def get_curr_advice_level(self):
         return self.advice_level
 
-    async def play_mila(self, args) -> None:
-        hostname = args.host
-        port = args.port
-        use_ssl = args.use_ssl
-        game_id = args.game_id
-        gamedir = args.outdir
-        human_powers = args.human_powers
-        advice_levels = [int(l) for l in args.advice_levels]
+    async def play_mila(
+        self,
+        hostname: str,
+        port: int,
+        use_ssl: bool,
+        game_id: str,
+        gamedir: Path ,
+        human_powers: List[str],
+        advice_levels_strs: List[str],
+    ) -> None:
+        advice_levels = [int(l) for l in advice_levels_strs]
         power_name = None
 
         connection = await connect(hostname, port, use_ssl)
@@ -744,11 +747,19 @@ def main() -> None:
     while True:
         try:
             asyncio.run(
-                mila.play_mila(args)
+                mila.play_mila(
+                    hostname=host,
+                    port=port,
+                    use_ssl=use_ssl,
+                    game_id=game_id,
+                    gamedir=outdir,
+                    human_powers=human_powers,
+                    advice_levels_strs=advice_levels,
+                )
             )
         except Exception as e:
             logger.exception(f"Error running {milaWrapper.play_mila.__name__}(): ")
-            cicero_error = f"centaur cicero controlling {args.human_powers} has an error occurred: \n {e}"
+            cicero_error = f"centaur cicero controlling {human_powers} has an error occurred: \n {e}"
             discord.post(content=cicero_error)
 
 
