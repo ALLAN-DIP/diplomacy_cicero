@@ -561,13 +561,13 @@ def main() -> None:
         "--host",
         type=str,
         default=chiron_utils.game_utils.DEFAULT_HOST,
-        help="host IP address (default: %(default)s)",
+        help="Host name of game server. (default: %(default)s)",
     )
     parser.add_argument(
         "--port",
         type=int,
         default=chiron_utils.game_utils.DEFAULT_PORT,
-        help="port to connect to the game (default: %(default)s)",
+        help="Port of game server. (default: %(default)s)",
     )
     parser.add_argument(
         "--use-ssl",
@@ -578,19 +578,19 @@ def main() -> None:
         "--game_id",
         type=str,
         required=True,
-        help="game id of game created in DATC diplomacy game",
+        help="ID of game to join.",
     )
     parser.add_argument(
         "--power",
         choices=POWERS,
         required=True,
-        help="power name",
+        help="Name of power to play as.",
     )
     parser.add_argument(
         "--outdir",
         default="./fairdiplomacy_external/out",
         type=Path,
-        help="output directory for game json to be stored",
+        help="Output directory for storing game JSON. (default: %(default)s)",
     )
 
     args = parser.parse_args()
