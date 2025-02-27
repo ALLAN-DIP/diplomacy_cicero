@@ -38,9 +38,7 @@ from fairdiplomacy.utils.sampling import normalize_p_dict, sample_p_dict
 from fairdiplomacy.utils.typedefs import get_last_message
 import heyhi
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
-from fairdiplomacy_external.amr_utils.amr_moves import parse_single_message_to_amr
-from fairdiplomacy_external.amr_utils.amr_to_dict import amr_single_message_to_dict, is_move_in_order_set, is_prov_in_units, is_power_unit, get_move_in_order_set
-from fairdiplomacy_external.friction.utils import msg_to_move_dict, is_friction_in_proposal
+from fairdiplomacy_external.friction.utils import is_deception_in_proposal, bert_classify_deception
 
 logger = return_logger(__name__)
 
@@ -401,13 +399,13 @@ class milaWrapper:
         '''send commentary to interface'''
         our_power = self.get_curr_power_to_advise()
         target_power = msg['sender']
-        is_friction, what_friction = is_friction_in_proposal(self.dipcc_game, self.player, msg, our_power)
+        is_friction, what_friction = bert_classify_deception(self.dipcc_game, self.player, msg, our_power)
         if is_friction:
             friction_commentary = f"detect possible deception in {target_power} if they promise to do followings: /n
-                                    {what_friction['proposal'][target_power]} /n
+                                    {what_friction['d_proposed_action']} /n
                                     or ask you to do followings: /n
-                                    {what_friction['proposal'][our_power]} /n
-                                    we recommend you to be cautious with possible best move in this situation:
+                                    {what_friction['v_proposed_action']} /n
+                                    we recommend you to be cautious and proceed with your best move in this situation:
                                     {what_friction['V_best']}"
             logger.info(f'Sending friction advice at {round(time.time() * 1_000_000)}')
             await self.send_log(f'friction in msg: {msg} with tuple of actions: {what_friction}')

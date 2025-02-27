@@ -11,6 +11,8 @@ from pathlib import Path
 import random
 import time
 from typing import List, Optional, Sequence
+import torch
+import torch.nn as nn
 
 from chiron_utils.bots.baseline_bot import BaselineBot, BotType
 import chiron_utils.game_utils
@@ -38,11 +40,13 @@ from fairdiplomacy.utils.typedefs import get_last_message
 import heyhi
 from heyhi import setup_logging
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
-# from fairdiplomacy_external.amr_utils.amr_moves import parse_single_message_to_amr
-# from fairdiplomacy_external.amr_utils.amr_to_dict import amr_single_message_to_dict, is_move_in_order_set, is_prov_in_units, is_power_unit, get_move_in_order_set
-# from fairdiplomacy_external.amr_utils.amr_moves import parse_single_message_to_amr
-from fairdiplomacy_external.amr_utils.amr_to_dict import  is_move_in_order_set, is_prov_in_units, is_power_unit, get_move_in_order_set
-
+from fairdiplomacy_external.amr_utils.amr_moves import parse_single_message_to_amr
+from fairdiplomacy_external.amr_utils.amr_to_dict import amr_single_message_to_dict, is_move_in_order_set, is_prov_in_units, is_power_unit, get_move_in_order_set
+from transformers import BertTokenizer, BertModel
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+# from fairdiplomacy_external.amr_utils.amr_to_dict import  is_move_in_order_set, is_prov_in_units, is_power_unit, get_move_in_order_set
+from fairdiplomacy_external.friction.eval_bert import extract_features, BERTWithNumericalFeatures
 import fairdiplomacy.action_generation
 
 
@@ -283,7 +287,7 @@ def AMR_to_move_dict(msg, prev_extracted_moves, prev_messages):
     logger.info(f"{msg['extracted_moves']}")
     return msg
 
-def is_friction_in_proposal(dipcc_game, cicero_player, msg, power):
+def is_deception_in_proposal(dipcc_game, cicero_player, msg, power):
     # arrange move_dict_list into proposal (function to filter proposal?)
     msg = get_proposal_move_dict(dipcc_game, msg)
     dipcc_game.set_metadata("phase_minutes", str(10))
@@ -445,13 +449,14 @@ def is_friction_in_proposal(dipcc_game, cicero_player, msg, power):
                     # if ((rule1_val >= rule1_threshold/2 and rule2_val >= rule2_threshold) or
                     #     (rule1_val >= rule1_threshold and rule2_val >= rule2_threshold/2)) and rule3_val >= rule3_threshold:
                     # if (0.25*rule1_val + 0.5*rule2_val + 0.25*rule3_val >= 0.9*(0.25*rule1_threshold + 0.5*rule2_threshold + 0.25*rule3_threshold)):
-                    # if rule1_val >= rule1_threshold and rule2_val >= rule2_threshold and rule2_val >= rule2_threshold:
-                    logger.info(f"Friction detected! passing all criteria:")
-                    logger.info(f"too good to be true {val_vic_D_lie_V_prime - val_vic_D_best_V_prime} >= {rule1_threshold}")
-                    logger.info(f"deceiver receives better value when stab {val_dec_D_best_V_prime - val_dec_D_best_V_best} >= {rule2_threshold}")
-                    logger.info(f"a lie that increases victim's value {val_vic_D_lie_V_prime - val_vic_D_lie_V_best} >= {rule3_threshold}")
+                    if rule1_val >= rule1_threshold and rule2_val >= rule2_threshold and rule2_val >= rule2_threshold:
+                        logger.info(f"Friction detected! passing all criteria:")
+                        logger.info(f"too good to be true {val_vic_D_lie_V_prime - val_vic_D_best_V_prime} >= {rule1_threshold}")
+                        logger.info(f"deceiver receives better value when stab {val_dec_D_best_V_prime - val_dec_D_best_V_best} >= {rule2_threshold}")
+                        logger.info(f"a lie that increases victim's value {val_vic_D_lie_V_prime - val_vic_D_lie_V_best} >= {rule3_threshold}")
 
-                    deception_info.append({'1_rule': rule1_val,
+                        deception_info.append({'V_best': V_best, 'D_best': D_best, 'v_proposed_action': V_prime, 'd_proposed_action': D_lie, 
+                                '1_rule': rule1_val,
                                 '2_rule': rule2_val,
                                 '3_rule': rule3_val,
                                 })
@@ -676,7 +681,7 @@ def run_through_game(input_file, output_file, retreat_file):
                 assert 'extracted_moves' in msg, f"no extracted_moves in msg {msg}"
                 logger.info(f"{sender}->{recipient}: \"{msg['message']}\" \nAMR {msg['parsed-amr']} \nextracted moves {msg['extracted_moves']}")
                 cicero_player = Player(agent, recipient)
-                is_friction, what_friction = is_friction_in_proposal(dipcc_game, cicero_player, msg, recipient)
+                is_friction, what_friction = is_deception_in_proposal(dipcc_game, cicero_player, msg, recipient)
                 msg['friction'] = is_friction
                 msg['friction_info'] = what_friction
 
@@ -694,7 +699,7 @@ def run_through_game(input_file, output_file, retreat_file):
         logger.info(f"saved to {output_file} for phase {phase['name']}")
     
 def load_state_and_detect(input_file, output_file, reverse=False):
-    agent = load_cicero()
+    agent = load_cicero_small()
     
     with open(input_file, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -703,6 +708,14 @@ def load_state_and_detect(input_file, output_file, reverse=False):
         data = reversed(data)
         
     for msg in data:
+        if msg['phase'][-1] != 'M':
+            continue
+        
+        sender = msg['sender']
+        recipient = msg['recipient']
+        
+        if sender=='ALL' or recipient=='ALL':
+            continue
         if 'friction' in msg and 'friction_info' in msg:
             continue
         dipcc_game = Game()
@@ -724,7 +737,7 @@ def load_state_and_detect(input_file, output_file, reverse=False):
         # msg = AMR_to_move_dict(msg, prev_extracted_moves, prev_messages)
         
         
-        is_friction, what_friction = is_friction_in_proposal(dipcc_game, cicero_player, msg, recipient)
+        is_friction, what_friction = is_deception_in_proposal(dipcc_game, cicero_player, msg, recipient)
         # print(what_friction)
         msg['friction'] = copy.deepcopy(is_friction)
         msg['friction_info'] = copy.deepcopy(what_friction)
@@ -733,6 +746,118 @@ def load_state_and_detect(input_file, output_file, reverse=False):
         with open(output_file, 'w') as f:
             json.dump(data, f, indent=4) 
         logger.info(f"saved to {output_file}")
+
+def load_state_and_extract_moves(input_file, output_file, reverse=False):
+    
+    with open(input_file, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    
+    if reverse:
+        data = reversed(data)
+        
+    for msg in data:
+        if msg['phase'][-1] != 'M':
+            continue
+        if 'extracted_moves' in msg and 'parsed-amr' in msg:
+            continue
+        sender = msg['sender']
+        recipient = msg['recipient']
+        pair_power_str = '-'.join(sorted([sender, recipient]))
+        
+        if sender=='ALL' or recipient=='ALL':
+            continue
+        if sender == recipient:
+            continue
+        
+        dipcc_game = Game()
+        dipcc_json = json.loads(dipcc_game.to_json())
+        dipcc_game.set_metadata("phase_minutes", str(3))
+        dipcc_json['phases'][0]['state']['units'] = msg['units']
+        dipcc_game = Game.from_json(json.dumps(dipcc_json))
+    
+
+        
+        prev_messages = {
+            '-'.join(sorted([power1, power2])): dict()
+            for power1 in POWERS for power2 in POWERS if power1 != power2
+            }
+        prev_extracted_moves = {
+            '-'.join(sorted([power1, power2])): []
+            for power1 in POWERS for power2 in POWERS if power1 != power2
+        }
+        
+        if len(msg['prev_messages'])>0:
+            for p_msg in msg['prev_messages']:
+                if p_msg['phase'] != msg['phase']:
+                    continue
+                p_msg = msg_to_move_dict(p_msg, prev_extracted_moves, prev_messages)
+                prev_extracted_moves[pair_power_str] = copy.deepcopy(p_msg['extracted_moves'])
+                prev_messages[pair_power_str] = copy.deepcopy(p_msg)
+
+
+        msg = msg_to_move_dict(msg, prev_extracted_moves, prev_messages)
+        
+        # save tp fn fp (except tn too many)
+        try:
+            with open(output_file, 'w') as f:
+                json.dump(data, f, indent=4) 
+        except:
+            msg['parsed-amr'] = '(a / amr-empty)'
+            with open(output_file, 'w') as f:
+                json.dump(data, f, indent=4) 
+            logger.info(f"saved to {output_file}")
+            
+def bert_classify_deception(dipcc_game, cicero_player, msg, our_power):
+    final_info = []
+    
+    gold_amr_path = f"/diplomacy_cicero/fairdiplomacy_external/friction/denis_train_messages_detection_1.json"    
+    with open(gold_amr_path, "r") as f:
+        gold_amr_data = json.load(f)
+        
+    train_data = extract_features(gold_amr_data)
+    # Separate text, numerical features, and labels for training
+    _, numeric_features_train, __annotations__ = zip(*train_data)
+    numeric_features_train = np.array(numeric_features_train)
+
+    # Normalize numerical features
+    scaler = StandardScaler()
+    numeric_features_train = scaler.fit_transform(numeric_features_train)
+    
+    # assume that msh has amr and extract moves already!
+    model = BERTWithNumericalFeatures(num_numeric_features=3)
+    model.load_state_dict(torch.load("/diplomacy_cicero/fairdiplomacy_external/friction/bert_model/best_model_epoch_10.pth"))  # Load the best model
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+    tokenized_texts_test = tokenizer(
+    list([msg['message']]), padding=True, truncation=True, max_length=512, return_tensors="pt")
+    
+    is_deception, deception_info = is_deception_in_proposal(dipcc_game, cicero_player, msg, our_power)
+    if not is_deception: 
+        return False, final_info
+    
+    max_deception_tuples = dict()
+    max_deception_values = 0.0
+    for d_i in deception_info:
+        new_deception_values = d_i['1_rule']+ d_i['2_rule']+ d_i['3_rule']
+        if new_deception_values > max_deception_values:
+            max_deception_values = new_deception_values
+            max_deception_tuples = copy.deepcopy(d_i)
+            
+    deception_values = torch.tensor(np.array([
+                        max_deception_tuples['1_rule'],
+                        max_deception_tuples['2_rule'],
+                        max_deception_tuples['3_rule']], dtype=float), dtype=torch.float32)
+    
+    deception_values = scaler.transform(deception_values)
+        
+    predictions = model(torch.tensor(np.array([msg['message']])).to(device), tokenized_texts_test.to(device), deception_values.to(device))
+    result = predictions[0]
+    final_info = max_deception_tuples
+    return result, final_info
+    
         
 def main() -> None:
 
@@ -745,13 +870,13 @@ def main() -> None:
 
     args = parser.parse_args()
     if args.job_type == 1:
-        game_file = f'/denis/sample_1K_messages_propose_2_detection_3_1.json'
-        new_file = f'/denis/sample_1K_messages_propose_2_detection_3_1.json'
+        game_file = f'/denis/denis_1K_fn_only.json'
+        new_file = f'/denis/denis_1K_fn_only.json'
         load_state_and_detect(game_file, new_file, False)
     elif args.job_type == 2:
-        game_file = f'/denis/sample_1K_messages_propose_2_detection_3_2.json'
-        new_file = f'/denis/sample_1K_messages_propose_2_detection_3_2.json'
-        load_state_and_detect(game_file, new_file, True)
+        game_file = f'/denis/meta_2K_2_predicted_orders.json'
+        new_file = f'/denis/meta_2K_2_predicted_orders.json'
+        load_state_and_detect(game_file, new_file, False)
     elif args.job_type == 3:
         for i in range(1,13):
             game_file = f'/denis/denis_state_detect_weights_3_loose/game{i}_amr_proposals.json'
@@ -766,4 +891,23 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    # game_file = f'/denis/meta_2K_1_predicted_orders.json'
+    # new_file = f'/denis/meta_2K_1_predicted_orders_fix.json'
+    
+    # with open(game_file, 'r', encoding='utf-8') as file:
+    #     moves_data = json.load(file)
+    
+    # with open(new_file, 'r', encoding='utf-8') as file:
+    #     og_data = json.load(file)
+        
+    # start_i = len(moves_data)
+        
+    # for i in range(start_i, len(og_data)):
+    #     moves_data.append(og_data[i])
+    
+    # with open(game_file, 'w') as f:
+    #     json.dump(moves_data, f, indent=4) 
+    
+        
+    
     
