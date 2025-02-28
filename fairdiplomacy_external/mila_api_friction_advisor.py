@@ -38,7 +38,7 @@ from fairdiplomacy.utils.sampling import normalize_p_dict, sample_p_dict
 from fairdiplomacy.utils.typedefs import get_last_message
 import heyhi
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
-from fairdiplomacy_external.friction.utils import is_deception_in_proposal, bert_classify_deception
+from fairdiplomacy_external.friction.utils import msg_to_move_dict, bert_classify_deception
 
 logger = return_logger(__name__)
 
@@ -46,7 +46,7 @@ MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 
 DEFAULT_DEADLINE = 5
 
-POWER_TO_INDEX: dict[str, int] = {power: index for index, power in enumerate(POWERS)}
+POWER_TO_INDEX = {power: index for index, power in enumerate(POWERS)}
 
 ADVICE_LEVELS_MESSAGE = (
     "Levels of advice: "
@@ -96,6 +96,14 @@ class milaWrapper:
         self.advice_level = None
         self.weight_powers = dict()
         self.decrement_value = 0.2
+        self.prev_messages = {
+            '-'.join(sorted([power1, power2])): dict()
+            for power1 in POWERS for power2 in POWERS if power1 != power2
+            }
+        self.prev_extracted_moves = {
+            '-'.join(sorted([power1, power2])): []
+            for power1 in POWERS for power2 in POWERS if power1 != power2
+        }
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         logger.info("Successfully loaded CICERO config")
@@ -401,12 +409,12 @@ class milaWrapper:
         target_power = msg['sender']
         is_friction, what_friction = bert_classify_deception(self.dipcc_game, self.player, msg, our_power)
         if is_friction:
-            friction_commentary = f"detect possible deception in {target_power} if they promise to do followings: /n
+            friction_commentary = f"""detect possible deception in {target_power} if they promise to do followings: /n
                                     {what_friction['d_proposed_action']} /n
                                     or ask you to do followings: /n
                                     {what_friction['v_proposed_action']} /n
                                     we recommend you to be cautious and proceed with your best move in this situation:
-                                    {what_friction['V_best']}"
+                                    {what_friction['V_best']}"""
             logger.info(f'Sending friction advice at {round(time.time() * 1_000_000)}')
             await self.send_log(f'friction in msg: {msg} with tuple of actions: {what_friction}')
             await self.chiron_agent.suggest_commentary(our_power, friction_commentary)
@@ -567,10 +575,11 @@ class milaWrapper:
                 recipient = message.recipient
                 pair_power_str = '-'.join(sorted([sender, recipient]))
                 msg_tuple = {'sender': sender, 'recipient': recipient, 'message': message.message}
-                msg_tuple = self.msg_to_move_dict(msg_tuple, self.prev_extracted_moves, self.prev_messages)
+                msg_tuple = msg_to_move_dict(msg_tuple, self.prev_extracted_moves, self.prev_messages)
                 self.prev_extracted_moves[pair_power_str] = copy.deepcopy(msg_tuple['extracted_moves'])
                 self.prev_messages[pair_power_str] = copy.deepcopy(msg_tuple)
-                self.suggest_friction(msg_tuple)
+                if recipient != power_name:
+                    self.suggest_friction(msg_tuple)
                 
 
         # update last_received_message_time 

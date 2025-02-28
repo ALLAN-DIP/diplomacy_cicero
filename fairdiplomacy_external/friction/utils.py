@@ -888,25 +888,7 @@ def main() -> None:
         new_file = f'/denis/gold_amr_train_messages_after.json'
         load_state_and_detect(game_file, new_file)
 
-
-if __name__ == "__main__":
-    main()
-    # game_file = f'/denis/meta_2K_1_predicted_orders.json'
-    # new_file = f'/denis/meta_2K_1_predicted_orders_fix.json'
-    
-    # with open(game_file, 'r', encoding='utf-8') as file:
-    #     moves_data = json.load(file)
-    
-    # with open(new_file, 'r', encoding='utf-8') as file:
-    #     og_data = json.load(file)
-        
-    # start_i = len(moves_data)
-        
-    # for i in range(start_i, len(og_data)):
-    #     moves_data.append(og_data[i])
-    
-    # with open(game_file, 'w') as f:
-    #     json.dump(moves_data, f, indent=4) 
+# main()
     
         
     
