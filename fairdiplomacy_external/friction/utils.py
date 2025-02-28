@@ -164,7 +164,7 @@ def get_proposal_move_dict(dipcc_game, msg):
                             proposals[recipient].append(copy.deepcopy(new_move_info))
                 else:
                     # if recipient is asked to do any move
-                    in_units = False if 'to' not in move else is_prov_in_units(power_units, move['to'])
+                    in_units = False # if 'to' not in move else is_prov_in_units(power_units, move['to'])
                 
                     if in_units:
                         continue
@@ -176,10 +176,12 @@ def get_proposal_move_dict(dipcc_game, msg):
 
                     # if move has not enough info, just disregard it
                     if in_possible_orders== 'not enough info':
+                        logger.info(f"not enough info {move}")
                         continue
 
                     # if in previous m orders, also disregard it
                     if in_prev_m_move:
+                        logger.info(f"in previous move {move}")
                         continue
 
                     # if it is possible, then let's count as proposal!
@@ -236,7 +238,7 @@ def get_proposal_move_dict(dipcc_game, msg):
                 
                 else: 
                     # if sender promise to do a regular move
-                    in_units = False if 'to' not in move else is_prov_in_units(sender_units, move['to'])
+                    in_units = False # if 'to' not in move else is_prov_in_units(sender_units, move['to'])
             
                     if in_units:
                         continue
@@ -461,7 +463,7 @@ def is_deception_in_proposal(dipcc_game, cicero_player, msg, power):
                                 '3_rule': rule3_val,
                                 })
 
-                    #     is_deception = True
+                        is_deception = True
                     #     # return is_deception, deception_info
                     # else:
                     #     logger.info(f"Friction not detected! not passing some criteria:")
@@ -825,7 +827,7 @@ def bert_classify_deception(dipcc_game, cicero_player, msg, our_power):
     
     # assume that msh has amr and extract moves already!
     model = BERTWithNumericalFeatures(num_numeric_features=3)
-    model.load_state_dict(torch.load("/diplomacy_cicero/fairdiplomacy_external/friction/bert_model/best_model_epoch_10.pth"))  # Load the best model
+    model.load_state_dict(torch.load("/diplomacy_cicero/fairdiplomacy_external/friction/bert_model/best_model_epoch_10.pth"), strict=False) # Load the best model
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -834,8 +836,11 @@ def bert_classify_deception(dipcc_game, cicero_player, msg, our_power):
     tokenized_texts_test = tokenizer(
     list([msg['message']]), padding=True, truncation=True, max_length=512, return_tensors="pt")
     
+    logger.info("getting three deception signs, bait, switch and edge")
+    
     is_deception, deception_info = is_deception_in_proposal(dipcc_game, cicero_player, msg, our_power)
     if not is_deception: 
+        logger.info("no deception in proposal from extracted moves/proposals")
         return False, final_info
     
     max_deception_tuples = dict()
@@ -846,16 +851,17 @@ def bert_classify_deception(dipcc_game, cicero_player, msg, our_power):
             max_deception_values = new_deception_values
             max_deception_tuples = copy.deepcopy(d_i)
             
-    deception_values = torch.tensor(np.array([
+    deception_values = scaler.transform(np.array([[
                         max_deception_tuples['1_rule'],
                         max_deception_tuples['2_rule'],
-                        max_deception_tuples['3_rule']], dtype=float), dtype=torch.float32)
+                        max_deception_tuples['3_rule']]]), dtype=float)
     
-    deception_values = scaler.transform(deception_values)
+    deception_values = torch.tensor(deception_values, dtype=torch.float32)
         
-    predictions = model(torch.tensor(np.array([msg['message']])).to(device), tokenized_texts_test.to(device), deception_values.to(device))
+    predictions = model(tokenized_texts_test['input_ids'].to(device), tokenized_texts_test['attention_mask'].to(device), deception_values.to(device))
     result = predictions[0]
     final_info = max_deception_tuples
+    logger.info(f"BERT predict {final_info} with {result}")
     return result, final_info
     
         

@@ -93,10 +93,10 @@ def test_with_files():
     args = parser.parse_args()
 
     # List of uploaded files
-    work_path = '/fs/nexus-scratch/wwongkam/classifier_friction_dip'
-    test_path = f"/fs/nexus-scratch/wwongkam/classifier_friction_dip/meta_2K_1_predicted_orders.json"
+    work_path = '/diplomacy_cicero/fairdiplomacy_external/'
+    test_path = f"/diplomacy_cicero/fairdiplomacy_external/peskov_test_1K_messages.json"
 
-    gold_amr_path = f"{work_path}/denis_train_messages_detection_1.json"    
+    gold_amr_path = f"{work_path}/peskov_train_messages.json"    
     with open(gold_amr_path, "r") as f:
         gold_amr_data = json.load(f)
         
@@ -234,6 +234,6 @@ def test_with_files():
     # stat = {'true_positives': true_positives, 'false_positives': false_positives, 'false_negatives': false_negatives,'true_negatives': true_negatives}
     stat = {'true_positives': true_positives, 'false_positives': false_positives, 'false_negatives': false_negatives}
     # output_file = f"{work_path}/true_positives/" + f"meta_first_2K_msg.json"
-    output_file = f"{work_path}/stat/" + f"meta_2K_2_predicted_orders.json"
+    output_file = f"{work_path}/results/" + f"peskov_test_1K_messages_prediction.json"
     with open(output_file, "w") as f:
         json.dump(stat, f, indent=4)
