@@ -418,17 +418,21 @@ class milaWrapper:
                 max_deception_tuples = copy.deepcopy(d_i)
         
         what_deception = copy.deepcopy(max_deception_tuples)
+        what_deception['scores'] = len(self.dipcc_game.get_state()['centers'][target_power])
+        what_deception['message'] = msg['message']
+        what_deception['sender'] = msg['sender']
+        what_deception['recipient'] = msg['recipient']
 
         if is_deception:
-            deception_commentary = f"""detect possible deception in {target_power} if they promise to do followings: /n
-                                    {what_deception['d_proposed_action']} /n
-                                    or ask you to do followings: /n
-                                    {what_deception['v_proposed_action']} /n
-                                    we recommend you to be cautious and proceed with your best move in this situation:
-                                    {what_deception['V_best']}"""
+            # deception_commentary = f"""detect possible deception in {target_power} if they promise to do followings: /n
+            #                         {what_deception['d_proposed_action']} /n
+            #                         or ask you to do followings: /n
+            #                         {what_deception['v_proposed_action']} /n
+            #                         we recommend you to be cautious and proceed with your best move in this situation:
+            #                         {what_deception['V_best']}"""
             logger.info(f'Sending deception advice at {round(time.time() * 1_000_000)}')
             await self.send_log(f'deception in msg: {msg} with tuple of actions: {what_deception}')
-            await self.chiron_agent.suggest_deception(deception_commentary)
+            await self.chiron_agent.suggest_deception(what_deception)
 
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:
