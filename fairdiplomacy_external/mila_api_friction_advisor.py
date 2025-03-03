@@ -38,7 +38,7 @@ from fairdiplomacy.utils.sampling import normalize_p_dict, sample_p_dict
 from fairdiplomacy.utils.typedefs import get_last_message
 import heyhi
 from parlai_diplomacy.wrappers.classifiers import INF_SLEEP_TIME
-from fairdiplomacy_external.friction.utils import msg_to_move_dict, bert_classify_deception
+from fairdiplomacy_external.friction.utils import msg_to_move_dict, is_deception_in_proposal
 
 logger = return_logger(__name__)
 
@@ -403,21 +403,22 @@ class milaWrapper:
             else:
                 logger.info(f'Cannot find conditional orders in policy')
     
-    async def suggest_friction(self, msg) -> None:
-        '''send commentary to interface'''
+    async def predict_deception(self, msg) -> None:
+        '''send commentary about deception to interface'''
         our_power = self.get_curr_power_to_advise()
         target_power = msg['sender']
-        is_friction, what_friction = bert_classify_deception(self.dipcc_game, self.player, msg, our_power)
-        if is_friction:
-            friction_commentary = f"""detect possible deception in {target_power} if they promise to do followings: /n
-                                    {what_friction['d_proposed_action']} /n
+        is_deception, what_deception = is_deception_in_proposal(self.dipcc_game, self.player, msg, our_power)
+
+        if is_deception:
+            deception_commentary = f"""detect possible deception in {target_power} if they promise to do followings: /n
+                                    {what_deception['d_proposed_action']} /n
                                     or ask you to do followings: /n
-                                    {what_friction['v_proposed_action']} /n
+                                    {what_deception['v_proposed_action']} /n
                                     we recommend you to be cautious and proceed with your best move in this situation:
-                                    {what_friction['V_best']}"""
-            logger.info(f'Sending friction advice at {round(time.time() * 1_000_000)}')
-            await self.send_log(f'friction in msg: {msg} with tuple of actions: {what_friction}')
-            await self.chiron_agent.suggest_commentary(our_power, friction_commentary)
+                                    {what_deception['V_best']}"""
+            logger.info(f'Sending deception advice at {round(time.time() * 1_000_000)}')
+            await self.send_log(f'deception in msg: {msg} with tuple of actions: {what_deception}')
+            await self.chiron_agent.suggest_deception(deception_commentary)
 
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:
@@ -570,16 +571,17 @@ class milaWrapper:
                     increment_on_collision=True,
                 )
                 
-                # for amr accuracy, we keep historical messages
-                sender = message.sender
-                recipient = message.recipient
-                pair_power_str = '-'.join(sorted([sender, recipient]))
-                msg_tuple = {'sender': sender, 'recipient': recipient, 'message': message.message}
-                msg_tuple = msg_to_move_dict(msg_tuple, self.prev_extracted_moves, self.prev_messages)
-                self.prev_extracted_moves[pair_power_str] = copy.deepcopy(msg_tuple['extracted_moves'])
-                self.prev_messages[pair_power_str] = copy.deepcopy(msg_tuple)
-                if recipient != power_name:
-                    self.suggest_friction(msg_tuple)
+                if self.chiron_type & SuggestionType.DECEPTION:
+                    # for amr accuracy, we keep historical messages
+                    sender = message.sender
+                    recipient = message.recipient
+                    pair_power_str = '-'.join(sorted([sender, recipient]))
+                    msg_tuple = {'sender': sender, 'recipient': recipient, 'message': message.message}
+                    msg_tuple = msg_to_move_dict(msg_tuple, self.prev_extracted_moves, self.prev_messages)
+                    self.prev_extracted_moves[pair_power_str] = copy.deepcopy(msg_tuple['extracted_moves'])
+                    self.prev_messages[pair_power_str] = copy.deepcopy(msg_tuple)
+                    if recipient == power_name:
+                        await self.predict_deception(msg_tuple)
                 
 
         # update last_received_message_time 
