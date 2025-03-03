@@ -408,6 +408,16 @@ class milaWrapper:
         our_power = self.get_curr_power_to_advise()
         target_power = msg['sender']
         is_deception, what_deception = is_deception_in_proposal(self.dipcc_game, self.player, msg, our_power)
+        
+        max_deception_tuples = dict()
+        max_deception_values = 0.0
+        for d_i in what_deception:
+            new_deception_values = d_i['1_rule']+ d_i['2_rule']+ d_i['3_rule']
+            if new_deception_values > max_deception_values:
+                max_deception_values = new_deception_values
+                max_deception_tuples = copy.deepcopy(d_i)
+        
+        what_deception = copy.deepcopy(max_deception_tuples)
 
         if is_deception:
             deception_commentary = f"""detect possible deception in {target_power} if they promise to do followings: /n
