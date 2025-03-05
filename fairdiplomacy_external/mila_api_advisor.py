@@ -127,7 +127,6 @@ class milaWrapper:
         use_ssl = args.use_ssl
         game_id = args.game_id
         power = args.power
-        power_name = None
 
         logger.info("Settings:")
         logger.info(
@@ -142,7 +141,7 @@ class milaWrapper:
         channel = await connection.authenticate(f"admin", "password")
         self.game: NetworkGame = await channel.join_game(game_id=game_id)
 
-        self.chiron_agent = CiceroAdvisor(power_name, self.game)
+        self.chiron_agent = CiceroAdvisor(power, self.game)
 
         # Wait while game is still being formed
         logger.info("Waiting for game to start")
@@ -271,8 +270,6 @@ class milaWrapper:
                                     )
                                 except Exception as e:
                                     logger.error(f"Error sending orders: {e}")
-
-                        sys.exit(0)
 
                 except json.JSONDecodeError:
                     logging.error("Invalid JSON")
