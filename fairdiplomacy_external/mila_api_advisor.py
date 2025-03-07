@@ -222,16 +222,19 @@ class milaWrapper:
                     for pp, units in current_units.items():
                         stance_unit[pp] = []
                         if pp in ally_powers or pp == power:
-                            stance_unit[power].extend(units)
+                            stance_unit[pp].extend(units)
                         else:
                             stance_unit[pp].extend(units)
 
                     for pp, centers in current_centers.items():
                         stance_center[pp] = []
                         if pp in ally_powers or pp == power:
-                            stance_center[power].extend(centers)
+                            stance_center[pp].extend(centers)
                         else:
                             stance_center[pp].extend(centers)
+
+                    if len(stance_center[power]) > 17:
+                        continue
 
                     dipcc_json["phases"][0]["state"]["units"] = stance_unit
                     dipcc_json["phases"][0]["state"]["homes"] = current_homes
