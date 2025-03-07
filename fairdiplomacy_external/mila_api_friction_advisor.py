@@ -424,12 +424,6 @@ class milaWrapper:
         what_deception['recipient'] = msg['recipient']
 
         if is_deception:
-            # deception_commentary = f"""detect possible deception in {target_power} if they promise to do followings: /n
-            #                         {what_deception['d_proposed_action']} /n
-            #                         or ask you to do followings: /n
-            #                         {what_deception['v_proposed_action']} /n
-            #                         we recommend you to be cautious and proceed with your best move in this situation:
-            #                         {what_deception['V_best']}"""
             logger.info(f'Sending deception advice at {round(time.time() * 1_000_000)}')
             await self.send_log(f'deception in msg: {msg} with tuple of actions: {what_deception}')
             await self.chiron_agent.suggest_deception(what_deception)
