@@ -414,19 +414,26 @@ class milaWrapper:
         for d_i in what_deception:
             new_deception_values = d_i['1_rule']+ d_i['2_rule']+ d_i['3_rule']
             if new_deception_values > max_deception_values:
-                max_deception_values = new_deception_values
+                max_deception_values = copy.copy(new_deception_values)
                 max_deception_tuples = copy.deepcopy(d_i)
+                logger.info(f"max deception values selected: {d_i['1_rule']} {d_i['2_rule']} {d_i['3_rule']}")
         
         what_deception = copy.deepcopy(max_deception_tuples)
         what_deception['scores'] = len(self.dipcc_game.get_state()['centers'][target_power])
         what_deception['message'] = msg['message']
         what_deception['sender'] = msg['sender']
         what_deception['recipient'] = msg['recipient']
-
-        if is_deception:
-            logger.info(f'Sending deception advice at {round(time.time() * 1_000_000)}')
-            await self.send_log(f'deception in msg: {msg} with tuple of actions: {what_deception}')
-            await self.chiron_agent.suggest_deception(what_deception)
+        if not is_deception:
+            what_deception['1_rule'] = -1
+            what_deception['2_rule'] = -1
+            what_deception['3_rule'] = -1
+            what_deception['V_best'] = 'None'
+            what_deception['d_proposed_action'] = 'None'
+            what_deception['v_proposed_action'] = 'None'
+        
+        logger.info(f'Sending deception advice at {round(time.time() * 1_000_000)}')
+        await self.send_log(f'deception in msg: {msg} with tuple of actions: {what_deception}')
+        await self.chiron_agent.suggest_deception(what_deception)
 
     def is_draw_token_message(self, msg ,power_name):
         if DRAW_VOTE_TOKEN in msg['message']:

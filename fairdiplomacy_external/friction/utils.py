@@ -451,7 +451,7 @@ def is_deception_in_proposal(dipcc_game, cicero_player, msg, power):
                     # if ((rule1_val >= rule1_threshold/2 and rule2_val >= rule2_threshold) or
                     #     (rule1_val >= rule1_threshold and rule2_val >= rule2_threshold/2)) and rule3_val >= rule3_threshold:
                     # if (0.25*rule1_val + 0.5*rule2_val + 0.25*rule3_val >= 0.9*(0.25*rule1_threshold + 0.5*rule2_threshold + 0.25*rule3_threshold)):
-                    if rule1_val >= rule1_threshold and rule2_val >= rule2_threshold and rule2_val >= rule2_threshold:
+                    if rule1_val > rule1_threshold and rule2_val > rule2_threshold and rule2_val > rule2_threshold:
                         logger.info(f"Friction detected! passing all criteria:")
                         logger.info(f"too good to be true {val_vic_D_lie_V_prime - val_vic_D_best_V_prime} >= {rule1_threshold}")
                         logger.info(f"deceiver receives better value when stab {val_dec_D_best_V_prime - val_dec_D_best_V_best} >= {rule2_threshold}")
