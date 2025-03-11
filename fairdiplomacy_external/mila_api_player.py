@@ -433,7 +433,7 @@ class milaWrapper:
 
         # generate message using pseudo orders
         try:
-            pseudo_orders = self.game.get_orders(power_name=power_name)
+            pseudo_orders = self.game.get_orders(power_name=self.power_name)
         except Exception as e:
             logger.info(f"Error in getting pseudo orders: {e}")
             pseudo_orders = None
