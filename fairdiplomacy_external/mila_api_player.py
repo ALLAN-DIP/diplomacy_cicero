@@ -85,6 +85,7 @@ class milaWrapper:
         game_id = args.game_id
         power_name = args.power
         gamedir = args.outdir
+        no_engine = args.no_engine
         
         logger.info(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port, use_ssl)
@@ -157,7 +158,7 @@ class milaWrapper:
                         await self.update_press_dipcc_game(power_name)
 
                     # reply/gen new message
-                    msg = self.generate_message(power_name)
+                    msg = self.generate_message(power_name, no_engine=no_engine)
                     logger.info(f'msg from cicero to dipcc {msg}')
                     
                     if msg is not None:
@@ -409,7 +410,7 @@ class milaWrapper:
 
         dipcc_game.process() # processing the orders set and moving on to the next phase of the dipcc game
 
-    def generate_message(self, power_name: POWERS)-> MessageDict:
+    def generate_message(self, power_name: POWERS, no_engine)-> MessageDict:
         """     
         call CICERO to generate message (reference from generate_message_for_approval function - webdip_api.py)
         """
@@ -431,13 +432,16 @@ class milaWrapper:
         else:
             timestamp_for_conditioning = last_timestamp_this_phase + sleep_time_for_conditioning
 
-        # generate message using pseudo orders
-        try:
-            pseudo_orders = self.game.get_orders(power_name=self.power_name)
-        except Exception as e:
-            logger.info(f"Error in getting pseudo orders: {e}")
-            pseudo_orders = None
-        if not pseudo_orders or not len(pseudo_orders):
+        # generate message using server orders
+        if no_engine:
+            try:
+                pseudo_orders = self.game.get_orders(power_name=self.power_name)
+                if not pseudo_orders or len(pseudo_orders) == 0:
+                    pseudo_orders = None
+            except Exception as e:
+                logger.info(f"Error in getting pseudo orders: {e}")
+                pseudo_orders = None
+        else:
             pseudo_orders = None
 
         msg = self.player.generate_message(
@@ -579,6 +583,11 @@ def main() -> None:
         "--use-ssl",
         action="store_true",
         help="Whether to use SSL to connect to the game server. (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--no-engine",
+        action="store_true",
+        help="Use server orders (i.e. other engines) for generate messages.",
     )
     parser.add_argument(
         "--game_id",
