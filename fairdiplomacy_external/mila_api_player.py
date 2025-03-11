@@ -432,7 +432,13 @@ class milaWrapper:
             timestamp_for_conditioning = last_timestamp_this_phase + sleep_time_for_conditioning
 
         # generate message using pseudo orders
-        pseudo_orders = None
+        try:
+            pseudo_orders = self.game.get_orders(power_name=power_name)
+        except Exception as e:
+            logger.info(f"Error in getting pseudo orders: {e}")
+            pseudo_orders = None
+        if not pseudo_orders or not len(pseudo_orders):
+            pseudo_orders = None
 
         msg = self.player.generate_message(
             game=self.dipcc_game,
