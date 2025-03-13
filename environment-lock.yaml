@@ -16,7 +16,6 @@ dependencies:
   - conda-package-handling=2.0.2=py37h06a4308_0
   - conda-package-streaming=0.7.0=py37h06a4308_0
   - cryptography=39.0.1=py37h9ce1e76_0
-  - cudatoolkit=11.0.221=h6bb024c_0
   - flit-core=3.6.0=pyhd3eb1b0_0
   - freetype=2.11.0=h70c0345_0
   - giflib=5.2.1=h7b6447c_0

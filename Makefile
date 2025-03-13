@@ -46,5 +46,5 @@ TAG ?= latest
 .PHONY: build
 build:
 	docker build \
-		--tag ghcr.io/allan-dip/diplomacy_cicero:$(TAG) \
+		--tag ghcr.io/allan-dip/ctrld_cicero:$(TAG) \
 		.
