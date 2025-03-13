@@ -208,13 +208,15 @@ class milaWrapper:
                     logger.info(f"Submit orders in {self.dipcc_current_phase}")
                     agent_orders = self.player.get_orders(self.dipcc_game)
 
-                    # keep track of our final order
-                    self.set_comm_intent('final', agent_orders)
-                    await self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
-
                     # set order in Mila
                     if not no_engine:
                         await self.chiron_agent.send_orders(agent_orders, wait=False)
+                    else:
+                        agent_orders = self.game.get_orders(power_name=self.power_name)
+                        
+                    # keep track of our final order
+                    self.set_comm_intent('final', agent_orders)
+                    await self.send_log(f'A record of intents in {self.dipcc_current_phase}: {self.get_comm_intent()}') 
 
                 # wait until the phase changed
                 logger.info(f"wait until {self.dipcc_current_phase} is done")
@@ -438,6 +440,7 @@ class milaWrapper:
         if no_engine:
             try:
                 pseudo_orders = self.game.get_orders(power_name=self.power_name)
+                logger.info(f"getting pseudo orders {pseudo_orders} from the interface (not using internal Cicero's engine)")
                 if not pseudo_orders or len(pseudo_orders) == 0:
                     pseudo_orders = None
             except Exception as e:
