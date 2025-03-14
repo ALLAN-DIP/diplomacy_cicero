@@ -90,20 +90,25 @@ def get_proposal_move_dict(dipcc_game, msg):
         for move in extracted_moves:
             # print(f"move {move}")
             if move['polarity']:
+                logger.info('polarity')
                 continue
             if 'action' not in move or ('from' not in move and 'to' not in move):
+                logger.info('no action')
                 continue
 
             country =  move.get('support_country', move.get('transport_country', move.get('country', '')))
 
             if country not in [sender, recipient, '']:
+                logger.info('country')
                 continue
 
             if 'year' in move and move['year']!=curr_phase[1:-1]:
+                logger.info('year')
                 continue
 
             # it should be about sender/recipient 
             if move['concept'] in ['demilitarize-01'] and (move['country'] != recipient or move['country'] != sender):
+                logger.info('demilitarize')
                 continue
 
             #get unit's power from move dict
@@ -118,9 +123,8 @@ def get_proposal_move_dict(dipcc_game, msg):
 
             possible = True
 
-            power_units = curr_state['units'][recipient]
             # unit is in recipient's unit and move country is for recipient
-            possible = is_power_unit(power_units, unit_loc_key) or country == recipient
+            possible = is_power_unit(recipient_units, unit_loc_key) and country in [recipient,'']
 
             #if move is about recipient:
             if possible:
@@ -138,6 +142,7 @@ def get_proposal_move_dict(dipcc_game, msg):
                     in_possible_orders = is_move_in_order_set(rec_possible_orders, move, recipient)
                     # if move has not enough info, just disregard it
                     if in_possible_orders== 'not enough info':
+                        logger.info(f'not enough info in rec_possible_orders {rec_possible_orders}')
                         continue
                     if in_possible_orders:
                         #  let's count move
@@ -149,6 +154,7 @@ def get_proposal_move_dict(dipcc_game, msg):
                     in_rec_possible_orders = is_move_in_order_set(rec_possible_orders, new_move_info, recipient)
 
                     if in_sen_possible_orders== 'not enough info' and in_rec_possible_orders=='not enough info':
+                        logger.info(f'not enough info in sen {sen_possible_orders} and rec_possible_orders {rec_possible_orders}')
                         continue
 
                     # if it is possible, let's count new_move to proposal!
@@ -187,13 +193,15 @@ def get_proposal_move_dict(dipcc_game, msg):
                     # if it is possible, then let's count as proposal!
                     if in_possible_orders:
                         proposals[recipient].append(copy.deepcopy(move))
+                    else:
+                        logger.info(f'not in rec {rec_possible_orders}')
 
             
             else:
                 #if move is about sender doing something
                 
                 #if it is not sender and not recipient then we not considering it in deception detection (it's hard to tell if it is lie about the third country or the sender is being lied to)
-                possible2 = is_power_unit(sender_units, unit_loc_key) or country == sender
+                possible2 = is_power_unit(sender_units, unit_loc_key) and country in [sender,'']
                 if not possible2:
                     continue
                 
@@ -246,24 +254,26 @@ def get_proposal_move_dict(dipcc_game, msg):
                     
                     # if move is about previous m orders 
                     in_prev_m_move = is_move_in_order_set(sen_prev_m_orders, move, recipient) and move['action'] =='-'
-                    # print(f'in_prev_m_move {in_prev_m_move} with {move}')
+                    logger.info(f'in_prev_m_move {in_prev_m_move} with {move}')
                     # if move is even possible to do
                     in_possible_orders = is_move_in_order_set(sen_possible_orders, move, sender)
-                    # print(f'in_possible_orders {in_possible_orders} with {move}')
+                    logger.info(f'in_possible_orders {in_possible_orders} with {move}')
                     
                     # if move has not enough info, just disregard it
                     if in_possible_orders== 'not enough info':
-                        # print('not enough info')
+                        logger.info('not enough info')
                         continue
 
                     # if in previous m orders, also disregard it
                     if in_prev_m_move:
-                        # print('in prev m move')
+                        logger.info('in prev m move')
                         continue
 
                     # if it is possible, then let's count as proposal!
                     if in_possible_orders:
                         proposals[sender].append(copy.deepcopy(move))
+                    else:
+                        logger.info(f'not in sen {sen_possible_orders}')
     
     msg['proposals'] = proposals
     logger.info(f"get proposals from extracted_moves {msg['extracted_moves']}")
