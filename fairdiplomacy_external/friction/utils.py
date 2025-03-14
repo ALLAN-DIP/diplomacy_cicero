@@ -120,7 +120,7 @@ def get_proposal_move_dict(dipcc_game, msg):
 
             power_units = curr_state['units'][recipient]
             # unit is in recipient's unit and move country is for recipient
-            possible = is_power_unit(power_units, unit_loc_key) #and country == recipient
+            possible = is_power_unit(power_units, unit_loc_key) or country == recipient
 
             #if move is about recipient:
             if possible:
@@ -193,7 +193,8 @@ def get_proposal_move_dict(dipcc_game, msg):
                 #if move is about sender doing something
                 
                 #if it is not sender and not recipient then we not considering it in deception detection (it's hard to tell if it is lie about the third country or the sender is being lied to)
-                if not is_power_unit(sender_units, unit_loc_key):
+                possible2 = is_power_unit(sender_units, unit_loc_key) or country == sender
+                if not possible2:
                     continue
                 
                 if  'support_action' in move or'transport_action' in move:
