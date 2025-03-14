@@ -94,10 +94,10 @@ def get_proposal_move_dict(dipcc_game, msg):
             if 'action' not in move or ('from' not in move and 'to' not in move):
                 continue
 
-            # country =  move.get('support_country', move.get('transport_country', move.get('country', '')))
+            country =  move.get('support_country', move.get('transport_country', move.get('country', '')))
 
-            # if country not in [sender, recipient]:
-            #     continue
+            if country not in [sender, recipient, '']:
+                continue
 
             if 'year' in move and move['year']!=curr_phase[1:-1]:
                 continue
@@ -120,7 +120,7 @@ def get_proposal_move_dict(dipcc_game, msg):
 
             power_units = curr_state['units'][recipient]
             # unit is in recipient's unit and move country is for recipient
-            possible = is_power_unit(power_units, unit_loc_key) and country == recipient
+            possible = is_power_unit(power_units, unit_loc_key) #and country == recipient
 
             #if move is about recipient:
             if possible:
