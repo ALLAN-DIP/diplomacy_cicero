@@ -92,7 +92,6 @@ from diplomacy import Message
 from diplomacy.client.network_game import NetworkGame
 from diplomacy.utils.export import to_saved_game_format, from_saved_game_format
 from diplomacy.utils import strings
-from daide2eng.utils import gen_English, create_daide_grammar, is_daide
 
 sys.path.insert(0, '/diplomacy_cicero/fairdiplomacy/AMR/DAIDE/DiplomacyAMR/code')
 from amrtodaide import AMR
