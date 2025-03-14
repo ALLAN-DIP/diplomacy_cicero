@@ -86,7 +86,7 @@ def get_proposal_move_dict(dipcc_game, msg):
     proposals = {sender: [], recipient: []}
     # print(f"extracted_moves {extracted_moves}")
     
-    if 'propose-01' in msg['parsed-amr']:
+    if 'move-01' in msg['parsed-amr']:
         for move in extracted_moves:
             # print(f"move {move}")
             if move['polarity']:
@@ -94,16 +94,16 @@ def get_proposal_move_dict(dipcc_game, msg):
             if 'action' not in move or ('from' not in move and 'to' not in move):
                 continue
 
-            country =  move.get('support_country', move.get('transport_country', move.get('country', '')))
+            # country =  move.get('support_country', move.get('transport_country', move.get('country', '')))
 
-            if country not in [sender, recipient]:
-                continue
+            # if country not in [sender, recipient]:
+            #     continue
 
             if 'year' in move and move['year']!=curr_phase[1:-1]:
                 continue
 
             # it should be about sender/recipient 
-            if move['concept'] in ['bounce-03','demilitarize-01'] and (move['country'] != recipient or move['country'] != sender):
+            if move['concept'] in ['demilitarize-01'] and (move['country'] != recipient or move['country'] != sender):
                 continue
 
             #get unit's power from move dict
