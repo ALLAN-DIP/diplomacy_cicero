@@ -8,7 +8,6 @@ chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@fa73ef98c1ac04f
 colored==1.4.3
 datasets==1.18.4
 dacite==1.6.0
-daide2eng @ git+https://github.com/ALLAN-DIP/daide2eng.git@e4fa27071c52408817946598d3463f20bf064f6e
 # Pinned `diplomacy` to `main`
 diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@f600344158c85fb933b6c1d0fff61e80bd529648
 discordwebhook==1.0.3
