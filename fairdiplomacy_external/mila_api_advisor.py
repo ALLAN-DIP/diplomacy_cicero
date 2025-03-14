@@ -69,7 +69,11 @@ class CiceroAdvisor(CiceroBot):
     """Advisor form of `CiceroBot`."""
 
     bot_type = BotType.ADVISOR
-    suggestion_type = None
+    default_suggestion_type = (
+        SuggestionType.MESSAGE
+        | SuggestionType.MOVE
+        | SuggestionType.OPPONENT_MOVE
+    )
 
 
 class milaWrapper:
@@ -142,7 +146,7 @@ class milaWrapper:
         return False
 
     
-    def get_playble_human_powers(self, game, human_powers):
+    def get_playable_human_powers(self, game, human_powers):
         playable_powers = []
         
         for power in human_powers:
@@ -157,25 +161,18 @@ class milaWrapper:
     def get_curr_advice_level(self):
         return self.advice_level
 
-    async def play_mila(self, args) -> None:
-        hostname = args.host
-        port = args.port
-        use_ssl = args.use_ssl
-        game_id = args.game_id
-        gamedir = args.outdir
-        human_powers = args.human_powers
-        advice_levels = [int(l) for l in args.advice_levels]
+    async def play_mila(
+        self,
+        hostname: str,
+        port: int,
+        use_ssl: bool,
+        game_id: str,
+        gamedir: Path ,
+        human_powers: List[str],
+        advice_levels_strs: List[str],
+    ) -> None:
+        advice_levels = [int(l) for l in advice_levels_strs]
         power_name = None
-
-        logger.info(f"Settings:")
-        logger.info(
-            f"hostname: {hostname}, "
-            f"port: {port}, "
-            f"use_ssl: {use_ssl}, "
-            f"game_id: {game_id}, "
-            f"human_powers to advise: {human_powers}, "
-            f"advice_levels: {advice_levels}"
-        )
 
         connection = await connect(hostname, port, use_ssl)
         channel = await connection.authenticate(
@@ -213,7 +210,7 @@ class milaWrapper:
             file_advisor = gamedir / f"{game_id}_{'_'.join(human_powers)}.json"
             #for every m turn -> reassign advisor
             # get whom to advice (not eliminated and human powers)
-            playable_powers = self.get_playble_human_powers(self.game, human_powers)
+            playable_powers = self.get_playable_human_powers(self.game, human_powers)
             if len(playable_powers) != len(self.weight_powers):
                 self.weight_powers = {power:  1/len(playable_powers) for power in playable_powers}
             # then assign power and level of advice
@@ -682,22 +679,18 @@ class milaWrapper:
 
             
 def main() -> None:
-    
-    def list_of_strings(arg):
-        return arg.split(',')
-
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--host",
         type=str,
         default=chiron_utils.game_utils.DEFAULT_HOST,
-        help="host IP address (default: %(default)s)",
+        help="Host name of game server. (default: %(default)s)",
     )
     parser.add_argument(
         "--port",
         type=int,
         default=chiron_utils.game_utils.DEFAULT_PORT,
-        help="port to connect to the game (default: %(default)s)",
+        help="Port of game server. (default: %(default)s)",
     )
     parser.add_argument(
         "--use-ssl",
@@ -708,27 +701,45 @@ def main() -> None:
         "--game_id",
         type=str,
         required=True,
-        help="game id of game created in DATC diplomacy game",
+        help="ID of game to join.",
     )
     parser.add_argument(
-        "--game_type",
-        type=int, 
-        default=0,
-        help="0: AI-only game, 1: Human and AI game, 2: Human-only game, 3: silent, 4: human with eng-daide-eng Cicero, 5: chiron",
+        "--human_powers",
+        nargs="+",
+        choices=POWERS,
+        help="Powers that we provide advice to.",
     )
     parser.add_argument(
-        "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
+        "--advice_levels",
+        nargs="+",
+        help=ADVICE_LEVELS_MESSAGE,
     )
     parser.add_argument(
-        "--human_powers", default= "", type=list_of_strings, help="human - controlled powers that we provide an advisor to"
+        "--outdir",
+        default="./fairdiplomacy_external/out",
+        type=Path,
+        help="Output directory for storing game JSON. (default: %(default)s)",
     )
-    
-    parser.add_argument(
-        "--advice_levels", default= "", type=list_of_strings, help=ADVICE_LEVELS_MESSAGE
-    )
-    
-    
+
     args = parser.parse_args()
+    host: str = args.host
+    port: int = args.port
+    use_ssl: bool = args.use_ssl
+    game_id: str = args.game_id
+    outdir: Path = args.outdir
+    human_powers: List[str] = args.human_powers
+    advice_levels: List[str] = args.advice_levels
+
+    logger.info(
+        "Arguments:"
+        f"\thost: {host}\n"
+        f"\tport: {port}\n"
+        f"\tuse_ssl: {use_ssl}\n"
+        f"\tgame_id: {game_id}\n"
+        f"\toutdir: {outdir}\n"
+        f"\thuman_powers: {human_powers}\n"
+        f"\tadvice_levels: {advice_levels}\n"
+    )
 
     mila = milaWrapper()
     discord = Discord(url="https://discord.com/api/webhooks/1209977480652521522/auWUQRA8gz0HT5O7xGWIdKMkO5jE4Rby-QcvukZfx4luj_zwQeg67FEu6AXLpGTT41Qz")
@@ -736,11 +747,19 @@ def main() -> None:
     while True:
         try:
             asyncio.run(
-                mila.play_mila(args)
+                mila.play_mila(
+                    hostname=host,
+                    port=port,
+                    use_ssl=use_ssl,
+                    game_id=game_id,
+                    gamedir=outdir,
+                    human_powers=human_powers,
+                    advice_levels_strs=advice_levels,
+                )
             )
         except Exception as e:
             logger.exception(f"Error running {milaWrapper.play_mila.__name__}(): ")
-            cicero_error = f"centaur cicero controlling {args.human_powers} has an error occured: \n {e}"
+            cicero_error = f"centaur cicero controlling {human_powers} has an error occurred: \n {e}"
             discord.post(content=cicero_error)
 
 

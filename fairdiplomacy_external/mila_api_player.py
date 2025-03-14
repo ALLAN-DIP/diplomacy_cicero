@@ -78,14 +78,15 @@ class milaWrapper:
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
 
-    async def play_mila(self, args) -> None:
-        hostname = args.host
-        port = args.port
-        use_ssl = args.use_ssl
-        game_id = args.game_id
-        power_name = args.power
-        gamedir = args.outdir
-        
+    async def play_mila(
+        self,
+        hostname: str,
+        port: int,
+        use_ssl: bool,
+        game_id: str,
+        power_name: str,
+        gamedir: Path,
+    ) -> None:
         logger.info(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port, use_ssl)
         channel = await connection.authenticate(
@@ -561,13 +562,13 @@ def main() -> None:
         "--host",
         type=str,
         default=chiron_utils.game_utils.DEFAULT_HOST,
-        help="host IP address (default: %(default)s)",
+        help="Host name of game server. (default: %(default)s)",
     )
     parser.add_argument(
         "--port",
         type=int,
         default=chiron_utils.game_utils.DEFAULT_PORT,
-        help="port to connect to the game (default: %(default)s)",
+        help="Port of game server. (default: %(default)s)",
     )
     parser.add_argument(
         "--use-ssl",
@@ -578,34 +579,38 @@ def main() -> None:
         "--game_id",
         type=str,
         required=True,
-        help="game id of game created in DATC diplomacy game",
+        help="ID of game to join.",
     )
     parser.add_argument(
         "--power",
         choices=POWERS,
         required=True,
-        help="power name",
+        help="Name of power to play as.",
     )
     parser.add_argument(
-        "--game_type",
-        type=int, 
-        default=0,
-        help="0: AI-only game, 1: Human and AI game, 2: Human-only game, 3: silent, 4: human with eng-daide-eng Cicero",
+        "--outdir",
+        default="./fairdiplomacy_external/out",
+        type=Path,
+        help="Output directory for storing game JSON. (default: %(default)s)",
     )
-    parser.add_argument(
-        "--outdir", default= "./fairdiplomacy_external/out", type=Path, help="output directory for game json to be stored"
-    )
-    
+
     args = parser.parse_args()
     host: str = args.host
     port: int = args.port
-    use_ssl: int = args.use_ssl
+    use_ssl: bool = args.use_ssl
     game_id: str = args.game_id
     power: str = args.power
-    outdir: Optional[Path] = args.outdir
+    outdir: Path = args.outdir
 
-    logger.info(f"settings:")
-    logger.info(f"host: {host}, port: {port}, use_ssl: {use_ssl}, game_id: {game_id}, power: {power}")
+    logger.info(
+        "Arguments:\n"
+        f"\thost: {host}\n"
+        f"\tport: {port}\n"
+        f"\tuse_ssl: {use_ssl}\n"
+        f"\tgame_id: {game_id}\n"
+        f"\tpower: {power}\n"
+        f"\toutdir: {outdir}\n"
+    )
 
     if outdir is not None and not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
@@ -617,7 +622,14 @@ def main() -> None:
     while True:
         try:
             asyncio.run(
-                mila.play_mila(args)
+                mila.play_mila(
+                    hostname=host,
+                    port=port,
+                    use_ssl=use_ssl,
+                    game_id=game_id,
+                    power_name=power,
+                    gamedir=outdir,
+                )
                     )
         except Exception as e:
             logger.exception(f"Error running {milaWrapper.play_mila.__name__}(): ")
