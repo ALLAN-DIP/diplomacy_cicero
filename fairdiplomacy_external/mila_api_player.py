@@ -441,8 +441,7 @@ class milaWrapper:
             try:
                 engine_intent = self.game.get_orders(power_name=self.power_name)
                 logger.info(f"getting pseudo orders {pseudo_orders} from the interface (not using internal Cicero's engine)")
-                if not pseudo_orders or len(pseudo_orders) == 0:
-                    pseudo_orders = None
+                if not engine_intent or len(engine_intent) == 0:
                     return None
                 else:
                     self.agent.set_power_po(engine_intent)
