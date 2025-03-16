@@ -447,10 +447,9 @@ class milaWrapper:
                     self.agent.set_power_po(engine_intent)
             except Exception as e:
                 logger.info(f"Error in getting pseudo orders: {e}")
-                pseudo_orders = None
                 return None
-        else:
-            pseudo_orders = None
+        
+        pseudo_orders = None
 
         msg = self.player.generate_message(
             game=self.dipcc_game,
