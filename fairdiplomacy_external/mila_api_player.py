@@ -439,13 +439,17 @@ class milaWrapper:
         # generate message using server orders
         if no_engine:
             try:
-                pseudo_orders = self.game.get_orders(power_name=self.power_name)
+                engine_intent = self.game.get_orders(power_name=self.power_name)
                 logger.info(f"getting pseudo orders {pseudo_orders} from the interface (not using internal Cicero's engine)")
                 if not pseudo_orders or len(pseudo_orders) == 0:
                     pseudo_orders = None
+                    return None
+                else:
+                    self.agent.set_power_po(engine_intent)
             except Exception as e:
                 logger.info(f"Error in getting pseudo orders: {e}")
                 pseudo_orders = None
+                return None
         else:
             pseudo_orders = None
 
