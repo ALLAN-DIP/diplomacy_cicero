@@ -1,4 +1,4 @@
-from abc import ABC
+engine_intentfrom abc import ABC
 import argparse
 import asyncio
 from dataclasses import dataclass
@@ -440,7 +440,7 @@ class milaWrapper:
         if no_engine:
             try:
                 engine_intent = self.game.get_orders(power_name=self.power_name)
-                logger.info(f"getting pseudo orders {pseudo_orders} from the interface (not using internal Cicero's engine)")
+                logger.info(f"getting pseudo orders {engine_intent} from the interface (not using internal Cicero's engine)")
                 if not engine_intent or len(engine_intent) == 0:
                     return None
                 else:
