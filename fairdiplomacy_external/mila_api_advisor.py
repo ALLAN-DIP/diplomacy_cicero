@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 import random
 import time
-from typing import List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence
 
 from chiron_utils.bots.baseline_bot import BaselineBot, BotType
 import chiron_utils.game_utils
@@ -94,8 +94,8 @@ class milaWrapper:
         self.prev_suggest_moves = None
         self.prev_suggest_cond_moves = None
         self.power_to_advise = None
-        self.advice_level = None
-        self.weight_powers = dict()
+        self.advice_level: Optional[int] = None
+        self.weight_powers: Dict[str, float] = dict()
         self.decrement_value = 0.2
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
@@ -103,7 +103,7 @@ class milaWrapper:
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
         
-    async def assign_advisor(self, file_dir, power_dist, advice_levels):
+    async def assign_advisor(self, file_dir: Path, power_dist: Dict[str, float], advice_levels: List[int]) -> None:
         # random N powers
         # random level 
         self.power_to_advise = sample_p_dict(power_dist)
@@ -127,7 +127,7 @@ class milaWrapper:
         self.weight_powers = power_dist
         logger.info(f'Adjusting power distribution from {old_power_dist} to {power_dist}')
         
-    async def reload_or_assign_advisor(self, file_dir, power_dist, advice_levels):
+    async def reload_or_assign_advisor(self, file_dir: Path, power_dist: Dict[str, float], advice_levels: List[int]) -> bool:
         if os.path.exists(file_dir):
             with open(file_dir, mode="r") as file:
                 advisor_json = json.load(file)
