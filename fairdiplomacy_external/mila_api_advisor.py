@@ -729,7 +729,7 @@ def main() -> None:
     advice_levels: List[str] = args.advice_levels
 
     logger.info(
-        "Arguments:"
+        "Arguments:\n"
         f"\thost: {host}\n"
         f"\tport: {port}\n"
         f"\tuse_ssl: {use_ssl}\n"
