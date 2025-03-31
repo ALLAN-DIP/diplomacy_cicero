@@ -175,6 +175,10 @@ class milaWrapper:
             if current_phase is None or current_phase != phase_name:
                 current_phase = phase_name
                 logger.info(f"New phase: {current_phase}")
+
+                if phase_name[-1] != "M":
+                    await asyncio.sleep(1)
+                    continue
                 
                 current_units = game_state["state"]["units"]
                 if current_homes is None:
@@ -240,112 +244,110 @@ class milaWrapper:
                 except Exception as e:
                     logger.error(f"Error sending orders: {e}")
 
-            if phase_name[-1] != "M":
-                await asyncio.sleep(1)
-                continue
+            if phase_name[-1] == "M":
 
-            msgs = self.game.messages
+                msgs = self.game.messages
 
-            if msgs:
-                mms = msgs.sub()
-                advice_requests = [
-                    x for x in mms if x.sender == power and x.recipient == "GLOBAL"
-                ]
+                if msgs:
+                    mms = msgs.sub()
+                    advice_requests = [
+                        x for x in mms if x.sender == power and x.recipient == "GLOBAL"
+                    ]
 
-                if len(advice_requests):
-                    last_request = max(advice_requests, key=lambda x: x.time_sent)
-
-                    try:
-                        stance = json.loads(last_request.message)
-                        for pp in POWERS:
-                            if pp not in stance:
-                                stance[pp] = 0
-                    except json.JSONDecodeError:
-                        logging.error("Invalid JSON")
-                        continue
-
-                    ally_powers = [k for k, v in stance.items() if v > 0]
-                    logger.info(f"latest stance: {stance}")
-
-                    if prev_power_stance is None or stance != prev_power_stance:
-                        logger.info(f"Stance changed, sending {ally_powers}")
-                        prev_power_stance = stance
-
-                        ally_centers = []
-
-                        for pp, centers in current_centers.items():
-                            if pp in ally_powers or pp == power:
-                                ally_centers.extend(centers)
-
-                        if len(ally_centers) < 18:
-                            # alter supply center and units
-                            stance_unit = {}
-                            stance_center = {}
-
-                            for pp, units in current_units.items():
-                                stance_unit[pp] = []
-                                if pp in ally_powers or pp == power:
-                                    stance_unit[pp].extend(units)
-                                else:
-                                    stance_unit[pp].extend(units)
-
-                            for pp, centers in current_centers.items():
-                                stance_center[pp] = []
-                                if pp in ally_powers or pp == power:
-                                    stance_center[pp].extend(centers)
-                                else:
-                                    stance_center[pp].extend(centers)
-
-                        dipcc_game = Game()
-                        dipcc_json = json.loads(dipcc_game.to_json())
-
-                        dipcc_json["phases"][0]["state"]["units"] = stance_unit
-                        dipcc_json["phases"][0]["state"]["homes"] = current_homes
-                        dipcc_json["phases"][0]["state"]["centers"] = stance_center
-                        logger.debug(dipcc_json["phases"][0]["state"]["units"])
-                        logger.debug(dipcc_json["phases"][0]["state"]["centers"])
-                        dipcc_game = Game.from_json(json.dumps(dipcc_json))
-
-                        cicero_policy = self.player.agent.get_plausible_orders_policy(
-                            game=dipcc_game,
-                            agent_power=power,
-                            agent_state=self.player.state,
-                        )
-                        logger.info(f"Policy: {cicero_policy}")
-                        self_order = cicero_policy[power]
-                        first_order = list(self_order.keys())[0]
-
-                        self_orders = []
-                        ally_moves = {}
-
-                        for order in first_order:
-                            if any([order.startswith(x) for x in current_units[power]]):
-                                self_orders.append(order)
-                            else:
-                                ally_power = None
-                                for pp, units in current_units.items():
-                                    if any([order.startswith(x) for x in units]):
-                                        ally_power = pp
-                                        break
-                                if ally_power:
-                                    if ally_power not in ally_moves:
-                                        ally_moves[ally_power] = []
-                                    ally_moves[ally_power].append(order)
+                    if len(advice_requests):
+                        last_request = max(advice_requests, key=lambda x: x.time_sent)
 
                         try:
-                            await self.chiron_agent.suggest_orders(orders=self_orders)
-                        except Exception as e:
-                            logger.error(f"Error sending orders: {e}")
+                            stance = json.loads(last_request.message)
+                            for pp in POWERS:
+                                if pp not in stance:
+                                    stance[pp] = 0
+                        except json.JSONDecodeError:
+                            logging.error("Invalid JSON")
+                            continue
 
-                        if ally_moves:
-                            for ally_power, orders in ally_moves.items():
-                                try:
-                                    await self.chiron_agent.suggest_commentary(
-                                        ally_power,
-                                        f"You should convince {ally_power} to do {orders}",
-                                    )
-                                except Exception as e:
-                                    logger.error(f"Error sending orders: {e}")
+                        ally_powers = [k for k, v in stance.items() if v > 0]
+                        logger.info(f"latest stance: {stance}")
+
+                        if prev_power_stance is None or stance != prev_power_stance:
+                            logger.info(f"Stance changed, sending {ally_powers}")
+                            prev_power_stance = stance
+
+                            ally_centers = []
+
+                            for pp, centers in current_centers.items():
+                                if pp in ally_powers or pp == power:
+                                    ally_centers.extend(centers)
+
+                            if len(ally_centers) < 18:
+                                # alter supply center and units
+                                stance_unit = {}
+                                stance_center = {}
+
+                                for pp, units in current_units.items():
+                                    stance_unit[pp] = []
+                                    if pp in ally_powers or pp == power:
+                                        stance_unit[pp].extend(units)
+                                    else:
+                                        stance_unit[pp].extend(units)
+
+                                for pp, centers in current_centers.items():
+                                    stance_center[pp] = []
+                                    if pp in ally_powers or pp == power:
+                                        stance_center[pp].extend(centers)
+                                    else:
+                                        stance_center[pp].extend(centers)
+
+                            dipcc_game = Game()
+                            dipcc_json = json.loads(dipcc_game.to_json())
+
+                            dipcc_json["phases"][0]["state"]["units"] = stance_unit
+                            dipcc_json["phases"][0]["state"]["homes"] = current_homes
+                            dipcc_json["phases"][0]["state"]["centers"] = stance_center
+                            logger.debug(dipcc_json["phases"][0]["state"]["units"])
+                            logger.debug(dipcc_json["phases"][0]["state"]["centers"])
+                            dipcc_game = Game.from_json(json.dumps(dipcc_json))
+
+                            cicero_policy = self.player.agent.get_plausible_orders_policy(
+                                game=dipcc_game,
+                                agent_power=power,
+                                agent_state=self.player.state,
+                            )
+                            logger.info(f"Policy: {cicero_policy}")
+                            self_order = cicero_policy[power]
+                            first_order = list(self_order.keys())[0]
+
+                            self_orders = []
+                            ally_moves = {}
+
+                            for order in first_order:
+                                if any([order.startswith(x) for x in current_units[power]]):
+                                    self_orders.append(order)
+                                else:
+                                    ally_power = None
+                                    for pp, units in current_units.items():
+                                        if any([order.startswith(x) for x in units]):
+                                            ally_power = pp
+                                            break
+                                    if ally_power:
+                                        if ally_power not in ally_moves:
+                                            ally_moves[ally_power] = []
+                                        ally_moves[ally_power].append(order)
+
+                            try:
+                                await self.chiron_agent.suggest_orders(orders=self_orders)
+                            except Exception as e:
+                                logger.error(f"Error sending orders: {e}")
+
+                            if ally_moves:
+                                for ally_power, orders in ally_moves.items():
+                                    try:
+                                        await self.chiron_agent.suggest_commentary(
+                                            ally_power,
+                                            f"You should convince {ally_power} to do {orders}",
+                                        )
+                                    except Exception as e:
+                                        logger.error(f"Error sending orders: {e}")
 
             await asyncio.sleep(1)
 
