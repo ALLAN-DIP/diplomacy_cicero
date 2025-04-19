@@ -58,7 +58,7 @@ To use the advisor, run a command similar to the following:
   --use-ssl \
   --game_id test_game \
   --human_powers AUSTRIA ENGLAND \
-  --advice_levels 10 11
+  --advice_levels 'MESSAGE|MOVE|OPPONENT_MOVE' 'MOVE|OPPONENT_MOVE'
 ```
 
 To use the player, run a command similar to the following:
@@ -78,7 +78,7 @@ Use the following guidance when modifying arguments:
 - `--host` should be set to whichever domain the server is hosted at.
 - If your server is not using SSL, then drop the `--use-ssl` argument.
 - `--game_id` must match an existing game.
-- `--advice_levels` is the sum of the values for each advice type. For example, `11` means to provide advice for messages (`1`), moves (`2`), and opponent moves (`8`). For more information, see the output of `./run_cicero.sh latest advisor --help`.
+- `--advice_levels` is the joining of the values for each advice type with `|`. For example, `'MESSAGE|MOVE|OPPONENT_MOVE` means to provide advice for messages, moves, and opponent moves. The values need to be quoted in the shell so `|` is not interpreted as a shell pipe. For more information, see the output of `./run_cicero.sh latest advisor --help`.
 
 ### Downloading model files
 

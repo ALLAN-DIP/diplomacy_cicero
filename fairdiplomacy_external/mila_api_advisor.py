@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 import random
 import time
-from typing import List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence
 
 from chiron_utils.bots.baseline_bot import BaselineBot, BotType
 import chiron_utils.game_utils
@@ -45,15 +45,6 @@ MESSAGE_DELAY_IF_SLEEP_INF = Timestamp.from_seconds(60)
 
 DEFAULT_DEADLINE = 5
 
-ADVICE_LEVELS_MESSAGE = (
-    "Levels of advice: "
-    f"{int(SuggestionType.NONE)}: none, "
-    f"{int(SuggestionType.MESSAGE)}: message only, "
-    f"{int(SuggestionType.MOVE)}: order only, "
-    f"{int(SuggestionType.MESSAGE | SuggestionType.MOVE)}: both message and order, "
-    f"{int(SuggestionType.OPPONENT_MOVE)}: opponent moves, "
-    f"{int(SuggestionType.MESSAGE | SuggestionType.MOVE | SuggestionType.OPPONENT_MOVE)}: messages, moves, and opponent moves"
-)
 
 @dataclass
 class CiceroBot(BaselineBot, ABC):
@@ -95,8 +86,8 @@ class milaWrapper:
         self.prev_suggest_moves = None
         self.prev_suggest_cond_moves = None
         self.power_to_advise = None
-        self.advice_level = None
-        self.weight_powers = dict()
+        self.advice_level: SuggestionType = SuggestionType.NONE
+        self.weight_powers: Dict[str, float] = dict()
         self.decrement_value = 0.2
         self.stance_prev_power_stance = None
         
@@ -105,18 +96,17 @@ class milaWrapper:
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
         
-    async def assign_advisor(self, file_dir, power_dist, advice_levels):
+    async def assign_advisor(self, file_dir: Path, power_dist: Dict[str, float], advice_levels: List[SuggestionType]) -> None:
         # random N powers
         # random level 
         self.power_to_advise = sample_p_dict(power_dist)
-        if len(power_dist) ==1 and len(advice_levels)>1 and int(SuggestionType.NONE) not in advice_levels:
+        if len(power_dist) ==1 and len(advice_levels)>1 and SuggestionType.NONE not in advice_levels:
             logger.info(f'We are left with only one power ({list(power_dist)[0]}), '
-                        f'so let\'s add {int(SuggestionType.NONE)} as no advice to advice levels')
-            advice_levels.append(int(SuggestionType.NONE))
+                        f'so let\'s add {SuggestionType.NONE.to_parsable()} to advice levels')
+            advice_levels.append(SuggestionType.NONE)
         logger.info(f'Randomly choosing from advice levels: {advice_levels}')
         self.advice_level = random.choice(advice_levels)
         await self.send_log(f'Assigning Cicero to {self.power_to_advise} and advising at level {self.advice_level}')
-        logger.info(f"Note: {ADVICE_LEVELS_MESSAGE}")
         # write to json
         with open(file_dir, 'w') as f:
             advisor_dict = {'assign_phase': self.game.get_current_phase(), 'power_to_advise':self.power_to_advise, 'advice_level':self.advice_level}
@@ -129,10 +119,12 @@ class milaWrapper:
         self.weight_powers = power_dist
         logger.info(f'Adjusting power distribution from {old_power_dist} to {power_dist}')
         
-    async def reload_or_assign_advisor(self, file_dir, power_dist, advice_levels):
+    async def reload_or_assign_advisor(self, file_dir: Path, power_dist: Dict[str, float], advice_levels: List[SuggestionType]) -> bool:
         if os.path.exists(file_dir):
             with open(file_dir, mode="r") as file:
                 advisor_json = json.load(file)
+            # Convert fron `int` to enum
+            advisor_json["advice_level"] = SuggestionType(advisor_json["advice_level"])
                 
             game_phase = self.game.get_current_phase()
             phase_file = advisor_json['assign_phase']
@@ -141,7 +133,6 @@ class milaWrapper:
                 self.power_to_advise = advisor_json['power_to_advise']
                 self.advice_level = advisor_json['advice_level']
                 logger.info(f'Re-assigning Cicero to {self.power_to_advise} and advising {self.advice_level}')
-                logger.info(f"Note: {ADVICE_LEVELS_MESSAGE}")
                 return True
 
         await self.assign_advisor(file_dir, power_dist, advice_levels)
@@ -171,9 +162,8 @@ class milaWrapper:
         game_id: str,
         gamedir: Path ,
         human_powers: List[str],
-        advice_levels_strs: List[str],
+        advice_levels: List[SuggestionType],
     ) -> None:
-        advice_levels = [int(l) for l in advice_levels_strs]
         power_name = None
 
         connection = await connect(hostname, port, use_ssl)
@@ -222,8 +212,6 @@ class milaWrapper:
             if not is_reload_advisor or power_name is None:
                 power_name = self.get_curr_power_to_advise()
                 self.chiron_type = self.get_curr_advice_level()
-                # Only one instance of `ChironAdvisor` exists at a time,
-                # so this is actually safe
                 self.chiron_agent.suggestion_type = self.chiron_type
                 self.chiron_agent.power_name = power_name
                 self.dipcc_game = self.start_dipcc_game(power_name)
@@ -818,7 +806,10 @@ class milaWrapper:
 
             
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     parser.add_argument(
         "--host",
         type=str,
@@ -851,7 +842,19 @@ def main() -> None:
     parser.add_argument(
         "--advice_levels",
         nargs="+",
-        help=ADVICE_LEVELS_MESSAGE,
+        default=CiceroAdvisor.default_suggestion_type.to_parsable(),
+        type=SuggestionType.parse,
+        help=(
+            "Levels of advice:\n"
+            f"- {SuggestionType.NONE.to_parsable()!r}\n"
+            f"- {SuggestionType.MESSAGE.to_parsable()!r}\n"
+            f"- {SuggestionType.MOVE.to_parsable()!r}\n"
+            f"- {SuggestionType.OPPONENT_MOVE.to_parsable()!r}\n"
+            "Levels can be combined, such as using "
+            f"{(SuggestionType.MESSAGE | SuggestionType.MOVE).to_parsable()!r} "
+            "for both message and move advice.\n"
+            "(default: %(default)s)"
+        )
     )
     parser.add_argument(
         "--outdir",
@@ -867,17 +870,21 @@ def main() -> None:
     game_id: str = args.game_id
     outdir: Path = args.outdir
     human_powers: List[str] = args.human_powers
-    advice_levels: List[str] = args.advice_levels
+    # Ensure that argument is always a `list`
+    if isinstance(args.advice_levels, SuggestionType):
+        advice_levels: List[SuggestionType] = [args.advice_levels]
+    else:
+        advice_levels = args.advice_levels
 
     logger.info(
-        "Arguments:"
+        "Arguments:\n"
         f"\thost: {host}\n"
         f"\tport: {port}\n"
         f"\tuse_ssl: {use_ssl}\n"
         f"\tgame_id: {game_id}\n"
         f"\toutdir: {outdir}\n"
         f"\thuman_powers: {human_powers}\n"
-        f"\tadvice_levels: {advice_levels}\n"
+        f"\tadvice_levels: {[level.to_parsable() for level in advice_levels]}\n"
     )
 
     mila = milaWrapper()
@@ -893,7 +900,7 @@ def main() -> None:
                     game_id=game_id,
                     gamedir=outdir,
                     human_powers=human_powers,
-                    advice_levels_strs=advice_levels,
+                    advice_levels=advice_levels,
                 )
             )
         except Exception as e:
