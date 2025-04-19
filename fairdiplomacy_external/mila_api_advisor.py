@@ -98,6 +98,7 @@ class milaWrapper:
         self.advice_level = None
         self.weight_powers = dict()
         self.decrement_value = 0.2
+        self.stance_prev_power_stance = None
         
         agent_config = heyhi.load_config('/diplomacy_cicero/conf/common/agents/cicero.prototxt')
         logger.info("Successfully loaded CICERO config")
@@ -183,12 +184,6 @@ class milaWrapper:
 
         self.chiron_agent = CiceroAdvisor(power_name, self.game)
 
-        stance_current_phase = None
-        stance_current_units = None
-        stance_current_homes = None
-        stance_current_centers = None
-        stance_prev_power_stance = None
-
         # Wait while game is still being formed
         logger.info(f"Waiting for game to start")
         while self.game.is_game_forming:
@@ -239,46 +234,13 @@ class milaWrapper:
 
             # While agent is not eliminated
             if not self.game.powers[power_name].is_eliminated():
-                # Sync game state
-                await self.game.synchronize()
-                paquette_game = self.game.get_phase_data()
-                game_state = GamePhaseData.to_dict(paquette_game)
 
-                stance_current_units = game_state["state"]["units"]
-                if stance_current_homes is None:
-                    stance_current_homes = game_state["state"]["homes"]
-                stance_current_centers = game_state["state"]["centers"]
-
-                if stance_prev_power_stance is not None:
-                    ally_centers = []
-                    ally_powers = [k for k, v in stance_prev_power_stance.items() if v > 0]
-
-                    for pp, centers in stance_current_centers.items():
-                        if pp in ally_powers or pp == power_name:
-                            ally_centers.extend(centers)
-
-                    if len(ally_centers) < 18: # use generic if too many centers
-                        stance_unit = {}
-                        stance_center = {}
-
-                        for pp, units in stance_current_units.items():
-                            stance_unit[pp] = []
-
-                            if pp in ally_powers or pp == power_name:
-                                stance_unit[power_name].extend(units)
-                            else:
-                                stance_unit[pp].extend(units)
-
-                        for pp, centers in stance_current_centers.items():
-                            stance_center[pp] = []
-
-                            if pp in ally_powers or pp == power_name:
-                                stance_center[power_name].extend(centers)
-                            else:
-                                stance_center[pp].extend(centers)
-
-                        # TODO: update dipcc game based on stance_center and stance_unit for start of turn
-
+                # remove this for now since it could suggest move (using non-stance game state)
+                
+                # updating stance variables to ally_dipcc_game
+                # at the start of the turn (not S1901M), to get ally-based advice
+                ally_dipcc_game = await self.update_ally_based_dipcc_game(power_name)
+                logging.info(f"Updating ally-based dipcc game {self.dipcc_current_phase}")
                 
                 logging.info(f"Press in {self.dipcc_current_phase}")
                 self.sent_self_intent = False
@@ -296,12 +258,19 @@ class milaWrapper:
                 # PRESS
                 should_stop = await self.get_should_stop()
                 if self.chiron_type & SuggestionType.MOVE:
-                    await self.suggest_move(power_name)
+                    # call ally-based dipcc game
+                    await self.suggest_move(power_name, ally_dipcc_game)
     
                 while not should_stop:
+                    # before suggest any move/message advice, let's check if there's any change to stance
+                    if self.has_stance_changed(power_name):
+                        stance = self.stance_prev_power_stance
+                        ally_dipcc_game = await self.update_ally_based_dipcc_game(power_name)
+                        
                     # suggest move to human
                     if self.chiron_type & SuggestionType.MOVE:
-                        await self.suggest_move(power_name)
+                        # call ally-based dipcc game
+                        await self.suggest_move(power_name, ally_dipcc_game)
                         
                     msg=None
                     # if there is new message incoming
@@ -311,7 +280,7 @@ class milaWrapper:
 
                     if self.chiron_type & SuggestionType.MESSAGE:
                         # reply/gen new message
-                        msg = self.generate_message(power_name)
+                        msg = self.generate_message(power_name, ally_dipcc_game)
                         logger.info(f'Possible message suggestion: {msg!r}')
                     
                     if msg is not None:
@@ -336,7 +305,7 @@ class milaWrapper:
                             msg_str_options = {msg['message']}
                             
                             for i in range(K):
-                                new_msg = self.generate_message(power_name)
+                                new_msg = self.generate_message(power_name, ally_dipcc_game)
                                 if new_msg is not None and new_msg['message'] not in msg_str_options:
                                     msg_options.append(new_msg)
                                     msg_str_options.add(new_msg['message'])
@@ -372,91 +341,6 @@ class milaWrapper:
                     logger.info(f"Proceeding to {self.game.get_current_phase()}")
                     await asyncio.sleep(5)
 
-                # update stance
-                stance_msgs = self.game.messages
-
-                if stance_msgs:
-                    mms = msgs.sub()
-                    advice_requests = [
-                        x for x in mms if x.sender == power and x.recipient == "GLOBAL"
-                    ]
-
-                    if len(advice_requests):
-                        last_request = max(advice_requests, key=lambda x: x.time_sent)
-
-                        try:
-                            stance = json.loads(last_request.message)
-                            for pp in POWERS:
-                                if pp not in stance:
-                                    stance[pp] = 0
-                        except json.JSONDecodeError:
-                            logging.error("Invalid JSON")
-                            continue
-
-                        ally_powers = [k for k, v in stance.items() if v > 0]
-
-                        if stance_prev_power_stance is None or stance != stance_prev_power_stance:
-                            logger.info(f"Stance changed, sending {ally_powers}")
-                            stance_prev_power_stance = stance
-                            ally_centers = []
-
-                            for pp, centers in current_centers.items():
-                                if pp in ally_powers or pp == power:
-                                    ally_centers.extend(centers)
-
-                            if len(ally_centers) < 18:
-                                # alter supply center and units
-                                stance_unit = {}
-                                stance_center = {}
-
-                                for pp, units in current_units.items():
-                                    stance_unit[pp] = []
-                                    if pp in ally_powers or pp == power:
-                                        stance_unit[pp].extend(units)
-                                    else:
-                                        stance_unit[pp].extend(units)
-
-                                for pp, centers in current_centers.items():
-                                    stance_center[pp] = []
-                                    if pp in ally_powers or pp == power:
-                                        stance_center[pp].extend(centers)
-                                    else:
-                                        stance_center[pp].extend(centers)
-
-                            # TODO: update dipcc game based on stance_center and stance_unit and send to Mila
-
-                            self_orders = []
-                            ally_moves = {}
-                            self_or_ally_orders = [] # TODO: replace with actual order
-
-                            for order in self_or_ally_orders:
-                                if any([order.startswith(x) for x in stance_current_units[power_name]]): # if is from self
-                                    self_orders.append(order)
-                                else:
-                                    ally_power = None
-                                    for pp, units in stance_current_units.items():
-                                        if any([order.startswith(x) for x in units]):
-                                            ally_power = pp
-                                            break
-                                    if ally_power is not None:
-                                        if ally_power not in ally_moves:
-                                            ally_moves[ally_power] = []
-                                        ally_moves[ally_power].append(order)
-
-                            try:
-                                pass
-                                # await self.chiron_agent.suggest_orders(orders=self_orders) # TODO: uncomment
-                            except Exception as e:
-                                logging.error(f"Error sending orders: {e}")
-
-                            if ally_moves:
-                                for ally_power, orders in ally_moves.items():
-                                    try:
-                                        pass
-                                        # await self.chiron_agent.suggest_commentary({ally_power: orders}) # TODO: uncomment
-                                    except Exception as e:
-                                        logging.error(f"Error sending orders: {e}")
-        
         if gamedir is not None and not gamedir.is_dir():
             gamedir.mkdir(parents=True, exist_ok=True)
             
@@ -491,20 +375,23 @@ class milaWrapper:
 
         await self.chiron_agent.suggest_opponent_orders(predicted_orders)
 
-    async def suggest_move(self, power_name):
-        agent_orders = list(self.player.get_orders(self.dipcc_game))
+    async def suggest_move(self, power_name, dipcc_game):
+        # require power_name to suggest and dipcc_game instance (in case if we have og world and ally-based world)
+        agent_orders = list(self.player.get_orders(dipcc_game))
+        logger.info(f'sending move advice {agent_orders}')
         if agent_orders != self.prev_suggest_moves:
             logger.info(f'Sending move advice at {round(time.time() * 1_000_000)}')
             await self.chiron_agent.suggest_orders(agent_orders)
             self.prev_suggest_moves = agent_orders
         
         # what if humans already set partial order and want to conditional on it
+        # TODO: check if ally-based dipcc these work with mila 
         cond_orders = self.game.get_orders(power_name)
         orderable_locs = self.game.get_orderable_locations(power_name=power_name)
         logger.info(f'Human has set orders: {cond_orders}; check if all orderable locations ({orderable_locs}) are set')
         if len(cond_orders) != 0 and len(cond_orders) != len(orderable_locs):
             # find if cond_orders are partially presented in bp_policy or rl_policy
-            policy = self.player.get_plausible_orders_policy(self.dipcc_game)[power_name]
+            policy = self.player.get_plausible_orders_policy(dipcc_game)[power_name]
             logger.info(f'Searching for conditional orders using {cond_orders} in {power_name}\'s policy: {policy}')
             hit = False
             best_cond_action = None
@@ -576,7 +463,34 @@ class milaWrapper:
 
         return has_state_changed
 
+    def has_stance_changed(self, power_name: str)->bool:
+        # update stance
+        stance_msgs = self.game.messages
 
+        if stance_msgs:
+            mms = stance_msgs.sub()
+            advice_requests = [
+                x for x in mms if x.sender == power_name and x.recipient == "GLOBAL"
+            ]
+
+            if len(advice_requests):
+                last_request = max(advice_requests, key=lambda x: x.time_sent)
+
+                try:
+                    stance = json.loads(last_request.message)
+                    for pp in POWERS:
+                        if pp not in stance:
+                            stance[pp] = 0
+                    # set new stance
+                    self.stance_prev_power_stance = stance
+                    logging.info(f"Stance changed to {stance}")
+                    return True
+
+                except json.JSONDecodeError:
+                    logging.error("Invalid JSON")
+                    return False
+        return False
+        
     async def get_should_stop(self)->bool:
         """ 
         stop when:
@@ -615,6 +529,64 @@ class milaWrapper:
             return True
 
         return False
+    
+    async def update_ally_based_dipcc_game(self, power_name: POWERS):
+        """
+        update ally (centers, homes, units) to ally-based dipcc_game
+        """
+        # Sync game state
+        await self.game.synchronize()
+        phase_data = self.game.get_phase_data()
+        game_state = phase_data.to_dict()
+
+        current_units = game_state["state"]["units"]
+        current_homes = game_state["state"]["homes"]
+        current_centers = game_state["state"]["centers"]
+        
+        ally_dipcc_game = self.dipcc_game
+        
+         # update ally-based dipcc game if there is ally assigned
+        if self.stance_prev_power_stance is not None:
+            ally_centers = []
+            ally_homes = []
+            ally_powers = [k for k, v in self.stance_prev_power_stance.items() if v > 0]
+
+            for pp, centers in current_centers.items():
+                if pp in ally_powers or pp == power_name:
+                    ally_centers.extend(centers)
+                    
+            for pp, homes in current_homes.items():
+                if pp in ally_powers or pp == power_name:
+                    ally_homes.extend(homes)
+
+            if len(ally_centers) < 18: # use generic if too many centers
+                ally_units = []
+
+                for pp, units in current_units.items():
+                    if pp in ally_powers or pp == power_name:
+                        ally_units.extend(units)
+
+                # update dipcc game based on stance_center and stance_unit 
+                ally_dipcc_game = self.dipcc_game.clone_n_times(1)[0]
+                ally_dipcc_json = json.loads(ally_dipcc_game.to_json())
+                
+                # set our and ally units to ours 
+                ally_dipcc_json['phases'][-1]['state']['units'][power_name] = ally_units
+                ally_dipcc_json['phases'][-1]['state']['centers'][power_name] = ally_centers
+                ally_dipcc_json['phases'][-1]['state']['homes'][power_name] = ally_homes
+                
+                for pp in ally_powers:
+                    ally_dipcc_json['phases'][-1]['state']['units'][pp] = []
+                    ally_dipcc_json['phases'][-1]['state']['centers'][pp] = []
+                    ally_dipcc_json['phases'][-1]['state']['homes'][pp] = []
+                # error this line!
+                ally_dipcc_game = Game.from_json(json.dumps(ally_dipcc_json))
+                
+                logging.info(f'Updating ally-based dipcc game ally_powers: {ally_powers}')
+                logging.info(f'units, centers, homes: {ally_units},\n {ally_centers}, \n {ally_homes}')
+                
+                logging.info(f'test game state {ally_dipcc_game.get_state()}')
+        return ally_dipcc_game
 
     async def update_press_dipcc_game(self, power_name: POWERS):
         """ 
@@ -686,7 +658,7 @@ class milaWrapper:
 
         dipcc_game.process() # processing the orders set and moving on to the next phase of the dipcc game
 
-    def generate_message(self, power_name: POWERS)-> Optional[MessageDict]:
+    def generate_message(self, power_name: POWERS, ally_dipcc_game)-> Optional[MessageDict]:
         """     
         call CICERO to generate message (reference from generate_message_for_approval function - webdip_api.py)
         """
@@ -709,26 +681,60 @@ class milaWrapper:
             timestamp_for_conditioning = last_timestamp_this_phase + sleep_time_for_conditioning
 
         # generate message using pseudo orders
-        pseudo_orders = None
+        # our po is now including ours and allies
+        agent_orders = self.player.get_orders(ally_dipcc_game)
+        logger.info(f'orders for ally_dipcc_game (our + allies): {agent_orders}')
+        # let's separate into multiple powers
+        # Sync game state
+        phase_data = self.game.get_phase_data()
+        game_state = phase_data.to_dict()
 
-        # set human_intent
-        human_intent = self.game.get_orders(power_name)
-        orderable_locs = self.game.get_orderable_locations(power_name=power_name)
+        current_units = game_state["state"]["units"]
         
-        if human_intent:
-            logger.info(f'Set player\'s intended moves to {tuple(human_intent)}')
-            self.agent.set_power_po(human_intent)
+        update_pseudo_orders = dict()
+        self_or_ally_orders = agent_orders
+        
+        for order in self_or_ally_orders:
+            if any([order.startswith(x) for x in current_units[power_name]]): # if is from self
+                if power_name not in update_pseudo_orders:
+                    update_pseudo_orders[power_name] = []
+                update_pseudo_orders[power_name].append(order)
+            else:
+                ally_power = None
+                for pp, units in current_units.items():
+                    if any([order.startswith(x) for x in units]):
+                        ally_power = pp
+                        break
+                if ally_power is not None:
+                    if ally_power not in update_pseudo_orders:
+                        update_pseudo_orders[ally_power] = []
+                    update_pseudo_orders[ally_power].append(order)
+        
+        logger.info(f'Pseudo orders for our (and maybe other powers) (re-arranged): {update_pseudo_orders[power_name]}')
+
+        # for now remove human intent
+        # set human_intent
+        # human_intent = self.game.get_orders(power_name)
+        # orderable_locs = self.game.get_orderable_locations(power_name=power_name)
+        
+        if any([other_power != power_name for other_power in update_pseudo_orders]):
+            logger.info(f'Set player\'s intended moves to {tuple(update_pseudo_orders[power_name])}')
+            self.agent.set_power_po(tuple(update_pseudo_orders[power_name]))
+            for other_power in update_pseudo_orders:
+                if other_power != power_name:
+                    logger.info(f'Set {other_power}\'s intended moves to {tuple(update_pseudo_orders[other_power])}')
+                    self.agent.set_other_power_po(other_power, tuple(update_pseudo_orders[other_power]))
         
         msg = self.player.generate_message(
             game=self.dipcc_game,
             timestamp=timestamp_for_conditioning,
-            pseudo_orders=pseudo_orders,
+            pseudo_orders=None,
         )
         
         # if human doesn't set a complete order then we won't gen message (avoid leaked move suggestion)
-        if self.chiron_type == SuggestionType.MESSAGE and (human_intent is None or len(human_intent) != len(orderable_locs)):
-            logger.info(f"we gen sth {msg} but still wait for human to complete order, which currently is {human_intent}")
-            return None
+        # if self.chiron_type == SuggestionType.MESSAGE and (human_intent is None or len(human_intent) != len(orderable_locs)):
+        #     logger.info(f"we gen sth {msg} but still wait for human to complete order, which currently is {human_intent}")
+        #     return None
 
         self.last_successful_message_time = Timestamp.now()
         return msg

@@ -460,6 +460,7 @@ class SearchBotAgent(BaseSearchAgent):
         self.br_corr_bilateral_search_cfg = cfg.br_corr_bilateral_search
         self.message_search_cfg = cfg.message_search
         self.human_power_po = None
+        self.other_power_po = dict()
 
         self.all_power_base_strategy_model_executor = None
         if self.br_corr_bilateral_search_cfg is not None:
@@ -1654,6 +1655,9 @@ class SearchBotAgent(BaseSearchAgent):
         # human_intent is not empty, we force set power_po with human_intent
         if self.human_power_po and is_action_valid(game, agent_power, self.human_power_po):
             valid_pseudo_orders[agent_power] = self.human_power_po
+            
+        if recipient in self.other_power_po and is_action_valid(game, recipient, self.other_power_po):
+            valid_pseudo_orders[recipient] = self.other_power_po
 
         joint_action = {pwr: valid_pseudo_orders.get(pwr, argmax_orders[pwr]) for pwr in POWERS}
         timings.stop()
@@ -2071,6 +2075,9 @@ class SearchBotAgent(BaseSearchAgent):
     
     def set_power_po(self, human_intent):
         self.human_power_po = tuple(human_intent)
+        
+    def set_other_power_po(self, power, other_intent):
+        self.other_power_po[power] = tuple(other_intent)
 
 
 def augment_plausible_orders(
