@@ -347,7 +347,18 @@ class milaWrapper:
 
     def set_comm_intent(self, recipient, pseudo_orders):
         self.last_comm_intent[recipient] = pseudo_orders
-        
+    
+    def get_orders_from_ally_based_game(self, power_name, dipcc_game):
+        cicero_policy = self.player.agent.get_plausible_orders_policy(
+            game=dipcc_game,
+            agent_power=power_name,
+            agent_state=self.player.state,
+        )
+        logger.info(f"Policy: {cicero_policy}")
+        self_order = cicero_policy[power_name]
+        agent_orders = list(self_order.keys())[0]
+        return agent_orders
+
             
     async def predict_opponent_moves(self, power_name: str) -> None:
         policies = self.player.get_plausible_orders_policy(self.dipcc_game)
@@ -364,8 +375,20 @@ class milaWrapper:
         await self.chiron_agent.suggest_opponent_orders(predicted_orders)
 
     async def suggest_move(self, power_name, dipcc_game):
+        logging.info(f'test game state in suggest_move {dipcc_game.get_state()}')
         # require power_name to suggest and dipcc_game instance (in case if we have og world and ally-based world)
-        agent_orders = list(self.player.get_orders(dipcc_game))
+        ally_orders = self.get_orders_from_ally_based_game(power_name, dipcc_game)
+        
+        phase_data = self.game.get_phase_data()
+        game_state = phase_data.to_dict()
+        current_units = game_state["state"]["units"]
+        
+        agent_orders = []
+        for order in ally_orders:
+            if any([order.startswith(x) for x in current_units[power_name]]): # if is from self
+                agent_orders.append(order)
+        
+        # agent_orders = list(self.player.get_orders(dipcc_game))
         logger.info(f'sending move advice {agent_orders}')
         if agent_orders != self.prev_suggest_moves:
             logger.info(f'Sending move advice at {round(time.time() * 1_000_000)}')
@@ -385,10 +408,13 @@ class milaWrapper:
             best_cond_action = None
             max_prob = 0.0
             for action, prob in policy.items():
-                action = list(action)
-                if all(c_order in action for c_order in cond_orders) and prob > max_prob:
+                agent_action = []
+                for order in action:
+                    if any([order.startswith(x) for x in current_units[power_name]]): # if is from self
+                        agent_action.append(order)
+                if all(c_order in agent_action for c_order in cond_orders) and prob > max_prob:
                     hit = True
-                    best_cond_action = action
+                    best_cond_action = agent_action
             if hit and best_cond_action != self.prev_suggest_cond_moves:
                 new_order = [action for action in best_cond_action if action not in cond_orders]
                 logger.info(f'Sending move advice at {round(time.time() * 1_000_000)}')
@@ -561,17 +587,17 @@ class milaWrapper:
                 # set our and ally units to ours 
                 ally_dipcc_json['phases'][-1]['state']['units'][power_name] = ally_units
                 ally_dipcc_json['phases'][-1]['state']['centers'][power_name] = ally_centers
-                ally_dipcc_json['phases'][-1]['state']['homes'][power_name] = ally_homes
+                # ally_dipcc_json['phases'][-1]['state']['homes'][power_name] = ally_homes
                 
                 for pp in ally_powers:
                     ally_dipcc_json['phases'][-1]['state']['units'][pp] = []
                     ally_dipcc_json['phases'][-1]['state']['centers'][pp] = []
-                    ally_dipcc_json['phases'][-1]['state']['homes'][pp] = []
+                    # ally_dipcc_json['phases'][-1]['state']['homes'][pp] = []
                 # error this line!
                 ally_dipcc_game = Game.from_json(json.dumps(ally_dipcc_json))
                 
                 logging.info(f'Updating ally-based dipcc game ally_powers: {ally_powers}')
-                logging.info(f'units, centers, homes: {ally_units},\n {ally_centers}, \n {ally_homes}')
+                logging.info(f'units, centers, homes: {ally_units},\n {ally_centers}')
                 
                 logging.info(f'test game state {ally_dipcc_game.get_state()}')
         return ally_dipcc_game
@@ -670,8 +696,8 @@ class milaWrapper:
 
         # generate message using pseudo orders
         # our po is now including ours and allies
-        agent_orders = self.player.get_orders(ally_dipcc_game)
-        logger.info(f'orders for ally_dipcc_game (our + allies): {agent_orders}')
+        self_or_ally_orders = self.get_orders_from_ally_based_game(power_name, ally_dipcc_game)
+        logger.info(f'orders for ally_dipcc_game (our + allies): {self_or_ally_orders}')
         # let's separate into multiple powers
         # Sync game state
         phase_data = self.game.get_phase_data()
@@ -680,7 +706,6 @@ class milaWrapper:
         current_units = game_state["state"]["units"]
         
         update_pseudo_orders = dict()
-        self_or_ally_orders = agent_orders
         
         for order in self_or_ally_orders:
             if any([order.startswith(x) for x in current_units[power_name]]): # if is from self
@@ -701,7 +726,6 @@ class milaWrapper:
         logger.info(f'Pseudo orders for our (and maybe other powers) (re-arranged): {update_pseudo_orders[power_name]}')
 
         # for now remove human intent
-        # set human_intent
         # human_intent = self.game.get_orders(power_name)
         # orderable_locs = self.game.get_orderable_locations(power_name=power_name)
         
