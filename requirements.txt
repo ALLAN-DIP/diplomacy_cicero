@@ -4,12 +4,12 @@
 attrs==20.2.0
 black==19.10b0
 # Pinned `chiron-utils` to `main`
-chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@f9f206953ff3109dc0b03310dc86e7b5c0962592
+chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@7afb0f9bffc88123428fd69f49befd03bb752457
 colored==1.4.3
 datasets==1.18.4
 dacite==1.6.0
 # Pinned `diplomacy` to `main`
-diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@2270f351b0bb1423415644487f8abf7bddd06754
+diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@aa6055fe9b933bd393a0339568e102534bb2009c
 discordwebhook==1.0.3
 ephemeral-port-reserve==1.1.4
 fairseq==0.10.2
