@@ -1,6 +1,7 @@
 from abc import ABC
 import argparse
 import asyncio
+from collections import defaultdict
 import copy
 from dataclasses import dataclass
 import json
@@ -233,6 +234,10 @@ class milaWrapper:
                 if self.chiron_type & SuggestionType.OPPONENT_MOVE:
                     await self.predict_opponent_moves(power_name)
 
+                if (self.chiron_type & SuggestionType.MOVE_DISTRIBUTION_TEXTUAL 
+                        or self.chiron_type & SuggestionType.MOVE_DISTRIBUTION_VISUAL):
+                    await self.predict_order_probabilities()
+
                 # PRESS
                 should_stop = await self.get_should_stop()
                 if self.chiron_type & SuggestionType.MOVE:
@@ -345,6 +350,51 @@ class milaWrapper:
             predicted_orders[power] = best_orders
 
         await self.chiron_agent.suggest_opponent_orders(predicted_orders)
+
+    @staticmethod
+    def normalize_order_probabilities(order_probabilities: Dict[str, float]) -> Dict[str, float]:
+        """Normalize probabilities to add to 1 and sort orders by decreasing probability."""
+        total = sum(order_probabilities.values())
+        rescaled_probabilities = {}
+        for order, probability in order_probabilities.items():
+            rescaled_probabilities[order] = probability / total
+        rescaled_probabilities = {
+            order: probability for order, probability
+            in sorted(rescaled_probabilities.items(), key=lambda x: (-x[1], x[0]))
+        }
+        return rescaled_probabilities
+
+    async def predict_order_probabilities(self) -> None:
+        """Provide advice on the probability of orders for individual provinces."""
+        # Calculate probabilities for _sets_ of orders
+        policies = self.player.get_plausible_orders_policy(self.dipcc_game)
+
+        # Calculate probabilities for individual orders
+        # An order's probability is the probability of the most likely set of orders
+        # that the given order is included in
+        provinces: Dict[str, Dict[str, float]] = defaultdict(lambda: defaultdict(lambda: 0))
+        for policy in policies.values():
+            for orders, prob in policy.items():
+                for order in orders:
+                    province = order.split(" ")[1]
+                    if prob > provinces[province][order]:
+                        provinces[province][order] = prob
+
+        # Send probabilities for display in the UI
+        provinces = {
+            province: milaWrapper.normalize_order_probabilities(provinces[province])
+            for province in sorted(provinces)
+        }
+        for province, order_probabilities in provinces.items():
+            predicted_orders = {}
+            max_probability = max(order_probabilities.values())
+            for rank, (order, probability) in enumerate(order_probabilities.items()):
+                predicted_orders[order] = {
+                    "pred_prob": probability,
+                    "rank": rank,
+                    "opacity": probability / max_probability,
+                }
+            await self.chiron_agent.suggest_orders_probabilities(province, predicted_orders)
 
     async def suggest_move(self, power_name):
         agent_orders = list(self.player.get_orders(self.dipcc_game))
@@ -711,6 +761,8 @@ def main() -> None:
             f"- {SuggestionType.MESSAGE.to_parsable()!r}\n"
             f"- {SuggestionType.MOVE.to_parsable()!r}\n"
             f"- {SuggestionType.OPPONENT_MOVE.to_parsable()!r}\n"
+            f"- {SuggestionType.MOVE_DISTRIBUTION_TEXTUAL.to_parsable()!r}\n"
+            f"- {SuggestionType.MOVE_DISTRIBUTION_VISUAL.to_parsable()!r}\n"
             "Levels can be combined, such as using "
             f"{(SuggestionType.MESSAGE | SuggestionType.MOVE).to_parsable()!r} "
             "for both message and move advice.\n"
