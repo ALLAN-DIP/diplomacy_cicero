@@ -10,6 +10,8 @@ import numpy as np
 from transformers import BertTokenizer, BertModel
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader, Dataset
+import joblib
+
 
 # Argument parser
 parser = argparse.ArgumentParser()
@@ -17,68 +19,21 @@ parser.add_argument('--sample_size', type=int, default=1000, help='Number of sam
 args = parser.parse_args()
 
 # List of uploaded files
-work_path = '/fs/nexus-scratch/wwongkam/classifier_friction_dip'
-file_paths = [
-    f"{work_path}/denis_state_detection_weights3_1/game1_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game2_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game3_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game4_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game5_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game6_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game7_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game8_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game9_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game10_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game11_amr_proposals.json",
-    f"{work_path}/denis_state_detection_weights3_1/game12_amr_proposals.json",
-]
-test_path = f"{work_path}/sample_1K_messages_propose_2_detection_3_1_complete.json"
+work_path = '/classifier_friction_dip'
+
+test_path = f"{work_path}/sample_1K_messages_propose_2_detection_3_1_complete_with_scores.json"
 with open(test_path, "r") as file:
     test_data = json.load(file)
 
-gold_amr_path = f"{work_path}/denis_train_messages_detection_1.json"    
+gold_amr_path = f"{work_path}/denis_train_messages_detection_1_with_scores.json"     
 with open(gold_amr_path, "r") as f:
     gold_amr_data = json.load(f)
+
+train_path = f"{work_path}/sample_1_5K_train_messages.json"    
+# train_path = f"{work_path}/sample_1_5K_messages.json"
+with open(train_path, "r") as file:   
+    train_1_5K_data = json.load(file)
     
-
-# # Function to extract relevant data
-# def extract_data_from_files(file_paths, test_data):
-#     extracted_data = []
-#     lie_features = []
-#     truth_features = []
-#     lie_no_features = []
-#     truth_no_features = []
-#     for file_path in file_paths:
-#         with open(file_path, "r") as file:
-#             data = json.load(file)
-
-#         for phase in data.get("phases", []):
-#             for msg in phase.get("messages", []):
-#                 text = msg["message"]
-#                 if any(text == m['message'] for m in test_data):
-#                    continue
-#                 label = 1 if not msg["sender_labels"] else 0
-
-#                 # Extract friction features if available, selecting the entry with the highest sum
-#                 if msg.get("friction_info"):
-#                     best_friction = max(
-#                         msg["friction_info"],
-#                         key=lambda x: sum([x.get('1_rule', 0), x.get('2_rule', 0), x.get('3_rule', 0)]),
-#                         default={"1_rule": 0.0, "2_rule": 0.0, "3_rule": 0.0}
-#                     )
-#                     features = [best_friction.get('1_rule', 0), best_friction.get('2_rule', 0), best_friction.get('3_rule', 0)]
-#                     if label ==1:
-#                         lie_features.append((text, features, label))
-#                     else:
-#                         truth_features.append((text, features, label))
-#                 else:
-#                     features = [-1, -1,-1 ]
-#                     if label ==1:
-#                         lie_no_features.append((text, features, label))
-#                     else:
-#                         truth_no_features.append((text, features, label))
-
-#     return lie_features, truth_features, lie_no_features, truth_no_features
 
 # Function to extract relevant data
 def extract_data_from_files(file_paths, test_data):
@@ -104,7 +59,7 @@ def extract_data_from_files(file_paths, test_data):
                     features = [best_friction.get('1_rule', 0), best_friction.get('2_rule', 0), best_friction.get('3_rule', 0)]
                     
                 else:
-                    features = [-1, -1,-1 ]
+                    features = [0, 0,0 ]
                 extracted_data.append((text, features, label))
                 
     return extracted_data
@@ -115,8 +70,9 @@ def extract_features(messages):
     max_non_rl = 100
     data =[]
     for msg in messages:
-        text = msg['message']
+        text = f"{msg['sender']} sends to {msg['recipient']} with a message: {msg['message']}"
         label = 1 if not msg['sender_labels'] else 0
+        scores = msg.get('scores',0)
         if label ==1:
             count_lies+=1
 
@@ -124,27 +80,18 @@ def extract_features(messages):
         if msg['friction_info']:
             best_friction = max(
                 msg['friction_info'],
-                key=lambda x: sum([x.get('1_rule', 0), x.get('2_rule', 0), x.get('3_rule', 0)])
+                key=lambda x: sum([x.get('1_rule', -1), x.get('2_rule', -1), x.get('3_rule', -1)])
             )
-            features = [best_friction.get('1_rule', 0), best_friction.get('2_rule', 0), best_friction.get('3_rule', 0)]
+            features = [scores, best_friction.get('1_rule', -1), best_friction.get('2_rule', -1), best_friction.get('3_rule', -1)]
           
         else:
-            features = [-1, -1,-1 ]
+            features = [scores, -1, -1,-1 ]
         data.append((text, features, label))
             
     return data
 
-sample_size = 1000
-# Extract data from all files
-# lie_features, truth_features, lie_no_features, truth_no_features = extract_data_from_files(file_paths, test_data)
-# lie_features = random.sample(lie_features, min(int(args.sample_size/4), len(lie_features)))
-# truth_features = random.sample(truth_features, min(int(args.sample_size/4), len(truth_features)))
-# lie_no_features = random.sample(lie_no_features, min(int(args.sample_size/4), len(lie_no_features)))
-# truth_no_features = random.sample(truth_no_features, min(int(args.sample_size/4), len(truth_no_features)))
-
-
 # binary_classification_data2 = lie_features + truth_features + lie_no_features + truth_no_features
-binary_classification_data2 = extract_data_from_files(file_paths, test_data)
+binary_classification_data2 = extract_features(train_1_5K_data)
     
 binary_classification_data1 = extract_features(gold_amr_data)
 
@@ -152,7 +99,7 @@ test_data = extract_features(test_data)
 
 
 # Directory to save models
-save_dir = f"{work_path}/saved_models/bert_{args.sample_size}"
+save_dir = f"{work_path}/saved_models/score_bert_fix4_{args.sample_size}"
 os.makedirs(save_dir, exist_ok=True)
 
 best_loss = float('inf')
@@ -189,6 +136,8 @@ labels_test = np.array(labels_test)
 
 # Normalize numerical features using the same scaler
 numeric_features_test = scaler.transform(numeric_features_test)
+
+joblib.dump(scaler, f"{work_path}/saved_models/scaler_{args.sample_size}.pkl")
 
 # Convert test texts to tokenized tensors
 tokenized_texts_test = tokenizer(
@@ -253,54 +202,17 @@ class BERTWithNumericalFeatures(nn.Module):
 
         # Pass through NN layers
         return self.nn_layers(combined_features)
-    
-class NumericalFeatures(nn.Module):
-    def __init__(self, num_numeric_features):
-        super(NumericalFeatures, self).__init__()
-        self.nn_layers = nn.Sequential(
-            nn.Linear(num_numeric_features, 64),
-            nn.ReLU(),
-            nn.Linear(64, 32),
-            nn.ReLU(),
-            nn.Linear(32, 1),
-            nn.Sigmoid()
-        )
 
-    def forward(self, numeric_features):
-        # Pass through NN layers
-        return self.nn_layers(numeric_features)
-
-class BERT(nn.Module):
-    def __init__(self):
-        super(BERT, self).__init__()
-        self.bert = BertModel.from_pretrained('bert-base-uncased')
-        self.nn_layers = nn.Sequential(
-            nn.Linear(self.bert.config.hidden_size, 64),
-            nn.ReLU(),
-            nn.Linear(64, 32),
-            nn.ReLU(),
-            nn.Linear(32, 1),
-            nn.Sigmoid()
-        )
-
-    def forward(self, input_ids, attention_mask):
-        bert_output = self.bert(input_ids=input_ids, attention_mask=attention_mask)
-        bert_embedding = bert_output.pooler_output  # [CLS] token representation
-
-        # Pass through NN layers
-        return self.nn_layers(bert_embedding)
 
 # Initialize the model
-model = BERT()
-
-# model = NumericalFeatures(num_numeric_features=numeric_features_train.shape[1])
+model = BERTWithNumericalFeatures(num_numeric_features=numeric_features_train.shape[1])
 
 # Define loss and optimizer
 criterion = nn.BCELoss()
 optimizer = optim.Adam(model.parameters(), lr=2e-5)  # Lower learning rate for fine-tuning BERT
 
 # Training loop
-epochs = 20
+epochs = 10
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
@@ -310,12 +222,12 @@ for epoch in range(epochs):
     for batch in train_loader:
         input_ids = batch['text'].to(device)
         attention_mask = batch['attention_mask'].to(device)
-        # num_features = batch['num_features'].to(device)
+        num_features = batch['num_features'].to(device)
         labels = batch['labels'].to(device)
 
         optimizer.zero_grad()
-        outputs = model(input_ids, attention_mask)
-        # outputs = model(input_ids, attention_mask, num_features)
+        # outputs = model(input_ids, attention_mask)
+        outputs = model(input_ids, attention_mask, num_features)
         # outputs = model(num_features)
         loss = criterion(outputs, labels)
         loss.backward()
@@ -328,6 +240,7 @@ for epoch in range(epochs):
     if avg_loss < best_loss:
         best_loss = avg_loss
         model_path = os.path.join(save_dir, f"best_model_epoch_{epoch+1}.pth")
+        tokenizer.save_pretrained(save_dir)
         torch.save(model.state_dict(), model_path)
         print(f"Model saved at epoch {epoch+1} with loss: {best_loss:.4f}")
 
@@ -345,12 +258,12 @@ with torch.no_grad():
 
     for idx, batch in enumerate(test_loader):
         input_ids = batch['text'].to(device)
-        # attention_mask = batch['attention_mask'].to(device)
-        # num_features = batch['num_features'].to(device)
+        attention_mask = batch['attention_mask'].to(device)
+        num_features = batch['num_features'].to(device)
         labels = batch['labels'].to(device)
 
-        predictions = model(input_ids, attention_mask)
-        # predictions = model(input_ids, attention_mask, num_features)
+        # predictions = model(input_ids, attention_mask)
+        predictions = model(input_ids, attention_mask, num_features)
         # predictions = model(num_features)
         predicted_labels = (predictions >= 0.5).float()
 
@@ -362,14 +275,14 @@ with torch.no_grad():
         for i in range(labels.size(0)):
             if predicted_labels[i] == 1 and labels[i] == 0:  # False Positive
                 false_positives.append({
-                    # "text": texts_test[idx * test_loader.batch_size + i], 
+                    "text": texts_test[idx * test_loader.batch_size + i], 
                     "features": numeric_features_test[idx * test_loader.batch_size + i], 
                     "true_label": labels[i].item(), 
                     "predicted_label": predicted_labels[i].item()
                 })
             elif predicted_labels[i] == 0 and labels[i] == 1:  # False Negative
                 false_negatives.append({
-                    # "text": texts_test[idx * test_loader.batch_size + i], 
+                    "text": texts_test[idx * test_loader.batch_size + i], 
                     "features": numeric_features_test[idx * test_loader.batch_size + i], 
                     "true_label": labels[i].item(), 
                     "predicted_label": predicted_labels[i].item()
