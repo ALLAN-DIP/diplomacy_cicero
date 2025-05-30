@@ -41,7 +41,7 @@ With function `load_state_and_detect()` this parse an English message to AMR the
 
 **Edge:** $$U_3 = u_j(\hat{a}_i, a_j) - u_j(a_i, a_j)$$
 
-We have Peskoff et al, (2020) dataset available [here](https://drive.google.com/drive/folders/1q6osSBSTnzz5U6GNgZEFaoWLa52akka4?usp=drive_link) (need permission, email to wwongkam@umd.edu), and its 1000 samples with bait, switch and edge calculated [here](https://drive.google.com/file/d/1hF3vnRtHuPADPgVlBN3I-DZ2mGNMmkXI/view?usp=drive_link). 
+We have Peskov et al. (2020) dataset available [here](https://drive.google.com/drive/folders/1q6osSBSTnzz5U6GNgZEFaoWLa52akka4?usp=drive_link) (need permission, email to wwongkam@umd.edu), and its 1000 samples with bait, switch and edge calculated [here](https://drive.google.com/file/d/1hF3vnRtHuPADPgVlBN3I-DZ2mGNMmkXI/view?usp=drive_link). 
 
 ### 2. `train_bert.py` and `eval_bert.py`
 Training BERT is possible through `train_bert.py` where you can download corresponding files from [here](https://drive.google.com/drive/folders/1zvtZuuCjAlBeckLQh8etm34xE4CwXypF?usp=drive_link) to train.
