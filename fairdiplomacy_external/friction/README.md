@@ -1,6 +1,6 @@
 # Counterfactual RL against Deception (CTRL-D)
 
-This is our team Cicero's repo corresponds to ACL findings paper "Should I Trust You? Detecting Deception in Negotiations using Counterfactual RL"
+This is our team Cicero's repo corresponds to ACL findings paper "Should I Trust You? Detecting Deception in Negotiations using Counterfactual RL" ([arxiv](https://arxiv.org/abs/2502.12436))
 
 ## 🚀 Getting Started
 
