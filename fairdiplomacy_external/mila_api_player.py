@@ -86,6 +86,7 @@ class milaWrapper:
         game_id: str,
         power_name: str,
         gamedir: Path,
+        first_submit_time_deadline: int,
     ) -> None:
         logger.info(f"Cicero joining game: {game_id} as {power_name}")
         connection = await connect(hostname, port, use_ssl)
@@ -95,6 +96,8 @@ class milaWrapper:
         self.game: NetworkGame = await channel.join_game(game_id=game_id, power_name=power_name, player_type=CiceroPlayer.player_type)
         
         self.chiron_agent = CiceroPlayer(power_name, self.game)
+        
+        self.first_submit_time_deadline = first_submit_time_deadline
 
         # Wait while game is still being formed
         logger.info(f"Waiting for game to start")
@@ -303,7 +306,7 @@ class milaWrapper:
         server_remaining = server_end - self.scheduler_event.current_time
         deadline_timer = server_remaining * self.scheduler_event.time_unit
 
-        presubmit_second = 120
+        presubmit_second = self.first_submit_time_deadline
 
         if deadline_timer <= presubmit_second:
             logger.info(f'time to presubmit order')
@@ -593,7 +596,12 @@ def main() -> None:
         type=Path,
         help="Output directory for storing game JSON. (default: %(default)s)",
     )
-
+    parser.add_argument(
+        "--first_submit_time_deadline",
+        type=int,
+        default=120,
+        help="Deadline for the first submit time in seconds. (default: %(default)s)",
+    )
     args = parser.parse_args()
     host: str = args.host
     port: int = args.port
@@ -601,6 +609,7 @@ def main() -> None:
     game_id: str = args.game_id
     power: str = args.power
     outdir: Path = args.outdir
+    first_submit_time_deadline: int = args.first_submit_time_deadline
 
     logger.info(
         "Arguments:\n"
@@ -610,6 +619,7 @@ def main() -> None:
         f"\tgame_id: {game_id}\n"
         f"\tpower: {power}\n"
         f"\toutdir: {outdir}\n"
+        f"\tfirst_submit_time_deadline: {first_submit_time_deadline}\n"
     )
 
     if outdir is not None and not outdir.is_dir():
@@ -629,6 +639,7 @@ def main() -> None:
                     game_id=game_id,
                     power_name=power,
                     gamedir=outdir,
+                    first_submit_time_deadline=first_submit_time_deadline,
                 )
                     )
         except Exception as e:
