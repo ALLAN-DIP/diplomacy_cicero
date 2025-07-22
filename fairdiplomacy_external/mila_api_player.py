@@ -599,7 +599,7 @@ def main() -> None:
     parser.add_argument(
         "--first_submit_time_deadline",
         type=int,
-        default=120,
+        default=7200,
         help="Deadline for the first submit time in seconds. (default: %(default)s)",
     )
     args = parser.parse_args()
