@@ -40,3 +40,6 @@ dipcc/Testing/
 /src/
 dipcc/detect_cuda_version.cc
 node_modules/
+
+# Created by `bin/download_model_files.sh`
+/models_encrypted/

@@ -1,9 +1,9 @@
 # Diplomacy Cicero and Diplodocus
 
-This code contains checkpoints and training code the following papers:
+This code contains checkpoints and training code for the following papers:
 
 * ["Human-Level Play in the Game of Diplomacy by Combining Language Models with Strategic Reasoning"](https://www.science.org/doi/10.1126/science.ade9097) published in Science, November 2022.
-* ["Mastering the Game of No-Press Diplomacy via Human-Regularized Reinforcement Learning and Planning"](https://arxiv.org/abs/2210.05492) in review at ICLR 2023.
+* ["Mastering the Game of No-Press Diplomacy via Human-Regularized Reinforcement Learning and Planning"](https://arxiv.org/abs/2210.05492) accepted to ICLR 2023.
 
 ### Code
 A very brief orientation:
@@ -82,7 +82,7 @@ Use the following guidance when modifying arguments:
 
 ### Downloading model files
 
-Please email <diplomacyteam@meta.com> to request the password. Then run `bash bin/download_model_files.sh <PASSWORD>`. This will download and decrypt all relevant model files into `./models`. This might take awhile. Please note the model files have their own license separate from the code in this repository. More details on this [can be found below](#license-for-model-weights).
+The password for the model files is the following: `dbEmG*yo@fuWzb79cx_pN7.TRm4cqk`. Run `bash bin/download_model_files.sh <PASSWORD>`. This will download and decrypt all relevant model files into `./models`. This might take awhile. Please note the model files have their own license (CC-by-NC 4.0) separate from the code in this repository. More details on this [can be found below](#license-for-model-weights).
 
 ### Accessing Cicero's experiment games
 
