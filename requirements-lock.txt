@@ -23,7 +23,7 @@ botocore==1.33.13
 cachetools==5.5.0
 catalogue==2.0.10
 cfgv==3.3.1
-chiron-utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@92c73d6414bc33cecf6f36e80440b5aeb91242d7
+chiron-utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@7d1e4eb53473fb5ef30c2f524d6aaaeff89860f8
 click==7.1.2
 cloudpathlib==0.18.1
 cloudpickle==2.2.1
@@ -36,7 +36,7 @@ cycler==0.11.0
 cymem==2.0.8
 Cython==3.0.11
 dacite==1.6.0
-daidepp @ git+https://git@github.com/SHADE-AI/daidepp.git@f84f7279fb4a31083ad8e4b5fcf6d1ed290bae0e
+daidepp @ git+https://git@github.com/SHADE-AI/daidepp.git@fd027bcbcf7fa3956adcae2ea12493051c8e279e
 dataclasses==0.6
 datasets==1.18.4
 debugpy==1.7.0
@@ -44,7 +44,7 @@ decorator==5.1.1
 defusedxml==0.7.1
 Deprecated==1.2.14
 dill==0.3.7
-diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@aa6055fe9b933bd393a0339568e102534bb2009c
+diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@9e7bf501b3b58bfb348dcc21671337cec40ea065
 discordwebhook==1.0.3
 distlib==0.3.8
 docformatter==1.4
