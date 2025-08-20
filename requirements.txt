@@ -4,7 +4,7 @@
 attrs==20.2.0
 black==19.10b0
 # Pinned `chiron-utils` to `main`
-chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@7d1e4eb53473fb5ef30c2f524d6aaaeff89860f8
+chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@a1876fe66f8549de96230fa96835e43c35338b8d
 colored==1.4.3
 datasets==1.18.4
 dacite==1.6.0

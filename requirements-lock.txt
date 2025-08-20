@@ -23,7 +23,7 @@ botocore==1.33.13
 cachetools==5.5.0
 catalogue==2.0.10
 cfgv==3.3.1
-chiron-utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@7d1e4eb53473fb5ef30c2f524d6aaaeff89860f8
+chiron-utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@a1876fe66f8549de96230fa96835e43c35338b8d
 click==7.1.2
 cloudpathlib==0.18.1
 cloudpickle==2.2.1
