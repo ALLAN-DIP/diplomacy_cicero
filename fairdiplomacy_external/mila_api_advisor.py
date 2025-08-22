@@ -94,6 +94,8 @@ class milaWrapper:
         logger.info("Successfully loaded CICERO config")
 
         self.agent = PyBQRE1PAgent(agent_config.bqre1p)
+        # Remove classifier so the agent doesn't stop sending message advice when it wants to draw
+        self.agent.message_handler.model_draw_classifier = None
         
     async def assign_advisor(self, file_dir: Path, power_dist: Dict[str, float], advice_levels: List[SuggestionType]) -> None:
         # random N powers
