@@ -131,11 +131,14 @@ class milaWrapper:
                 # ORDER
 
                 if not self.has_phase_changed():
-                    logger.info(f"Submit orders in {self.dipcc_current_phase}")
-                    agent_orders = self.player.get_orders(self.dipcc_game)
+                    orderable_locations = self.game.get_orderable_locations(power_name=power_name)
                     
-                    # set order in Mila
-                    await self.chiron_agent.send_orders(agent_orders, wait=False)
+                    if orderable_locations:
+                        logger.info(f"Submit orders in {self.dipcc_current_phase}")
+                        agent_orders = self.player.get_orders(self.dipcc_game)
+                        
+                        # set order in Mila
+                        await self.chiron_agent.send_orders(agent_orders, wait=True)
 
                 if single_turn:
                     sys.exit(0)
