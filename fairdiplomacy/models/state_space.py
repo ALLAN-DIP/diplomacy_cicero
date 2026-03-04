@@ -180,7 +180,7 @@ def get_adjacency_matrix():
     order_vocab = get_order_vocabulary()
     # Finding list of all locations
     locs = pydipcc.Game.LOC_STRS[:]
-    adjacencies = np.zeros((len(locs), len(locs)), dtype=np.bool)  # type: ignore
+    adjacencies = np.zeros((len(locs), len(locs)), dtype=bool)  # type: ignore
 
     # Building adjacencies between locs
     # Coasts are adjacent to their parent location (without coasts)

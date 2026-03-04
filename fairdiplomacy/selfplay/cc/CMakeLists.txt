@@ -10,6 +10,7 @@ endif(NOT DEFINED POSTMAN_DIR)
 
 # For pybind11 to work on Linux.
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 17)
 
 #############################################
 ### LIBS ####################################
@@ -27,9 +28,9 @@ execute_process(
 add_definitions(-D_GLIBCXX_USE_CXX11_ABI=${TorchAbi})
 
 #### Pybind11 LIB  #####
-add_subdirectory(
-  ${POSTMAN_DIR}/third_party/pybind11 third_party/pybind11
-)
+# Use the system/conda-installed pybind11 (2.9.1) instead of the old bundled
+# one (2.3.dev1) so that py::module_ and other pybind11 2.6+ APIs are available.
+find_package(pybind11 REQUIRED)
 
 #### GTest LIB  #####
 add_subdirectory(

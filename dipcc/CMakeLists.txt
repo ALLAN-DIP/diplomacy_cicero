@@ -58,8 +58,8 @@ ENDIF()
 # Compile profiling
 IF(CMAKE_BUILD_TYPE MATCHES Release)
     add_executable(profile_dipcc dipcc/profiling/profile.cc ${SOURCES})
-    target_link_libraries(profile_dipcc dipcc glog pthread)
+    target_link_libraries(profile_dipcc dipcc glog pthread ${PYTHON_LIBRARIES})
 
     add_executable(profile_dipcc_late dipcc/profiling/profile_late.cc ${SOURCES})
-    target_link_libraries(profile_dipcc_late dipcc glog pthread)
+    target_link_libraries(profile_dipcc_late dipcc glog pthread ${PYTHON_LIBRARIES})
 ENDIF()

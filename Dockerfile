@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04
+FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
 
 # Use default answer for any questions asked by Debian tools
 ENV DEBIAN_FRONTEND=noninteractive
@@ -7,46 +7,50 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update \
     && apt-get -y upgrade \
     && apt-get -y install --no-install-recommends \
-    autoconf=2.69-* \
-    clang-format-8=1:8.0.1-* \
-    cmake=3.16.3-* \
-    curl=7.68.0-* \
-    git=1:2.25.1-* \
-    libgoogle-glog-dev=0.4.0-* \
-    libtool=2.4.6-* \
-    pkg-config=0.29.1-* \
+    autoconf \
+    clang-format \
+    cmake \
+    curl \
+    git \
+    libgoogle-glog-dev \
+    libtool \
+    pkg-config \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install conda
+# Install Miniforge
 # `-b`: run install in batch mode (without manual intervention)
 # `-u`: update an existing installation
 # `-p PREFIX`: install prefix
-RUN curl https://repo.anaconda.com/miniconda/Miniconda3-4.7.10-Linux-x86_64.sh >~/miniconda.sh \
-    && /bin/bash ~/miniconda.sh -b -u -p /usr/local \
-    && rm ~/miniconda.sh
+RUN curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh >~/miniforge.sh \
+    && /bin/bash ~/miniforge.sh -b -u -p /usr/local \
+    && rm ~/miniforge.sh
 
 # Switch to application directory
 WORKDIR /diplomacy_cicero
 
 # Update existing environment
 # `pip` needs to be updated separately to prevent version conflict
-COPY environment-lock.yaml .
-RUN conda env update --file environment-lock.yaml --prune \
-    && pip install --no-cache-dir pip==24.0
+COPY environment.yaml .
+RUN conda env update --file environment.yaml --prune \
+    && pip install --no-cache-dir pip==26.0.1
 
 # Install local pip packages
 COPY thirdparty/ thirdparty/
 # NOTE: Postman here links against pytorch for tensors, for this to work you may
-# need to separately have installed cuda 11 on your own.
-ENV Torch_DIR=/usr/local/lib/python3.7/site-packages/torch/share/cmake/Torch
+# need to separately have installed cuda 12 on your own.
+ENV Torch_DIR=/usr/local/lib/python3.10/site-packages/torch/share/cmake/Torch
 RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/nest/ \
     && ln -s /usr/local/cuda /usr/local/nvidia \
     && pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/postman/
 
 # Install application requirements
 COPY requirements-lock.txt .
-RUN pip install --no-cache-dir -r requirements-lock.txt \
+RUN pip install --no-cache-dir --force-reinstall "setuptools==68.2.2" \
+    && pip install --no-cache-dir --no-deps fairseq==0.12.2 \
+    && pip install --no-cache-dir --no-deps fairscale==0.4.2 \
+    && pip install --no-cache-dir --no-deps "parlai @ git+https://github.com/facebookresearch/ParlAI.git@5214f42a2058ef335f91f5afe66b2bd9ebfb2fbe" \
+    && pip install --no-cache-dir -r requirements-lock.txt \
     && spacy download en_core_web_sm
 
 # Install application itself
@@ -59,7 +63,7 @@ COPY pyproject.toml .
 COPY requirements.txt .
 COPY setup.py .
 COPY unit_tests/ unit_tests/
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir --no-deps -e .
 
 # Build application
 COPY Makefile .
