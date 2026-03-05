@@ -17,7 +17,7 @@ selfplay:
 	mkdir -p build/selfplay
 	cd build/selfplay \
 		&& cmake ../../fairdiplomacy/selfplay/cc -DPOSTMAN_DIR=$(POSTMAN_DIR) -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=../../fairdiplomacy/selfplay \
-		&& make -j
+		&& make -j rela
 
 # Compiles protos and sets up pyi files for pyright to be happy.
 protos:

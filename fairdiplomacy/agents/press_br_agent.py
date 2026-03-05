@@ -91,7 +91,7 @@ class ParlAIBestResponseOrderHandler(BRSearchAgent):
 def quantize(p, n=256):
     """Return a list of integers that follow distribution p and sum to exactly n"""
     p = np.array(p)
-    r = (p * n).round().astype(np.int)
+    r = (p * n).round().astype(int)
     rsum = r.sum()
     if rsum == n:
         return r

@@ -18,7 +18,11 @@ rm -rf CMakeFiles/
 
 mkdir -p build
 pushd build
-cmake -DCMAKE_BUILD_TYPE=$MODE .. && make -j ${N_DIPCC_JOBS:-}
+if [ -n "$SKIP_TESTS" ]; then
+    cmake -DCMAKE_BUILD_TYPE=$MODE .. && make -j ${N_DIPCC_JOBS:-} pydipcc
+else
+    cmake -DCMAKE_BUILD_TYPE=$MODE .. && make -j ${N_DIPCC_JOBS:-}
+fi
 popd >/dev/null
 
 popd >/dev/null

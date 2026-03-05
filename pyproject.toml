@@ -1,3 +1,7 @@
-[tool.black]
-line-length = 99
-exclude = "(/(\\.eggs|\\.git|\\.mypy_cache|thirdparty|build)/|^/src)"
+[project]
+name = "diplomacy-cicero"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
