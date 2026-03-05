@@ -6,7 +6,7 @@ annotated-types==0.5.0
 antlr4-python3-runtime==4.8
 anyio==3.7.1
 appdirs==1.4.4
-archspec @ file:///home/conda/feedstock_root/build_artifacts/archspec_1737352602016/work
+archspec==0.2.3
 argon2-cffi==23.1.0
 argon2-cffi-bindings==21.2.0
 async-timeout==4.0.3
@@ -19,14 +19,14 @@ beautifulsoup4==4.12.3
 black==25.1.0
 bleach==6.0.0
 blis==0.7.11
-boltons @ file:///home/conda/feedstock_root/build_artifacts/boltons_1749686179973/work
+boltons==24.0.0
 boto3==1.33.13
 botocore==1.33.13
-Brotli @ file:///home/conda/feedstock_root/build_artifacts/brotli-split_1764016952863/work
+Brotli==1.1.0
 cachetools==5.5.0
 catalogue==2.0.10
-certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1772001073725/work/certifi
-cffi @ file:///home/conda/feedstock_root/build_artifacts/cffi_1761202865726/work
+certifi==2024.8.30
+cffi==1.17.1
 cfgv==3.3.1
 charset-normalizer==2.0.12
 chiron_utils @ git+https://github.com/ALLAN-DIP/chiron-utils.git@36a77f7e794090ace12e2a26d7f6d426a02c636b
@@ -37,10 +37,6 @@ colorama==0.4.6
 colored==1.4.3
 coloredlogs==15.0.1
 comm==0.1.4
-conda @ file:///home/conda/feedstock_root/build_artifacts/conda_1722273159603/work
-conda-libmamba-solver @ file:///home/conda/feedstock_root/build_artifacts/conda-libmamba-solver_1727359833193/work/src
-conda-package-handling @ file:///home/conda/feedstock_root/build_artifacts/conda-package-handling_1736345463896/work
-conda_package_streaming @ file:///home/conda/feedstock_root/build_artifacts/conda-package-streaming_1751548120229/work
 confection==0.1.5
 cycler==0.11.0
 cymem==2.0.8
@@ -57,7 +53,7 @@ dill==0.3.7
 diplomacy @ git+https://github.com/ALLAN-DIP/diplomacy.git@33b28982ba2b294e0508a263662ec92f7cff89b9
 discordwebhook==1.0.3
 distlib==0.3.8
-distro @ file:///home/conda/feedstock_root/build_artifacts/distro_1734729835256/work
+distro==1.9.0
 docformatter==1.4
 docker-pycreds==0.4.0
 docutils==0.15.2
@@ -75,24 +71,24 @@ filelock==3.12.2
 flake8==5.0.4
 flake8-bugbear==23.3.12
 fonttools==4.38.0
-frozendict @ file:///home/conda/feedstock_root/build_artifacts/frozendict_1763082794572/work
+frozendict==2.4.4
 frozenlist==1.3.3
 fsspec==2023.1.0
 gitdb==4.0.11
 gitdb2==4.0.2
 GitPython==3.1.43
-gmpy2 @ file:///home/conda/feedstock_root/build_artifacts/gmpy2_1762946744175/work
+gmpy2==2.2.1
 google-auth==2.35.0
 google-auth-oauthlib==0.4.6
 grpcio==1.62.3
-h2 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_h2_1756364871/work
-hpack @ file:///home/conda/feedstock_root/build_artifacts/hpack_1737618293087/work
+h2==4.1.0
+hpack==4.0.0
 huggingface-hub==0.16.4
 humanfriendly==10.0
 hydra-core==1.1.2
-hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1737618333194/work
+hyperframe==6.0.1
 identify==2.5.24
-idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1760286409563/work
+idna==3.10
 imagesize==1.4.1
 importlib-metadata==4.2.0
 importlib-resources==5.2.3
@@ -108,8 +104,8 @@ Jinja2==2.11.3
 jmespath==1.0.1
 joblib==1.1.0
 jsonlines==3.1.0
-jsonpatch @ file:///home/conda/feedstock_root/build_artifacts/jsonpatch_1733814567314/work
-jsonpointer @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_jsonpointer_1765026384/work
+jsonpatch==1.33
+jsonpointer==3.0.0
 jsonschema==4.17.3
 jupyter==1.0.0
 jupyter-console==6.6.3
@@ -120,7 +116,6 @@ jupyterlab-pygments==0.2.2
 jupyterlab_widgets==3.0.13
 kiwisolver==1.4.5
 langcodes==3.3.0
-libmambapy @ file:///home/conda/feedstock_root/build_artifacts/mamba-split_1711394305528/work/libmambapy
 llvmlite==0.42.0
 lxml==5.3.0
 Markdown==3.3.2
@@ -129,7 +124,6 @@ MarkupSafe==2.0.1
 matplotlib==3.5.1
 matplotlib-inline==0.1.6
 mccabe==0.7.0
-menuinst @ file:///home/conda/feedstock_root/build_artifacts/menuinst_1765733081264/work
 mistune==0.8.4
 mock==5.1.0
 mpmath==1.3.0
@@ -146,7 +140,7 @@ nbformat==5.8.0
 # Editable install with no version control (nest==0.0.6)
 -e /diplomacy_cicero/thirdparty/github/fairinternal/postman/nest
 nest-asyncio==1.6.0
-networkx @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_networkx_1731521053/work
+networkx==3.4.2
 nltk==3.8.1
 nodeenv==1.9.1
 nose==1.3.7
@@ -169,7 +163,7 @@ pathspec==0.11.2
 pathtools==0.1.2
 pexpect==4.9.0
 pickleshare==0.7.5
-Pillow @ file:///home/conda/feedstock_root/build_artifacts/pillow_1675487172403/work
+Pillow==9.4.0
 pkgutil_resolve_name==1.3.10
 platformdirs==4.3.6
 pluggy==1.5.0
@@ -189,11 +183,11 @@ py-rouge==1.1
 pyarrow==12.0.1
 pyasn1==0.5.1
 pyasn1-modules==0.3.0
-pybind11 @ file:///D:/bld/pybind11-split_1747934313674/work
-pybind11_global @ file:///home/conda/feedstock_root/build_artifacts/pybind11-split_1747934270866/work
+pybind11==2.13.6
+pybind11_global==2.13.6
 pycodestyle==2.9.1
-pycosat @ file:///home/conda/feedstock_root/build_artifacts/pycosat_1757744612102/work
-pycparser @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pycparser_1733195786/work
+pycosat==0.6.6
+pycparser==2.22
 pydantic==2.5.3
 pydantic_core==2.14.6
 pyflakes==2.5.0
@@ -201,7 +195,7 @@ Pygments==2.17.2
 pygtrie==2.4.2
 pyparsing==3.1.4
 pyrsistent==0.19.3
-PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1733217236728/work
+PySocks==1.7.1
 pytest==8.3.5
 pytest-datadir==1.4.1
 pytest-regressions==2.4.3
@@ -219,8 +213,8 @@ requests-mock==1.12.1
 requests-oauthlib==2.0.0
 responses==0.18.0
 rsa==4.9
-ruamel.yaml @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_ruamel.yaml_1766175793/work
-ruamel.yaml.clib @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_ruamel.yaml.clib_1766159514/work
+ruamel.yaml==0.18.6
+ruamel.yaml.clib==0.2.8
 s3transfer==0.8.2
 sacrebleu==2.4.2
 sacremoses==0.0.53
@@ -233,7 +227,7 @@ sentry-sdk==2.14.0
 setproctitle==1.3.3
 sh==1.14.3
 shortuuid==1.0.13
-six @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_six_1753199211/work
+six==1.16.0
 smart-open==7.0.4
 smmap==5.0.1
 sniffio==1.3.1
@@ -274,7 +268,7 @@ tornado==6.2
 tqdm==4.62.1
 traitlets==5.9.0
 transformers==4.30.2
-truststore @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_truststore_1766494826/work
+truststore==0.10.0
 typer==0.4.1
 types-protobuf==4.24.0.4
 typing_extensions==4.7.1

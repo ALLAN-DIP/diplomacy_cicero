@@ -29,28 +29,32 @@ RUN curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Mi
 # Switch to application directory
 WORKDIR /diplomacy_cicero
 
-# Update existing environment
-# `pip` needs to be updated separately to prevent version conflict
+# Update existing environment and install uv as the package manager
 COPY environment.yaml .
 RUN conda env update --file environment.yaml --prune \
-    && pip install --no-cache-dir pip==26.0.1
+    && pip install uv
+
+# Use the conda-managed system Python (no venv in this image)
+ENV UV_SYSTEM_PYTHON=1
+
+COPY pyproject.toml .
 
 # Install local pip packages
 COPY thirdparty/ thirdparty/
 # NOTE: Postman here links against pytorch for tensors, for this to work you may
 # need to separately have installed cuda 12 on your own.
 ENV Torch_DIR=/usr/local/lib/python3.10/site-packages/torch/share/cmake/Torch
-RUN pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/nest/ \
+RUN uv pip install --no-cache -e ./thirdparty/github/fairinternal/postman/nest/ \
     && ln -s /usr/local/cuda /usr/local/nvidia \
-    && pip install --no-cache-dir -e ./thirdparty/github/fairinternal/postman/postman/
+    && uv pip install --no-cache -e ./thirdparty/github/fairinternal/postman/postman/
 
 # Install application requirements
 COPY requirements-lock.txt .
-RUN pip install --no-cache-dir --force-reinstall "setuptools==68.2.2" \
-    && pip install --no-cache-dir --no-deps fairseq==0.12.2 \
-    && pip install --no-cache-dir --no-deps fairscale==0.4.2 \
-    && pip install --no-cache-dir --no-deps "parlai @ git+https://github.com/facebookresearch/ParlAI.git@5214f42a2058ef335f91f5afe66b2bd9ebfb2fbe" \
-    && pip install --no-cache-dir -r requirements-lock.txt \
+RUN uv pip install --no-cache --force-reinstall "setuptools==68.2.2" \
+    && uv pip install --no-cache --no-deps fairseq==0.12.2 \
+    && uv pip install --no-cache --no-deps fairscale==0.4.2 \
+    && uv pip install --no-cache --no-deps "parlai @ git+https://github.com/facebookresearch/ParlAI.git@5214f42a2058ef335f91f5afe66b2bd9ebfb2fbe" \
+    && uv pip install --no-cache --no-deps -r requirements-lock.txt \
     && spacy download en_core_web_sm
 
 # Install application itself
@@ -59,11 +63,10 @@ COPY fairdiplomacy/ fairdiplomacy/
 COPY fairdiplomacy_external/ fairdiplomacy_external/
 COPY heyhi/ heyhi/
 COPY parlai_diplomacy/ parlai_diplomacy/
-COPY pyproject.toml .
 COPY requirements.txt .
 COPY setup.py .
 COPY unit_tests/ unit_tests/
-RUN pip install --no-cache-dir --no-deps -e .
+RUN uv pip install --no-cache --no-deps -e .
 
 # Build application
 COPY Makefile .
